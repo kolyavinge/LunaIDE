@@ -6,12 +6,12 @@ using Luna.IDE.ViewModel;
 
 namespace Luna.IDE.View
 {
-    public partial class EditorView : UserControl
+    public partial class CodeEditorView : UserControl
     {
-        public EditorView()
+        public CodeEditorView()
         {
             InitializeComponent();
-            DataContext = DependencyContainer.Resolve<EditorViewModel>();
+            DataContext = DependencyContainer.Resolve<CodeEditorViewModel>();
         }
 
         private void ScrollBarOnScroll(object sender, ScrollEventArgs e)

@@ -8,11 +8,20 @@
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="#1e1e1e" />
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#e0e0e0" />
 
-    <SolidColorBrush x:Key="ButtonSelectionBrush" Color="#323232" />
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="#252525" />
+
+    <SolidColorBrush x:Key="InnactiveSelectedItemBrush" Color="#505050" />
+
+    <SolidColorBrush x:Key="SelectedItemBrush" Color="#323232" />
 
     <SolidColorBrush x:Key="EditorSelectionBrush" Color="{StaticResource EditorSelectionColor}" Opacity="0.3" />
 
     <SolidColorBrush x:Key="ScrollBarBrush" Color="#5e5e5e" />
+
+    <Style x:Key="MainTitleTextStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
 
     <Style x:Key="GridSplitterStyle" TargetType="{x:Type GridSplitter}">
         <Setter Property="Opacity" Value="0" />
@@ -38,7 +47,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource ButtonSelectionBrush}"/>
+                <Setter Property="Background" Value="{StaticResource SelectedItemBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -140,6 +149,62 @@
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="ProjectTreeListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                <Condition Property="IsSelected" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource InnactiveSelectedItemBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Border.IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource SelectedItemBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                <Condition Property="IsSelected" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource EditorSelectionBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ProjectTreeListBoxStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Style.Resources>
+            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ProjectTreeListBoxItemStyle}" />
+            <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource VerticalLineScrollBarStyle}">
+                
+            </Style>
+        </Style.Resources>
     </Style>
 
 </ResourceDictionary>

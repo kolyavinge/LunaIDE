@@ -1,0 +1,63 @@
+﻿<Window x:Class="Luna.IDE.View.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:view="clr-namespace:Luna.IDE.View"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        BorderBrush="Black"
+        BorderThickness="1"
+        Title="Luna IDE"
+        Height="800"
+        Width="1200">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="{StaticResource MainBackgroundBrush}" MouseLeftButtonUp="OnWindowMouseLeftButtonUp" MouseMove="OnWindowMouseMove">
+        <Grid x:Name="WindowTitlePanel" Background="Transparent" VerticalAlignment="Top" Height="24" MouseLeftButtonDown="OnTitlePanelMouseLeftButtonDown">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="🗕" Style="{StaticResource TitleButtonStyle}" Width="40" Click="OnMinimizeButtonClick" />
+                <Button Content="🗖" Style="{StaticResource TitleButtonStyle}" Width="40" Click="OnMaximizeButtonClick" />
+                <Button Content="🗙" Style="{StaticResource CloseButtonStyle}" Width="40" Click="OnCloseButtonClick" />
+            </StackPanel>
+        </Grid>
+        <!-- main -->
+        <Grid Margin="0,24,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="200" Width="200" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition MinWidth="200" Width="*" />
+            </Grid.ColumnDefinitions>
+            <!-- navigation -->
+            <Grid Grid.Column="0">
+
+            </Grid>
+            <GridSplitter Grid.Column="1" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" Width="4" />
+            <!-- development -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="200" Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition MinHeight="100" Height="200" />
+                </Grid.RowDefinitions>
+                <!-- code editor -->
+                <Grid Grid.Row="0">
+                    <view:EditorView />
+                </Grid>
+                <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" HorizontalAlignment="Stretch" Height="4" />
+                <!-- output -->
+                <Grid Grid.Row="2">
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

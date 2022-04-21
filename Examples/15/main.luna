@@ -1,0 +1,41 @@
+// 15-th game on luna language
+
+import 'const.luna'
+
+(init_model () ())
+
+(mouse_handler (model event pos)
+    (if (eq event.kind 'click') (do_step model (div pos.x CELL_SIZE) (div pos.y CELL_SIZE)))
+)
+
+const CELL_SIZE             26
+const CELL_SIZE_HALF        13
+const CELL_COLOR            'ffd769'
+const CHIP_NUMBER_COLOR     0
+const CHIP_NUMBER_FONT_SIZE 12
+const FIELD_COLOR           'e6e6e6'
+
+(render_field (model context)
+    (fill_rect context 0 0 (mul model.cols CELL_SIZE) (mul mode.rows CELL_SIZE) FIELD_COLOR)
+    (loop (0 model.rows) (lambda (row) (draw_line context             0 (mul row CELL_SIZE) (mul model.cols CELL_SIZE) (mul row CELL_SIZE))))
+    (loop (0 model.cols) (lambda (col) (draw_line context (mul col CELL_SIZE)             0        (mul col CELL_SIZE) (mul model.rows CELL_SIZE))))
+)
+
+(render_chip (chip context)
+    (fill_rect context (mul chip.col CELL_SIZE) (mul chip.row CELL_SIZE) CELL_SIZE CELL_SIZE CELL_COLOR)
+    (draw_text context (mul chip.col (add CELL_SIZE CELL_SIZE_HALF)) (mul chip.row (add CELL_SIZE CELL_SIZE_HALF)) chip.number CHIP_NUMBER_COLOR CHIP_NUMBER_FONT_SIZE 'center')
+)
+
+(render_chips (model context)
+    (map get_chips model (lambda (chip) (render_chip chip context)))
+)
+
+(render (model context)
+    (render_chips model context)
+    (render_field model context)
+)
+
+(main_window (model) (window 'FLang 15' (render model) (mouse_handler model)))
+(start_app (model) (app 'FLang 15 application' (main_window model)))
+
+(run (start_app (init_model)))

@@ -24,7 +24,8 @@
             <ListBox.InputBindings>
                 <KeyBinding
                     Key="Return"
-                    Command="{Binding DataContext.ProjectTreeItemOpenCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                    Command="{Binding DataContext.ProjectTreeItemOpenCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                    CommandParameter="{Binding SelectedItems, ElementName=lb}" />
             </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ProjectTreeListBoxItemStyle}">
@@ -41,7 +42,8 @@
                         <StackPanel.InputBindings>
                             <MouseBinding
                                 Gesture="LeftDoubleClick"
-                                Command="{Binding DataContext.ProjectTreeItemOpenCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                Command="{Binding DataContext.ProjectTreeItemOpenCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding SelectedItems, ElementName=lb}" />
                         </StackPanel.InputBindings>
                         <StackPanel
                             Orientation="Horizontal"

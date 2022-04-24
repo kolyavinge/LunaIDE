@@ -1,17 +1,23 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Luna.IDE.Infrastructure;
+using Luna.IDE.Model;
 using Luna.IDE.ViewModel;
+using Luna.ProjectModel;
 
 namespace Luna.IDE.View
 {
-    public partial class CodeEditorView : UserControl
+    [EditorFor(typeof(CodeFileProjectItem))]
+    public partial class CodeFileEditorView : UserControl
     {
-        public CodeEditorView()
+        public CodeFileEditorView()
         {
             InitializeComponent();
-            DataContext = DependencyContainer.Resolve<CodeEditorViewModel>();
+        }
+
+        public CodeFileEditorView(CodeFileEditorViewModel vm) : this()
+        {
+            DataContext = vm;
         }
 
         private void ScrollBarOnScroll(object sender, ScrollEventArgs e)

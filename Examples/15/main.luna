@@ -8,13 +8,6 @@ import 'const.luna'
     (if (eq event.kind 'click') (do_step model (div pos.x CELL_SIZE) (div pos.y CELL_SIZE)))
 )
 
-const CELL_SIZE             26
-const CELL_SIZE_HALF        13
-const CELL_COLOR            'ffd769'
-const CHIP_NUMBER_COLOR     0
-const CHIP_NUMBER_FONT_SIZE 12
-const FIELD_COLOR           'e6e6e6'
-
 (render_field (model context)
     (fill_rect context 0 0 (mul model.cols CELL_SIZE) (mul mode.rows CELL_SIZE) FIELD_COLOR)
     (loop (0 model.rows) (lambda (row) (draw_line context             0 (mul row CELL_SIZE) (mul model.cols CELL_SIZE) (mul row CELL_SIZE))))

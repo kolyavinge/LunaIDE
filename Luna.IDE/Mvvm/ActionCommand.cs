@@ -5,13 +5,19 @@ namespace Luna.IDE.Mvvm
 {
     public class ActionCommand : ICommand
     {
-        private readonly Action _action;
+        private readonly Action? _action;
+        private readonly Action<object>? _actionWithObject;
 
         public event EventHandler? CanExecuteChanged;
 
         public ActionCommand(Action action)
         {
             _action = action;
+        }
+
+        public ActionCommand(Action<object> action)
+        {
+            _actionWithObject = action;
         }
 
         public bool CanExecute(object parameter)
@@ -21,7 +27,8 @@ namespace Luna.IDE.Mvvm
 
         public void Execute(object parameter)
         {
-            _action();
+            if (_action != null) _action();
+            else if (_actionWithObject != null) _actionWithObject(parameter);
         }
     }
 }

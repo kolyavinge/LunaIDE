@@ -50,9 +50,9 @@
                     <RowDefinition Height="4" />
                     <RowDefinition MinHeight="100" Height="200" />
                 </Grid.RowDefinitions>
-                <!-- code editor -->
+                <!-- code editors and other windows -->
                 <Grid Grid.Row="0">
-                    <view:CodeEditorView />
+                    <view:EnvironmentWindowsView />
                 </Grid>
                 <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" HorizontalAlignment="Stretch" Height="4" />
                 <!-- output -->

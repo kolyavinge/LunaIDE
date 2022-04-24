@@ -16,7 +16,7 @@ namespace Luna.IDE.ViewModel
         private IEnumerable<ProjectTreeItem> _projectTreeItems;
 
         [Inject]
-        public ProjectTreeItemOpenCommand? ProjectTreeItemOpenCommand { get; set; }
+        public IProjectTreeItemOpenCommand? ProjectTreeItemOpenCommand { get; set; }
 
         public IEnumerable<ProjectTreeItem> ProjectTreeItems
         {
@@ -31,13 +31,13 @@ namespace Luna.IDE.ViewModel
         public ProjectTreeViewModel(IProjectExplorer projectExplorer)
         {
             _projectExplorer = projectExplorer;
-            _projectExplorer.ProjectOpen += OnProjectOpen;
+            _projectExplorer.ProjectOpened += OnProjectOpened;
             _projectTreeItems = Enumerable.Empty<ProjectTreeItem>();
 
-            _projectExplorer.OpenProject(@"D:\Projects\LunaIDE\Examples\BigProject");
+            _projectExplorer.OpenProject(@"D:\Projects\LunaIDE\Examples\15");
         }
 
-        private void OnProjectOpen(object? sender, EventArgs e)
+        private void OnProjectOpened(object? sender, EventArgs e)
         {
             UpdateProjectTreeItems();
         }

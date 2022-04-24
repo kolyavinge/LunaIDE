@@ -36,7 +36,7 @@ namespace Luna.ProjectModel
             }
             foreach (var directoryPath in _fileSystem.GetFiles(parentPath, "*.luna"))
             {
-                var codeFile = new CodeFileProjectItem(directoryPath, parent);
+                var codeFile = new CodeFileProjectItem(directoryPath, parent, _fileSystem);
                 parent.AddChild(codeFile);
             }
         }

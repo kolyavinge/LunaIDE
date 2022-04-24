@@ -20,13 +20,17 @@ namespace Luna.IDE.Infrastructure
         {
             _container.Bind<IFileSystem, FileSystem>().ToSingleton();
 
-            _container.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
+            _container.Bind<IProjectItemEditorFactory, ProjectItemEditorFactory>().ToSingleton();
 
-            _container.Bind<CodeEditorViewModel, CodeEditorViewModel>();
+            _container.Bind<IEnvironmentWindowsManager, EnvironmentWindowsManager>().ToSingleton();
+            _container.Bind<EnvironmentWindowsViewModel, EnvironmentWindowsViewModel>().ToSingleton();
+
+            _container.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
             _container.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
             _container.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();
 
-            _container.Bind<ProjectTreeItemOpenCommand, ProjectTreeItemOpenCommand>().ToSingleton();
+            _container.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
+            _container.Bind<IProjectTreeItemOpenCommand, ProjectTreeItemOpenCommand>().ToSingleton();
         }
 
         public static TDependency Resolve<TDependency>()

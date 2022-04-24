@@ -15,5 +15,15 @@ namespace Luna.IDE.Infrastructure
         {
             return Directory.GetDirectories(path);
         }
+
+        public string ReadFileText(string fullPath)
+        {
+            return File.ReadAllText(fullPath);
+        }
+
+        public void SaveFileText(string fullPath, string text)
+        {
+            File.WriteAllText(fullPath, text);
+        }
     }
 }

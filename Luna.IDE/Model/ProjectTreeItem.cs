@@ -17,7 +17,7 @@ namespace Luna.IDE.Model
 
         public bool HasChildren => Children != null && Children.Any();
 
-        public List<ProjectTreeItem> Children { get; }
+        public IReadOnlyCollection<ProjectTreeItem> Children { get; }
 
         public ProjectTreeItemKind Kind { get; }
 

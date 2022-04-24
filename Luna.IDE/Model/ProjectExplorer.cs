@@ -13,8 +13,7 @@ namespace Luna.IDE.Model
         ProjectTreeItem? ProjectTreeRoot { get; }
         IEnumerable<ProjectTreeItem> SelectedItems { get; }
         void OpenProject(string path);
-
-        event EventHandler? ProjectOpen;
+        event EventHandler? ProjectOpened;
     }
 
     public class ProjectExplorer : IProjectExplorer
@@ -28,7 +27,7 @@ namespace Luna.IDE.Model
 
         public IEnumerable<ProjectTreeItem> SelectedItems => ProjectTreeRoot!.GetAllChildren().Where(x => x.IsSelected);
 
-        public event EventHandler? ProjectOpen;
+        public event EventHandler? ProjectOpened;
 
         public ProjectExplorer()
         {
@@ -38,7 +37,7 @@ namespace Luna.IDE.Model
         {
             Project = Project.Open(path, FileSystem!);
             ProjectTreeRoot = new ProjectTreeItem(Project.Root);
-            ProjectOpen?.Invoke(this, EventArgs.Empty);
+            ProjectOpened?.Invoke(this, EventArgs.Empty);
         }
     }
 }

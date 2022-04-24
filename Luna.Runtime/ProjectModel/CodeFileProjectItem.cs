@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Luna.Infrastructure;
 
 namespace Luna.ProjectModel
 {
-    public class CodeFileProjectItem : ProjectItem
+    public class CodeFileProjectItem : FileProjectItem
     {
-        internal CodeFileProjectItem(string fullPath, ProjectItem? parent) : base(Path.GetFileName(fullPath), fullPath, parent)
+        internal CodeFileProjectItem(string fullPath, ProjectItem? parent, IFileSystem fileSystem) : base(fullPath, parent, fileSystem)
         {
         }
     }

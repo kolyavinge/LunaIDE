@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Luna.IDE.Infrastructure;
+using Luna.IDE.ViewModel;
 
 namespace Luna.IDE.View
 {
@@ -10,6 +12,7 @@ namespace Luna.IDE.View
         public MainView()
         {
             InitializeComponent();
+            DataContext = DependencyContainer.Resolve<MainViewModel>();
         }
 
         private void OnTitlePanelMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

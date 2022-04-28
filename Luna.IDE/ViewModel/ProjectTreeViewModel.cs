@@ -33,8 +33,6 @@ namespace Luna.IDE.ViewModel
             _projectExplorer = projectExplorer;
             _projectExplorer.ProjectOpened += OnProjectOpened;
             _projectTreeItems = Enumerable.Empty<ProjectTreeItem>();
-
-            _projectExplorer.OpenProject(@"D:\Projects\LunaIDE\Examples\15");
         }
 
         private void OnProjectOpened(object? sender, EventArgs e)

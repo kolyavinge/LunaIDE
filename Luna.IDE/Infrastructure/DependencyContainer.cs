@@ -19,6 +19,7 @@ namespace Luna.IDE.Infrastructure
         private static void InitContainer()
         {
             _container.Bind<IFileSystem, FileSystem>().ToSingleton();
+            _container.Bind<IOpenFileDialog, OpenFileDialog>();
 
             _container.Bind<IProjectItemEditorFactory, ProjectItemEditorFactory>().ToSingleton();
 
@@ -29,8 +30,11 @@ namespace Luna.IDE.Infrastructure
             _container.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
             _container.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();
 
+            _container.Bind<IOpenProjectCommand, OpenProjectCommand>().ToSingleton();
             _container.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
             _container.Bind<IProjectTreeItemOpenCommand, ProjectTreeItemOpenCommand>().ToSingleton();
+
+            _container.Bind<MainViewModel, MainViewModel>().ToSingleton();
         }
 
         public static TDependency Resolve<TDependency>()

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using Luna.IDE.Mvvm;
+using Luna.IDE.Utils;
 
 namespace Luna.IDE.Model
 {
@@ -39,8 +40,8 @@ namespace Luna.IDE.Model
         EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, object view);
 
         void ActivateWindow(EnvironmentWindow window);
-
         void CloseWindow(EnvironmentWindow window);
+        void CloseAllWindows();
     }
 
     public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindowsManager
@@ -90,6 +91,13 @@ namespace Luna.IDE.Model
             }
             var component = Windows.First(x => x == window);
             _windows.Remove(component);
+        }
+
+        public void CloseAllWindows()
+        {
+            Windows.Each(x => x.Model.Save());
+            SelectedWindow = null;
+            _windows.Clear();
         }
     }
 }

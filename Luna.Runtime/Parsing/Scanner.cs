@@ -6,17 +6,17 @@ namespace Luna.Parsing
     public class Scanner
     {
         private ITextIterator? _textIterator;
-        private readonly List<Lexem> _lexems = new();
+        private readonly List<Token> _tokens = new();
         private int _lineIndex;
         private int _columnIndex;
         private int _nameLength;
         private readonly char[] _nameArray = new char[1024];
-        private LexemKind? _kind;
+        private TokenKind? _kind;
 
-        public IEnumerable<Lexem> GetLexems(ITextIterator textIterator)
+        public IEnumerable<Token> GetTokens(ITextIterator textIterator)
         {
             _textIterator = textIterator;
-            _lexems.Clear();
+            _tokens.Clear();
             switch (State.Begin)
             {
                 case State.Begin:
@@ -28,8 +28,8 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 1;
-                        _kind = LexemKind.OpenBracket;
-                        MakeLexem();
+                        _kind = TokenKind.OpenBracket;
+                        MakeToken();
                         textIterator.MoveNext();
                         goto case State.Begin;
                     }
@@ -38,8 +38,8 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 1;
-                        _kind = LexemKind.CloseBracket;
-                        MakeLexem();
+                        _kind = TokenKind.CloseBracket;
+                        MakeToken();
                         textIterator.MoveNext();
                         goto case State.Begin;
                     }
@@ -48,7 +48,7 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 1;
-                        _kind = LexemKind.String;
+                        _kind = TokenKind.String;
                         textIterator.MoveNext(); goto case State.String;
                     }
                     else if (IsStartIdentificatorNameChar())
@@ -56,7 +56,7 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 0;
-                        AddLexemChar();
+                        AddTokenChar();
                         textIterator.MoveNext();
                         goto case State.Identificator;
                     }
@@ -65,7 +65,7 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 0;
-                        AddLexemChar();
+                        AddTokenChar();
                         textIterator.MoveNext();
                         goto case State.Number;
                     }
@@ -74,15 +74,15 @@ namespace Luna.Parsing
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
                         _nameLength = 0;
-                        _kind = LexemKind.Comment;
+                        _kind = TokenKind.Comment;
                         goto case State.Comment;
                     }
                     else if (IsOperator())
                     {
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
-                        _kind = LexemKind.Operator;
-                        MakeLexem();
+                        _kind = TokenKind.Operator;
+                        MakeToken();
                         textIterator.MoveNext();
                         goto case State.Begin;
                     }
@@ -90,44 +90,45 @@ namespace Luna.Parsing
                     {
                         _lineIndex = textIterator.LineIndex;
                         _columnIndex = textIterator.ColumnIndex;
-                        _kind = LexemKind.Dot;
-                        MakeLexem();
+                        _nameLength = 1;
+                        _kind = TokenKind.Dot;
+                        MakeToken();
                         textIterator.MoveNext();
                         goto case State.Begin;
                     }
                     else goto case State.Error;
                 case State.Identificator:
-                    if (textIterator.Eof) { MakeLexem(); goto case State.End; }
-                    else if (IsSpace()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (IsReturn()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (textIterator.Char == ')') { MakeLexem(); goto case State.Begin; }
-                    else if (IsDelimiter()) { MakeLexem(); goto case State.Begin; }
-                    else if (IsIdentificatorNameChar()) { AddLexemChar(); textIterator.MoveNext(); goto case State.Identificator; }
+                    if (textIterator.Eof) { MakeToken(); goto case State.End; }
+                    else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (textIterator.Char == ')') { MakeToken(); goto case State.Begin; }
+                    else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
+                    else if (IsIdentificatorNameChar()) { AddTokenChar(); textIterator.MoveNext(); goto case State.Identificator; }
                     else goto case State.Error;
                 case State.String:
-                    if (textIterator.Eof) { MakeLexem(); goto case State.End; }
-                    else if (IsReturn()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (textIterator.Char == '\'') { _nameLength++; MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
+                    if (textIterator.Eof) { MakeToken(); goto case State.End; }
+                    else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (textIterator.Char == '\'') { _nameLength++; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                     else { _nameLength++; textIterator.MoveNext(); goto case State.String; }
                 case State.Number:
-                    if (textIterator.Eof) { MakeLexem(); goto case State.End; }
-                    else if (IsSpace()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (IsReturn()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (textIterator.Char == '.') { _kind = LexemKind.FloatNumber; AddLexemChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
-                    else if (IsDelimiter()) { MakeLexem(); goto case State.Begin; }
-                    else if (textIterator.Char == ')') { MakeLexem(); goto case State.Begin; }
-                    else if (IsDigit()) { AddLexemChar(); textIterator.MoveNext(); goto case State.Number; }
+                    if (textIterator.Eof) { MakeToken(); goto case State.End; }
+                    else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (textIterator.Char == '.') { _kind = TokenKind.FloatNumber; AddTokenChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
+                    else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
+                    else if (textIterator.Char == ')') { MakeToken(); goto case State.Begin; }
+                    else if (IsDigit()) { AddTokenChar(); textIterator.MoveNext(); goto case State.Number; }
                     else goto case State.Error;
                 case State.FloatNumber:
-                    if (textIterator.Eof) { MakeLexem(); goto case State.End; }
-                    else if (IsSpace()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (IsReturn()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
-                    else if (IsDelimiter()) { MakeLexem(); goto case State.Begin; }
-                    else if (IsDigit()) { AddLexemChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
+                    if (textIterator.Eof) { MakeToken(); goto case State.End; }
+                    else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                    else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
+                    else if (IsDigit()) { AddTokenChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
                     else goto case State.Error;
                 case State.Comment:
-                    if (textIterator.Eof) { MakeLexem(); goto case State.End; }
-                    else if (IsReturn()) { MakeLexem(); textIterator.MoveNext(); goto case State.Begin; }
+                    if (textIterator.Eof) { MakeToken(); goto case State.End; }
+                    else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                     else { _nameLength++; textIterator.MoveNext(); goto case State.Comment; }
                 case State.Error:
                     break;
@@ -135,17 +136,17 @@ namespace Luna.Parsing
                     break;
             }
 
-            return _lexems;
+            return _tokens;
         }
 
-        private void AddLexemChar()
+        private void AddTokenChar()
         {
             _nameArray[_nameLength++] = _textIterator!.Char;
         }
 
-        private void MakeLexem()
+        private void MakeToken()
         {
-            _lexems.Add(new(_lineIndex, _columnIndex, _nameLength, _kind ?? GetLexemKind()));
+            _tokens.Add(new(_lineIndex, _columnIndex, _nameLength, _kind ?? GetTokenKind()));
             _kind = null;
         }
 
@@ -184,15 +185,15 @@ namespace Luna.Parsing
             return _textIterator!.Char == '\n';
         }
 
-        private LexemKind GetLexemKind()
+        private TokenKind GetTokenKind()
         {
-            if (StringUtils.StringEquals("import", _nameArray, _nameLength)) return LexemKind.ImportDirective;
-            if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return LexemKind.ConstDeclare;
-            if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return LexemKind.LambdaIdentificator;
-            if (StringUtils.StringEquals("run", _nameArray, _nameLength)) return LexemKind.RunFunction;
-            if (IsIntegerNumber()) return LexemKind.IntegerNumber;
+            if (StringUtils.StringEquals("import", _nameArray, _nameLength)) return TokenKind.ImportDirective;
+            if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return TokenKind.ConstDeclare;
+            if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return TokenKind.LambdaIdentificator;
+            if (StringUtils.StringEquals("run", _nameArray, _nameLength)) return TokenKind.RunFunction;
+            if (IsIntegerNumber()) return TokenKind.IntegerNumber;
 
-            return LexemKind.Identificator;
+            return TokenKind.Identificator;
         }
 
         private bool IsIntegerNumber()

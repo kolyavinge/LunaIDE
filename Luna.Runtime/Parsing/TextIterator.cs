@@ -15,7 +15,7 @@ namespace Luna.Parsing
 
     internal class TextIterator : ITextIterator
     {
-        private readonly List<string> _lines = new();
+        private readonly Text _text;
 
         public char Char { get; private set; }
 
@@ -31,16 +31,16 @@ namespace Luna.Parsing
             {
                 if (Eof) return (char)0;
                 if (Char == '\n') return (char)0;
-                var line = _lines[LineIndex];
-                if (ColumnIndex == line.Length - 1 && LineIndex == _lines.Count - 1) return (char)0;
+                var line = _text.GetLine(LineIndex);
+                if (ColumnIndex == line.Length - 1 && LineIndex == _text.LinesCount - 1) return (char)0;
                 if (ColumnIndex == line.Length - 1) return '\n';
                 return line[ColumnIndex + 1];
             }
         }
 
-        public TextIterator(string text)
+        public TextIterator(Text text)
         {
-            _lines.AddRange(text.Split('\n').Select(line => line.Replace("\r", "")));
+            _text = text;
             LineIndex = 0;
             ColumnIndex = -1;
             MoveNext();
@@ -58,12 +58,12 @@ namespace Luna.Parsing
             {
                 ColumnIndex++;
             }
-            var line = _lines[LineIndex];
+            var line = _text.GetLine(LineIndex);
             if (ColumnIndex < line.Length)
             {
                 Char = line[ColumnIndex];
             }
-            else if (ColumnIndex == line.Length && LineIndex < _lines.Count - 1)
+            else if (ColumnIndex == line.Length && LineIndex < _text.LinesCount - 1)
             {
                 Char = '\n';
             }

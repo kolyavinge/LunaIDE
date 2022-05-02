@@ -18,118 +18,118 @@ namespace Luna.Tests.Parsing
         [Test]
         public void ImportDirective()
         {
-            var lexems = GetLexems("import 'file path'");
-            Assert.AreEqual(2, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 6, LexemKind.ImportDirective), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 7, 11, LexemKind.String), lexems[1]);
+            var tokens = GetTokens("import 'file path'");
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 6, TokenKind.ImportDirective), tokens[0]);
+            Assert.AreEqual(new Token(0, 7, 11, TokenKind.String), tokens[1]);
         }
 
         [Test]
         public void Const_IntegerNumber()
         {
-            var lexems = GetLexems("const VALUE 123");
-            Assert.AreEqual(3, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 5, LexemKind.ConstDeclare), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 6, 5, LexemKind.Identificator), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 12, 3, LexemKind.IntegerNumber), lexems[2]);
+            var tokens = GetTokens("const VALUE 123");
+            Assert.AreEqual(3, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 6, 5, TokenKind.Identificator), tokens[1]);
+            Assert.AreEqual(new Token(0, 12, 3, TokenKind.IntegerNumber), tokens[2]);
         }
 
         [Test]
         public void Const_FloatNumber()
         {
-            var lexems = GetLexems("const VALUE 1.23");
-            Assert.AreEqual(3, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 5, LexemKind.ConstDeclare), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 6, 5, LexemKind.Identificator), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 12, 4, LexemKind.FloatNumber), lexems[2]);
+            var tokens = GetTokens("const VALUE 1.23");
+            Assert.AreEqual(3, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 6, 5, TokenKind.Identificator), tokens[1]);
+            Assert.AreEqual(new Token(0, 12, 4, TokenKind.FloatNumber), tokens[2]);
         }
 
         [Test]
         public void Const_Comment()
         {
-            var lexems = GetLexems("// comment\r\n");
-            Assert.AreEqual(1, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 10, LexemKind.Comment), lexems[0]);
+            var tokens = GetTokens("// comment\r\n");
+            Assert.AreEqual(1, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 10, TokenKind.Comment), tokens[0]);
         }
 
         [Test]
         public void Const_CommentInFunction()
         {
-            var lexems = GetLexems("(func (x//))");
-            Assert.AreEqual(5, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 1, LexemKind.OpenBracket), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 1, 4, LexemKind.Identificator), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 6, 1, LexemKind.OpenBracket), lexems[2]);
-            Assert.AreEqual(new Lexem(0, 7, 1, LexemKind.Identificator), lexems[3]);
-            Assert.AreEqual(new Lexem(0, 8, 4, LexemKind.Comment), lexems[4]);
+            var tokens = GetTokens("(func (x//))");
+            Assert.AreEqual(5, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+            Assert.AreEqual(new Token(0, 1, 4, TokenKind.Identificator), tokens[1]);
+            Assert.AreEqual(new Token(0, 6, 1, TokenKind.OpenBracket), tokens[2]);
+            Assert.AreEqual(new Token(0, 7, 1, TokenKind.Identificator), tokens[3]);
+            Assert.AreEqual(new Token(0, 8, 4, TokenKind.Comment), tokens[4]);
         }
 
         [Test]
         public void Const_CommentAfterIntegerNumber()
         {
-            var lexems = GetLexems("12//");
-            Assert.AreEqual(2, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 2, LexemKind.IntegerNumber), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 2, 2, LexemKind.Comment), lexems[1]);
+            var tokens = GetTokens("12//");
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 2, TokenKind.IntegerNumber), tokens[0]);
+            Assert.AreEqual(new Token(0, 2, 2, TokenKind.Comment), tokens[1]);
         }
 
         [Test]
         public void Const_CommentAfterFloatNumber()
         {
-            var lexems = GetLexems("12.0//");
-            Assert.AreEqual(2, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 4, LexemKind.FloatNumber), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 4, 2, LexemKind.Comment), lexems[1]);
+            var tokens = GetTokens("12.0//");
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 4, TokenKind.FloatNumber), tokens[0]);
+            Assert.AreEqual(new Token(0, 4, 2, TokenKind.Comment), tokens[1]);
         }
 
         [Test]
-        public void ComplexIdentificator()
+        public void ComplexIdentificator_1()
         {
-            var lexems = GetLexems("x.y.z");
-            Assert.AreEqual(5, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 1, LexemKind.Identificator), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 1, 1, LexemKind.Dot), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 2, 1, LexemKind.Identificator), lexems[2]);
-            Assert.AreEqual(new Lexem(0, 3, 1, LexemKind.Dot), lexems[3]);
-            Assert.AreEqual(new Lexem(0, 4, 1, LexemKind.Identificator), lexems[4]);
+            var tokens = GetTokens("xxx.yyy.zzz");
+            Assert.AreEqual(5, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 3, TokenKind.Identificator), tokens[0]);
+            Assert.AreEqual(new Token(0, 3, 1, TokenKind.Dot), tokens[1]);
+            Assert.AreEqual(new Token(0, 4, 3, TokenKind.Identificator), tokens[2]);
+            Assert.AreEqual(new Token(0, 7, 1, TokenKind.Dot), tokens[3]);
+            Assert.AreEqual(new Token(0, 8, 3, TokenKind.Identificator), tokens[4]);
         }
 
         [Test]
         public void FunctionDeclare()
         {
-            var lexems = GetLexems("(func (x y z) (funcCall 1 2))");
-            Assert.AreEqual(13, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 1, LexemKind.OpenBracket), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 1, 4, LexemKind.Identificator), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 6, 1, LexemKind.OpenBracket), lexems[2]);
-            Assert.AreEqual(new Lexem(0, 7, 1, LexemKind.Identificator), lexems[3]);
-            Assert.AreEqual(new Lexem(0, 9, 1, LexemKind.Identificator), lexems[4]);
-            Assert.AreEqual(new Lexem(0, 11, 1, LexemKind.Identificator), lexems[5]);
-            Assert.AreEqual(new Lexem(0, 12, 1, LexemKind.CloseBracket), lexems[6]);
-            Assert.AreEqual(new Lexem(0, 14, 1, LexemKind.OpenBracket), lexems[7]);
-            Assert.AreEqual(new Lexem(0, 15, 8, LexemKind.Identificator), lexems[8]);
-            Assert.AreEqual(new Lexem(0, 24, 1, LexemKind.IntegerNumber), lexems[9]);
-            Assert.AreEqual(new Lexem(0, 26, 1, LexemKind.IntegerNumber), lexems[10]);
-            Assert.AreEqual(new Lexem(0, 27, 1, LexemKind.CloseBracket), lexems[11]);
-            Assert.AreEqual(new Lexem(0, 28, 1, LexemKind.CloseBracket), lexems[12]);
+            var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
+            Assert.AreEqual(13, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+            Assert.AreEqual(new Token(0, 1, 4, TokenKind.Identificator), tokens[1]);
+            Assert.AreEqual(new Token(0, 6, 1, TokenKind.OpenBracket), tokens[2]);
+            Assert.AreEqual(new Token(0, 7, 1, TokenKind.Identificator), tokens[3]);
+            Assert.AreEqual(new Token(0, 9, 1, TokenKind.Identificator), tokens[4]);
+            Assert.AreEqual(new Token(0, 11, 1, TokenKind.Identificator), tokens[5]);
+            Assert.AreEqual(new Token(0, 12, 1, TokenKind.CloseBracket), tokens[6]);
+            Assert.AreEqual(new Token(0, 14, 1, TokenKind.OpenBracket), tokens[7]);
+            Assert.AreEqual(new Token(0, 15, 8, TokenKind.Identificator), tokens[8]);
+            Assert.AreEqual(new Token(0, 24, 1, TokenKind.IntegerNumber), tokens[9]);
+            Assert.AreEqual(new Token(0, 26, 1, TokenKind.IntegerNumber), tokens[10]);
+            Assert.AreEqual(new Token(0, 27, 1, TokenKind.CloseBracket), tokens[11]);
+            Assert.AreEqual(new Token(0, 28, 1, TokenKind.CloseBracket), tokens[12]);
         }
 
         [Test]
         public void RunFunction()
         {
-            var lexems = GetLexems("(run (myfunc))");
-            Assert.AreEqual(6, lexems.Count);
-            Assert.AreEqual(new Lexem(0, 0, 1, LexemKind.OpenBracket), lexems[0]);
-            Assert.AreEqual(new Lexem(0, 1, 3, LexemKind.RunFunction), lexems[1]);
-            Assert.AreEqual(new Lexem(0, 5, 1, LexemKind.OpenBracket), lexems[2]);
-            Assert.AreEqual(new Lexem(0, 6, 6, LexemKind.Identificator), lexems[3]);
-            Assert.AreEqual(new Lexem(0, 12, 1, LexemKind.CloseBracket), lexems[4]);
-            Assert.AreEqual(new Lexem(0, 13, 1, LexemKind.CloseBracket), lexems[5]);
+            var tokens = GetTokens("(run (myfunc))");
+            Assert.AreEqual(6, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+            Assert.AreEqual(new Token(0, 1, 3, TokenKind.RunFunction), tokens[1]);
+            Assert.AreEqual(new Token(0, 5, 1, TokenKind.OpenBracket), tokens[2]);
+            Assert.AreEqual(new Token(0, 6, 6, TokenKind.Identificator), tokens[3]);
+            Assert.AreEqual(new Token(0, 12, 1, TokenKind.CloseBracket), tokens[4]);
+            Assert.AreEqual(new Token(0, 13, 1, TokenKind.CloseBracket), tokens[5]);
         }
 
-        private List<Lexem> GetLexems(string text)
+        private List<Token> GetTokens(string text)
         {
-            return _scanner.GetLexems(new TextIterator(text)).ToList();
+            return _scanner.GetTokens(new TextIterator(new Text(text))).ToList();
         }
     }
 }

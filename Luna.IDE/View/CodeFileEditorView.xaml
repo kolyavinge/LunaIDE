@@ -36,7 +36,7 @@
             Maximum="{Binding VerticalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
             ViewportSize="{Binding VerticalScrollBarViewportSize, ElementName=codeTextBox, Mode=TwoWay}"
-            Width="28"
+            Width="22"
             Margin="0,0,-2,0"
             HorizontalAlignment="Right"
             Cursor="Arrow"

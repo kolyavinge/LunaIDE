@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Luna.Parsing
 {
-    public struct Lexem
+    public struct Token
     {
         public readonly int LineIndex;
         public readonly int StartColumnIndex;
         public readonly int Length;
-        public readonly LexemKind Kind;
+        public readonly TokenKind Kind;
 
-        public Lexem(int lineIndex, int startColumnIndex, int length, LexemKind kind)
+        public Token(int lineIndex, int startColumnIndex, int length, TokenKind kind)
         {
             LineIndex = lineIndex;
             StartColumnIndex = startColumnIndex;

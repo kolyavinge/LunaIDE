@@ -23,12 +23,12 @@
     </Window.Resources>
     <Grid Background="{StaticResource MainBackgroundBrush}" MouseLeftButtonUp="OnWindowMouseLeftButtonUp" MouseMove="OnWindowMouseMove">
         <Grid x:Name="WindowTitlePanel" Background="Transparent" VerticalAlignment="Top" Height="24" MouseLeftButtonDown="OnTitlePanelMouseLeftButtonDown">
-            <TextBlock Text="Luna IDE" Style="{StaticResource MainTitleTextStyle}" Margin="0,3,0,0" HorizontalAlignment="Center" />
+            <TextBlock Text="Luna IDE" Style="{StaticResource MainTitleTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ButtonStyle}" Command="{Binding OpenProjectCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/directory.png" Width="16" Height="16" />
-                        <TextBlock Text="Open project" Margin="2,0,0,0" />
+                        <Image Source="/Images/directory.png" Width="16" Height="16" Margin="4,0,0,0" />
+                        <TextBlock Text="Open project" Margin="2,0,4,0" />
                     </StackPanel>
                 </Button>
             </StackPanel>

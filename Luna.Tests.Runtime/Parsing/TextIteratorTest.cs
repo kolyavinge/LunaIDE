@@ -187,7 +187,7 @@ namespace Luna.Tests.Parsing
 
         private void SetText(string text)
         {
-            _iterator = new TextIterator(text);
+            _iterator = new TextIterator(new Text(text));
         }
     }
 }

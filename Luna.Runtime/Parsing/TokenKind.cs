@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Luna.Parsing
 {
-    public enum LexemKind : byte
+    public enum TokenKind : byte
     {
         ImportDirective,
         ConstDeclare,

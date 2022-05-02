@@ -1,40 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter;
-using LexemKind = Luna.Parsing.LexemKind;
+using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.IDE.CodeEditor
 {
     public class CodeProvider : ICodeProvider
     {
-        public IEnumerable<Lexem> GetLexems(ITextIterator textIterator)
+        public IEnumerable<Token> GetTokens(ITextIterator textIterator)
         {
             var scanner = new Parsing.Scanner();
-            var lexems = scanner.GetLexems(new TextIteratorWrapper(textIterator)).Select(Convert).ToList();
+            var tokens = scanner.GetTokens(new TextIteratorWrapper(textIterator)).Select(Convert).ToList();
 
-            return lexems;
+            return tokens;
         }
 
-        private Lexem Convert(Parsing.Lexem lexem)
+        private Token Convert(Parsing.Token token)
         {
-            return new Lexem(lexem.LineIndex, lexem.StartColumnIndex, lexem.Length, (byte)lexem.Kind);
+            return new Token(token.LineIndex, token.StartColumnIndex, token.Length, (byte)token.Kind);
         }
 
-        public IEnumerable<LexemColor> GetColors()
+        public IEnumerable<TokenColor> GetColors()
         {
             return new[]
             {
-                new LexemColor((byte) LexemKind.ImportDirective, CodeProviderColors.Magenta),
-                new LexemColor((byte) LexemKind.LambdaIdentificator, CodeProviderColors.Magenta),
-                new LexemColor((byte) LexemKind.RunFunction, CodeProviderColors.Green),
-                new LexemColor((byte) LexemKind.ConstDeclare, CodeProviderColors.Blue),
-                new LexemColor((byte) LexemKind.String, CodeProviderColors.Orange),
-                new LexemColor((byte) LexemKind.IntegerNumber, CodeProviderColors.Red),
-                new LexemColor((byte) LexemKind.FloatNumber, CodeProviderColors.Red),
-                new LexemColor((byte) LexemKind.Comment, CodeProviderColors.LightGreen),
-                new LexemColor((byte) LexemKind.OpenBracket, CodeProviderColors.Gray),
-                new LexemColor((byte) LexemKind.CloseBracket, CodeProviderColors.Gray),
-                new LexemColor((byte) LexemKind.Dot, CodeProviderColors.Gray),
+                new TokenColor((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
+                new TokenColor((byte) TokenKind.LambdaIdentificator, CodeProviderColors.Magenta),
+                new TokenColor((byte) TokenKind.RunFunction, CodeProviderColors.Green),
+                new TokenColor((byte) TokenKind.ConstDeclare, CodeProviderColors.Blue),
+                new TokenColor((byte) TokenKind.String, CodeProviderColors.Orange),
+                new TokenColor((byte) TokenKind.IntegerNumber, CodeProviderColors.Red),
+                new TokenColor((byte) TokenKind.FloatNumber, CodeProviderColors.Red),
+                new TokenColor((byte) TokenKind.Comment, CodeProviderColors.LightGreen),
+                new TokenColor((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
+                new TokenColor((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
+                new TokenColor((byte) TokenKind.Dot, CodeProviderColors.Gray),
             };
         }
     }

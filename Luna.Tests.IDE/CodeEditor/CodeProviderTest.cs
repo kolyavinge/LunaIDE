@@ -27,11 +27,20 @@ namespace Luna.Tests.IDE.CodeEditor
         }
 
         [Test]
+        public void ImportDirective_EmptyFilePath()
+        {
+            var tokens = GetTokens("import ''");
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 6, (byte)TokenKind.ImportDirective), tokens[0]);
+            Assert.AreEqual(new Token(0, 7, 2, (byte)TokenKind.String), tokens[1]);
+        }
+
+        [Test]
         public void Const_IntegerNumber()
         {
             var tokens = GetTokens("const VALUE 123");
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual(new Token(0, 0, 5, (byte)TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 0, 5, (byte)TokenKind.ConstDeclaration), tokens[0]);
             Assert.AreEqual(new Token(0, 6, 5, (byte)TokenKind.Identificator), tokens[1]);
             Assert.AreEqual(new Token(0, 12, 3, (byte)TokenKind.IntegerNumber), tokens[2]);
         }
@@ -41,7 +50,7 @@ namespace Luna.Tests.IDE.CodeEditor
         {
             var tokens = GetTokens("const VALUE 1.23");
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual(new Token(0, 0, 5, (byte)TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 0, 5, (byte)TokenKind.ConstDeclaration), tokens[0]);
             Assert.AreEqual(new Token(0, 6, 5, (byte)TokenKind.Identificator), tokens[1]);
             Assert.AreEqual(new Token(0, 12, 4, (byte)TokenKind.FloatNumber), tokens[2]);
         }

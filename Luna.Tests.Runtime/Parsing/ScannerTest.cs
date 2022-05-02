@@ -25,11 +25,20 @@ namespace Luna.Tests.Parsing
         }
 
         [Test]
+        public void ImportDirective_EmptyFilePath()
+        {
+            var tokens = GetTokens("import ''");
+            Assert.AreEqual(2, tokens.Count);
+            Assert.AreEqual(new Token(0, 0, 6, TokenKind.ImportDirective), tokens[0]);
+            Assert.AreEqual(new Token(0, 7, 2, TokenKind.String), tokens[1]);
+        }
+
+        [Test]
         public void Const_IntegerNumber()
         {
             var tokens = GetTokens("const VALUE 123");
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
             Assert.AreEqual(new Token(0, 6, 5, TokenKind.Identificator), tokens[1]);
             Assert.AreEqual(new Token(0, 12, 3, TokenKind.IntegerNumber), tokens[2]);
         }
@@ -39,7 +48,7 @@ namespace Luna.Tests.Parsing
         {
             var tokens = GetTokens("const VALUE 1.23");
             Assert.AreEqual(3, tokens.Count);
-            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclare), tokens[0]);
+            Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
             Assert.AreEqual(new Token(0, 6, 5, TokenKind.Identificator), tokens[1]);
             Assert.AreEqual(new Token(0, 12, 4, TokenKind.FloatNumber), tokens[2]);
         }

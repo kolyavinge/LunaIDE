@@ -25,9 +25,9 @@ namespace Luna.IDE.CodeEditor
             return new[]
             {
                 new TokenColor((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
-                new TokenColor((byte) TokenKind.LambdaIdentificator, CodeProviderColors.Magenta),
+                new TokenColor((byte) TokenKind.Lambda, CodeProviderColors.Magenta),
                 new TokenColor((byte) TokenKind.RunFunction, CodeProviderColors.Green),
-                new TokenColor((byte) TokenKind.ConstDeclare, CodeProviderColors.Blue),
+                new TokenColor((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
                 new TokenColor((byte) TokenKind.String, CodeProviderColors.Orange),
                 new TokenColor((byte) TokenKind.IntegerNumber, CodeProviderColors.Red),
                 new TokenColor((byte) TokenKind.FloatNumber, CodeProviderColors.Red),

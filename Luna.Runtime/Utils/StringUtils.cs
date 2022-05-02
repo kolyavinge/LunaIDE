@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Luna.Parsing
+namespace Luna.Utils
 {
     static class StringUtils
     {

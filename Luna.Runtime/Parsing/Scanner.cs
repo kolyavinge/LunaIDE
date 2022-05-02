@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Luna.Utils;
 
 namespace Luna.Parsing
 {
@@ -188,8 +189,8 @@ namespace Luna.Parsing
         private TokenKind GetTokenKind()
         {
             if (StringUtils.StringEquals("import", _nameArray, _nameLength)) return TokenKind.ImportDirective;
-            if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return TokenKind.ConstDeclare;
-            if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return TokenKind.LambdaIdentificator;
+            if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return TokenKind.ConstDeclaration;
+            if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return TokenKind.Lambda;
             if (StringUtils.StringEquals("run", _nameArray, _nameLength)) return TokenKind.RunFunction;
             if (IsIntegerNumber()) return TokenKind.IntegerNumber;
 

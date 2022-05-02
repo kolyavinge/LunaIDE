@@ -19,4 +19,22 @@ namespace Luna.Parsing
             Kind = kind;
         }
     }
+
+    public enum TokenKind : byte
+    {
+        Unknown,
+        ImportDirective,
+        ConstDeclaration,
+        OpenBracket,
+        CloseBracket,
+        Operator,
+        String,
+        Identificator,
+        Lambda,
+        RunFunction,
+        IntegerNumber,
+        FloatNumber,
+        Comment,
+        Dot
+    }
 }

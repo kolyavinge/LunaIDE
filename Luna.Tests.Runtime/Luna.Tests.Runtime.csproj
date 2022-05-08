@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tools\" />
+  </ItemGroup>
+
 </Project>

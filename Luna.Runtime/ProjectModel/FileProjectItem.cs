@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Luna.Infrastructure;
 
 namespace Luna.ProjectModel
@@ -7,7 +9,24 @@ namespace Luna.ProjectModel
     {
         protected readonly IFileSystem _fileSystem;
 
-        internal FileProjectItem(string fullPath, ProjectItem? parent, IFileSystem fileSystem) : base(Path.GetFileName(fullPath), fullPath, parent)
+        public string PathFromRoot
+        {
+            get
+            {
+                ProjectItem? item = this;
+                var path = new Stack<string>();
+                while (item != null)
+                {
+                    path.Push(item.Name);
+                    item = item.Parent;
+                }
+                path.Pop();
+
+                return String.Join("\\", path);
+            }
+        }
+
+        internal FileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(Path.GetFileName(fullPath), fullPath, parent)
         {
             _fileSystem = fileSystem;
         }

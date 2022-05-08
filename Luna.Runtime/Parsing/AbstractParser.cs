@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Luna.ProjectModel;
 
 namespace Luna.Parsing
 {
     public class ParseResult
     {
-        public ParserMessage? Error { get; private set; }
-        public List<ParserMessage> Warnings { get; } = new();
+        private List<ParserMessage> _warnings = new();
 
-        public void SetError(ParserMessageType type, in Token token)
+        public ParserMessage? Error { get; private set; }
+        public IReadOnlyCollection<ParserMessage> Warnings => _warnings;
+
+        internal void SetError(ParserMessageType type, in Token token)
         {
             Error = new ParserMessage(type, in token);
         }
 
-        public void SetError(ParserMessageType type, IEnumerable<Token> tokens)
+        internal void SetError(ParserMessageType type, IEnumerable<Token> tokens)
         {
             Error = new ParserMessage(type, tokens);
+        }
+
+        internal void AddWarning(ParserMessageType type, in Token token)
+        {
+            _warnings.Add(new(type, in token));
         }
     }
 
@@ -25,15 +33,16 @@ namespace Luna.Parsing
         protected readonly CodeModel _codeModel;
         private readonly Text _text;
         private readonly TokenIterator _iter;
-        protected Token _prev, _token;
         protected ParseResult _result;
+
+        protected Token Prev => _iter.PrevToken;
+        protected Token Token => _iter.Token;
 
         protected AbstractParser(Text text, TokenIterator iter, CodeModel codeModel)
         {
             _text = text;
             _iter = iter;
             _codeModel = codeModel;
-            MoveNext();
         }
 
         public ParseResult Parse()
@@ -49,9 +58,9 @@ namespace Luna.Parsing
         protected List<Token> GetRemainingTokens(int lineIndex)
         {
             var result = new List<Token>();
-            while (!_iter.Eof && lineIndex == _token.LineIndex)
+            while (!_iter.Eof && lineIndex == Token.LineIndex)
             {
-                result.Add(_token);
+                result.Add(Token);
                 MoveNext();
             }
 
@@ -60,13 +69,13 @@ namespace Luna.Parsing
 
         protected string GetTokenName()
         {
-            if (_token.Kind == TokenKind.String)
+            if (Token.Kind == TokenKind.String)
             {
-                return _text.GetLine(_token.LineIndex).Substring(_token.StartColumnIndex + 1, _token.Length - 2);
+                return _text.GetLine(Token.LineIndex).Substring(Token.StartColumnIndex + 1, Token.Length - 2);
             }
             else
             {
-                return _text.GetLine(_token.LineIndex).Substring(_token.StartColumnIndex, _token.Length);
+                return _text.GetLine(Token.LineIndex).Substring(Token.StartColumnIndex, Token.Length);
             }
         }
 
@@ -87,8 +96,6 @@ namespace Luna.Parsing
         protected void MoveNext()
         {
             _iter!.MoveNext();
-            _prev = _iter.PrevToken;
-            _token = _iter.Token;
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.Parsing;
+using Luna.ProjectModel;
+using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Parsing
 {
-    public class ImportDirectiveParserTest
+    internal class ImportDirectiveParserTest
     {
+        private Mock<IImportDirectiveParserScope> _scope;
         private CodeModel _codeModel;
         private ImportDirectiveParser _parser;
         private ParseResult _result;
@@ -14,6 +17,10 @@ namespace Luna.Tests.Parsing
         [SetUp]
         public void Setup()
         {
+            _scope = new Mock<IImportDirectiveParserScope>();
+            _scope.Setup(x => x.GetCodeFileByPath("file")).Returns(new CodeFileProjectItem("", null, null));
+            _scope.Setup(x => x.GetCodeFileByPath("file 1")).Returns(new CodeFileProjectItem("", null, null));
+            _scope.Setup(x => x.GetCodeFileByPath("file 2")).Returns(new CodeFileProjectItem("", null, null));
             _codeModel = new CodeModel();
         }
 
@@ -102,6 +109,20 @@ namespace Luna.Tests.Parsing
         }
 
         [Test]
+        public void ImportDirective_FileNotFound()
+        {
+            Parse("import 'wrong'", new[]
+            {
+                new Token(0, 0, 6, TokenKind.ImportDirective),
+                new Token(0, 7, 7, TokenKind.String),
+            });
+            Assert.AreEqual(ParserMessageType.ImportFileNotFound, _result.Error.Type);
+            Assert.AreEqual(new Token(0, 0, 6, TokenKind.ImportDirective), _result.Error.Token);
+            Assert.AreEqual(0, _result.Warnings.Count);
+            Assert.AreEqual(0, _codeModel.Imports.Count);
+        }
+
+        [Test]
         public void ImportDirective_IntegerFilePath_Error()
         {
             Parse("import 123", new[]
@@ -186,7 +207,7 @@ namespace Luna.Tests.Parsing
 
         private void Parse(string text, IEnumerable<Token> tokens)
         {
-            _parser = new ImportDirectiveParser(new Text(text), new TokenIterator(tokens), _codeModel);
+            _parser = new ImportDirectiveParser(new Text(text), new TokenIterator(tokens), _codeModel, _scope.Object);
             _result = _parser.Parse();
         }
     }

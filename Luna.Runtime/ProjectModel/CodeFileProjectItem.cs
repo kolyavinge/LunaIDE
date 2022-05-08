@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Luna.Infrastructure;
+﻿using Luna.Infrastructure;
 
 namespace Luna.ProjectModel
 {
     public class CodeFileProjectItem : FileProjectItem
     {
-        internal CodeFileProjectItem(string fullPath, ProjectItem? parent, IFileSystem fileSystem) : base(fullPath, parent, fileSystem)
+        public CodeModel? CodeModel { get; internal set; }
+
+        internal CodeFileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(fullPath, parent, fileSystem)
         {
         }
     }

@@ -33,6 +33,7 @@ namespace Luna.Parsing
         ImportEmptyFilePath,
         ImportNoFilePath,
         ImportFilePathNotString,
+        ImportFileNotFound,
         UnexpectedImport,
         ConstEmptyDeclaration,
         ConstIncorrectName,

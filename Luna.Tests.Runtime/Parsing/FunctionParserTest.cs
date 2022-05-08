@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.Parsing;
+using Luna.ProjectModel;
 using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Parsing
 {
-    public class FunctionParserTest
+    internal class FunctionParserTest
     {
-        private Mock<IScope> _scopeMock;
+        private Mock<IFunctionParserScope> _scopeMock;
         private CodeModel _codeModel;
         private FunctionParser _parser;
         private ParseResult _result;
@@ -16,7 +17,7 @@ namespace Luna.Tests.Parsing
         [SetUp]
         public void Setup()
         {
-            _scopeMock = new Mock<IScope>();
+            _scopeMock = new Mock<IFunctionParserScope>();
             _scopeMock.Setup(x => x.IsConstExist(It.IsAny<string>())).Returns(false);
             _scopeMock.Setup(x => x.IsFunctionExist(It.IsAny<string>())).Returns(false);
             _codeModel = new CodeModel();
@@ -38,7 +39,7 @@ namespace Luna.Tests.Parsing
             Assert.AreEqual("WIDTH", _codeModel.Constants.First().Name);
             Assert.AreEqual(123, ((IntegerValue)_codeModel.Constants.First().Value).Value);
             Assert.AreEqual(0, _codeModel.Constants.First().LineIndex);
-            Assert.AreEqual(0, _codeModel.Constants.First().ColumnIndex);
+            Assert.AreEqual(6, _codeModel.Constants.First().ColumnIndex);
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace Luna.Tests.Parsing
             Assert.AreEqual(typeof(FloatValue), _codeModel.Constants.First().Value.GetType());
             Assert.AreEqual(1.23, ((FloatValue)_codeModel.Constants.First().Value).Value);
             Assert.AreEqual(0, _codeModel.Constants.First().LineIndex);
-            Assert.AreEqual(0, _codeModel.Constants.First().ColumnIndex);
+            Assert.AreEqual(6, _codeModel.Constants.First().ColumnIndex);
         }
 
         [Test]
@@ -77,7 +78,7 @@ namespace Luna.Tests.Parsing
             Assert.AreEqual("WIDTH", _codeModel.Constants.First().Name);
             Assert.AreEqual("123", ((StringValue)_codeModel.Constants.First().Value).Value);
             Assert.AreEqual(0, _codeModel.Constants.First().LineIndex);
-            Assert.AreEqual(0, _codeModel.Constants.First().ColumnIndex);
+            Assert.AreEqual(6, _codeModel.Constants.First().ColumnIndex);
         }
 
         [Test]
@@ -497,6 +498,8 @@ namespace Luna.Tests.Parsing
             Assert.AreEqual(1, func.Body.Count);
             Assert.True(func.Body.First() is ListValue);
             var body = (ListValue)func.Body.First();
+            Assert.AreEqual(0, body.LineIndex);
+            Assert.AreEqual(9, body.ColumnIndex);
             Assert.AreEqual(3, body.Value.Count);
             Assert.AreEqual(typeof(IntegerValue), body.Value[0].GetType());
             Assert.AreEqual(typeof(FloatValue), body.Value[1].GetType());

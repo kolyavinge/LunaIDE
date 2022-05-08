@@ -18,6 +18,7 @@ namespace Luna.Parsing
         {
             _tokens = tokens.ToList();
             _index = -1;
+            MoveNext();
         }
 
         public void MoveNext()

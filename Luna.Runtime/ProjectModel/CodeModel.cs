@@ -1,13 +1,32 @@
 ﻿using System.Collections.Generic;
 
-namespace Luna.Parsing
+namespace Luna.ProjectModel
 {
     public class CodeModel
     {
-        public List<ImportDirective> Imports { get; } = new();
-        public List<ConstDirective> Constants { get; } = new();
-        public List<FunctionDeclaration> Functions { get; } = new();
-        public Function? RunFunction { get; set; }
+        private List<ImportDirective> _imports = new();
+        private ConstDeclarationDictionary _constants = new();
+        private FunctionDeclarationDictionary _functions = new();
+
+        public IReadOnlyCollection<ImportDirective> Imports => _imports;
+        public IConstDeclarationDictionary Constants => _constants;
+        public IFunctionDeclarationDictionary Functions => _functions;
+        public Function? RunFunction { get; internal set; }
+
+        internal void AddImportDirective(ImportDirective import)
+        {
+            _imports.Add(import);
+        }
+
+        internal void AddConstDeclaration(ConstDeclaration constDirective)
+        {
+            _constants.Add(constDirective);
+        }
+
+        internal void AddFunctionDeclaration(FunctionDeclaration function)
+        {
+            _functions.Add(function);
+        }
     }
 
     public abstract class CodeElement
@@ -26,18 +45,21 @@ namespace Luna.Parsing
     {
         public string FilePath { get; }
 
-        public ImportDirective(string filePath, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+        public CodeFileProjectItem CodeFile { get; }
+
+        public ImportDirective(string filePath, CodeFileProjectItem codeFile, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
         {
             FilePath = filePath;
+            CodeFile = codeFile;
         }
     }
 
-    public class ConstDirective : CodeElement
+    public class ConstDeclaration : CodeElement
     {
         public string Name { get; }
         public Value Value { get; }
 
-        public ConstDirective(string name, Value value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+        public ConstDeclaration(string name, Value value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
         {
             Name = name;
             Value = value;

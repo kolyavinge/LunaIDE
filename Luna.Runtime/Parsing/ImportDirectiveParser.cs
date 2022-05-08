@@ -1,50 +1,56 @@
 ﻿using System;
 using System.Linq;
+using Luna.ProjectModel;
 
 namespace Luna.Parsing
 {
     public class ImportDirectiveParser : AbstractParser
     {
-        public ImportDirectiveParser(Text text, TokenIterator iter, CodeModel codeModel)
-            : base(text, iter, codeModel) { }
+        private readonly IImportDirectiveParserScope _scope;
+
+        public ImportDirectiveParser(Text text, TokenIterator iter, CodeModel codeModel, IImportDirectiveParserScope scope)
+            : base(text, iter, codeModel)
+        {
+            _scope = scope;
+        }
 
         protected override void InnerParse()
         {
-            while (!Eof && _token.Kind == TokenKind.ImportDirective)
+            while (!Eof && Token.Kind == TokenKind.ImportDirective)
             {
-                var directive = ParseImportDirective();
-                if (directive == null) return;
-                _codeModel!.Imports.Add(directive);
+                var import = ParseImportDirective();
+                if (import == null) return;
+                _codeModel.AddImportDirective(import);
             }
         }
 
         private ImportDirective? ParseImportDirective()
         {
             string filePath;
-            var importToken = _token;
+            var importToken = Token;
             MoveNext();
-            if (Eof || importToken.LineIndex != _token.LineIndex)
+            if (Eof || importToken.LineIndex != Token.LineIndex)
             {
                 _result.SetError(ParserMessageType.ImportNoFilePath, importToken);
                 return null;
             }
-            else if (_token.Kind == TokenKind.IntegerNumber || _token.Kind == TokenKind.FloatNumber)
+            else if (Token.Kind == TokenKind.IntegerNumber || Token.Kind == TokenKind.FloatNumber)
             {
-                _result.SetError(ParserMessageType.ImportFilePathNotString, _token);
+                _result.SetError(ParserMessageType.ImportFilePathNotString, Token);
                 return null;
             }
-            else if (_token.Kind == TokenKind.String)
+            else if (Token.Kind == TokenKind.String)
             {
                 filePath = GetTokenName();
                 if (String.IsNullOrWhiteSpace(filePath))
                 {
-                    _result.SetError(ParserMessageType.ImportEmptyFilePath, _token);
+                    _result.SetError(ParserMessageType.ImportEmptyFilePath, Token);
                     return null;
                 }
             }
             else
             {
-                _result.SetError(ParserMessageType.ImportIncorrectTokenAfter, _token);
+                _result.SetError(ParserMessageType.ImportIncorrectTokenAfter, Token);
                 return null;
             }
             MoveNext();
@@ -54,8 +60,14 @@ namespace Luna.Parsing
                 _result.SetError(ParserMessageType.UnexpectedToken, unexpectedTokens);
                 return null;
             }
+            var codeFile = _scope.GetCodeFileByPath(filePath);
+            if (codeFile == null)
+            {
+                _result.SetError(ParserMessageType.ImportFileNotFound, importToken);
+                return null;
+            }
 
-            return new ImportDirective(filePath, importToken.LineIndex, importToken.StartColumnIndex);
+            return new ImportDirective(filePath, codeFile, importToken.LineIndex, importToken.StartColumnIndex);
         }
     }
 }

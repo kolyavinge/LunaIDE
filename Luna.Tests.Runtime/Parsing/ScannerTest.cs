@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Luna.Tests.Parsing
 {
-    public class ScannerTest
+    internal class ScannerTest
     {
         private Scanner _scanner;
 

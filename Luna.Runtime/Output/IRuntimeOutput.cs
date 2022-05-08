@@ -1,9 +1,9 @@
-﻿namespace Luna.Infrastructure
+﻿namespace Luna.Output
 {
-    public interface IOutput
+    public interface IRuntimeOutput
     {
-        void AddMessage(OutputMessage message);
-        void AddNewLine();
+        void NewMessage(OutputMessage message);
+        void NewLine();
     }
 
     public class OutputMessage

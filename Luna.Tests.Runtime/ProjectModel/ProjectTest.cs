@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Moq;
@@ -9,7 +6,7 @@ using NUnit.Framework;
 
 namespace Luna.Tests.ProjectModel
 {
-    public class ProjectTest
+    internal class ProjectTest
     {
         private Project _project;
         private Mock<IFileSystem> _fileSystem;

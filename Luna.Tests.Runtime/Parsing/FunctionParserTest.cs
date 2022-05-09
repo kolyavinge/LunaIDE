@@ -140,7 +140,7 @@ namespace Luna.Tests.Parsing
                 new Token(0, 0, 5, TokenKind.ConstDeclaration),
             });
             Assert.AreEqual(0, _codeModel.Constants.Count);
-            Assert.AreEqual(ParserMessageType.ConstEmptyDeclaration, _result.Error.Type);
+            Assert.AreEqual(ParserMessageType.EmptyConstDeclaration, _result.Error.Type);
             Assert.AreEqual(new Token(0, 0, 5, TokenKind.ConstDeclaration), _result.Error.Token);
             Assert.AreEqual(0, _result.Warnings.Count);
         }
@@ -154,7 +154,7 @@ namespace Luna.Tests.Parsing
                 new Token(0, 6, 5, TokenKind.String),
             });
             Assert.AreEqual(0, _codeModel.Constants.Count);
-            Assert.AreEqual(ParserMessageType.ConstIncorrectName, _result.Error.Type);
+            Assert.AreEqual(ParserMessageType.IncorrectConstName, _result.Error.Type);
             Assert.AreEqual(new Token(0, 6, 5, TokenKind.String), _result.Error.Token);
             Assert.AreEqual(0, _result.Warnings.Count);
         }
@@ -168,7 +168,7 @@ namespace Luna.Tests.Parsing
                 new Token(0, 6, 3, TokenKind.IntegerNumber),
             });
             Assert.AreEqual(0, _codeModel.Constants.Count);
-            Assert.AreEqual(ParserMessageType.ConstIncorrectName, _result.Error.Type);
+            Assert.AreEqual(ParserMessageType.IncorrectConstName, _result.Error.Type);
             Assert.AreEqual(new Token(0, 6, 3, TokenKind.IntegerNumber), _result.Error.Token);
             Assert.AreEqual(0, _result.Warnings.Count);
         }
@@ -182,7 +182,7 @@ namespace Luna.Tests.Parsing
                 new Token(0, 6, 4, TokenKind.FloatNumber),
             });
             Assert.AreEqual(0, _codeModel.Constants.Count);
-            Assert.AreEqual(ParserMessageType.ConstIncorrectName, _result.Error.Type);
+            Assert.AreEqual(ParserMessageType.IncorrectConstName, _result.Error.Type);
             Assert.AreEqual(new Token(0, 6, 4, TokenKind.FloatNumber), _result.Error.Token);
             Assert.AreEqual(0, _result.Warnings.Count);
         }

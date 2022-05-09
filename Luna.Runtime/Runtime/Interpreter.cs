@@ -5,25 +5,24 @@ using Luna.ProjectModel;
 
 namespace Luna.Runtime
 {
-    public class Interpreter
+    public interface IInterpreter
     {
-        public static Interpreter MakeFor(Project project, IRuntimeOutput output) => new Interpreter(project, output);
+        void Run(Project project, IRuntimeOutput output);
+    }
 
-        private readonly Project _project;
-        private readonly IOutputWriter _outputWriter;
-        private readonly CodeModelBuilder _codeModelBuilder;
-
-        internal Interpreter(Project project, IRuntimeOutput output)
+    public class Interpreter : IInterpreter
+    {
+        public void Run(Project project, IRuntimeOutput output)
         {
-            _project = project;
-            _outputWriter = new OutputWriter(output);
-            _codeModelBuilder = new CodeModelBuilder(_outputWriter);
-        }
-
-        public void Run()
-        {
-            var codeFiles = _project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
-            _codeModelBuilder.BuildCodeModelsFor(codeFiles);
+            var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
+            var outputWriter = new OutputWriter(output);
+            var codeModelBuilder = new CodeModelBuilder(outputWriter);
+            var result = codeModelBuilder.BuildCodeModelsFor(codeFiles);
+            if (result.HasErrors)
+            {
+                outputWriter.ProgramStopped();
+                return;
+            }
         }
     }
 }

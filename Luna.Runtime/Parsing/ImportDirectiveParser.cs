@@ -50,7 +50,7 @@ namespace Luna.Parsing
             }
             else
             {
-                _result.SetError(ParserMessageType.ImportIncorrectTokenAfter, Token);
+                _result.SetError(ParserMessageType.IncorrectTokenAfterImport, Token);
                 return null;
             }
             MoveNext();

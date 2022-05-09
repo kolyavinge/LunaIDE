@@ -4,6 +4,7 @@ using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
 using Luna.IDE.ViewModel;
 using Luna.Infrastructure;
+using Luna.Runtime;
 
 namespace Luna.IDE
 {
@@ -23,11 +24,20 @@ namespace Luna.IDE
             provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
             provider.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();
 
+            provider.Bind<IOutputArea, OutputArea>().ToSingleton();
+            provider.Bind<OutputAreaViewModel, OutputAreaViewModel>().ToSingleton();
+
+            provider.Bind<IOutputConsole, OutputConsole>().ToSingleton();
+            provider.Bind<OutputConsoleViewModel, OutputConsoleViewModel>().ToSingleton();
+
             provider.Bind<MainViewModel, MainViewModel>().ToSingleton();
 
             provider.Bind<IOpenProjectCommand, OpenProjectCommand>().ToSingleton();
             provider.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
             provider.Bind<IProjectTreeItemOpenCommand, ProjectTreeItemOpenCommand>().ToSingleton();
+            provider.Bind<IRunProgramCommand, RunProgramCommand>().ToSingleton();
+
+            provider.Bind<IInterpreter, Interpreter>().ToSingleton();
         }
     }
 }

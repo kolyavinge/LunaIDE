@@ -6,7 +6,7 @@ using Luna.IDE.Commands;
 using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
-using Luna.IDE.Utils;
+using Luna.Utils;
 
 namespace Luna.IDE.ViewModel
 {

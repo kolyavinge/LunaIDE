@@ -162,7 +162,7 @@ namespace Luna.Tests.Parsing
             });
             Assert.AreEqual(0, _codeModel.Imports.Count);
             Assert.AreEqual(0, _codeModel.Constants.Count);
-            Assert.AreEqual(ParserMessageType.ImportIncorrectTokenAfter, _result.Error.Type);
+            Assert.AreEqual(ParserMessageType.IncorrectTokenAfterImport, _result.Error.Type);
             Assert.AreEqual(new Token(0, 7, 6, TokenKind.ImportDirective), _result.Error.Token);
             Assert.AreEqual(0, _result.Warnings.Count);
         }

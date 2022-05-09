@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Mvvm;
-using Luna.IDE.Utils;
+using Luna.Utils;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Model

@@ -36,12 +36,12 @@ namespace Luna.Parsing
             MoveNext();
             if (Eof || constToken.LineIndex != Token.LineIndex)
             {
-                _result.SetError(ParserMessageType.ConstEmptyDeclaration, constToken);
+                _result.SetError(ParserMessageType.EmptyConstDeclaration, constToken);
                 return;
             }
             else if (Token.Kind != TokenKind.Identificator)
             {
-                _result.SetError(ParserMessageType.ConstIncorrectName, Token);
+                _result.SetError(ParserMessageType.IncorrectConstName, Token);
                 return;
             }
             var constNameToken = Token;

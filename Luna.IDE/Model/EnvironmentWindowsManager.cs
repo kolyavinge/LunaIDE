@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using Luna.IDE.Mvvm;
-using Luna.IDE.Utils;
+using Luna.Utils;
 
 namespace Luna.IDE.Model
 {

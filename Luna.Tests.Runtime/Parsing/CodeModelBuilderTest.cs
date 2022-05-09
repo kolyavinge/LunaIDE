@@ -55,15 +55,23 @@ namespace Luna.Tests.Parsing
             _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
             _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
             _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(It.IsAny<ParserMessage>()), Times.Never());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(It.IsAny<CodeFileProjectItem>(), It.IsAny<ParserMessage>()), Times.Never());
+            _outputWriter.Verify(x => x.WriteError(It.IsAny<CodeFileProjectItem>(), It.IsAny<ParserMessage>()), Times.Never());
         }
 
         [Test]
-        public void BuildCodeModelsFor_ImportParserWarning()
+        public void BuildCodeModelsFor_Warnings()
         {
-            var parseResult = new ParseResult();
-            parseResult.AddWarning(ParserMessageType.ConstNoValue, new Token());
-            _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult);
+            var parseResult1 = new ParseResult();
+            parseResult1.AddWarning(ParserMessageType.ConstNoValue, new Token());
+            parseResult1.AddWarning(ParserMessageType.ConstIncorrectValue, new Token());
+            _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
+            var parseResult2 = new ParseResult();
+            parseResult2.AddWarning(ParserMessageType.ConstNoValue, new Token());
+            parseResult2.AddWarning(ParserMessageType.ConstIncorrectValue, new Token());
+            _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
             var result = _builder.BuildCodeModelsFor(_allCodeFiles);
 
@@ -75,16 +83,25 @@ namespace Luna.Tests.Parsing
             _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
             _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
             _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Warnings.First()), Times.Once());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.First()), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.Last()), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.First()), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.Last()), Times.Once());
         }
 
         [Test]
-        public void BuildCodeModelsFor_ImportParserError()
+        public void BuildCodeModelsFor_WarningsAndErrors()
         {
-            var parseResult = new ParseResult();
-            parseResult.SetError(ParserMessageType.FunctionNameExist, new Token());
-            parseResult.AddWarning(ParserMessageType.ConstNoValue, new Token());
-            _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult);
+            var parseResult1 = new ParseResult();
+            parseResult1.SetError(ParserMessageType.FunctionNameExist, new Token());
+            parseResult1.AddWarning(ParserMessageType.ConstNoValue, new Token());
+            _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
+            var parseResult2 = new ParseResult();
+            parseResult2.SetError(ParserMessageType.FunctionNameExist, new Token());
+            parseResult2.AddWarning(ParserMessageType.ConstNoValue, new Token());
+            _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
             var result = _builder.BuildCodeModelsFor(_allCodeFiles);
 
@@ -96,50 +113,12 @@ namespace Luna.Tests.Parsing
             _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Never());
             _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Never());
             _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Never());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Error), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Warnings.First()), Times.Once());
-        }
-
-        [Test]
-        public void BuildCodeModelsFor_FunctionParserWarning()
-        {
-            var parseResult = new ParseResult();
-            parseResult.AddWarning(ParserMessageType.ConstNoValue, new Token());
-            _codeFile1ParsingContext.SetupGet(x => x.FunctionParserResult).Returns(parseResult);
-
-            var result = _builder.BuildCodeModelsFor(_allCodeFiles);
-
-            Assert.IsFalse(result.HasErrors);
-            Assert.NotNull(_codeFile1.CodeModel);
-            Assert.NotNull(_codeFile2.CodeModel);
-            _codeFile1ParsingContext.Verify(x => x.ParseImports(), Times.Once());
-            _codeFile2ParsingContext.Verify(x => x.ParseImports(), Times.Once());
-            _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
-            _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Warnings.First()), Times.Once());
-        }
-
-        [Test]
-        public void BuildCodeModelsFor_FunctionParserError()
-        {
-            var parseResult = new ParseResult();
-            parseResult.SetError(ParserMessageType.FunctionNameExist, new Token());
-            parseResult.AddWarning(ParserMessageType.ConstNoValue, new Token());
-            _codeFile1ParsingContext.SetupGet(x => x.FunctionParserResult).Returns(parseResult);
-
-            var result = _builder.BuildCodeModelsFor(_allCodeFiles);
-
-            Assert.IsTrue(result.HasErrors);
-            Assert.NotNull(_codeFile1.CodeModel);
-            Assert.NotNull(_codeFile2.CodeModel);
-            _codeFile1ParsingContext.Verify(x => x.ParseImports(), Times.Once());
-            _codeFile2ParsingContext.Verify(x => x.ParseImports(), Times.Once());
-            _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
-            _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Error), Times.Once());
-            _outputWriter.Verify(x => x.WriteParserMessage(parseResult.Warnings.First()), Times.Once());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Never());
+            _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Never());
+            _outputWriter.Verify(x => x.WriteError(_codeFile1, parseResult1.Error), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.First()), Times.Once());
+            _outputWriter.Verify(x => x.WriteError(_codeFile2, parseResult2.Error), Times.Once());
+            _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.First()), Times.Once());
         }
     }
 }

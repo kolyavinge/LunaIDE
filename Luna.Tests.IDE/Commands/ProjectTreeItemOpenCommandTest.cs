@@ -37,6 +37,22 @@ namespace Luna.Tests.IDE.Commands
         }
 
         [Test]
+        public void ProjectItem_Ignore()
+        {
+            _command.Execute(new[] { _rootTreeItem });
+            _projectItemOpenCommand.Verify(x => x.Execute(It.IsAny<object>()), Times.Never());
+        }
+
+        [Test]
+        public void ProjectItemAndDirectory()
+        {
+            var directory1 = _rootTreeItem.Children.First();
+            _command.Execute(new[] { _rootTreeItem, directory1 });
+            Assert.AreEqual(true, directory1.IsExpanded);
+            _projectItemOpenCommand.Verify(x => x.Execute(It.IsAny<object>()), Times.Never());
+        }
+
+        [Test]
         public void OneDirectorySelected_Expanded()
         {
             var directory1 = _rootTreeItem.Children.First();

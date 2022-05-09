@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Luna.IDE.View.ProjectExplorerView"
+﻿<UserControl x:Class="Luna.IDE.View.OutputConsoleView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -19,8 +19,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
-            <TextBlock Text="⮞ Project Explorer" Style="{StaticResource WindowHeaderTextStyle}" Margin="4,0" />
+            <TextBlock Text="⮞ Output" Style="{StaticResource WindowHeaderTextStyle}" />
         </Grid>
-        <local:ProjectTreeView Grid.Row="1" />
+        <local:OutputAreaView Grid.Row="1" />
     </Grid>
 </UserControl>

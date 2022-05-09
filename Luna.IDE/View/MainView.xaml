@@ -22,13 +22,25 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="{StaticResource MainBackgroundBrush}" MouseLeftButtonUp="OnWindowMouseLeftButtonUp" MouseMove="OnWindowMouseMove">
-        <Grid x:Name="WindowTitlePanel" Background="Transparent" VerticalAlignment="Top" Height="24" MouseLeftButtonDown="OnTitlePanelMouseLeftButtonDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="WindowTitlePanel" Grid.Row="0" Background="Transparent" VerticalAlignment="Top" Height="24" MouseLeftButtonDown="OnTitlePanelMouseLeftButtonDown">
             <TextBlock Text="Luna IDE" Style="{StaticResource MainTitleTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <StackPanel Orientation="Horizontal">
+                <!-- Open Project -->
                 <Button Style="{StaticResource ButtonStyle}" Command="{Binding OpenProjectCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/directory.png" Width="16" Height="16" Margin="4,0,0,0" />
                         <TextBlock Text="Open project" Margin="2,0,4,0" />
+                    </StackPanel>
+                </Button>
+                <!-- Run -->
+                <Button Style="{StaticResource ButtonStyle}" Command="{Binding RunProgramCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/runarrow.png" Width="16" Height="16" Margin="4,0,0,0" />
+                        <TextBlock Text="Run program" Margin="2,0,4,0" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -39,32 +51,31 @@
             </StackPanel>
         </Grid>
         <!-- main -->
-        <Grid Margin="0,24,0,0">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="200" Width="200" />
                 <ColumnDefinition MinWidth="200" Width="*" />
             </Grid.ColumnDefinitions>
             <!-- navigation -->
-            <Grid Grid.Column="0" Margin="0,0,4,0">
+            <Grid Grid.Column="0">
                 <view:ProjectExplorerView />
             </Grid>
-            <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" Width="4" />
+            <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
             <!-- development -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition MinHeight="200" Height="*" />
-                    <RowDefinition Height="4" />
                     <RowDefinition MinHeight="100" Height="200" />
                 </Grid.RowDefinitions>
                 <!-- code editors and other windows -->
                 <Grid Grid.Row="0">
                     <view:EnvironmentWindowsView />
                 </Grid>
-                <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" HorizontalAlignment="Stretch" Height="4" />
                 <!-- output -->
-                <Grid Grid.Row="2">
-
+                <Grid Grid.Row="1">
+                    <view:OutputConsoleView />
                 </Grid>
+                <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="4" />
             </Grid>
         </Grid>
     </Grid>

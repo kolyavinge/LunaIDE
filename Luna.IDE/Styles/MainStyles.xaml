@@ -3,10 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter">
 
-    <Color x:Key="EditorSelectionColor" R="90" G="40" B="70" A="255" />
+    <Color x:Key="MainBackgroundColor" R="30" G="30" B="30" A="255" />
+    <Color x:Key="MainSelectionColor" R="90" G="40" B="70" A="255" />
 
-    <SolidColorBrush x:Key="MainBackgroundBrush" Color="#1e1e1e" />
+    <SolidColorBrush x:Key="MainBackgroundBrush" Color="{StaticResource MainBackgroundColor}" />
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="#252525" />
+
+    <SolidColorBrush x:Key="WindowHeaderBackgroundBrush" Color="#171717" />
 
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#e0e0e0" />
     <SolidColorBrush x:Key="InnactiveForegroundBrush" Color="#969696" />
@@ -15,7 +18,7 @@
 
     <SolidColorBrush x:Key="HoveredItemBrush" Color="#323232" />
 
-    <SolidColorBrush x:Key="MainSelectionBrush" Color="{StaticResource EditorSelectionColor}" />
+    <SolidColorBrush x:Key="MainSelectionBrush" Color="{StaticResource MainSelectionColor}" />
 
     <SolidColorBrush x:Key="ScrollBarBrush" Color="#5e5e5e" />
 
@@ -24,12 +27,24 @@
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
+    <Style x:Key="WindowHeaderStyle" TargetType="{x:Type Grid}">
+        <Setter Property="Background" Value="{StaticResource WindowHeaderBackgroundBrush}" />
+        <Setter Property="Height" Value="21" />
+    </Style>
+
+    <Style x:Key="WindowHeaderTextStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style x:Key="GridSplitterStyle" TargetType="{x:Type GridSplitter}">
+        <Setter Property="Background" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="Opacity" Value="0" />
         <Setter Property="Focusable" Value="False" />
         <Style.Triggers>
             <Trigger Property="Border.IsMouseOver" Value="True">
-                <Setter Property="Opacity" Value="0.1" />
+                <Setter Property="Opacity" Value="1.0" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -137,6 +152,14 @@
                 <Setter Property="Opacity" Value="0.9" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="OutputAreaStyle" TargetType="{x:Type highlighter:CodeTextBox}">
+        <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="14" />
     </Style>
 
     <Style x:Key="CodeEditorStyle" TargetType="{x:Type highlighter:CodeTextBox}">

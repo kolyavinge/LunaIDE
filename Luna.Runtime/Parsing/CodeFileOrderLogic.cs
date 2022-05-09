@@ -36,9 +36,9 @@ namespace Luna.Parsing
                 chain.Add(codeFile);
                 foreach (var import in codeFile.CodeModel!.Imports)
                 {
-                    if (!chain.Contains(import.CodeFile!))
+                    if (!chain.Contains(import.CodeFile))
                     {
-                        ProcessFile(import.CodeFile!, chain);
+                        ProcessFile(import.CodeFile, chain);
                     }
                 }
                 chain.Remove(codeFile);

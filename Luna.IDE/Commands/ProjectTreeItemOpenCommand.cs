@@ -19,7 +19,7 @@ namespace Luna.IDE.Commands
 
         public override void Execute(object parameter)
         {
-            var treeItems = ((IEnumerable)parameter).Cast<ProjectTreeItem>().ToList();
+            var treeItems = ((IEnumerable)parameter).Cast<ProjectTreeItem>().Where(x => x.Kind != ProjectTreeItemKind.Project).ToList();
             if (!treeItems.Any()) return;
             if (treeItems.Count == 1 && treeItems.First().Kind == ProjectTreeItemKind.Directory)
             {

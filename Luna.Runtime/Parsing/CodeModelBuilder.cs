@@ -14,8 +14,8 @@ namespace Luna.Parsing
     internal class CodeModelBuilder
     {
         private readonly IOutputWriter _outputWriter;
-        private ICodeFileParsingContextFactory _contextFactory;
-        private ICodeFileOrderLogic _orderLogic;
+        private readonly ICodeFileParsingContextFactory _contextFactory;
+        private readonly ICodeFileOrderLogic _orderLogic;
 
         public CodeModelBuilder(IOutputWriter outputWriter) : this(new CodeFileParsingContextFactory(), new CodeFileOrderLogic(), outputWriter) { }
 
@@ -31,28 +31,34 @@ namespace Luna.Parsing
             codeFiles.Each(x => x.CodeModel = new CodeModel());
             var contexts = codeFiles.Select(codeFile => _contextFactory.MakeContext(codeFiles, codeFile)).ToList();
             contexts.Each(x => x.ParseImports());
-            if (WriteErrorsAndWarnings(contexts.Select(x => x.ImportDirectivesResult!).ToList()))
+            var hasErrors = false;
+            foreach (var context in contexts)
             {
-                return new() { HasErrors = true };
+                hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.ImportDirectivesResult!);
             }
+            if (hasErrors) return new() { HasErrors = true };
             var orderedCodeFiles = _orderLogic.ByImports(codeFiles).ToList();
             var contextsDictionary = contexts.ToDictionary(k => k.CodeFile, v => v);
             orderedCodeFiles.Each(codeFile => contextsDictionary[codeFile].ParseFunctions());
-            if (WriteErrorsAndWarnings(contexts.Select(x => x.FunctionParserResult!).ToList()))
+            foreach (var context in contexts.Where(x => x.FunctionParserResult?.Error == null))
             {
-                return new() { HasErrors = true };
+                _outputWriter.SuccessfullyParsed(context.CodeFile);
             }
+            foreach (var context in contexts)
+            {
+                hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.FunctionParserResult!);
+            }
+            if (hasErrors) return new() { HasErrors = true };
 
             return new() { HasErrors = false };
         }
 
-        private bool WriteErrorsAndWarnings(List<ParseResult> parseResults)
+        private bool WriteErrorsAndWarnings(CodeFileProjectItem codeFile, ParseResult parseResult)
         {
-            parseResults.SelectMany(x => x.Warnings).Each(_outputWriter.WriteParserMessage);
-            var errorMessage = parseResults.FirstOrDefault(x => x.Error != null);
-            if (errorMessage != null)
+            parseResult.Warnings.Each(warning => _outputWriter.WriteWarning(codeFile, warning));
+            if (parseResult.Error != null)
             {
-                _outputWriter.WriteParserMessage(errorMessage.Error!);
+                _outputWriter.WriteError(codeFile, parseResult.Error);
                 return true;
             }
 

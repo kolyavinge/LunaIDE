@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Luna.Utils
 {
-    internal static class EnumerableExt
+    public static class EnumerableExt
     {
         public static void Each<T>(this IEnumerable<T> collection, Action<T> action)
         {

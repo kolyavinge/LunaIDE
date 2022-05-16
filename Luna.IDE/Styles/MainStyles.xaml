@@ -5,9 +5,12 @@
 
     <Color x:Key="MainBackgroundColor" R="30" G="30" B="30" A="255" />
     <Color x:Key="MainSelectionColor" R="90" G="40" B="70" A="255" />
+    <Color x:Key="AlertColor" R="175" G="45" B="45" A="255" />
 
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{StaticResource MainBackgroundColor}" />
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="#252525" />
+
+    <SolidColorBrush x:Key="AlertBrush" Color="{StaticResource AlertColor}" />
 
     <SolidColorBrush x:Key="WindowHeaderBackgroundBrush" Color="#171717" />
 
@@ -77,7 +80,7 @@
         <Setter Property="Foreground" Value="{StaticResource InnactiveForegroundBrush}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#6e1e1e"/>
+                <Setter Property="Background" Value="{StaticResource AlertBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -168,6 +171,9 @@
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="HighlightPairBracketsBrush" Value="{StaticResource MainSelectionBrush}" />
+        <Setter Property="HighlightNoPairBracketBrush" Value="{StaticResource AlertBrush}" />
+        <Setter Property="CursorLineHighlightingBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
     </Style>
 
     <Style x:Key="ProjectTreeListBoxItemStyle" TargetType="{x:Type ListBoxItem}">

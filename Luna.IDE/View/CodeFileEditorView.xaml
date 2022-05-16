@@ -25,6 +25,7 @@
             Style="{StaticResource CodeEditorStyle}"
             CodeProvider="{Binding Model.CodeProvider}"
             TextHolder="{Binding Model.TextHolder}"
+            HighlighteredBrackets="()"
             MouseWheel="VerticalScrollBarOnMouseWheel"
             />
 

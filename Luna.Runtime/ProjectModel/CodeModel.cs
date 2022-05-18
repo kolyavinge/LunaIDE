@@ -1,184 +1,184 @@
 ﻿using System.Collections.Generic;
+using Luna.Collections;
 
-namespace Luna.ProjectModel
+namespace Luna.ProjectModel;
+
+public class CodeModel
 {
-    public class CodeModel
+    private List<ImportDirective> _imports = new();
+    private ConstDeclarationDictionary _constants = new();
+    private FunctionDeclarationDictionary _functions = new();
+
+    public IReadOnlyCollection<ImportDirective> Imports => _imports;
+    public IConstDeclarationDictionary Constants => _constants;
+    public IFunctionDeclarationDictionary Functions => _functions;
+    public FunctionValueElement? RunFunction { get; internal set; }
+
+    internal void AddImportDirective(ImportDirective import)
     {
-        private List<ImportDirective> _imports = new();
-        private ConstDeclarationDictionary _constants = new();
-        private FunctionDeclarationDictionary _functions = new();
-
-        public IReadOnlyCollection<ImportDirective> Imports => _imports;
-        public IConstDeclarationDictionary Constants => _constants;
-        public IFunctionDeclarationDictionary Functions => _functions;
-        public Function? RunFunction { get; internal set; }
-
-        internal void AddImportDirective(ImportDirective import)
-        {
-            _imports.Add(import);
-        }
-
-        internal void AddConstDeclaration(ConstDeclaration constDirective)
-        {
-            _constants.Add(constDirective);
-        }
-
-        internal void AddFunctionDeclaration(FunctionDeclaration function)
-        {
-            _functions.Add(function);
-        }
+        _imports.Add(import);
     }
 
-    public abstract class CodeElement
+    internal void AddConstDeclaration(ConstDeclaration constDirective)
     {
-        public int LineIndex { get; }
-        public int ColumnIndex { get; }
-
-        protected CodeElement(int lineIndex, int columnIndex)
-        {
-            LineIndex = lineIndex;
-            ColumnIndex = columnIndex;
-        }
+        _constants.Add(constDirective);
     }
 
-    public class ImportDirective : CodeElement
+    internal void AddFunctionDeclaration(FunctionDeclaration function)
     {
-        public string FilePath { get; }
-
-        public CodeFileProjectItem CodeFile { get; }
-
-        public ImportDirective(string filePath, CodeFileProjectItem codeFile, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            FilePath = filePath;
-            CodeFile = codeFile;
-        }
+        _functions.Add(function);
     }
+}
 
-    public class ConstDeclaration : CodeElement
+public abstract class CodeElement
+{
+    public int LineIndex { get; }
+    public int ColumnIndex { get; }
+
+    protected CodeElement(int lineIndex, int columnIndex)
     {
-        public string Name { get; }
-        public Value Value { get; }
-
-        public ConstDeclaration(string name, Value value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-            Value = value;
-        }
+        LineIndex = lineIndex;
+        ColumnIndex = columnIndex;
     }
+}
 
-    public class FunctionArgument : CodeElement
+public class ImportDirective : CodeElement
+{
+    public string FilePath { get; }
+
+    public CodeFileProjectItem CodeFile { get; }
+
+    public ImportDirective(string filePath, CodeFileProjectItem codeFile, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Name { get; }
-
-        public FunctionArgument(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-        }
+        FilePath = filePath;
+        CodeFile = codeFile;
     }
+}
 
-    public class FunctionBody : List<Value> { }
+public class ConstDeclaration : CodeElement
+{
+    public string Name { get; }
+    public ValueElement Value { get; }
 
-    public class FunctionDeclaration : CodeElement
+    public ConstDeclaration(string name, ValueElement value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Name { get; }
-        public List<FunctionArgument> Arguments { get; }
-        public FunctionBody Body { get; }
-
-        public FunctionDeclaration(string name, List<FunctionArgument> arguments, FunctionBody body, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-            Arguments = arguments;
-            Body = body;
-        }
+        Name = name;
+        Value = value;
     }
+}
 
-    public abstract class Value : CodeElement
+public class FunctionArgument : CodeElement
+{
+    public string Name { get; }
+
+    public FunctionArgument(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public Value(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
+        Name = name;
     }
+}
 
-    public class IntegerValue : Value
+public class FunctionBody : List<ValueElement> { }
+
+public class FunctionDeclaration : CodeElement
+{
+    public string Name { get; }
+    public ReadonlyArray<FunctionArgument> Arguments { get; }
+    public FunctionBody Body { get; }
+
+    public FunctionDeclaration(string name, IEnumerable<FunctionArgument> arguments, FunctionBody body, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public int Value { get; }
-
-        public IntegerValue(int value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Value = value;
-        }
+        Name = name;
+        Arguments = new ReadonlyArray<FunctionArgument>(arguments);
+        Body = body;
     }
+}
 
-    public class FloatValue : Value
+public abstract class ValueElement : CodeElement
+{
+    public ValueElement(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
+}
+
+public class IntegerValue : ValueElement
+{
+    public int Value { get; }
+
+    public IntegerValue(int value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public double Value { get; }
-
-        public FloatValue(double value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Value = value;
-        }
+        Value = value;
     }
+}
 
-    public class StringValue : Value
+public class FloatValueElement : ValueElement
+{
+    public double Value { get; }
+
+    public FloatValueElement(double value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Value { get; }
-
-        public StringValue(string value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Value = value;
-        }
+        Value = value;
     }
+}
 
-    public class ListValue : Value
+public class StringValueElement : ValueElement
+{
+    public string Value { get; }
+
+    public StringValueElement(string value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public List<Value> Value { get; }
-
-        public ListValue(List<Value> value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Value = value;
-        }
+        Value = value;
     }
+}
 
-    public class NamedConstant : Value
+public class ListValueElement : ValueElement
+{
+    public ReadonlyArray<ValueElement> Value { get; }
+
+    public ListValueElement(IEnumerable<ValueElement> value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Name { get; }
-
-        public NamedConstant(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-        }
+        Value = new ReadonlyArray<ValueElement>(value);
     }
+}
 
-    public class Variable : Value
+public class NamedConstantValueElement : ValueElement
+{
+    public string Name { get; }
+
+    public NamedConstantValueElement(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Name { get; }
-
-        public Variable(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-        }
+        Name = name;
     }
+}
 
-    public class Function : Value
+public class VariableValueElement : ValueElement
+{
+    public string Name { get; }
+
+    public VariableValueElement(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public string Name { get; }
-        public List<Value> ArgumentValues { get; }
-
-        public Function(string name, List<Value> argumentValues, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Name = name;
-            ArgumentValues = argumentValues;
-        }
+        Name = name;
     }
+}
 
-    public class Lambda : Value
+public class LambdaValueElement : ValueElement
+{
+    public ReadonlyArray<FunctionArgument> Arguments { get; }
+    public List<ValueElement> ArgumentValues { get; } = new();
+    public FunctionBody Body { get; }
+
+    public LambdaValueElement(IEnumerable<FunctionArgument> arguments, FunctionBody body, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        public List<FunctionArgument> Arguments { get; }
-        public List<Value> ArgumentValues { get; } = new();
-        public FunctionBody Body { get; }
+        Arguments = new ReadonlyArray<FunctionArgument>(arguments);
+        Body = body;
+    }
+}
 
-        public Lambda(List<FunctionArgument> arguments, FunctionBody body, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
-        {
-            Arguments = arguments;
-            Body = body;
-        }
+public class FunctionValueElement : ValueElement
+{
+    public string Name { get; }
+    public ReadonlyArray<ValueElement> ArgumentValues { get; }
+
+    public FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    {
+        Name = name;
+        ArgumentValues = new ReadonlyArray<ValueElement>(argumentValues);
     }
 }

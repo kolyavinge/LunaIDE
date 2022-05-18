@@ -2,25 +2,24 @@
 using System.Linq;
 using Luna.ProjectModel;
 
-namespace Luna.Parsing
+namespace Luna.Parsing;
+
+public interface IImportDirectiveParserScope
 {
-    public interface IImportDirectiveParserScope
+    CodeFileProjectItem? GetCodeFileByPath(string path);
+}
+
+public class ImportDirectiveParserScope : IImportDirectiveParserScope
+{
+    private readonly Dictionary<string, CodeFileProjectItem> _codeFiles;
+
+    public ImportDirectiveParserScope(IEnumerable<CodeFileProjectItem> codeFiles)
     {
-        CodeFileProjectItem? GetCodeFileByPath(string path);
+        _codeFiles = codeFiles.ToDictionary(k => k.PathFromRoot, v => v);
     }
 
-    public class ImportDirectiveParserScope : IImportDirectiveParserScope
+    public CodeFileProjectItem? GetCodeFileByPath(string path)
     {
-        private readonly Dictionary<string, CodeFileProjectItem> _codeFiles;
-
-        public ImportDirectiveParserScope(IEnumerable<CodeFileProjectItem> codeFiles)
-        {
-            _codeFiles = codeFiles.ToDictionary(k => k.PathFromRoot, v => v);
-        }
-
-        public CodeFileProjectItem? GetCodeFileByPath(string path)
-        {
-            return _codeFiles.ContainsKey(path) ? _codeFiles[path] : null;
-        }
+        return _codeFiles.ContainsKey(path) ? _codeFiles[path] : null;
     }
 }

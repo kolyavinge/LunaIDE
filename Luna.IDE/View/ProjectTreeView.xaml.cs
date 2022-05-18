@@ -2,14 +2,13 @@
 using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
-namespace Luna.IDE.View
+namespace Luna.IDE.View;
+
+public partial class ProjectTreeView : UserControl
 {
-    public partial class ProjectTreeView : UserControl
+    public ProjectTreeView()
     {
-        public ProjectTreeView()
-        {
-            InitializeComponent();
-            DataContext = DependencyContainer.Resolve<ProjectTreeViewModel>();
-        }
+        InitializeComponent();
+        DataContext = DependencyContainer.Resolve<ProjectTreeViewModel>();
     }
 }

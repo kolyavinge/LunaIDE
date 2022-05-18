@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DependencyInjection;
-using Luna.IDE.Model;
+﻿using DependencyInjection;
 using Luna.IDE.Mvvm;
 
-namespace Luna.IDE.ViewModel
+namespace Luna.IDE.ViewModel;
+
+public class ProjectExplorerViewModel : NotificationObject
 {
-    public class ProjectExplorerViewModel : NotificationObject
-    {
-        [Inject]
-        public ProjectTreeViewModel? ProjectTreeViewModel { get; set; }
-    }
+    [Inject]
+    public ProjectTreeViewModel? ProjectTreeViewModel { get; set; }
 }

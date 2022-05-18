@@ -2,23 +2,22 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 
-namespace Luna.IDE.Mvvm
-{
-    public abstract class NotificationObject : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler? PropertyChanged;
+namespace Luna.IDE.Mvvm;
 
-        protected void RaisePropertyChanged(Expression<Func<object>> propertyExpression)
+public abstract class NotificationObject : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void RaisePropertyChanged(Expression<Func<object>> propertyExpression)
+    {
+        if (propertyExpression.Body is MemberExpression memberExpression)
         {
-            if (propertyExpression.Body is MemberExpression memberExpression)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberExpression.Member.Name));
-            }
-            else if (propertyExpression.Body is UnaryExpression unaryExpression)
-            {
-                var innerMemberExpression = (MemberExpression)unaryExpression.Operand;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(innerMemberExpression.Member.Name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberExpression.Member.Name));
+        }
+        else if (propertyExpression.Body is UnaryExpression unaryExpression)
+        {
+            var innerMemberExpression = (MemberExpression)unaryExpression.Operand;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(innerMemberExpression.Member.Name));
         }
     }
 }

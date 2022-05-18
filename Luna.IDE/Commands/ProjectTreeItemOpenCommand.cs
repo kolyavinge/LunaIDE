@@ -4,32 +4,31 @@ using System.Windows.Input;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
 
-namespace Luna.IDE.Commands
+namespace Luna.IDE.Commands;
+
+public interface IProjectTreeItemOpenCommand : ICommand { }
+
+public class ProjectTreeItemOpenCommand : Command, IProjectTreeItemOpenCommand
 {
-    public interface IProjectTreeItemOpenCommand : ICommand { }
+    private readonly IProjectItemOpenCommand _projectItemOpenCommand;
 
-    public class ProjectTreeItemOpenCommand : Command, IProjectTreeItemOpenCommand
+    public ProjectTreeItemOpenCommand(IProjectItemOpenCommand projectItemOpenCommand)
     {
-        private readonly IProjectItemOpenCommand _projectItemOpenCommand;
+        _projectItemOpenCommand = projectItemOpenCommand;
+    }
 
-        public ProjectTreeItemOpenCommand(IProjectItemOpenCommand projectItemOpenCommand)
+    public override void Execute(object parameter)
+    {
+        var treeItems = ((IEnumerable)parameter).Cast<ProjectTreeItem>().Where(x => x.Kind != ProjectTreeItemKind.Project).ToList();
+        if (!treeItems.Any()) return;
+        if (treeItems.Count == 1 && treeItems.First().Kind == ProjectTreeItemKind.Directory)
         {
-            _projectItemOpenCommand = projectItemOpenCommand;
+            var projectTreeItem = treeItems.First();
+            projectTreeItem.IsExpanded = !projectTreeItem.IsExpanded;
         }
-
-        public override void Execute(object parameter)
+        else
         {
-            var treeItems = ((IEnumerable)parameter).Cast<ProjectTreeItem>().Where(x => x.Kind != ProjectTreeItemKind.Project).ToList();
-            if (!treeItems.Any()) return;
-            if (treeItems.Count == 1 && treeItems.First().Kind == ProjectTreeItemKind.Directory)
-            {
-                var projectTreeItem = treeItems.First();
-                projectTreeItem.IsExpanded = !projectTreeItem.IsExpanded;
-            }
-            else
-            {
-                _projectItemOpenCommand.Execute(treeItems.Where(x => x.Kind != ProjectTreeItemKind.Directory).Select(x => x.ProjecItem));
-            }
+            _projectItemOpenCommand.Execute(treeItems.Where(x => x.Kind != ProjectTreeItemKind.Directory).Select(x => x.ProjecItem));
         }
     }
 }

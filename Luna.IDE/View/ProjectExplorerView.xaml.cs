@@ -2,14 +2,13 @@
 using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
-namespace Luna.IDE.View
+namespace Luna.IDE.View;
+
+public partial class ProjectExplorerView : UserControl
 {
-    public partial class ProjectExplorerView : UserControl
+    public ProjectExplorerView()
     {
-        public ProjectExplorerView()
-        {
-            InitializeComponent();
-            DataContext = DependencyContainer.Resolve<ProjectExplorerViewModel>();
-        }
+        InitializeComponent();
+        DataContext = DependencyContainer.Resolve<ProjectExplorerViewModel>();
     }
 }

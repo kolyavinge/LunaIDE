@@ -2,14 +2,13 @@
 using Luna.IDE.Infrastructure;
 using Luna.IDE.Mvvm;
 
-namespace Luna.IDE.ViewModel
-{
-    public class MainViewModel : NotificationObject
-    {
-        [Inject]
-        public IOpenProjectCommand? OpenProjectCommand { get; set; }
+namespace Luna.IDE.ViewModel;
 
-        [Inject]
-        public IRunProgramCommand? RunProgramCommand { get; set; }
-    }
+public class MainViewModel : NotificationObject
+{
+    [Inject]
+    public IOpenProjectCommand? OpenProjectCommand { get; set; }
+
+    [Inject]
+    public IRunProgramCommand? RunProgramCommand { get; set; }
 }

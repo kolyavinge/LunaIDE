@@ -1,20 +1,16 @@
-﻿using System.IO;
-using CodeHighlighter;
-using Luna.IDE.CodeEditor;
-using Luna.IDE.Model;
+﻿using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
 using Luna.ProjectModel;
 
-namespace Luna.IDE.ViewModel
-{
-    [EditorFor(typeof(CodeFileProjectItem))]
-    public class CodeFileEditorViewModel : NotificationObject
-    {
-        public ICodeFileEditor Model { get; set; }
+namespace Luna.IDE.ViewModel;
 
-        public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor)
-        {
-            Model = codeFileEditor;
-        }
+[EditorFor(typeof(CodeFileProjectItem))]
+public class CodeFileEditorViewModel : NotificationObject
+{
+    public ICodeFileEditor Model { get; set; }
+
+    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor)
+    {
+        Model = codeFileEditor;
     }
 }

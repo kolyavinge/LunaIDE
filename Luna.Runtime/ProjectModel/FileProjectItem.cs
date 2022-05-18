@@ -3,42 +3,41 @@ using System.Collections.Generic;
 using System.IO;
 using Luna.Infrastructure;
 
-namespace Luna.ProjectModel
+namespace Luna.ProjectModel;
+
+public abstract class FileProjectItem : ProjectItem
 {
-    public abstract class FileProjectItem : ProjectItem
+    protected readonly IFileSystem _fileSystem;
+
+    public string PathFromRoot
     {
-        protected readonly IFileSystem _fileSystem;
-
-        public string PathFromRoot
+        get
         {
-            get
+            ProjectItem? item = this;
+            var path = new Stack<string>();
+            while (item != null)
             {
-                ProjectItem? item = this;
-                var path = new Stack<string>();
-                while (item != null)
-                {
-                    path.Push(item.Name);
-                    item = item.Parent;
-                }
-                path.Pop();
-
-                return String.Join("\\", path);
+                path.Push(item.Name);
+                item = item.Parent;
             }
-        }
+            path.Pop();
 
-        internal FileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(Path.GetFileName(fullPath), fullPath, parent)
-        {
-            _fileSystem = fileSystem;
+            return String.Join("\\", path);
         }
+    }
 
-        public string GetText()
-        {
-            return _fileSystem.ReadFileText(FullPath);
-        }
+    internal FileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(Path.GetFileName(fullPath), fullPath, parent)
+    {
+        _fileSystem = fileSystem;
+    }
 
-        public void SaveText(string text)
-        {
-            _fileSystem.SaveFileText(FullPath, text);
-        }
+    public string GetText()
+    {
+        return _fileSystem.ReadFileText(FullPath);
+    }
+
+    public void SaveText(string text)
+    {
+        _fileSystem.SaveFileText(FullPath, text);
     }
 }

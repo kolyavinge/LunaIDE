@@ -1,17 +1,16 @@
-﻿namespace Luna.IDE.Model
+﻿namespace Luna.IDE.Model;
+
+public interface IOutputConsole
 {
-    public interface IOutputConsole
-    {
-        IOutputArea OutputArea { get; }
-    }
+    IOutputArea OutputArea { get; }
+}
 
-    public class OutputConsole : IOutputConsole
-    {
-        public IOutputArea OutputArea { get; }
+public class OutputConsole : IOutputConsole
+{
+    public IOutputArea OutputArea { get; }
 
-        public OutputConsole(IOutputArea outputArea)
-        {
-            OutputArea = outputArea;
-        }
+    public OutputConsole(IOutputArea outputArea)
+    {
+        OutputArea = outputArea;
     }
 }

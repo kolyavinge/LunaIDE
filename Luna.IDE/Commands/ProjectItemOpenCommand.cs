@@ -5,46 +5,45 @@ using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
 using Luna.ProjectModel;
 
-namespace Luna.IDE.Commands
+namespace Luna.IDE.Commands;
+
+public interface IProjectItemOpenCommand : ICommand { }
+
+public class ProjectItemOpenCommand : Command, IProjectItemOpenCommand
 {
-    public interface IProjectItemOpenCommand : ICommand { }
+    private readonly IEnvironmentWindowsManager _windowsManager;
+    private readonly IProjectItemEditorFactory _editorFactory;
 
-    public class ProjectItemOpenCommand : Command, IProjectItemOpenCommand
+    public ProjectItemOpenCommand(IEnvironmentWindowsManager windowsManager, IProjectItemEditorFactory editorFactory)
     {
-        private readonly IEnvironmentWindowsManager _windowsManager;
-        private readonly IProjectItemEditorFactory _editorFactory;
+        _windowsManager = windowsManager;
+        _editorFactory = editorFactory;
+    }
 
-        public ProjectItemOpenCommand(IEnvironmentWindowsManager windowsManager, IProjectItemEditorFactory editorFactory)
+    public override void Execute(object parameter)
+    {
+        var projectItems = ((IEnumerable<ProjectItem>)parameter).ToList();
+        if (!projectItems.Any()) return;
+
+        var firstItem = projectItems.First();
+        var firstWindow = OpenWindowFor(firstItem);
+        _windowsManager.ActivateWindow(firstWindow);
+
+        foreach (var item in projectItems.Skip(1))
         {
-            _windowsManager = windowsManager;
-            _editorFactory = editorFactory;
+            OpenWindowFor(item);
+        }
+    }
+
+    private EnvironmentWindow OpenWindowFor(ProjectItem projectItem)
+    {
+        var window = _windowsManager.FindWindowById(projectItem);
+        if (window == null)
+        {
+            var components = _editorFactory.MakeEditorFor(projectItem);
+            window = _windowsManager.OpenWindow(projectItem, components.Model, components.View);
         }
 
-        public override void Execute(object parameter)
-        {
-            var projectItems = ((IEnumerable<ProjectItem>)parameter).ToList();
-            if (!projectItems.Any()) return;
-
-            var firstItem = projectItems.First();
-            var firstWindow = OpenWindowFor(firstItem);
-            _windowsManager.ActivateWindow(firstWindow);
-
-            foreach (var item in projectItems.Skip(1))
-            {
-                OpenWindowFor(item);
-            }
-        }
-
-        private EnvironmentWindow OpenWindowFor(ProjectItem projectItem)
-        {
-            var window = _windowsManager.FindWindowById(projectItem);
-            if (window == null)
-            {
-                var components = _editorFactory.MakeEditorFor(projectItem);
-                window = _windowsManager.OpenWindow(projectItem, components.Model, components.View);
-            }
-
-            return window;
-        }
+        return window;
     }
 }

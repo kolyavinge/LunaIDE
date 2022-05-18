@@ -1,15 +1,14 @@
-﻿using Luna.IDE.Mvvm;
-using Luna.IDE.Model;
+﻿using Luna.IDE.Model;
+using Luna.IDE.Mvvm;
 
-namespace Luna.IDE.ViewModel
+namespace Luna.IDE.ViewModel;
+
+public class OutputAreaViewModel : NotificationObject
 {
-    public class OutputAreaViewModel : NotificationObject
-    {
-        public IOutputArea OutputArea { get; }
+    public IOutputArea OutputArea { get; }
 
-        public OutputAreaViewModel(IOutputArea outputArea)
-        {
-            OutputArea = outputArea;
-        }
+    public OutputAreaViewModel(IOutputArea outputArea)
+    {
+        OutputArea = outputArea;
     }
 }

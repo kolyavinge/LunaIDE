@@ -3,74 +3,73 @@ using System.Windows.Input;
 using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
-namespace Luna.IDE.View
+namespace Luna.IDE.View;
+
+public partial class MainView : Window
 {
-    public partial class MainView : Window
+    private Point? _lastMousePosition;
+
+    public MainView()
     {
-        private Point? _lastMousePosition;
+        InitializeComponent();
+        DataContext = DependencyContainer.Resolve<MainViewModel>();
+    }
 
-        public MainView()
+    private void OnTitlePanelMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 1)
         {
-            InitializeComponent();
-            DataContext = DependencyContainer.Resolve<MainViewModel>();
+            _lastMousePosition = e.GetPosition(this);
+            Mouse.Capture((IInputElement)sender);
         }
-
-        private void OnTitlePanelMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 1)
-            {
-                _lastMousePosition = e.GetPosition(this);
-                Mouse.Capture((IInputElement)sender);
-            }
-            else if (e.ClickCount == 2)
-            {
-                SwitchMaximizeState();
-            }
-        }
-
-        private void OnWindowMouseMove(object sender, MouseEventArgs e)
-        {
-            if (_lastMousePosition != null)
-            {
-                var pos = e.GetPosition(this);
-                var deltaX = pos.X - _lastMousePosition.Value.X;
-                var deltaY = pos.Y - _lastMousePosition.Value.Y;
-                Left += deltaX;
-                Top += deltaY;
-            }
-        }
-
-        private void OnWindowMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            _lastMousePosition = null;
-            Mouse.Capture(null);
-        }
-
-        private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void OnMaximizeButtonClick(object sender, RoutedEventArgs e)
+        else if (e.ClickCount == 2)
         {
             SwitchMaximizeState();
         }
+    }
 
-        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+    private void OnWindowMouseMove(object sender, MouseEventArgs e)
+    {
+        if (_lastMousePosition != null)
         {
-            Close();
+            var pos = e.GetPosition(this);
+            var deltaX = pos.X - _lastMousePosition.Value.X;
+            var deltaY = pos.Y - _lastMousePosition.Value.Y;
+            Left += deltaX;
+            Top += deltaY;
         }
+    }
 
-        private void SwitchMaximizeState()
+    private void OnWindowMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        _lastMousePosition = null;
+        Mouse.Capture(null);
+    }
+
+    private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void OnMaximizeButtonClick(object sender, RoutedEventArgs e)
+    {
+        SwitchMaximizeState();
+    }
+
+    private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void SwitchMaximizeState()
+    {
+        if (WindowState == WindowState.Maximized)
         {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
+            WindowState = WindowState.Normal;
+        }
+        else
+        {
+            WindowState = WindowState.Maximized;
         }
     }
 }

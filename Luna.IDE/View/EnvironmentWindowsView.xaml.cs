@@ -2,14 +2,13 @@
 using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
-namespace Luna.IDE.View
+namespace Luna.IDE.View;
+
+public partial class EnvironmentWindowsView : UserControl
 {
-    public partial class EnvironmentWindowsView : UserControl
+    public EnvironmentWindowsView()
     {
-        public EnvironmentWindowsView()
-        {
-            InitializeComponent();
-            DataContext = DependencyContainer.Resolve<EnvironmentWindowsViewModel>();
-        }
+        InitializeComponent();
+        DataContext = DependencyContainer.Resolve<EnvironmentWindowsViewModel>();
     }
 }

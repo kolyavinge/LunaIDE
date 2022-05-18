@@ -2,14 +2,13 @@
 using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
-namespace Luna.IDE.View
+namespace Luna.IDE.View;
+
+public partial class OutputConsoleView : UserControl
 {
-    public partial class OutputConsoleView : UserControl
+    public OutputConsoleView()
     {
-        public OutputConsoleView()
-        {
-            InitializeComponent();
-            DataContext = DependencyContainer.Resolve<OutputConsoleViewModel>();
-        }
+        InitializeComponent();
+        DataContext = DependencyContainer.Resolve<OutputConsoleViewModel>();
     }
 }

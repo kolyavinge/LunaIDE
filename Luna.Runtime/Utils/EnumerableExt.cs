@@ -12,4 +12,14 @@ public static class EnumerableExt
             action(item);
         }
     }
+
+    public static void Each<T>(this IEnumerable<T> collection, Action<T, int> action)
+    {
+        int i = 0;
+        foreach (var item in collection)
+        {
+            action(item, i);
+            i++;
+        }
+    }
 }

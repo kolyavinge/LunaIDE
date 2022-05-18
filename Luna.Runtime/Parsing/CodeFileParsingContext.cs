@@ -15,8 +15,8 @@ internal interface ICodeFileParsingContext
 
 internal class CodeFileParsingContext : ICodeFileParsingContext
 {
-    private ImportDirectiveParser _importDirectiveParser;
-    private FunctionParser _functionParser;
+    private readonly ImportDirectiveParser _importDirectiveParser;
+    private readonly FunctionParser _functionParser;
 
     public CodeFileProjectItem CodeFile { get; }
     public ParseResult? ImportDirectivesResult { get; private set; }

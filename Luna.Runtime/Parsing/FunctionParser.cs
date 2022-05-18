@@ -79,7 +79,7 @@ public class FunctionParser : AbstractParser
         }
         else if (Token.Kind == TokenKind.IntegerNumber)
         {
-            constValue = new IntegerValue(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
+            constValue = new IntegerValueElement(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
         }
         else if (Token.Kind == TokenKind.FloatNumber)
         {
@@ -203,7 +203,7 @@ public class FunctionParser : AbstractParser
         ValueElement? body = null;
         if (Token.Kind == TokenKind.IntegerNumber)
         {
-            body = new IntegerValue(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
+            body = new IntegerValueElement(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
             MoveNext();
         }
         else if (Token.Kind == TokenKind.FloatNumber)
@@ -221,7 +221,7 @@ public class FunctionParser : AbstractParser
             var name = GetTokenName();
             if (!_scope.IsConstExist(name) && !_scope.IsFunctionExist(name))
             {
-                body = new VariableValueElement(name, Token.LineIndex, Token.StartColumnIndex);
+                body = new FunctionArgumentValueElement(name, Token.LineIndex, Token.StartColumnIndex);
             }
             else if (_scope.IsConstExist(name))
             {
@@ -229,7 +229,7 @@ public class FunctionParser : AbstractParser
             }
             else if (_scope.IsFunctionExist(name))
             {
-                body = new FunctionValueElement(name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex);
+                body = new FunctionValueElement(_codeModel, name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex);
             }
             else
             {
@@ -241,7 +241,7 @@ public class FunctionParser : AbstractParser
         {
             MoveNext();
             var funcName = GetTokenName();
-            if (Token.Kind == TokenKind.Identificator && _scope.IsFunctionExist(funcName))
+            if (Token.Kind == TokenKind.Identificator)
             {
                 body = ParseFunctionCall(funcName);
             }
@@ -283,7 +283,7 @@ public class FunctionParser : AbstractParser
         }
         MoveNext();
 
-        return new FunctionValueElement(funcName, argumentValues, Token.LineIndex, Token.StartColumnIndex);
+        return new FunctionValueElement(_codeModel, funcName, argumentValues, Token.LineIndex, Token.StartColumnIndex);
     }
 
     private void ParseRunFunctionCall()
@@ -294,8 +294,7 @@ public class FunctionParser : AbstractParser
             return;
         }
         MoveNext();
-        var body = ParseFunctionBodyItem() as FunctionValueElement;
-        if (body == null)
+        if (ParseFunctionBodyItem() is not FunctionValueElement body)
         {
             _result.SetError(ParserMessageType.IncorrectFunctionCall, Token);
             return;

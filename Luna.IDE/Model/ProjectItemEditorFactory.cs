@@ -52,4 +52,4 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
     }
 }
 
-public class ProjectItemEditorFactoryException : Exception{}
+public class ProjectItemEditorFactoryException : Exception { }

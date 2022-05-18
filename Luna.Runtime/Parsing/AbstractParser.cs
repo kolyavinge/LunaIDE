@@ -7,7 +7,7 @@ namespace Luna.Parsing;
 
 public class ParseResult
 {
-    private List<ParserMessage> _warnings = new();
+    private readonly List<ParserMessage> _warnings = new();
 
     public ParserMessage? Error { get; private set; }
     public IReadOnlyCollection<ParserMessage> Warnings => _warnings;
@@ -30,10 +30,10 @@ public class ParseResult
 
 public abstract class AbstractParser
 {
-    protected readonly CodeModel _codeModel;
     private readonly Text _text;
     private readonly TokenIterator _iter;
-    protected ParseResult _result;
+    protected readonly CodeModel _codeModel;
+    protected readonly ParseResult _result;
 
     protected Token Prev => _iter.PrevToken;
     protected Token Token => _iter.Token;
@@ -43,13 +43,12 @@ public abstract class AbstractParser
         _text = text;
         _iter = iter;
         _codeModel = codeModel;
+        _result = new();
     }
 
     public ParseResult Parse()
     {
-        _result = new ParseResult();
         InnerParse();
-
         return _result;
     }
 
@@ -95,6 +94,6 @@ public abstract class AbstractParser
 
     protected void MoveNext()
     {
-        _iter!.MoveNext();
+        _iter.MoveNext();
     }
 }

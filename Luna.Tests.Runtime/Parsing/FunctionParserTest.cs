@@ -37,7 +37,7 @@ internal class FunctionParserTest
         Assert.AreEqual(0, _result.Warnings.Count);
         Assert.AreEqual(1, _codeModel.Constants.Count);
         Assert.AreEqual("WIDTH", _codeModel.Constants.First().Name);
-        Assert.AreEqual(123, ((IntegerValue)_codeModel.Constants.First().Value).Value);
+        Assert.AreEqual(123, ((IntegerValueElement)_codeModel.Constants.First().Value).Value);
         Assert.AreEqual(0, _codeModel.Constants.First().LineIndex);
         Assert.AreEqual(6, _codeModel.Constants.First().ColumnIndex);
     }
@@ -273,7 +273,7 @@ internal class FunctionParserTest
         Assert.AreEqual(1, func.LineIndex);
         Assert.AreEqual(3, func.ColumnIndex);
         Assert.AreEqual(1, func.Body.Count);
-        var body = (IntegerValue)func.Body.First();
+        var body = (IntegerValueElement)func.Body.First();
         Assert.AreEqual(1, body.LineIndex);
         Assert.AreEqual(11, body.ColumnIndex);
     }
@@ -420,8 +420,8 @@ internal class FunctionParserTest
         Assert.AreEqual("func", func.Name);
         Assert.AreEqual(0, func.Arguments.Count);
         Assert.AreEqual(1, func.Body.Count);
-        Assert.True(func.Body.First() is IntegerValue);
-        var body = (IntegerValue)func.Body.First();
+        Assert.True(func.Body.First() is IntegerValueElement);
+        var body = (IntegerValueElement)func.Body.First();
         Assert.AreEqual(1, body.Value);
     }
 
@@ -500,10 +500,10 @@ internal class FunctionParserTest
         var body = (ListValueElement)func.Body.First();
         Assert.AreEqual(0, body.LineIndex);
         Assert.AreEqual(9, body.ColumnIndex);
-        Assert.AreEqual(3, body.Value.Count);
-        Assert.AreEqual(typeof(IntegerValue), body.Value[0].GetType());
-        Assert.AreEqual(typeof(FloatValueElement), body.Value[1].GetType());
-        Assert.AreEqual(typeof(StringValueElement), body.Value[2].GetType());
+        Assert.AreEqual(3, body.Items.Count);
+        Assert.AreEqual(typeof(IntegerValueElement), body.Items[0].GetType());
+        Assert.AreEqual(typeof(FloatValueElement), body.Items[1].GetType());
+        Assert.AreEqual(typeof(StringValueElement), body.Items[2].GetType());
     }
 
     [Test]
@@ -615,8 +615,8 @@ internal class FunctionParserTest
         Assert.AreEqual("func", func.Name);
         Assert.AreEqual(1, func.Arguments.Count);
         Assert.AreEqual(1, func.Body.Count);
-        Assert.True(func.Body.First() is VariableValueElement);
-        var body = (VariableValueElement)func.Body.First();
+        Assert.True(func.Body.First() is FunctionArgumentValueElement);
+        var body = (FunctionArgumentValueElement)func.Body.First();
         Assert.AreEqual("x", body.Name);
     }
 
@@ -647,7 +647,7 @@ internal class FunctionParserTest
         var body = (FunctionValueElement)func.Body.First();
         Assert.AreEqual("g", body.Name);
         Assert.AreEqual(3, body.ArgumentValues.Count);
-        Assert.AreEqual(1, ((IntegerValue)body.ArgumentValues[0]).Value);
+        Assert.AreEqual(1, ((IntegerValueElement)body.ArgumentValues[0]).Value);
         Assert.AreEqual(1.2, ((FloatValueElement)body.ArgumentValues[1]).Value);
         Assert.AreEqual("str", ((StringValueElement)body.ArgumentValues[2]).Value);
     }
@@ -685,8 +685,8 @@ internal class FunctionParserTest
         var innerbody = (FunctionValueElement)body.ArgumentValues[1];
         Assert.AreEqual("k", innerbody.Name);
         Assert.AreEqual(2, innerbody.ArgumentValues.Count);
-        Assert.AreEqual(1, ((IntegerValue)innerbody.ArgumentValues[0]).Value);
-        Assert.AreEqual(2, ((IntegerValue)innerbody.ArgumentValues[1]).Value);
+        Assert.AreEqual(1, ((IntegerValueElement)innerbody.ArgumentValues[0]).Value);
+        Assert.AreEqual(2, ((IntegerValueElement)innerbody.ArgumentValues[1]).Value);
     }
 
     [Test]
@@ -726,7 +726,7 @@ internal class FunctionParserTest
         var lambdaBody = (FunctionValueElement)body.Body.First();
         Assert.AreEqual("g", lambdaBody.Name);
         Assert.AreEqual(1, lambdaBody.ArgumentValues.Count);
-        Assert.AreEqual("x", ((VariableValueElement)lambdaBody.ArgumentValues[0]).Name);
+        Assert.AreEqual("x", ((FunctionArgumentValueElement)lambdaBody.ArgumentValues[0]).Name);
     }
 
     [Test]
@@ -775,7 +775,7 @@ internal class FunctionParserTest
         var run = _codeModel.RunFunction!;
         Assert.AreEqual("f", run.Name);
         Assert.AreEqual(1, run.ArgumentValues.Count);
-        Assert.AreEqual(typeof(IntegerValue), run.ArgumentValues[0].GetType());
+        Assert.AreEqual(typeof(IntegerValueElement), run.ArgumentValues[0].GetType());
     }
 
     [Test]

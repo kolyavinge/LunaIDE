@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Windows.Input;
 
 namespace Luna.IDE.Mvvm;
 
-public class ActionCommand : ICommand
+public class ActionCommand : Command
 {
     private readonly Action? _action;
     private readonly Action<object>? _actionWithObject;
-
-    public event EventHandler? CanExecuteChanged;
 
     public ActionCommand(Action action)
     {
@@ -20,14 +17,9 @@ public class ActionCommand : ICommand
         _actionWithObject = action;
     }
 
-    public bool CanExecute(object parameter)
-    {
-        return true;
-    }
-
-    public void Execute(object parameter)
+    public override void Execute(object parameter)
     {
         if (_action != null) _action();
-        else if (_actionWithObject != null) _actionWithObject(parameter);
+        else _actionWithObject?.Invoke(parameter);
     }
 }

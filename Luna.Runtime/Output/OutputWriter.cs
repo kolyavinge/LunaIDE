@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Luna.Parsing;
 using Luna.ProjectModel;
+using Luna.Runtime;
 
 namespace Luna.Output;
 
@@ -10,6 +11,7 @@ internal interface IOutputWriter
     void SuccessfullyParsed(CodeFileProjectItem codeFile);
     void WriteWarning(CodeFileProjectItem codeFile, ParserMessage message);
     void WriteError(CodeFileProjectItem codeFile, ParserMessage message);
+    void ProgramResult(IRuntimeValue runtimeValue);
     void ProgramStopped();
 }
 
@@ -55,6 +57,15 @@ internal class OutputWriter : IOutputWriter
             new(String.Format(". Line {0}, col {1}. {2}.", token.LineIndex + 1, token.StartColumnIndex + 1, _textMessage[message.Type]), OutputMessageKind.Error)
         })
         { ProjectItem = codeFile });
+    }
+
+    public void ProgramResult(IRuntimeValue runtimeValue)
+    {
+        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        {
+            new("Program result: ", OutputMessageKind.Info),
+            new(runtimeValue.ToString(), OutputMessageKind.Text),
+        }));
     }
 
     public void ProgramStopped()

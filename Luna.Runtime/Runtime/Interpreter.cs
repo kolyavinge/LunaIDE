@@ -17,11 +17,15 @@ public class Interpreter : IInterpreter
         var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
         var outputWriter = new OutputWriter(output);
         var codeModelBuilder = new CodeModelBuilder(outputWriter);
-        var result = codeModelBuilder.BuildCodeModelsFor(codeFiles);
-        if (result.HasErrors)
-        {
-            outputWriter.ProgramStopped();
-            return;
-        }
+        var codeModelBuilderResult = codeModelBuilder.BuildCodeModelsFor(codeFiles);
+        if (codeModelBuilderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
+        var codeModels = codeFiles.Select(x => x.CodeModel!).ToList();
+        var evaluator = new ValueElementEvaluator();
+        var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, evaluator);
+        evaluator.Scopes = scopes;
+        var main = codeModels.First(x => x.RunFunction != null);
+        var mainScope = scopes.GetForCodeModel(main);
+        var result = evaluator.Eval(mainScope, main.RunFunction!);
+        outputWriter.ProgramResult(result);
     }
 }

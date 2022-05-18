@@ -19,13 +19,13 @@ internal class FunctionParserScopeTest
         _fileSystem = new Mock<IFileSystem>();
 
         _importCodeModel = new CodeModel();
-        _importCodeModel.AddConstDeclaration(new ConstDeclaration("importConst", new IntegerValue(1, 0, 0), 0, 0));
+        _importCodeModel.AddConstDeclaration(new ConstDeclaration("importConst", new IntegerValueElement(1, 0, 0), 0, 0));
         _importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("importFunc", new List<FunctionArgument>(), null, 0, 0));
-        _importCodeModel.RunFunction = new FunctionValueElement("", new List<ValueElement>(), 0, 0);
+        _importCodeModel.RunFunction = new FunctionValueElement(_importCodeModel, "", new List<ValueElement>(), 0, 0);
 
         _currentCodeModel = new CodeModel();
         _currentCodeModel.AddImportDirective(new ImportDirective("", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = _importCodeModel }, 0, 0));
-        _currentCodeModel.AddConstDeclaration(new ConstDeclaration("currentConst", new IntegerValue(1, 0, 0), 0, 0));
+        _currentCodeModel.AddConstDeclaration(new ConstDeclaration("currentConst", new IntegerValueElement(1, 0, 0), 0, 0));
         _currentCodeModel.AddFunctionDeclaration(new FunctionDeclaration("currentFunc", new List<FunctionArgument>(), null, 0, 0));
 
         var allCodeModels = new[] { _importCodeModel, _currentCodeModel };

@@ -12,7 +12,7 @@ public interface IConstDeclarationDictionary : IEnumerable<ConstDeclaration>
 
 internal class ConstDeclarationDictionary : IConstDeclarationDictionary, IEnumerable<ConstDeclaration>
 {
-    private Dictionary<string, ConstDeclaration> _dictionary = new();
+    private readonly Dictionary<string, ConstDeclaration> _dictionary = new();
 
     public ConstDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
 
@@ -39,7 +39,7 @@ public interface IFunctionDeclarationDictionary : IEnumerable<FunctionDeclaratio
 
 internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, IEnumerable<FunctionDeclaration>
 {
-    private Dictionary<string, FunctionDeclaration> _dictionary = new();
+    private readonly Dictionary<string, FunctionDeclaration> _dictionary = new();
 
     public FunctionDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
 

@@ -1,0 +1,4 @@
+
+const INT_CONST   123
+const FLOAT_CONST 1.23
+const STR_CONST   'string 123'

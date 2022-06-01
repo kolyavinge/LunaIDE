@@ -19,15 +19,31 @@
             <RowDefinition Height="8" />
         </Grid.RowDefinitions>
 
-        <highlighter:CodeTextBox
-            Grid.Row="0"
-            x:Name="codeTextBox"
-            Style="{StaticResource CodeEditorStyle}"
-            CodeProvider="{Binding Model.CodeProvider}"
-            TextHolder="{Binding Model.TextHolder}"
-            HighlighteredBrackets="()"
-            MouseWheel="VerticalScrollBarOnMouseWheel"
-            />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <highlighter:LineNumberPanel
+                Grid.Column="0"
+                Style="{StaticResource LineNumberPanelStyle}"
+                VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
+                TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
+                TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
+                />
+
+            <highlighter:CodeTextBox
+                Grid.Column="1"
+                x:Name="codeTextBox"
+                Style="{StaticResource CodeEditorStyle}"
+                CodeProvider="{Binding Model.CodeProvider}"
+                TextHolder="{Binding Model.TextHolder}"
+                HighlighteredBrackets="()"
+                MouseWheel="VerticalScrollBarOnMouseWheel"
+                Margin="12,0,0,0"
+                />
+        </Grid>
 
         <ScrollBar
             Grid.Row="0"

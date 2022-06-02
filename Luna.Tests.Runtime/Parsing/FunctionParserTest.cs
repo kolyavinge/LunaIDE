@@ -623,7 +623,6 @@ internal class FunctionParserTest
     [Test]
     public void FunctionDeclaration_OneFunctionCall()
     {
-        _scopeMock.Setup(x => x.IsFunctionExist("g")).Returns(true);
         Parse("(f () (g 1 1.2 'str'))", new[]
         {
             new Token(0, 0, 1, TokenKind.OpenBracket),
@@ -655,8 +654,6 @@ internal class FunctionParserTest
     [Test]
     public void FunctionDeclaration_InnerFunctionCall()
     {
-        _scopeMock.Setup(x => x.IsFunctionExist("g")).Returns(true);
-        _scopeMock.Setup(x => x.IsFunctionExist("k")).Returns(true);
         Parse("(f () (g 1 (k 1 2) 'str'))", new[]
         {
             new Token(0, 0, 1, TokenKind.OpenBracket),
@@ -692,7 +689,6 @@ internal class FunctionParserTest
     [Test]
     public void FunctionDeclaration_Lambda()
     {
-        _scopeMock.Setup(x => x.IsFunctionExist("g")).Returns(true);
         Parse("(f () (lambda (x) (g x)))", new[]
         {
             new Token(0, 0, 1, TokenKind.OpenBracket),
@@ -721,10 +717,59 @@ internal class FunctionParserTest
         var body = (LambdaValueElement)func.Body.First();
         Assert.AreEqual(1, body.Arguments.Count);
 
-        Assert.AreEqual(1, func.Body.Count);
+        Assert.AreEqual(1, body.Body.Count);
         Assert.True(body.Body.First() is FunctionValueElement);
         var lambdaBody = (FunctionValueElement)body.Body.First();
         Assert.AreEqual("g", lambdaBody.Name);
+        Assert.AreEqual(1, lambdaBody.ArgumentValues.Count);
+        Assert.AreEqual("x", ((FunctionArgumentValueElement)lambdaBody.ArgumentValues[0]).Name);
+    }
+
+    [Test]
+    public void FunctionDeclaration_Lambda_TwoItemsBody()
+    {
+        Parse("(f () (lambda (x) (g x) (h x)))", new[]
+        {
+            new Token(0, 0, 1, TokenKind.OpenBracket),
+            new Token(0, 1, 1, TokenKind.Identificator),
+            new Token(0, 3, 1, TokenKind.OpenBracket),
+            new Token(0, 4, 1, TokenKind.CloseBracket),
+            new Token(0, 6, 1, TokenKind.OpenBracket),
+            new Token(0, 7, 6, TokenKind.Lambda),
+            new Token(0, 14, 1, TokenKind.OpenBracket),
+            new Token(0, 15, 1, TokenKind.Identificator),
+            new Token(0, 16, 1, TokenKind.CloseBracket),
+            new Token(0, 18, 1, TokenKind.OpenBracket),
+            new Token(0, 19, 1, TokenKind.Identificator),
+            new Token(0, 21, 1, TokenKind.Identificator),
+            new Token(0, 22, 1, TokenKind.CloseBracket),
+            new Token(0, 24, 1, TokenKind.OpenBracket),
+            new Token(0, 25, 1, TokenKind.Identificator),
+            new Token(0, 27, 1, TokenKind.Identificator),
+            new Token(0, 28, 1, TokenKind.CloseBracket),
+            new Token(0, 29, 1, TokenKind.CloseBracket),
+            new Token(0, 30, 1, TokenKind.CloseBracket),
+        });
+
+        Assert.AreEqual(null, _result.Error);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.AreEqual(1, func.Body.Count);
+        Assert.True(func.Body.First() is LambdaValueElement);
+        var body = (LambdaValueElement)func.Body.First();
+        Assert.AreEqual(1, body.Arguments.Count);
+
+        Assert.AreEqual(2, body.Body.Count);
+        Assert.True(body.Body.First() is FunctionValueElement);
+        var lambdaBody = (FunctionValueElement)body.Body.First();
+        Assert.AreEqual("g", lambdaBody.Name);
+        Assert.AreEqual(1, lambdaBody.ArgumentValues.Count);
+        Assert.AreEqual("x", ((FunctionArgumentValueElement)lambdaBody.ArgumentValues[0]).Name);
+
+        Assert.True(body.Body.Last() is FunctionValueElement);
+        lambdaBody = (FunctionValueElement)body.Body.Last();
+        Assert.AreEqual("h", lambdaBody.Name);
         Assert.AreEqual(1, lambdaBody.ArgumentValues.Count);
         Assert.AreEqual("x", ((FunctionArgumentValueElement)lambdaBody.ArgumentValues[0]).Name);
     }
@@ -758,7 +803,6 @@ internal class FunctionParserTest
     [Test]
     public void RunFunctionCall()
     {
-        _scopeMock.Setup(x => x.IsFunctionExist("f")).Returns(true);
         Parse("(run (f 1))", new[]
         {
             new Token(0, 0, 1, TokenKind.OpenBracket),

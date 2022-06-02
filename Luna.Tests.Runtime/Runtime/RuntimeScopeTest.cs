@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Luna.Functions;
 using Luna.Functions.Lang;
+using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Luna.Runtime;
 using Moq;
@@ -10,6 +12,7 @@ namespace Luna.Tests.Runtime;
 
 internal class RuntimeScopeTest
 {
+    private Mock<IFileSystem> _fileSystem;
     private Mock<IValueElementEvaluator> _evaluator;
     private Mock<IEmbeddedFunctionsCollection> _embeddedFunctions;
     private List<FunctionDeclaration> _declaredFunctions;
@@ -19,6 +22,7 @@ internal class RuntimeScopeTest
     [SetUp]
     public void Setup()
     {
+        _fileSystem = new Mock<IFileSystem>();
         _evaluator = new Mock<IValueElementEvaluator>();
         _embeddedFunctions = new Mock<IEmbeddedFunctionsCollection>();
         _declaredFunctions = new List<FunctionDeclaration>();
@@ -70,5 +74,24 @@ internal class RuntimeScopeTest
         Assert.AreEqual(new StringRuntimeValue("123"), _scope.GetFunctionArgumentValue("x"));
         _scope.PopFunctionArguments();
         Assert.AreEqual(new IntegerRuntimeValue(123), _scope.GetFunctionArgumentValue("x"));
+    }
+
+    [Test]
+    public void FromCodeModel()
+    {
+        var codeModel = new CodeModel();
+        codeModel.AddConstDeclaration(new ConstDeclaration("const_1", new BooleanValueElement(true)));
+        codeModel.AddFunctionDeclaration(new FunctionDeclaration("func_1", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
+        var importCodeModel = new CodeModel();
+        importCodeModel.AddConstDeclaration(new ConstDeclaration("import_const_1", new IntegerValueElement(123)));
+        importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("import_func_1", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
+        codeModel.AddImportDirective(new ImportDirective("importFile", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = importCodeModel }));
+
+        var result = RuntimeScope.FromCodeModel(codeModel, _evaluator.Object, _embeddedFunctions.Object);
+
+        Assert.AreEqual(typeof(BooleanValueElement), result.GetConstantValue("const_1").GetType());
+        Assert.AreEqual(typeof(IntegerValueElement), result.GetConstantValue("import_const_1").GetType());
+        Assert.True(result.IsDeclaredFunction("func_1"));
+        Assert.True(result.IsDeclaredFunction("import_func_1"));
     }
 }

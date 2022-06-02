@@ -138,6 +138,17 @@ public class CodeProviderTest
         Assert.AreEqual(new Token(0, 13, 1, (byte)TokenKind.CloseBracket), tokens[5]);
     }
 
+    [Test]
+    public void Unknown()
+    {
+        var tokens = GetTokens("@123 1x 2.3!");
+        Assert.AreEqual(4, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, (byte)TokenKind.Unknown), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 3, (byte)TokenKind.IntegerNumber), tokens[1]);
+        Assert.AreEqual(new Token(0, 5, 2, (byte)TokenKind.Unknown), tokens[2]);
+        Assert.AreEqual(new Token(0, 8, 4, (byte)TokenKind.Unknown), tokens[3]);
+    }
+
     private List<Token> GetTokens(string text)
     {
         return _provider.GetTokens(TextIteratorBuilder.FromString(text)).ToList();

@@ -1,5 +1,7 @@
+// program for testing
 
 import 'imported.luna'
+
 
 (func (x) x)
 

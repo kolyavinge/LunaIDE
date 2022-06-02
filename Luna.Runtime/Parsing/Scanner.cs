@@ -97,7 +97,13 @@ public class Scanner
                     textIterator.MoveNext();
                     goto case State.Begin;
                 }
-                else goto case State.Error;
+                else
+                {
+                    _lineIndex = textIterator.LineIndex;
+                    _columnIndex = textIterator.ColumnIndex;
+                    _nameLength = 0;
+                    goto case State.Error;
+                }
             case State.Identificator:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
                 else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
@@ -132,7 +138,11 @@ public class Scanner
                 else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else { _nameLength++; textIterator.MoveNext(); goto case State.Comment; }
             case State.Error:
-                break;
+                _kind = TokenKind.Unknown;
+                _nameLength++;
+                MakeToken();
+                textIterator.MoveNext();
+                goto case State.Begin;
             case State.End:
                 break;
         }

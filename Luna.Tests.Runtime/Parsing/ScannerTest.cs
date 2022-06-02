@@ -136,6 +136,17 @@ internal class ScannerTest
         Assert.AreEqual(new Token(0, 13, 1, TokenKind.CloseBracket), tokens[5]);
     }
 
+    [Test]
+    public void Unknown()
+    {
+        var tokens = GetTokens("@123 1x 2.3!");
+        Assert.AreEqual(4, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, TokenKind.Unknown), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 3, TokenKind.IntegerNumber), tokens[1]);
+        Assert.AreEqual(new Token(0, 5, 2, TokenKind.Unknown), tokens[2]);
+        Assert.AreEqual(new Token(0, 8, 4, TokenKind.Unknown), tokens[3]);
+    }
+
     private List<Token> GetTokens(string text)
     {
         return _scanner.GetTokens(new TextIterator(new Text(text))).ToList();

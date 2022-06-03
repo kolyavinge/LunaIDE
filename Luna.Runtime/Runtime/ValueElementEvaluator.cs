@@ -24,23 +24,25 @@ internal class ValueElementEvaluator : IValueElementEvaluator
         if (element is FunctionArgumentValueElement argElement) return scope.GetFunctionArgumentValue(argElement.Name)!;
         if (element is FunctionValueElement funcElement && scope.IsDeclaredFunction(funcElement.Name))
         {
-            scope.PushFunctionArguments();
+            var arguments = funcElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray();
             var funcScope = Scopes!.GetForCodeModel(funcElement.CodeModel);
             var func = new FunctionRuntimeValue(funcElement.Name, funcScope);
-            var result = func.GetValue(funcElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray());
-            scope.PopFunctionArguments();
-            return result;
+            return func.GetValue(arguments);
         }
-        if (element is FunctionValueElement argumentElement) // argument called as function
+        if (element is FunctionValueElement argFuncElement)
         {
-            var funcScope = Scopes!.GetForCodeModel(argumentElement.CodeModel);
-            var func = new FunctionRuntimeValue(argumentElement.Name, funcScope);
-            return func.GetValue(argumentElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray());
+            var value = scope.GetFunctionArgumentValue(argFuncElement.Name);
+            if (value is FunctionRuntimeValue funcArgValue)
+            {
+                var arguments = argFuncElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray();
+                return funcArgValue.GetValue(arguments);
+            }
+            else throw RuntimeException.IsNotFunction(argFuncElement.Name);
         }
         if (element is LambdaValueElement lambdaElement)
         {
-            var lambdaScopeName = scope.AddLambda(lambdaElement);
-            return new FunctionRuntimeValue(lambdaScopeName, scope);
+            var result = scope.AddLambda(lambdaElement);
+            return new FunctionRuntimeValue(result.Name, scope) { AlreadyPassedArguments = result.AlreadyPassedArguments };
         }
         throw RuntimeException.CannotConvert(element);
     }

@@ -35,22 +35,6 @@ internal class RuntimeScopeTest
     }
 
     [Test]
-    public void IsFunction()
-    {
-        MakeScope();
-
-        Assert.False(_scope.ArgumentCalledAsFunction("wrong"));
-
-        _scope.AddFunctionArgument("x", new BooleanRuntimeValue(false));
-        Assert.False(_scope.ArgumentCalledAsFunction("x"));
-        _scope.RemoveFunctionArgument("x");
-
-        _scope.AddFunctionArgument("x", new FunctionRuntimeValue("func", _scope));
-        Assert.True(_scope.ArgumentCalledAsFunction("x"));
-        _scope.RemoveFunctionArgument("x");
-    }
-
-    [Test]
     public void GetFunctionArgumentNames()
     {
         _embeddedFunctions.Setup(x => x.Contains("eq")).Returns(true);

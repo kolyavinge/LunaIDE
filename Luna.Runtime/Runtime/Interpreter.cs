@@ -12,6 +12,8 @@ public interface IInterpreter
 
 public class Interpreter : IInterpreter
 {
+    internal IRuntimeValue? Result { get; set; }
+
     public void Run(Project project, IRuntimeOutput output)
     {
         var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
@@ -25,7 +27,7 @@ public class Interpreter : IInterpreter
         evaluator.Scopes = scopes;
         var main = codeModels.First(x => x.RunFunction != null);
         var mainScope = scopes.GetForCodeModel(main);
-        var result = evaluator.Eval(mainScope, main.RunFunction!);
-        outputWriter.ProgramResult(result);
+        Result = evaluator.Eval(mainScope, main.RunFunction!);
+        outputWriter.ProgramResult(Result);
     }
 }

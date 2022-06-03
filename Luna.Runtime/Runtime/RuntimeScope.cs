@@ -52,12 +52,6 @@ internal class RuntimeScope : IRuntimeScope
         return _constDeclarations[constantName].Value;
     }
 
-    public bool ArgumentCalledAsFunction(string argumentName)
-    {
-        var args = _argumentStack.Peek();
-        return args.ContainsKey(argumentName) && args[argumentName] is FunctionRuntimeValue;
-    }
-
     public bool IsDeclaredFunction(string functionName)
     {
         return _declaredFunctions.ContainsKey(functionName);
@@ -90,11 +84,6 @@ internal class RuntimeScope : IRuntimeScope
         _argumentStack.Peek().Add(argumentName, argumentValue);
     }
 
-    public void RemoveFunctionArgument(string argumentName)
-    {
-        _argumentStack.Peek().Remove(argumentName);
-    }
-
     public IRuntimeValue GetDeclaredFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues)
     {
         IRuntimeValue? result = null;
@@ -117,11 +106,17 @@ internal class RuntimeScope : IRuntimeScope
         return _embeddedFunctions.GetByName(functionName).GetValue(argumentValues);
     }
 
-    public string AddLambda(LambdaValueElement lambdaElement)
+    private int _lambdaNameIncrement;
+    public AddLambdaResult AddLambda(LambdaValueElement lambdaElement)
     {
-        var name = $"lambda_{DateTime.UtcNow.ToBinary()}";
-        _declaredFunctions.Add(name, new ScopeFunctionDeclaration(name, lambdaElement.Arguments, lambdaElement.Body));
-        return name;
+        var name = $"lambda_{_lambdaNameIncrement}";
+        _lambdaNameIncrement++;
+        var currentArguments = _argumentStack.Peek().Keys.Select(x => new FunctionArgument(x)).ToList();
+        var alreadyPassedArguments = currentArguments.Select(x => GetFunctionArgumentValue(x.Name)).ToReadonlyArray();
+        var arguments = currentArguments.Union(lambdaElement.Arguments).ToReadonlyArray();
+        _declaredFunctions.Add(name, new ScopeFunctionDeclaration(name, arguments, lambdaElement.Body));
+
+        return new(name, alreadyPassedArguments);
     }
 
     class ScopeFunctionDeclaration

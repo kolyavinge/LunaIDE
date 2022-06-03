@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Luna.Collections;
 using Luna.Utils;
 
@@ -24,31 +25,30 @@ internal class FunctionRuntimeValue : IRuntimeValue
         {
             argumentValues = AlreadyPassedArguments.Union(argumentValues).ToReadonlyArray();
         }
+        var argumentNames = _scope.GetFunctionArgumentNames(Name);
+        _scope.PushFunctionArguments();
+        Enumerable.Range(0, Math.Min(argumentNames.Length, argumentValues.Count)).Each(index => _scope.AddFunctionArgument(argumentNames[index], argumentValues[index]));
         IRuntimeValue result;
-        if (_scope.ArgumentCalledAsFunction(Name))
+        if (argumentValues.Count < argumentNames.Length)
         {
-            var value = _scope.GetFunctionArgumentValue(Name);
-            if (value is FunctionRuntimeValue funcArgValue) result = funcArgValue.GetValue(argumentValues);
-            else throw RuntimeException.IsNotFunction(this);
+            result = new FunctionRuntimeValue(Name, _scope) { AlreadyPassedArguments = argumentValues };
+        }
+        else if (_scope.IsEmbeddedFunction(Name))
+        {
+            result = _scope.GetEmbeddedFunctionValue(Name, argumentValues);
         }
         else
         {
-            var argumentNames = _scope.GetFunctionArgumentNames(Name);
-            if (argumentValues.Count > argumentNames.Length) throw RuntimeException.ToManyArguments(this);
-            argumentValues.Each((argumentValue, index) => _scope.AddFunctionArgument(argumentNames[index], argumentValue));
-            if (argumentValues.Count < argumentNames.Length)
+            result = _scope.GetDeclaredFunctionValue(Name, argumentValues);
+        }
+        _scope.PopFunctionArguments();
+        if (argumentValues.Count - argumentNames.Length > 0)
+        {
+            if (result is FunctionRuntimeValue resultFunction)
             {
-                result = new FunctionRuntimeValue(Name, _scope) { AlreadyPassedArguments = argumentValues };
+                result = resultFunction.GetValue(argumentValues.Skip(argumentNames.Length).ToReadonlyArray());
             }
-            else if (_scope.IsEmbeddedFunction(Name))
-            {
-                result = _scope.GetEmbeddedFunctionValue(Name, argumentValues);
-            }
-            else
-            {
-                result = _scope.GetDeclaredFunctionValue(Name, argumentValues);
-            }
-            argumentNames.Each(_scope.RemoveFunctionArgument);
+            else throw RuntimeException.ToManyArguments(Name);
         }
 
         return result;

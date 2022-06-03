@@ -240,10 +240,14 @@ public class FunctionParser : AbstractParser
         else if (Token.Kind == TokenKind.OpenBracket)
         {
             MoveNext();
-            var funcName = GetTokenName();
-            if (Token.Kind == TokenKind.Identificator)
+            var name = GetTokenName();
+            if (Token.Kind == TokenKind.Identificator && _scope.IsConstExist(name))
             {
-                body = ParseFunctionCall(funcName);
+                body = ParseList();
+            }
+            else if (Token.Kind == TokenKind.Identificator)
+            {
+                body = ParseFunctionCall(name);
             }
             else if (Token.Kind == TokenKind.Lambda)
             {

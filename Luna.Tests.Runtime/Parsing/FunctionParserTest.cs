@@ -532,6 +532,35 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_OneNamedConstantInList()
+    {
+        _scopeMock.Setup(x => x.IsConstExist("WIDTH")).Returns(true);
+        Parse("(func () (WIDTH)", new[]
+        {
+            new Token(0, 0, 1, TokenKind.OpenBracket),
+            new Token(0, 1, 4, TokenKind.Identificator),
+            new Token(0, 6, 1, TokenKind.OpenBracket),
+            new Token(0, 7, 1, TokenKind.CloseBracket),
+            new Token(0, 9, 1, TokenKind.OpenBracket),
+            new Token(0, 10, 5, TokenKind.Identificator),
+            new Token(0, 15, 1, TokenKind.CloseBracket),
+            new Token(0, 16, 1, TokenKind.CloseBracket),
+        });
+        Assert.AreEqual(null, _result.Error);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.AreEqual("func", func.Name);
+        Assert.AreEqual(0, func.Arguments.Count);
+        Assert.AreEqual(1, func.Body.Count);
+        Assert.True(func.Body.First() is ListValueElement);
+        var body = (ListValueElement)func.Body.First();
+        Assert.AreEqual(1, body.Items.Count);
+        Assert.AreEqual(typeof(NamedConstantValueElement), body.Items.First().GetType());
+        Assert.AreEqual("WIDTH", ((NamedConstantValueElement)body.Items.First()).Name);
+    }
+
+    [Test]
     public void FunctionDeclaration_Function()
     {
         _scopeMock.Setup(x => x.IsFunctionExist("print")).Returns(true);

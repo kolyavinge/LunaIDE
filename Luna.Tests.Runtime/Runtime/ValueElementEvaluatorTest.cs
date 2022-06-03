@@ -58,22 +58,35 @@ internal class ValueElementEvaluatorTest
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(888));
         var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, func);
         Assert.AreEqual(888, result.Value);
-        _scope.Verify(x => x.PushFunctionArguments(), Times.Once());
-        _scope.Verify(x => x.PopFunctionArguments(), Times.Once());
     }
 
     [Test]
     public void ArgumentAsFunctionRuntimeValue()
     {
         var arguments = new[] { new IntegerValueElement(123) };
-        var func = new FunctionValueElement(_codeModel, "func", arguments);
-        _scope.Setup(x => x.IsDeclaredFunction("func")).Returns(false);
+        var x = new FunctionValueElement(_codeModel, "x", arguments);
+        _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new FunctionRuntimeValue("func", _scope.Object));
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(888));
-        var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, func);
+        var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, x);
         Assert.AreEqual(888, result.Value);
-        _scope.Verify(x => x.PushFunctionArguments(), Times.Never());
-        _scope.Verify(x => x.PopFunctionArguments(), Times.Never());
+    }
+
+    [Test]
+    public void IsNotFunction()
+    {
+        try
+        {
+            var arguments = new[] { new IntegerValueElement(123) };
+            var x = new FunctionValueElement(_codeModel, "x", arguments);
+            _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new IntegerRuntimeValue(1));
+            _evaluator.Eval(_scope.Object, x);
+        }
+        catch (RuntimeException e)
+        {
+            Assert.AreEqual("Argument x is not a function and cannot be called.", e.Message);
+            Assert.Pass();
+        }
     }
 
     [Test]
@@ -81,8 +94,11 @@ internal class ValueElementEvaluatorTest
     {
         var arguments = new[] { new FunctionArgument("x") };
         var lambda = new LambdaValueElement(arguments, new FunctionBody());
-        _scope.Setup(x => x.AddLambda(lambda)).Returns("lambda_0");
+        _scope.Setup(x => x.AddLambda(lambda)).Returns(new AddLambdaResult("lambda_0", new(new[] { new IntegerRuntimeValue(123) })));
         var result = (FunctionRuntimeValue)_evaluator.Eval(_scope.Object, lambda);
+        Assert.AreEqual("lambda_0", result.Name);
+        Assert.AreEqual(1, result.AlreadyPassedArguments.Count);
+        Assert.AreEqual(new IntegerRuntimeValue(123), result.AlreadyPassedArguments[0]);
         _scope.Verify(x => x.AddLambda(lambda), Times.Once());
         _scope.Verify(x => x.PushFunctionArguments(), Times.Never());
         _scope.Verify(x => x.PopFunctionArguments(), Times.Never());

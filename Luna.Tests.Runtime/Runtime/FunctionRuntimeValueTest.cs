@@ -15,14 +15,15 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     }
 
     [Test]
-    public void ScopeAddRemoveArguments()
+    public void ScopePushPopFunctionArguments()
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         var argument = new IntegerRuntimeValue(123);
         var arguments = new IRuntimeValue[] { argument };
         Eval("func", arguments);
-        _scope.Verify(x => x.AddFunctionArgument("x", argument));
-        _scope.Verify(x => x.RemoveFunctionArgument("x"));
+        _scope.Verify(x => x.AddFunctionArgument("x", argument), Times.Once());
+        _scope.Verify(x => x.PushFunctionArguments(), Times.Once());
+        _scope.Verify(x => x.PopFunctionArguments(), Times.Once());
     }
 
     [Test]
@@ -83,30 +84,12 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     }
 
     [Test]
-    public void ArgumentAsFunction()
+    public void ResultAsFunctionWithArguments()
     {
-        _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
-        _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new BooleanRuntimeValue(false) }.ToReadonlyArray())).Returns(new BooleanRuntimeValue(false));
-        _scope.Setup(x => x.ArgumentCalledAsFunction("x")).Returns(true);
-        _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new FunctionRuntimeValue("func", _scope.Object));
-        var result = (BooleanRuntimeValue)Eval("x", new IRuntimeValue[] { new BooleanRuntimeValue(false) });
-        Assert.AreEqual(false, result.Value);
-    }
-
-    [Test]
-    public void IsNotFunction()
-    {
-        _scope.Setup(x => x.ArgumentCalledAsFunction("x")).Returns(true);
-        _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new BooleanRuntimeValue(false));
-        try
-        {
-            Eval("x", new IRuntimeValue[0]);
-            Assert.Fail();
-        }
-        catch (RuntimeException e)
-        {
-            Assert.AreEqual("Argument x is not a function and cannot be called.", e.Message);
-            Assert.Pass();
-        }
+        _scope.Setup(x => x.GetFunctionArgumentNames("funcResult")).Returns(new[] { "x" });
+        _scope.Setup(x => x.GetDeclaredFunctionValue("funcResult", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(123));
+        _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new FunctionRuntimeValue("funcResult", _scope.Object));
+        var result = (IntegerRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+        Assert.AreEqual(123, result.Value);
     }
 }

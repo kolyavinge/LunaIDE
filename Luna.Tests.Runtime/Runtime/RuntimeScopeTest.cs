@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Luna.Collections;
 using Luna.Functions;
 using Luna.Functions.Lang;
 using Luna.Infrastructure;
@@ -61,6 +62,14 @@ internal class RuntimeScopeTest
     }
 
     [Test]
+    public void VoidEmptyBody()
+    {
+        _declaredFunctions.Add(new FunctionDeclaration("func", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
+        MakeScope();
+        Assert.AreEqual(new VoidRuntimeValue(), _scope.GetDeclaredFunctionValue("func", new IRuntimeValue[0].ToReadonlyArray()));
+    }
+
+    [Test]
     public void FromCodeModel()
     {
         var codeModel = new CodeModel();
@@ -75,7 +84,7 @@ internal class RuntimeScopeTest
 
         Assert.AreEqual(typeof(BooleanValueElement), result.GetConstantValue("const_1").GetType());
         Assert.AreEqual(typeof(IntegerValueElement), result.GetConstantValue("import_const_1").GetType());
-        Assert.True(result.IsDeclaredFunction("func_1"));
-        Assert.True(result.IsDeclaredFunction("import_func_1"));
+        Assert.True(result.IsDeclaredOrEmbeddedFunction("func_1"));
+        Assert.True(result.IsDeclaredOrEmbeddedFunction("import_func_1"));
     }
 }

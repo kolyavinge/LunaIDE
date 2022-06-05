@@ -12,7 +12,7 @@ public interface IInterpreter
 
 public class Interpreter : IInterpreter
 {
-    internal IRuntimeValue? Result { get; set; }
+    internal IRuntimeValue? Result { get; private set; }
 
     public void Run(Project project, IRuntimeOutput output)
     {
@@ -27,7 +27,7 @@ public class Interpreter : IInterpreter
         evaluator.Scopes = scopes;
         var main = codeModels.First(x => x.RunFunction != null);
         var mainScope = scopes.GetForCodeModel(main);
-        Result = evaluator.Eval(mainScope, main.RunFunction!);
-        outputWriter.ProgramResult(Result);
+        Result = evaluator.Eval(mainScope, main.RunFunction!).GetValue();
+        outputWriter.ProgramResult(Result!);
     }
 }

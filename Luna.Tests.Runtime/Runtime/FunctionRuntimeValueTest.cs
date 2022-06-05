@@ -84,6 +84,15 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     }
 
     [Test]
+    public void AlreadyPassedArgumentsWithoutDuplicateChecking()
+    {
+        _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x", "y" });
+        _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123), new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new StringRuntimeValue("123"));
+        var result = (StringRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }, new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+        Assert.AreEqual("123", result.Value);
+    }
+
+    [Test]
     public void ResultAsFunctionWithArguments()
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("funcResult")).Returns(new[] { "x" });

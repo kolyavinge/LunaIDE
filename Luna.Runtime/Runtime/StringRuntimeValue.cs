@@ -2,7 +2,7 @@
 
 namespace Luna.Runtime;
 
-internal class StringRuntimeValue : IRuntimeValue
+internal class StringRuntimeValue : RuntimeValue
 {
     public string Value { get; }
 

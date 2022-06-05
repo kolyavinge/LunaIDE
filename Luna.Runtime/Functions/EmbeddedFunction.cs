@@ -7,6 +7,8 @@ namespace Luna.Functions;
 
 internal abstract class EmbeddedFunction
 {
+    private ReadonlyArray<IRuntimeValue>? _argumentValues;
+
     public string Name { get; }
 
     public string[] Arguments { get; }
@@ -18,17 +20,24 @@ internal abstract class EmbeddedFunction
         Arguments = attr.Arguments;
     }
 
-    protected TValue GetValueOrError<TValue>(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex) where TValue : IRuntimeValue
+    public void SetArgumentValues(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        if (argumentValues[argumentIndex] is not TValue value)
+        _argumentValues = argumentValues;
+    }
+
+    public TValue GetValueOrError<TValue>(int argumentIndex) where TValue : IRuntimeValue
+    {
+        if (_argumentValues == null) throw new RuntimeException("Argument values have not been passed.");
+        var value = _argumentValues[argumentIndex].GetValue();
+        if (value is not TValue valueConvered)
         {
             throw new RuntimeException("Embedded function argument cannot be get.");
         }
 
-        return value;
+        return valueConvered;
     }
 
-    public abstract IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues);
+    public abstract IRuntimeValue GetValue();
 }
 
 [AttributeUsage(AttributeTargets.Class)]

@@ -2,7 +2,7 @@
 
 namespace Luna.Runtime;
 
-internal class BooleanRuntimeValue : IRuntimeValue
+internal class BooleanRuntimeValue : RuntimeValue
 {
     public bool Value { get; }
 

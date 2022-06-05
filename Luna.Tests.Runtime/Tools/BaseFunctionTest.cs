@@ -11,6 +11,7 @@ internal class BaseFunctionTest<TFunction> where TFunction : EmbeddedFunction, n
 
     protected TValue GetValue<TValue>(params TValue[] values) where TValue : IRuntimeValue
     {
-        return (TValue)_function.GetValue(new ReadonlyArray<IRuntimeValue>(values.Cast<IRuntimeValue>()));
+        _function.SetArgumentValues(new ReadonlyArray<IRuntimeValue>(values.Cast<IRuntimeValue>()));
+        return (TValue)_function.GetValue();
     }
 }

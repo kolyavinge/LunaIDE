@@ -53,10 +53,10 @@ internal class ValueElementEvaluatorTest
     {
         var arguments = new[] { new IntegerValueElement(123) };
         var func = new FunctionValueElement(_codeModel, "func", arguments);
-        _scope.Setup(x => x.IsDeclaredFunction("func")).Returns(true);
+        _scope.Setup(x => x.IsDeclaredOrEmbeddedFunction("func")).Returns(true);
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(888));
-        var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, func);
+        var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, func).GetValue();
         Assert.AreEqual(888, result.Value);
     }
 

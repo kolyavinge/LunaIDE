@@ -2,7 +2,7 @@
 
 namespace Luna.Runtime;
 
-internal class IntegerRuntimeValue : IRuntimeValue
+internal class IntegerRuntimeValue : RuntimeValue
 {
     public int Value { get; }
 

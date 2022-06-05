@@ -1,6 +1,6 @@
 ﻿namespace Luna.Runtime;
 
-internal class VoidRuntimeValue : IRuntimeValue
+internal class VoidRuntimeValue : RuntimeValue
 {
     public override string ToString()
     {

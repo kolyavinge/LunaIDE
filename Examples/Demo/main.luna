@@ -7,6 +7,8 @@ import 'imported.luna'
 
 (lambdaCall (l) (l 'called lambda'))
 
-(run (lambdaCall (lambda (x) x)))
+//(run (lambdaCall (lambda (x) x)))
 
 //(run (func (INT_CONST FLOAT_CONST STR_CONST)))
+
+(run (if (eq 1 1) (func 10) (func 20)))

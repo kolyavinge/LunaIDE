@@ -6,7 +6,7 @@ namespace Luna.Runtime;
 internal interface IRuntimeScope
 {
     ValueElement GetConstantValue(string constantName);
-    bool IsDeclaredFunction(string functionName);
+    bool IsDeclaredOrEmbeddedFunction(string functionName);
     string[] GetFunctionArgumentNames(string functionName);
     IRuntimeValue GetFunctionArgumentValue(string argumentName);
     void PushFunctionArguments();

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Luna.Runtime;
 
-internal class FloatRuntimeValue : IRuntimeValue
+internal class FloatRuntimeValue : RuntimeValue
 {
     public double Value { get; }
 

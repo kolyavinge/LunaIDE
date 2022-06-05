@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.Collections;
 using Luna.Functions;
@@ -52,9 +51,9 @@ internal class RuntimeScope : IRuntimeScope
         return _constDeclarations[constantName].Value;
     }
 
-    public bool IsDeclaredFunction(string functionName)
+    public bool IsDeclaredOrEmbeddedFunction(string functionName)
     {
-        return _declaredFunctions.ContainsKey(functionName);
+        return _declaredFunctions.ContainsKey(functionName) || _embeddedFunctions.Contains(functionName);
     }
 
     public string[] GetFunctionArgumentNames(string functionName)
@@ -93,7 +92,7 @@ internal class RuntimeScope : IRuntimeScope
             result = _evaluator.Eval(this, item);
         }
 
-        return result!;
+        return (result ?? new VoidRuntimeValue()).GetValue();
     }
 
     public bool IsEmbeddedFunction(string functionName)
@@ -103,7 +102,9 @@ internal class RuntimeScope : IRuntimeScope
 
     public IRuntimeValue GetEmbeddedFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        return _embeddedFunctions.GetByName(functionName).GetValue(argumentValues);
+        var func = _embeddedFunctions.GetByName(functionName);
+        func.SetArgumentValues(argumentValues);
+        return func.GetValue();
     }
 
     private int _lambdaNameIncrement;

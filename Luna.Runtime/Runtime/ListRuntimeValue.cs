@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Luna.Runtime;
 
-internal class ListRuntimeValue : IRuntimeValue
+internal class ListRuntimeValue : RuntimeValue
 {
     private readonly List<IRuntimeValue> _runtimeValues;
 

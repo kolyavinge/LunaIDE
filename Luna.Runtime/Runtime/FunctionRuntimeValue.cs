@@ -5,7 +5,7 @@ using Luna.Utils;
 
 namespace Luna.Runtime;
 
-internal class FunctionRuntimeValue : IRuntimeValue
+internal class FunctionRuntimeValue : RuntimeValue
 {
     private readonly IRuntimeScope _scope;
 
@@ -19,15 +19,16 @@ internal class FunctionRuntimeValue : IRuntimeValue
         _scope = scope;
     }
 
-    public IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue>? argumentValues = null)
     {
+        argumentValues ??= new ReadonlyArray<IRuntimeValue>();
         if (AlreadyPassedArguments != null)
         {
-            argumentValues = AlreadyPassedArguments.Union(argumentValues).ToReadonlyArray();
+            argumentValues = AlreadyPassedArguments.Concat(argumentValues).ToReadonlyArray();
         }
         var argumentNames = _scope.GetFunctionArgumentNames(Name);
         _scope.PushFunctionArguments();
-        Enumerable.Range(0, Math.Min(argumentNames.Length, argumentValues.Count)).Each(index => _scope.AddFunctionArgument(argumentNames[index], argumentValues[index]));
+        Enumerable.Range(0, Math.Min(argumentNames.Length, argumentValues.Count)).Each(i => _scope.AddFunctionArgument(argumentNames[i], argumentValues[i]));
         IRuntimeValue result;
         if (argumentValues.Count < argumentNames.Length)
         {

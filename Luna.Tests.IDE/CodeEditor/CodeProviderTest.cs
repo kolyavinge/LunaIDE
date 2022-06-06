@@ -94,6 +94,22 @@ public class CodeProviderTest
     }
 
     [Test]
+    public void Const_BooleanTrue()
+    {
+        var tokens = GetTokens("true");
+        Assert.AreEqual(1, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 4, (byte)TokenKind.BooleanTrue), tokens[0]);
+    }
+
+    [Test]
+    public void Const_BooleanFalse()
+    {
+        var tokens = GetTokens("false");
+        Assert.AreEqual(1, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 5, (byte)TokenKind.BooleanFalse), tokens[0]);
+    }
+
+    [Test]
     public void ComplexIdentificator()
     {
         var tokens = GetTokens("xxx.yyy.zzz");

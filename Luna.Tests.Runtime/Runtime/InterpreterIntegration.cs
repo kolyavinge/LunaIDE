@@ -127,4 +127,14 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run();
         Assert.AreEqual("1", _resultString);
     }
+
+    [Test]
+    public void If()
+    {
+        CodeFile(@"
+            (run (if true 1 2))
+");
+        Run();
+        Assert.AreEqual("1", _resultString);
+    }
 }

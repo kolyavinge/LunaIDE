@@ -201,6 +201,8 @@ public class Scanner
         if (StringUtils.StringEquals("import", _nameArray, _nameLength)) return TokenKind.ImportDirective;
         if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return TokenKind.ConstDeclaration;
         if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return TokenKind.Lambda;
+        if (StringUtils.StringEquals("true", _nameArray, _nameLength)) return TokenKind.BooleanTrue;
+        if (StringUtils.StringEquals("false", _nameArray, _nameLength)) return TokenKind.BooleanFalse;
         if (StringUtils.StringEquals("run", _nameArray, _nameLength)) return TokenKind.RunFunction;
         if (IsIntegerNumber()) return TokenKind.IntegerNumber;
 

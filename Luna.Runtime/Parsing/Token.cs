@@ -30,6 +30,8 @@ public enum TokenKind : byte
     RunFunction,
     IntegerNumber,
     FloatNumber,
+    BooleanTrue,
+    BooleanFalse,
     Comment,
     Dot
 }

@@ -89,6 +89,14 @@ public class FunctionParser : AbstractParser
         {
             constValue = new StringValueElement(GetTokenName(), Token.LineIndex, Token.StartColumnIndex);
         }
+        else if (Token.Kind == TokenKind.BooleanTrue)
+        {
+            constValue = new BooleanValueElement(true, Token.LineIndex, Token.StartColumnIndex);
+        }
+        else if (Token.Kind == TokenKind.BooleanFalse)
+        {
+            constValue = new BooleanValueElement(false, Token.LineIndex, Token.StartColumnIndex);
+        }
         else
         {
             _result.SetError(ParserMessageType.ConstIncorrectValue, Token);
@@ -127,7 +135,7 @@ public class FunctionParser : AbstractParser
             return;
         }
         MoveNext();
-        (var arguments, var body) = ParseFunctionArgumentsAndBody();
+        var (arguments, body) = ParseFunctionArgumentsAndBody();
         if (arguments != null && body != null)
         {
             _codeModel.AddFunctionDeclaration(new FunctionDeclaration(funcName, arguments, body, funcToken.LineIndex, funcToken.StartColumnIndex));
@@ -214,6 +222,16 @@ public class FunctionParser : AbstractParser
         else if (Token.Kind == TokenKind.String)
         {
             body = new StringValueElement(GetTokenName(), Token.LineIndex, Token.StartColumnIndex);
+            MoveNext();
+        }
+        else if (Token.Kind == TokenKind.BooleanTrue)
+        {
+            body = new BooleanValueElement(true, Token.LineIndex, Token.StartColumnIndex);
+            MoveNext();
+        }
+        else if (Token.Kind == TokenKind.BooleanFalse)
+        {
+            body = new BooleanValueElement(false, Token.LineIndex, Token.StartColumnIndex);
             MoveNext();
         }
         else if (Token.Kind == TokenKind.Identificator)
@@ -316,7 +334,7 @@ public class FunctionParser : AbstractParser
     {
         var lambdaToken = Token;
         MoveNext();
-        (var lambdaArguments, var lambdaBody) = ParseFunctionArgumentsAndBody();
+        var (lambdaArguments, lambdaBody) = ParseFunctionArgumentsAndBody();
         if (lambdaArguments != null && lambdaBody != null)
         {
             return new LambdaValueElement(lambdaArguments, lambdaBody, lambdaToken.LineIndex, lambdaToken.StartColumnIndex);

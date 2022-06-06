@@ -22,19 +22,21 @@ public class CodeProvider : ICodeProvider
 
     public IEnumerable<TokenColor> GetColors()
     {
-        return new[]
+        return new TokenColor[]
         {
-            new TokenColor((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
-            new TokenColor((byte) TokenKind.Lambda, CodeProviderColors.Magenta),
-            new TokenColor((byte) TokenKind.RunFunction, CodeProviderColors.Green),
-            new TokenColor((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
-            new TokenColor((byte) TokenKind.String, CodeProviderColors.Orange),
-            new TokenColor((byte) TokenKind.IntegerNumber, CodeProviderColors.Red),
-            new TokenColor((byte) TokenKind.FloatNumber, CodeProviderColors.Red),
-            new TokenColor((byte) TokenKind.Comment, CodeProviderColors.LightGreen),
-            new TokenColor((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
-            new TokenColor((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
-            new TokenColor((byte) TokenKind.Dot, CodeProviderColors.Gray),
+            new((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
+            new((byte) TokenKind.Lambda, CodeProviderColors.Magenta),
+            new((byte) TokenKind.RunFunction, CodeProviderColors.Green),
+            new((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
+            new((byte) TokenKind.String, CodeProviderColors.Orange),
+            new((byte) TokenKind.IntegerNumber, CodeProviderColors.Red),
+            new((byte) TokenKind.FloatNumber, CodeProviderColors.Red),
+            new((byte) TokenKind.BooleanTrue, CodeProviderColors.Magenta),
+            new((byte) TokenKind.BooleanFalse, CodeProviderColors.Magenta),
+            new((byte) TokenKind.Comment, CodeProviderColors.LightGreen),
+            new((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
+            new((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
+            new((byte) TokenKind.Dot, CodeProviderColors.Gray)
         };
     }
 }

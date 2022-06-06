@@ -99,6 +99,6 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
         _scope.Setup(x => x.GetDeclaredFunctionValue("funcResult", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(123));
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new FunctionRuntimeValue("funcResult", _scope.Object));
         var result = (IntegerRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
-        Assert.AreEqual(123, result.Value);
+        Assert.AreEqual(123, result.IntegerValue);
     }
 }

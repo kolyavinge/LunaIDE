@@ -3,28 +3,28 @@ using System.Globalization;
 
 namespace Luna.Runtime;
 
-internal class FloatRuntimeValue : RuntimeValue
+internal class FloatRuntimeValue : NumericRuntimeValue
 {
-    public double Value { get; }
+    public override double FloatValue { get; }
 
     public FloatRuntimeValue(double value)
     {
-        Value = value;
+        FloatValue = value;
     }
 
     public override string ToString()
     {
-        return Value.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
+        return FloatValue.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
     }
 
     public override bool Equals(object? obj)
     {
         return obj is FloatRuntimeValue value &&
-               Value == value.Value;
+               FloatValue == value.FloatValue;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Value);
+        return HashCode.Combine(FloatValue);
     }
 }

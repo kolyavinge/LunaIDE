@@ -62,7 +62,7 @@ internal class ScannerTest
     }
 
     [Test]
-    public void Const_CommentInFunction()
+    public void Function_CommentInFunction()
     {
         var tokens = GetTokens("(func (x//))");
         Assert.AreEqual(5, tokens.Count);
@@ -120,7 +120,7 @@ internal class ScannerTest
     }
 
     [Test]
-    public void FunctionDeclare()
+    public void FunctionDeclaration()
     {
         var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
         Assert.AreEqual(13, tokens.Count);
@@ -137,6 +137,54 @@ internal class ScannerTest
         Assert.AreEqual(new Token(0, 26, 1, TokenKind.IntegerNumber), tokens[10]);
         Assert.AreEqual(new Token(0, 27, 1, TokenKind.CloseBracket), tokens[11]);
         Assert.AreEqual(new Token(0, 28, 1, TokenKind.CloseBracket), tokens[12]);
+    }
+
+    [Test]
+    public void FunctionCall_Add()
+    {
+        var tokens = GetTokens("(+ 1 2)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 1, TokenKind.Plus), tokens[1]);
+        Assert.AreEqual(new Token(0, 3, 1, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token(0, 5, 1, TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(0, 6, 1, TokenKind.CloseBracket), tokens[4]);
+    }
+
+    [Test]
+    public void FunctionCall_Sub()
+    {
+        var tokens = GetTokens("(- 1 2)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 1, TokenKind.Minus), tokens[1]);
+        Assert.AreEqual(new Token(0, 3, 1, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token(0, 5, 1, TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(0, 6, 1, TokenKind.CloseBracket), tokens[4]);
+    }
+
+    [Test]
+    public void FunctionCall_Mul()
+    {
+        var tokens = GetTokens("(* 1 2)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 1, TokenKind.Asterisk), tokens[1]);
+        Assert.AreEqual(new Token(0, 3, 1, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token(0, 5, 1, TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(0, 6, 1, TokenKind.CloseBracket), tokens[4]);
+    }
+
+    [Test]
+    public void FunctionCall_Div()
+    {
+        var tokens = GetTokens("(/ 1 2)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token(0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token(0, 1, 1, TokenKind.Slash), tokens[1]);
+        Assert.AreEqual(new Token(0, 3, 1, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token(0, 5, 1, TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(0, 6, 1, TokenKind.CloseBracket), tokens[4]);
     }
 
     [Test]

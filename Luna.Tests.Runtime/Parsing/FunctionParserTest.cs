@@ -901,6 +901,50 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_MathOperators()
+    {
+        Parse("( f () (+ 1 2) (- 1 2) (* 1 2) (/ 1 2) )", new Token[]
+        {
+            new(0, 0, 1, TokenKind.OpenBracket),
+
+            new(0, 2, 1, TokenKind.Identificator),
+            new(0, 4, 1, TokenKind.OpenBracket),
+            new(0, 5, 1, TokenKind.CloseBracket),
+
+            new(0, 7, 1, TokenKind.OpenBracket),
+            new(0, 8, 1, TokenKind.Plus),
+            new(0, 10, 1, TokenKind.IntegerNumber),
+            new(0, 12, 1, TokenKind.IntegerNumber),
+            new(0, 13, 1, TokenKind.CloseBracket),
+
+            new(0, 15, 1, TokenKind.OpenBracket),
+            new(0, 16, 1, TokenKind.Minus),
+            new(0, 18, 1, TokenKind.IntegerNumber),
+            new(0, 20, 1, TokenKind.IntegerNumber),
+            new(0, 21, 1, TokenKind.CloseBracket),
+
+            new(0, 23, 1, TokenKind.OpenBracket),
+            new(0, 24, 1, TokenKind.Asterisk),
+            new(0, 26, 1, TokenKind.IntegerNumber),
+            new(0, 28, 1, TokenKind.IntegerNumber),
+            new(0, 29, 1, TokenKind.CloseBracket),
+
+            new(0, 31, 1, TokenKind.OpenBracket),
+            new(0, 32, 1, TokenKind.Slash),
+            new(0, 34, 1, TokenKind.IntegerNumber),
+            new(0, 36, 1, TokenKind.IntegerNumber),
+            new(0, 37, 1, TokenKind.CloseBracket),
+
+            new(0, 39, 1, TokenKind.CloseBracket)
+        });
+        Assert.AreEqual(null, _result.Error);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.AreEqual(4, func.Body.Count);
+    }
+
+    [Test]
     public void RunFunctionCall()
     {
         Parse("(run (f 1))", new Token[]

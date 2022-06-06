@@ -66,6 +66,6 @@ internal class EmbeddedFunctionTest
         var argumentValues = new IRuntimeValue[] { value.Object }.ToReadonlyArray();
         _func.SetArgumentValues(argumentValues);
         var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
-        Assert.AreEqual(123, argumentValue.Value);
+        Assert.AreEqual(123, argumentValue.IntegerValue);
     }
 }

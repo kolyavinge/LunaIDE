@@ -19,8 +19,4 @@
 		<ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Functions\Math\" />
-	</ItemGroup>
-
 </Project>

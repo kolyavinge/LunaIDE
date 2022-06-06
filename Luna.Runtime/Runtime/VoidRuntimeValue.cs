@@ -2,6 +2,10 @@
 
 internal class VoidRuntimeValue : RuntimeValue
 {
+    public static readonly VoidRuntimeValue Instance = new();
+
+    private VoidRuntimeValue() { }
+
     public override string ToString()
     {
         return "void";

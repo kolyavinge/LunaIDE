@@ -1,0 +1,7 @@
+// factorial
+
+(fac (n) (if (eq n 0)
+         1
+         (* n (fac (- n 1)))))
+
+(run (fac 10))

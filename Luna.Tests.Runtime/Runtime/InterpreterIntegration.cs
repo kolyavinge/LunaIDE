@@ -137,4 +137,44 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run();
         Assert.AreEqual("1", _resultString);
     }
+
+    [Test]
+    public void Add()
+    {
+        CodeFile(@"
+            (run (+ 1 2))
+");
+        Run();
+        Assert.AreEqual("3", _resultString);
+    }
+
+    [Test]
+    public void Sub()
+    {
+        CodeFile(@"
+            (run (- 1 2))
+");
+        Run();
+        Assert.AreEqual("-1", _resultString);
+    }
+
+    [Test]
+    public void Mul()
+    {
+        CodeFile(@"
+            (run (* 3 2))
+");
+        Run();
+        Assert.AreEqual("6", _resultString);
+    }
+
+    [Test]
+    public void Div()
+    {
+        CodeFile(@"
+            (run (/ 8 2))
+");
+        Run();
+        Assert.AreEqual("4", _resultString);
+    }
 }

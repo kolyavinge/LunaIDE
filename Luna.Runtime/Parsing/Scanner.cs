@@ -82,7 +82,8 @@ public class Scanner
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;
-                    _kind = TokenKind.Operator;
+                    _nameLength = 0;
+                    AddTokenChar();
                     MakeToken();
                     textIterator.MoveNext();
                     goto case State.Begin;
@@ -204,6 +205,10 @@ public class Scanner
         if (StringUtils.StringEquals("true", _nameArray, _nameLength)) return TokenKind.BooleanTrue;
         if (StringUtils.StringEquals("false", _nameArray, _nameLength)) return TokenKind.BooleanFalse;
         if (StringUtils.StringEquals("run", _nameArray, _nameLength)) return TokenKind.RunFunction;
+        if (StringUtils.StringEquals("+", _nameArray, _nameLength)) return TokenKind.Plus;
+        if (StringUtils.StringEquals("-", _nameArray, _nameLength)) return TokenKind.Minus;
+        if (StringUtils.StringEquals("*", _nameArray, _nameLength)) return TokenKind.Asterisk;
+        if (StringUtils.StringEquals("/", _nameArray, _nameLength)) return TokenKind.Slash;
         if (IsIntegerNumber()) return TokenKind.IntegerNumber;
 
         return TokenKind.Identificator;
@@ -224,6 +229,6 @@ public class Scanner
         String,
         Comment,
         Error,
-        End,
+        End
     }
 }

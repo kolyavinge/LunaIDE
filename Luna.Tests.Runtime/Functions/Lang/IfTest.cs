@@ -11,7 +11,7 @@ internal class IfTest : BaseFunctionTest<If>
     public void GetValue()
     {
         var integerResult = (IntegerRuntimeValue)GetValue(new IRuntimeValue[] { new BooleanRuntimeValue(true), new IntegerRuntimeValue(123), new StringRuntimeValue("987") });
-        Assert.AreEqual(123, integerResult.Value);
+        Assert.AreEqual(123, integerResult.IntegerValue);
 
         var stringResult = (StringRuntimeValue)GetValue(new IRuntimeValue[] { new BooleanRuntimeValue(false), new IntegerRuntimeValue(123), new StringRuntimeValue("987") });
         Assert.AreEqual("987", stringResult.Value);

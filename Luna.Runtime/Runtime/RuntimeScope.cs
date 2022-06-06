@@ -85,14 +85,14 @@ internal class RuntimeScope : IRuntimeScope
 
     public IRuntimeValue GetDeclaredFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        IRuntimeValue? result = null;
+        IRuntimeValue result = VoidRuntimeValue.Instance;
         var declaration = _declaredFunctions[functionName];
         foreach (var item in declaration.Body)
         {
             result = _evaluator.Eval(this, item);
         }
 
-        return (result ?? new VoidRuntimeValue()).GetValue();
+        return result.GetValue();
     }
 
     public bool IsEmbeddedFunction(string functionName)

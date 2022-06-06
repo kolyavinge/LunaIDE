@@ -57,7 +57,7 @@ internal class ValueElementEvaluatorTest
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(888));
         var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, func).GetValue();
-        Assert.AreEqual(888, result.Value);
+        Assert.AreEqual(888, result.IntegerValue);
     }
 
     [Test]
@@ -69,7 +69,7 @@ internal class ValueElementEvaluatorTest
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray())).Returns(new IntegerRuntimeValue(888));
         var result = (IntegerRuntimeValue)_evaluator.Eval(_scope.Object, x);
-        Assert.AreEqual(888, result.Value);
+        Assert.AreEqual(888, result.IntegerValue);
     }
 
     [Test]

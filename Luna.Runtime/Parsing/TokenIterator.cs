@@ -16,6 +16,7 @@ public class TokenIterator
 
     public TokenIterator(IEnumerable<Token> tokens)
     {
+        Token = PrevToken = Token.Default;
         _tokens = tokens.ToList();
         _index = -1;
         MoveNext();
@@ -35,7 +36,7 @@ public class TokenIterator
             else
             {
                 PrevToken = Token;
-                Token = default;
+                Token = Token.Default;
             }
         }
     }

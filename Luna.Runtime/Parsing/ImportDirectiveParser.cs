@@ -8,8 +8,8 @@ public class ImportDirectiveParser : AbstractParser
 {
     private readonly IImportDirectiveParserScope _scope;
 
-    public ImportDirectiveParser(Text text, TokenIterator iter, CodeModel codeModel, IImportDirectiveParserScope scope)
-        : base(text, iter, codeModel)
+    public ImportDirectiveParser(TokenIterator iter, CodeModel codeModel, IImportDirectiveParserScope scope)
+        : base(iter, codeModel)
     {
         _scope = scope;
     }

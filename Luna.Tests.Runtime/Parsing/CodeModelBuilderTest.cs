@@ -65,12 +65,12 @@ internal class CodeModelBuilderTest
     public void BuildCodeModelsFor_Warnings()
     {
         var parseResult1 = new ParseResult();
-        parseResult1.AddWarning(ParserMessageType.ConstNoValue, new Token());
-        parseResult1.AddWarning(ParserMessageType.ConstIncorrectValue, new Token());
+        parseResult1.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
+        parseResult1.AddWarning(ParserMessageType.ConstIncorrectValue, Token.Default);
         _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
         var parseResult2 = new ParseResult();
-        parseResult2.AddWarning(ParserMessageType.ConstNoValue, new Token());
-        parseResult2.AddWarning(ParserMessageType.ConstIncorrectValue, new Token());
+        parseResult2.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
+        parseResult2.AddWarning(ParserMessageType.ConstIncorrectValue, Token.Default);
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
         var result = _builder.BuildCodeModelsFor(_allCodeFiles);
@@ -95,12 +95,12 @@ internal class CodeModelBuilderTest
     public void BuildCodeModelsFor_WarningsAndErrors()
     {
         var parseResult1 = new ParseResult();
-        parseResult1.SetError(ParserMessageType.FunctionNameExist, new Token());
-        parseResult1.AddWarning(ParserMessageType.ConstNoValue, new Token());
+        parseResult1.SetError(ParserMessageType.FunctionNameExist, Token.Default);
+        parseResult1.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
         _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
         var parseResult2 = new ParseResult();
-        parseResult2.SetError(ParserMessageType.FunctionNameExist, new Token());
-        parseResult2.AddWarning(ParserMessageType.ConstNoValue, new Token());
+        parseResult2.SetError(ParserMessageType.FunctionNameExist, Token.Default);
+        parseResult2.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
         var result = _builder.BuildCodeModelsFor(_allCodeFiles);

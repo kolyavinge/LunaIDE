@@ -30,7 +30,7 @@ public class OutputArea : IOutputArea
 
     public void NewMessage(OutputMessage message)
     {
-        _tokens.AddRange(message.Items.Select(item => new Token(_currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
+        _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
         _currentLine++;
         TextCommands.MoveCursorTextEndCommand.Execute();
         TextCommands.InsertTextCommand.Execute(new InsertTextCommandParameter(message.Text + Environment.NewLine));

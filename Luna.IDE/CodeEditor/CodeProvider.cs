@@ -17,7 +17,7 @@ public class CodeProvider : ICodeProvider
 
     private Token Convert(Parsing.Token token)
     {
-        return new Token(token.LineIndex, token.StartColumnIndex, token.Length, (byte)token.Kind);
+        return new(token.Name, token.LineIndex, token.StartColumnIndex, token.Length, (byte)token.Kind);
     }
 
     public IEnumerable<TokenColor> GetColors()

@@ -28,8 +28,9 @@ public class Scanner
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;
-                    _nameLength = 1;
+                    _nameLength = 0;
                     _kind = TokenKind.OpenBracket;
+                    AddTokenChar();
                     MakeToken();
                     textIterator.MoveNext();
                     goto case State.Begin;
@@ -38,8 +39,9 @@ public class Scanner
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;
-                    _nameLength = 1;
+                    _nameLength = 0;
                     _kind = TokenKind.CloseBracket;
+                    AddTokenChar();
                     MakeToken();
                     textIterator.MoveNext();
                     goto case State.Begin;
@@ -48,9 +50,11 @@ public class Scanner
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;
-                    _nameLength = 1;
+                    _nameLength = 0;
                     _kind = TokenKind.String;
-                    textIterator.MoveNext(); goto case State.String;
+                    AddTokenChar();
+                    textIterator.MoveNext();
+                    goto case State.String;
                 }
                 else if (IsStartIdentificatorNameChar())
                 {
@@ -76,6 +80,8 @@ public class Scanner
                     _columnIndex = textIterator.ColumnIndex;
                     _nameLength = 0;
                     _kind = TokenKind.Comment;
+                    AddTokenChar();
+                    textIterator.MoveNext();
                     goto case State.Comment;
                 }
                 else if (IsOperator())
@@ -92,8 +98,9 @@ public class Scanner
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;
-                    _nameLength = 1;
+                    _nameLength = 0;
                     _kind = TokenKind.Dot;
+                    AddTokenChar();
                     MakeToken();
                     textIterator.MoveNext();
                     goto case State.Begin;
@@ -116,8 +123,8 @@ public class Scanner
             case State.String:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
                 else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else if (textIterator.Char == '\'') { _nameLength++; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else { _nameLength++; textIterator.MoveNext(); goto case State.String; }
+                else if (textIterator.Char == '\'') { AddTokenChar(); MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                else { AddTokenChar(); textIterator.MoveNext(); goto case State.String; }
             case State.Number:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
                 else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
@@ -137,10 +144,10 @@ public class Scanner
             case State.Comment:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
                 else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else { _nameLength++; textIterator.MoveNext(); goto case State.Comment; }
+                else { AddTokenChar(); textIterator.MoveNext(); goto case State.Comment; }
             case State.Error:
                 _kind = TokenKind.Unknown;
-                _nameLength++;
+                AddTokenChar();
                 MakeToken();
                 textIterator.MoveNext();
                 goto case State.Begin;
@@ -158,7 +165,7 @@ public class Scanner
 
     private void MakeToken()
     {
-        _tokens.Add(new(_lineIndex, _columnIndex, _nameLength, _kind ?? GetTokenKind()));
+        _tokens.Add(new(new string(_nameArray, 0, _nameLength), _lineIndex, _columnIndex, _nameLength, _kind ?? GetTokenKind()));
         _kind = null;
     }
 

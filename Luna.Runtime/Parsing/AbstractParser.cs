@@ -30,17 +30,16 @@ public class ParseResult
 
 public abstract class AbstractParser
 {
-    private readonly Text _text;
     private readonly TokenIterator _iter;
     protected readonly CodeModel _codeModel;
     protected readonly ParseResult _result;
 
     protected Token Prev => _iter.PrevToken;
     protected Token Token => _iter.Token;
+    protected bool Eof => _iter.Eof;
 
-    protected AbstractParser(Text text, TokenIterator iter, CodeModel codeModel)
+    protected AbstractParser(TokenIterator iter, CodeModel codeModel)
     {
-        _text = text;
         _iter = iter;
         _codeModel = codeModel;
         _result = new();
@@ -68,14 +67,7 @@ public abstract class AbstractParser
 
     protected string GetTokenName()
     {
-        if (Token.Kind == TokenKind.String)
-        {
-            return _text.GetLine(Token.LineIndex).Substring(Token.StartColumnIndex + 1, Token.Length - 2);
-        }
-        else
-        {
-            return _text.GetLine(Token.LineIndex).Substring(Token.StartColumnIndex, Token.Length);
-        }
+        return Token.Kind == TokenKind.String ? Token.Name.Substring(1, Token.Length - 2) : Token.Name;
     }
 
     protected int GetIntegerValue()
@@ -89,8 +81,6 @@ public abstract class AbstractParser
         var stringValue = GetTokenName();
         return Double.Parse(stringValue, new NumberFormatInfo { NumberDecimalSeparator = "." });
     }
-
-    protected bool Eof => _iter.Eof;
 
     protected void MoveNext()
     {

@@ -8,8 +8,8 @@ public class FunctionParser : AbstractParser
 {
     private readonly IFunctionParserScope _scope;
 
-    public FunctionParser(Text text, TokenIterator iter, CodeModel codeModel, IFunctionParserScope scope)
-       : base(text, iter, codeModel)
+    public FunctionParser(TokenIterator iter, CodeModel codeModel, IFunctionParserScope scope)
+       : base(iter, codeModel)
     {
         _scope = scope;
     }

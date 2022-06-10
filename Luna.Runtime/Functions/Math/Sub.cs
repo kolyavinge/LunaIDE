@@ -2,7 +2,7 @@
 
 namespace Luna.Functions.Math;
 
-[EmbeddedFunction("-", "x y")]
+[EmbeddedFunctionDeclaration("-", "x y")]
 internal class Sub : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

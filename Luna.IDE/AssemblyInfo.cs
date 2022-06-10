@@ -11,3 +11,4 @@ using System.Windows;
 )]
 
 [assembly: InternalsVisibleTo("Luna.Tests.IDE")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

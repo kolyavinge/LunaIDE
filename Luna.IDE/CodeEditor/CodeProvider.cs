@@ -7,6 +7,13 @@ namespace Luna.IDE.CodeEditor;
 
 public class CodeProvider : ICodeProvider
 {
+    private readonly ICodeProviderScope _scope;
+
+    public CodeProvider(ICodeProviderScope scope)
+    {
+        _scope = scope;
+    }
+
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)
     {
         var scanner = new Parsing.Scanner();
@@ -17,7 +24,8 @@ public class CodeProvider : ICodeProvider
 
     private Token Convert(Parsing.Token token)
     {
-        return new(token.Name, token.LineIndex, token.StartColumnIndex, token.Length, (byte)token.Kind);
+        var kind = _scope.IsFunction(token.Name) ? (byte)TokenKindExtra.Function : (byte)token.Kind;
+        return new(token.Name, token.LineIndex, token.StartColumnIndex, token.Length, kind);
     }
 
     public IEnumerable<TokenColor> GetColors()
@@ -25,18 +33,28 @@ public class CodeProvider : ICodeProvider
         return new TokenColor[]
         {
             new((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
+            new((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
+            new((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
+            new((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
+            new((byte) TokenKind.Plus, CodeProviderColors.Yellow),
+            new((byte) TokenKind.Minus, CodeProviderColors.Yellow),
+            new((byte) TokenKind.Asterisk, CodeProviderColors.Yellow),
+            new((byte) TokenKind.Slash, CodeProviderColors.Yellow),
+            new((byte) TokenKind.String, CodeProviderColors.Orange),
             new((byte) TokenKind.Lambda, CodeProviderColors.Magenta),
             new((byte) TokenKind.RunFunction, CodeProviderColors.Green),
-            new((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
-            new((byte) TokenKind.String, CodeProviderColors.Orange),
             new((byte) TokenKind.IntegerNumber, CodeProviderColors.Red),
             new((byte) TokenKind.FloatNumber, CodeProviderColors.Red),
             new((byte) TokenKind.BooleanTrue, CodeProviderColors.Magenta),
             new((byte) TokenKind.BooleanFalse, CodeProviderColors.Magenta),
             new((byte) TokenKind.Comment, CodeProviderColors.LightGreen),
-            new((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
-            new((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
-            new((byte) TokenKind.Dot, CodeProviderColors.Gray)
+            new((byte) TokenKind.Dot, CodeProviderColors.Gray),
+            new((byte) TokenKindExtra.Function, CodeProviderColors.Yellow)
         };
     }
+}
+
+internal enum TokenKindExtra : byte
+{
+    Function = 255
 }

@@ -62,9 +62,9 @@ internal class RunProgramCommandTest
 
         _command.Execute(null);
 
-        model1.Verify(x => x.Save(), Times.Once());
-        model2.Verify(x => x.Save(), Times.Once());
-        model3.Verify(x => x.Save(), Times.Once());
+        model1.Verify(x => x.SaveToFile(), Times.Once());
+        model2.Verify(x => x.SaveToFile(), Times.Once());
+        model3.Verify(x => x.SaveToFile(), Times.Once());
     }
 
     [Test]

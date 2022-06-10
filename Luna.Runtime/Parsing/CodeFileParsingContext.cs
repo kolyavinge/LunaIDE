@@ -25,7 +25,7 @@ internal class CodeFileParsingContext : ICodeFileParsingContext
     public CodeFileParsingContext(IReadOnlyCollection<CodeFileProjectItem> allCodeFiles, CodeFileProjectItem currentCodeFile)
     {
         CodeFile = currentCodeFile;
-        var text = new Text(CodeFile.GetText());
+        var text = new Text(CodeFile.GetFromFile());
         var scanner = new Scanner();
         var tokens = scanner.GetTokens(new TextIterator(text)).ToList();
         var iter = new TokenIterator(tokens);

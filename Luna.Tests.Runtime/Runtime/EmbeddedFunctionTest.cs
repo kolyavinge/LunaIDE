@@ -9,7 +9,7 @@ namespace Luna.Tests.Runtime;
 
 internal class EmbeddedFunctionTest
 {
-    [EmbeddedFunction("test", "x")]
+    [EmbeddedFunctionDeclaration("test", "x")]
     class TestEmbeddedFunction : EmbeddedFunction
     {
         public override IRuntimeValue GetValue()

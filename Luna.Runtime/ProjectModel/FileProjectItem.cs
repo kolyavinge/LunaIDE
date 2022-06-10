@@ -31,12 +31,12 @@ public abstract class FileProjectItem : ProjectItem
         _fileSystem = fileSystem;
     }
 
-    public string GetText()
+    public string GetFromFile()
     {
         return _fileSystem.ReadFileText(FullPath);
     }
 
-    public void SaveText(string text)
+    public void SaveToFile(string text)
     {
         _fileSystem.SaveFileText(FullPath, text);
     }

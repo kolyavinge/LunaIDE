@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Luna.IDE.Infrastructure;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Model;
@@ -30,23 +32,33 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
         var modelType = types
             .FirstOrDefault(type =>
                 type.GetCustomAttribute<EditorForAttribute>()?.ProjectItemType == projectItem.GetType() &&
-                type.GetConstructor(new[] { projectItem.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
+                type.GetConstructors().Length == 1 &&
+                type.GetConstructors().First().GetParameters().Length > 0 &&
+                type.GetConstructors().First().GetParameters().First().ParameterType == projectItem.GetType()) ?? throw new ProjectItemEditorFactoryException();
 
-        var model = (Activator.CreateInstance(modelType, new[] { projectItem }) as IEnvironmentWindowModel) ?? throw new ProjectItemEditorFactoryException();
+        var modelTypeConstructorParams = new List<object> { projectItem };
+        foreach (var parameter in modelType.GetConstructors().First().GetParameters().Skip(1))
+        {
+            modelTypeConstructorParams.Add(DependencyContainer.Resolve(parameter.ParameterType));
+        }
+
+        var model = Activator.CreateInstance(modelType, modelTypeConstructorParams.ToArray()) as IEnvironmentWindowModel ?? throw new ProjectItemEditorFactoryException();
+        //DependencyContainer.ResolveInjectedProperties(model);
 
         var viewModelType = types
             .FirstOrDefault(type =>
                 type.GetCustomAttribute<EditorForAttribute>()?.ProjectItemType == projectItem.GetType() &&
                 type.GetConstructor(new[] { model.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
 
-        var viewModel = Activator.CreateInstance(viewModelType, new[] { model }) ?? throw new ProjectItemEditorFactoryException();
+        var viewModel = Activator.CreateInstance(viewModelType, model) ?? throw new ProjectItemEditorFactoryException();
+        //DependencyContainer.ResolveInjectedProperties(viewModel);
 
         var viewType = types
             .FirstOrDefault(type =>
                 type.GetCustomAttribute<EditorForAttribute>()?.ProjectItemType == projectItem.GetType() &&
                 type.GetConstructor(new[] { viewModel.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
 
-        var view = Activator.CreateInstance(viewType, new[] { viewModel }) ?? throw new ProjectItemEditorFactoryException();
+        var view = Activator.CreateInstance(viewType, viewModel) ?? throw new ProjectItemEditorFactoryException();
 
         return new EnvironmentWindowComponents(model, view);
     }

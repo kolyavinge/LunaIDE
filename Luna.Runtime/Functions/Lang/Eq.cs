@@ -2,7 +2,7 @@
 
 namespace Luna.Functions.Lang;
 
-[EmbeddedFunction("eq", "x y")]
+[EmbeddedFunctionDeclaration("eq", "x y")]
 internal class Eq : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

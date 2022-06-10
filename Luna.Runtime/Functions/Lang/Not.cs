@@ -2,7 +2,7 @@
 
 namespace Luna.Functions.Lang;
 
-[EmbeddedFunction("not", "x")]
+[EmbeddedFunctionDeclaration("not", "x")]
 internal class Not : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

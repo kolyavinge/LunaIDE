@@ -1,4 +1,5 @@
 ﻿using DependencyInjection;
+using Luna.IDE.CodeEditor;
 using Luna.IDE.Commands;
 using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
@@ -14,6 +15,8 @@ public class InjectModule : DependencyInjection.InjectModule
     {
         provider.Bind<IFileSystem, FileSystem>().ToSingleton();
         provider.Bind<IOpenFileDialog, OpenFileDialog>();
+
+        provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
 
         provider.Bind<IProjectItemEditorFactory, ProjectItemEditorFactory>().ToSingleton();
 

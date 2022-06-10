@@ -2,7 +2,7 @@
 
 namespace Luna.Functions.Math;
 
-[EmbeddedFunction("/", "x y")]
+[EmbeddedFunctionDeclaration("/", "x y")]
 internal class Div : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

@@ -13,9 +13,9 @@ internal abstract class EmbeddedFunction
 
     public string[] Arguments { get; }
 
-    public EmbeddedFunction()
+    protected EmbeddedFunction()
     {
-        var attr = GetType().GetCustomAttribute<EmbeddedFunctionAttribute>();
+        var attr = GetType().GetCustomAttribute<EmbeddedFunctionDeclaration>();
         Name = attr.Name;
         Arguments = attr.Arguments;
     }
@@ -41,13 +41,13 @@ internal abstract class EmbeddedFunction
 }
 
 [AttributeUsage(AttributeTargets.Class)]
-internal class EmbeddedFunctionAttribute : Attribute
+internal class EmbeddedFunctionDeclaration : Attribute
 {
     public string Name { get; }
 
     public string[] Arguments { get; }
 
-    public EmbeddedFunctionAttribute(string name, string arguments)
+    public EmbeddedFunctionDeclaration(string name, string arguments)
     {
         Name = name;
         Arguments = arguments.Split(' ');

@@ -1,5 +1,6 @@
 ﻿using CodeHighlighter;
 using Luna.IDE.CodeEditor;
+using Luna.IDE.Infrastructure;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Model;
@@ -20,15 +21,15 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
     public string Header => ProjectItem.Name;
 
-    public CodeFileEditor(CodeFileProjectItem projectItem)
+    public CodeFileEditor(CodeFileProjectItem projectItem, ICodeProviderFactory codeProviderFactory)
     {
         ProjectItem = projectItem;
-        TextHolder = new TextHolder(projectItem.GetText());
-        CodeProvider = new CodeProvider();
+        TextHolder = new TextHolder(projectItem.GetFromFile());
+        CodeProvider = codeProviderFactory.Make(projectItem);
     }
 
-    public void Save()
+    public void SaveToFile()
     {
-        ProjectItem.SaveText(TextHolder.TextValue);
+        ProjectItem.SaveToFile(TextHolder.TextValue);
     }
 }

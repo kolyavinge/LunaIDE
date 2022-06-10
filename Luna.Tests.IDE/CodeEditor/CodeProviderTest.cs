@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter;
 using Luna.IDE.CodeEditor;
+using Moq;
 using NUnit.Framework;
 using TokenKind = Luna.Parsing.TokenKind;
 
@@ -9,12 +10,14 @@ namespace Luna.Tests.IDE.CodeEditor;
 
 public class CodeProviderTest
 {
+    private Mock<ICodeProviderScope> _scope;
     private CodeProvider _provider;
 
     [SetUp]
     public void Setup()
     {
-        _provider = new CodeProvider();
+        _scope = new Mock<ICodeProviderScope>();
+        _provider = new CodeProvider(_scope.Object);
     }
 
     [Test]
@@ -135,6 +138,28 @@ public class CodeProviderTest
         Assert.AreEqual(new Token(")", 0, 12, 1, (byte)TokenKind.CloseBracket), tokens[6]);
         Assert.AreEqual(new Token("(", 0, 14, 1, (byte)TokenKind.OpenBracket), tokens[7]);
         Assert.AreEqual(new Token("funcCall", 0, 15, 8, (byte)TokenKind.Identificator), tokens[8]);
+        Assert.AreEqual(new Token("1", 0, 24, 1, (byte)TokenKind.IntegerNumber), tokens[9]);
+        Assert.AreEqual(new Token("2", 0, 26, 1, (byte)TokenKind.IntegerNumber), tokens[10]);
+        Assert.AreEqual(new Token(")", 0, 27, 1, (byte)TokenKind.CloseBracket), tokens[11]);
+        Assert.AreEqual(new Token(")", 0, 28, 1, (byte)TokenKind.CloseBracket), tokens[12]);
+    }
+
+    [Test]
+    public void FunctionDeclareScoped()
+    {
+        _scope.Setup(x => x.IsFunction("func")).Returns(true);
+        _scope.Setup(x => x.IsFunction("funcCall")).Returns(true);
+        var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
+        Assert.AreEqual(13, tokens.Count);
+        Assert.AreEqual(new Token("(", 0, 0, 1, (byte)TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token("func", 0, 1, 4, (byte)TokenKindExtra.Function), tokens[1]);
+        Assert.AreEqual(new Token("(", 0, 6, 1, (byte)TokenKind.OpenBracket), tokens[2]);
+        Assert.AreEqual(new Token("x", 0, 7, 1, (byte)TokenKind.Identificator), tokens[3]);
+        Assert.AreEqual(new Token("y", 0, 9, 1, (byte)TokenKind.Identificator), tokens[4]);
+        Assert.AreEqual(new Token("z", 0, 11, 1, (byte)TokenKind.Identificator), tokens[5]);
+        Assert.AreEqual(new Token(")", 0, 12, 1, (byte)TokenKind.CloseBracket), tokens[6]);
+        Assert.AreEqual(new Token("(", 0, 14, 1, (byte)TokenKind.OpenBracket), tokens[7]);
+        Assert.AreEqual(new Token("funcCall", 0, 15, 8, (byte)TokenKindExtra.Function), tokens[8]);
         Assert.AreEqual(new Token("1", 0, 24, 1, (byte)TokenKind.IntegerNumber), tokens[9]);
         Assert.AreEqual(new Token("2", 0, 26, 1, (byte)TokenKind.IntegerNumber), tokens[10]);
         Assert.AreEqual(new Token(")", 0, 27, 1, (byte)TokenKind.CloseBracket), tokens[11]);

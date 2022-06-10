@@ -26,7 +26,7 @@ public class RunProgramCommand : Command, IRunProgramCommand
     public override void Execute(object parameter)
     {
         if (_projectExplorer.Project == null) return;
-        _windowsManager.Windows.Each(x => x.Model.Save());
+        _windowsManager.Windows.Each(x => x.Model.SaveToFile());
         _outputArea.Clear();
         _interpreter.Run(_projectExplorer.Project, _outputArea);
     }

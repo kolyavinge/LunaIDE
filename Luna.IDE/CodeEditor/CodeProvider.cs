@@ -32,7 +32,7 @@ public class CodeProvider : ICodeProvider
     {
         return new TokenColor[]
         {
-            new((byte) TokenKind.ImportDirective, CodeProviderColors.Magenta),
+            new((byte) TokenKind.ImportDirective, CodeProviderColors.Blue),
             new((byte) TokenKind.ConstDeclaration, CodeProviderColors.Blue),
             new((byte) TokenKind.OpenBracket, CodeProviderColors.Gray),
             new((byte) TokenKind.CloseBracket, CodeProviderColors.Gray),
@@ -47,7 +47,7 @@ public class CodeProvider : ICodeProvider
             new((byte) TokenKind.FloatNumber, CodeProviderColors.Red),
             new((byte) TokenKind.BooleanTrue, CodeProviderColors.Magenta),
             new((byte) TokenKind.BooleanFalse, CodeProviderColors.Magenta),
-            new((byte) TokenKind.Comment, CodeProviderColors.LightGreen),
+            new((byte) TokenKind.Comment, CodeProviderColors.Gray),
             new((byte) TokenKind.Dot, CodeProviderColors.Gray),
             new((byte) TokenKindExtra.Function, CodeProviderColors.Yellow)
         };

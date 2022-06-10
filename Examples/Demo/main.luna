@@ -2,6 +2,7 @@
 
 import 'imported.luna'
 
+const ANY_CONST 111
 
 (func (x) x)
 

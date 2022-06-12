@@ -31,10 +31,10 @@ internal class CodeFileOrderLogic : ICodeFileOrderLogic
     {
         if (_resultSet!.Contains(codeFile)) return;
 
-        if (codeFile.CodeModel!.Imports.Any())
+        if (codeFile.CodeModel.Imports.Any())
         {
             chain.Add(codeFile);
-            foreach (var import in codeFile.CodeModel!.Imports)
+            foreach (var import in codeFile.CodeModel.Imports)
             {
                 if (!chain.Contains(import.CodeFile))
                 {

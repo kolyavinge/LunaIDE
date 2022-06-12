@@ -1,19 +1,15 @@
 ﻿using DependencyInjection;
 using Luna.IDE.CodeEditor;
 using Luna.IDE.Commands;
-using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
 using Luna.IDE.ViewModel;
-using Luna.Infrastructure;
-using Luna.Runtime;
 
-namespace Luna.IDE;
+namespace Luna.IDE.Infrastructure;
 
-public class InjectModule : DependencyInjection.InjectModule
+public class IDEInjectModule : InjectModule
 {
     public override void Init(IBindingProvider provider)
     {
-        provider.Bind<IFileSystem, FileSystem>().ToSingleton();
         provider.Bind<IOpenFileDialog, OpenFileDialog>();
 
         provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
@@ -39,7 +35,5 @@ public class InjectModule : DependencyInjection.InjectModule
         provider.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
         provider.Bind<IProjectTreeItemOpenCommand, ProjectTreeItemOpenCommand>().ToSingleton();
         provider.Bind<IRunProgramCommand, RunProgramCommand>().ToSingleton();
-
-        provider.Bind<IInterpreter, Interpreter>().ToSingleton();
     }
 }

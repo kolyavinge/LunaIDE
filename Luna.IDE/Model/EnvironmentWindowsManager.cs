@@ -10,7 +10,9 @@ public interface IEnvironmentWindowModel
 {
     string Header { get; }
 
-    void SaveToFile();
+    void Save();
+
+    void Close();
 }
 
 public class EnvironmentWindow
@@ -81,7 +83,8 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 
     public void CloseWindow(EnvironmentWindow window)
     {
-        window.Model.SaveToFile();
+        window.Model.Save();
+        window.Model.Close();
         if (SelectedWindow == window)
         {
             var index = _windows.IndexOf(window);
@@ -95,7 +98,8 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 
     public void CloseAllWindows()
     {
-        Windows.Each(x => x.Model.SaveToFile());
+        Windows.Each(x => x.Model.Save());
+        Windows.Each(x => x.Model.Close());
         SelectedWindow = null;
         _windows.Clear();
     }

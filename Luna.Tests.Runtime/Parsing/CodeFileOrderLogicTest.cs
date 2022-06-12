@@ -22,9 +22,9 @@ internal class CodeFileOrderLogicTest
     [Test]
     public void ByImports_NoImports()
     {
-        var item1 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var item2 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var item3 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
+        var item1 = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var item2 = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var item3 = new CodeFileProjectItem("", null, _fileSystem.Object);
 
         var result = _logic.ByImports(new[] { item1, item2, item3 }).ToList();
 
@@ -37,8 +37,8 @@ internal class CodeFileOrderLogicTest
     [Test]
     public void ByImports_OneImport()
     {
-        var child = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var parent = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
+        var child = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var parent = new CodeFileProjectItem("", null, _fileSystem.Object);
         parent.CodeModel.AddImportDirective(new ImportDirective("", child, 0, 0));
 
         var result = _logic.ByImports(new[] { parent, child }).ToList();
@@ -51,9 +51,9 @@ internal class CodeFileOrderLogicTest
     [Test]
     public void ByImports_OneFileImportedInTwo()
     {
-        var child = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var parent1 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var parent2 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
+        var child = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var parent1 = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var parent2 = new CodeFileProjectItem("", null, _fileSystem.Object);
         parent1.CodeModel.AddImportDirective(new ImportDirective("", child, 0, 0));
         parent2.CodeModel.AddImportDirective(new ImportDirective("", child, 0, 0));
 
@@ -68,8 +68,8 @@ internal class CodeFileOrderLogicTest
     [Test]
     public void ByImports_Recursive()
     {
-        var item1 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var item2 = new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = new CodeModel() };
+        var item1 = new CodeFileProjectItem("", null, _fileSystem.Object);
+        var item2 = new CodeFileProjectItem("", null, _fileSystem.Object);
         item1.CodeModel.AddImportDirective(new ImportDirective("", item2, 0, 0));
         item2.CodeModel.AddImportDirective(new ImportDirective("", item1, 0, 0));
 

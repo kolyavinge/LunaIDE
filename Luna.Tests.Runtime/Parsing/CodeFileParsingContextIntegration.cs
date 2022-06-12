@@ -29,8 +29,8 @@ internal class CodeFileParsingContextIntegration
                 (func (x y) (1 2 3))";
         _fileSystem.Setup(x => x.ReadFileText("file2.luna")).Returns(codeFileText);
         var root = new DirectoryProjectItem("", null);
-        var file1 = new CodeFileProjectItem("file1.luna", root, _fileSystem.Object) { CodeModel = new CodeModel() };
-        var file2 = new CodeFileProjectItem("file2.luna", root, _fileSystem.Object) { CodeModel = new CodeModel() };
+        var file1 = new CodeFileProjectItem("file1.luna", root, _fileSystem.Object);
+        var file2 = new CodeFileProjectItem("file2.luna", root, _fileSystem.Object);
 
         _context = new CodeFileParsingContext(new[] { file1, file2 }, file2);
         _context.ParseImports();

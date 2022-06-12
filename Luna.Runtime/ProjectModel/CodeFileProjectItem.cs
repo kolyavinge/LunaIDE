@@ -2,11 +2,12 @@
 
 namespace Luna.ProjectModel;
 
-public class CodeFileProjectItem : FileProjectItem
+public class CodeFileProjectItem : TextFileProjectItem
 {
-    public CodeModel? CodeModel { get; internal set; }
+    public CodeModel CodeModel { get; internal set; }
 
     internal CodeFileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(fullPath, parent, fileSystem)
     {
+        CodeModel = new CodeModel();
     }
 }

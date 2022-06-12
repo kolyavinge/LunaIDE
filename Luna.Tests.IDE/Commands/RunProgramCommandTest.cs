@@ -54,17 +54,19 @@ internal class RunProgramCommandTest
         var model1 = new Mock<IEnvironmentWindowModel>();
         var model2 = new Mock<IEnvironmentWindowModel>();
         var model3 = new Mock<IEnvironmentWindowModel>();
-        var windows = new List<EnvironmentWindow>();
-        windows.Add(new EnvironmentWindow("1", model1.Object, null));
-        windows.Add(new EnvironmentWindow("1", model2.Object, null));
-        windows.Add(new EnvironmentWindow("1", model3.Object, null));
+        var windows = new List<EnvironmentWindow>
+        {
+            new EnvironmentWindow("1", model1.Object, null),
+            new EnvironmentWindow("1", model2.Object, null),
+            new EnvironmentWindow("1", model3.Object, null)
+        };
         _windowsManager.SetupGet(x => x.Windows).Returns(windows);
 
         _command.Execute(null);
 
-        model1.Verify(x => x.SaveToFile(), Times.Once());
-        model2.Verify(x => x.SaveToFile(), Times.Once());
-        model3.Verify(x => x.SaveToFile(), Times.Once());
+        model1.Verify(x => x.Save(), Times.Once());
+        model2.Verify(x => x.Save(), Times.Once());
+        model3.Verify(x => x.Save(), Times.Once());
     }
 
     [Test]

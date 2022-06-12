@@ -1,15 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter;
 using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.IDE.CodeEditor;
 
-public class CodeProvider : ICodeProvider
+public interface ILunaCodeProvider : ICodeProvider, ITokenKindUpdatable
+{
+    void UpdateIdentificators();
+}
+
+public class LunaCodeProvider : ILunaCodeProvider
 {
     private readonly ICodeProviderScope _scope;
+    private HashSet<string> _scannedIdentificators = new();
 
-    public CodeProvider(ICodeProviderScope scope)
+    public event EventHandler<TokenKindUpdatedEventArgs>? TokenKindUpdated;
+
+    public LunaCodeProvider(ICodeProviderScope scope)
     {
         _scope = scope;
     }
@@ -17,7 +26,9 @@ public class CodeProvider : ICodeProvider
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)
     {
         var scanner = new Parsing.Scanner();
-        var tokens = scanner.GetTokens(new TextIteratorWrapper(textIterator)).Select(Convert).ToList();
+        var scannedTokens = scanner.GetTokens(new TextIteratorWrapper(textIterator)).ToList();
+        _scannedIdentificators = scannedTokens.Where(x => x.Kind == TokenKind.Identificator).Select(x => x.Name).ToHashSet();
+        var tokens = scannedTokens.Select(Convert).ToList();
 
         return tokens;
     }
@@ -52,9 +63,22 @@ public class CodeProvider : ICodeProvider
             new((byte) TokenKindExtra.Function, CodeProviderColors.Yellow)
         };
     }
+
+    public void UpdateIdentificators()
+    {
+        if (TokenKindUpdated == null) return;
+        var functions = new List<UpdatedTokenKind>();
+        var identificators = new List<UpdatedTokenKind>();
+        foreach (var identificator in _scannedIdentificators)
+        {
+            if (_scope.IsFunction(identificator)) functions.Add(new(identificator, (byte)TokenKindExtra.Function));
+            else identificators.Add(new(identificator, (byte)TokenKind.Identificator));
+        }
+        TokenKindUpdated.Invoke(this, new(functions.Concat(identificators)));
+    }
 }
 
-internal enum TokenKindExtra : byte
+public enum TokenKindExtra : byte
 {
     Function = 255
 }

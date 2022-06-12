@@ -17,7 +17,7 @@ internal class RuntimeScope : IRuntimeScope
         var functions = codeModel.Functions.ToList();
         foreach (var import in codeModel.Imports)
         {
-            var importCodeModel = import.CodeFile.CodeModel!;
+            var importCodeModel = import.CodeFile.CodeModel;
             constants.AddRange(importCodeModel.Constants);
             functions.AddRange(importCodeModel.Functions);
         }

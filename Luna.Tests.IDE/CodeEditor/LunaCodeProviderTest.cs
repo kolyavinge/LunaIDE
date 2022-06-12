@@ -8,16 +8,16 @@ using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.Tests.IDE.CodeEditor;
 
-public class CodeProviderTest
+public class LunaCodeProviderTest
 {
     private Mock<ICodeProviderScope> _scope;
-    private CodeProvider _provider;
+    private LunaCodeProvider _provider;
 
     [SetUp]
     public void Setup()
     {
         _scope = new Mock<ICodeProviderScope>();
-        _provider = new CodeProvider(_scope.Object);
+        _provider = new LunaCodeProvider(_scope.Object);
     }
 
     [Test]

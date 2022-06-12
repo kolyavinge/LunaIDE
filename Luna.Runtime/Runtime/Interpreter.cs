@@ -19,9 +19,9 @@ public class Interpreter : IInterpreter
         var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
         var outputWriter = new OutputWriter(output);
         var codeModelBuilder = new CodeModelBuilder(outputWriter);
-        var codeModelBuilderResult = codeModelBuilder.BuildCodeModelsFor(codeFiles);
-        if (codeModelBuilderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
-        var codeModels = codeFiles.Select(x => x.CodeModel!).ToList();
+        var builderResult = codeModelBuilder.BuildFor(codeFiles);
+        if (builderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
+        var codeModels = codeFiles.Select(x => x.CodeModel).ToList();
         var evaluator = new ValueElementEvaluator();
         var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, evaluator);
         evaluator.Scopes = scopes;

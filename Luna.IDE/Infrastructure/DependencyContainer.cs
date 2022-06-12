@@ -11,7 +11,8 @@ public static class DependencyContainer
     static DependencyContainer()
     {
         _container = DependencyInjection.DependencyContainerFactory.MakeLiteContainer();
-        _container.InitFromModules(new InjectModule());
+        _container.InitFromModules(new RuntimeInjectModule());
+        _container.InitFromModules(new IDEInjectModule());
     }
 
     public static TDependency Resolve<TDependency>()

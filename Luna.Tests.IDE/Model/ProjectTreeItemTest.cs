@@ -35,8 +35,7 @@ public class ProjectTreeItemTest
     [Test]
     public void CollapseWithSelectedChildren()
     {
-        var treeItem = new ProjectTreeItem(_rootDirectory);
-        treeItem.IsExpanded = true;
+        var treeItem = new ProjectTreeItem(_rootDirectory) { IsExpanded = true };
         treeItem.Children.First().IsSelected = true;
         treeItem.IsExpanded = false;
         Assert.True(treeItem.IsSelected);

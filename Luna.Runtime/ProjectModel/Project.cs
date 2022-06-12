@@ -4,7 +4,7 @@ namespace Luna.ProjectModel;
 
 public class Project
 {
-    public static Project Open(string fullPath, IFileSystem fileSystem) => new Project(fullPath, fileSystem);
+    public static Project Open(string fullPath, IFileSystem fileSystem) => new(fullPath, fileSystem);
 
     private readonly string _fullPath;
     private readonly IFileSystem _fileSystem;

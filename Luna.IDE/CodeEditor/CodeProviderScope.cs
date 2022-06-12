@@ -1,4 +1,5 @@
-﻿using Luna.Functions;
+﻿using System.Linq;
+using Luna.Functions;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditor;
@@ -20,6 +21,8 @@ public class CodeProviderScope : ICodeProviderScope
 
     public bool IsFunction(string tokenName)
     {
-        return _embeddedFunctions.Contains(tokenName) || (_codeFile.CodeModel?.Functions.Contains(tokenName) ?? false);
+        return _embeddedFunctions.Contains(tokenName) ||
+            _codeFile.CodeModel.Functions.Contains(tokenName) ||
+            _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Functions.Contains(tokenName));
     }
 }

@@ -45,7 +45,7 @@ internal class CodeModelBuilderTest
     [Test]
     public void BuildCodeModelsFor_Correct()
     {
-        var result = _builder.BuildCodeModelsFor(_allCodeFiles);
+        var result = _builder.BuildFor(_allCodeFiles);
 
         Assert.False(result.HasErrors);
         Assert.NotNull(_codeFile1.CodeModel);
@@ -73,7 +73,7 @@ internal class CodeModelBuilderTest
         parseResult2.AddWarning(ParserMessageType.ConstIncorrectValue, Token.Default);
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
-        var result = _builder.BuildCodeModelsFor(_allCodeFiles);
+        var result = _builder.BuildFor(_allCodeFiles);
 
         Assert.IsFalse(result.HasErrors);
         Assert.NotNull(_codeFile1.CodeModel);
@@ -103,7 +103,7 @@ internal class CodeModelBuilderTest
         parseResult2.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
-        var result = _builder.BuildCodeModelsFor(_allCodeFiles);
+        var result = _builder.BuildFor(_allCodeFiles);
 
         Assert.IsTrue(result.HasErrors);
         Assert.NotNull(_codeFile1.CodeModel);

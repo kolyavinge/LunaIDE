@@ -43,6 +43,7 @@ public class EnvironmentWindowsManagerTest
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView);
         _manager.CloseWindow(window);
         Assert.AreEqual(null, _manager.FindWindowById("id"));
+        _environmentWindowModel.Verify(x => x.Close(), Times.Once());
     }
 
     [Test]
@@ -115,5 +116,22 @@ public class EnvironmentWindowsManagerTest
 
         _manager.CloseWindow(left);
         Assert.AreEqual(null, _manager.SelectedWindow);
+    }
+
+    [Test]
+    public void CloseAllWindows()
+    {
+        var left = _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView);
+        var middle = _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView);
+        var right = _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView);
+
+        _manager.CloseAllWindows();
+
+        Assert.AreEqual(null, _manager.SelectedWindow);
+        Assert.AreEqual(null, _manager.FindWindowById("left"));
+        Assert.AreEqual(null, _manager.FindWindowById("middle"));
+        Assert.AreEqual(null, _manager.FindWindowById("right"));
+        _environmentWindowModel.Verify(x => x.Save(), Times.Exactly(3));
+        _environmentWindowModel.Verify(x => x.Close(), Times.Exactly(3));
     }
 }

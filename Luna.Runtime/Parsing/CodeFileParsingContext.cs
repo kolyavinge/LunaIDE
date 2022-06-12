@@ -25,12 +25,12 @@ internal class CodeFileParsingContext : ICodeFileParsingContext
     public CodeFileParsingContext(IReadOnlyCollection<CodeFileProjectItem> allCodeFiles, CodeFileProjectItem currentCodeFile)
     {
         CodeFile = currentCodeFile;
-        var text = new Text(CodeFile.GetFromFile());
+        var text = new Text(CodeFile.GetText());
         var scanner = new Scanner();
         var tokens = scanner.GetTokens(new TextIterator(text)).ToList();
         var iter = new TokenIterator(tokens);
-        _importDirectiveParser = new ImportDirectiveParser(iter, CodeFile.CodeModel!, new ImportDirectiveParserScope(allCodeFiles));
-        _functionParser = new FunctionParser(iter, CodeFile.CodeModel!, new FunctionParserScope(allCodeFiles.Select(x => x.CodeModel!), currentCodeFile.CodeModel!));
+        _importDirectiveParser = new ImportDirectiveParser(iter, CodeFile.CodeModel, new ImportDirectiveParserScope(allCodeFiles));
+        _functionParser = new FunctionParser(iter, CodeFile.CodeModel, new FunctionParserScope(allCodeFiles.Select(x => x.CodeModel), currentCodeFile.CodeModel));
     }
 
     public void ParseImports() => ImportDirectivesResult = _importDirectiveParser.Parse();

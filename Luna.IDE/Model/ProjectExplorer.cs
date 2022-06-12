@@ -13,11 +13,13 @@ public interface IProjectExplorer
     ProjectTreeItem? ProjectTreeRoot { get; }
     IEnumerable<ProjectTreeItem> SelectedItems { get; }
     void OpenProject(string path);
-    event EventHandler? ProjectOpened;
+    event EventHandler ProjectOpened;
 }
 
 public class ProjectExplorer : IProjectExplorer
 {
+    private readonly ICodeModelUpdater _codeModelUpdater;
+
     [Inject]
     public IFileSystem? FileSystem { get; set; }
 
@@ -29,13 +31,15 @@ public class ProjectExplorer : IProjectExplorer
 
     public event EventHandler? ProjectOpened;
 
-    public ProjectExplorer()
+    public ProjectExplorer(ICodeModelUpdater codeModelUpdater)
     {
+        _codeModelUpdater = codeModelUpdater;
     }
 
     public void OpenProject(string path)
     {
         Project = Project.Open(path, FileSystem!);
+        _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
         ProjectTreeRoot = new ProjectTreeItem(Project.Root);
         ProjectOpened?.Invoke(this, EventArgs.Empty);
     }

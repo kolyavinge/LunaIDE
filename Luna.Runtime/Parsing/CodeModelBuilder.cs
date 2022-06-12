@@ -11,22 +11,29 @@ internal struct CodeModelBuilderResult
     public bool HasErrors { get; internal set; }
 }
 
-internal class CodeModelBuilder
+internal interface ICodeModelBuilder
+{
+    CodeModelBuilderResult BuildFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles);
+}
+
+internal class CodeModelBuilder : ICodeModelBuilder
 {
     private readonly IOutputWriter _outputWriter;
     private readonly ICodeFileParsingContextFactory _contextFactory;
     private readonly ICodeFileOrderLogic _orderLogic;
 
+    public CodeModelBuilder() : this(new EmptyOutputWriter()) { }
+
     public CodeModelBuilder(IOutputWriter outputWriter) : this(new CodeFileParsingContextFactory(), new CodeFileOrderLogic(), outputWriter) { }
 
-    internal CodeModelBuilder(ICodeFileParsingContextFactory contextFactory, ICodeFileOrderLogic orderLogic, IOutputWriter outputWriter)
+    public CodeModelBuilder(ICodeFileParsingContextFactory contextFactory, ICodeFileOrderLogic orderLogic, IOutputWriter outputWriter)
     {
         _contextFactory = contextFactory;
         _orderLogic = orderLogic;
         _outputWriter = outputWriter;
     }
 
-    public CodeModelBuilderResult BuildCodeModelsFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles)
+    public CodeModelBuilderResult BuildFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles)
     {
         codeFiles.Each(x => x.CodeModel = new CodeModel());
         var contexts = codeFiles.Select(codeFile => _contextFactory.MakeContext(codeFiles, codeFile)).ToList();

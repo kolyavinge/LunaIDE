@@ -57,8 +57,7 @@ public class ProjectTreeViewModel : NotificationObject
 
     private List<ProjectTreeItem> MakeFlatList(ProjectTreeItem item)
     {
-        var result = new List<ProjectTreeItem>();
-        result.Add(item);
+        var result = new List<ProjectTreeItem> { item };
         if (item.IsExpanded)
         {
             item.Children.Each(child => result.AddRange(MakeFlatList(child)));

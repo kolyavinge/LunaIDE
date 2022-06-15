@@ -35,8 +35,16 @@ public class LunaCodeProvider : ILunaCodeProvider
 
     private Token Convert(Parsing.Token token)
     {
-        var kind = _scope.IsFunction(token.Name) ? (byte)TokenKindExtra.Function : (byte)token.Kind;
+        var kind = GetTokenKind(token.Name, token.Kind);
         return new(token.Name, token.LineIndex, token.StartColumnIndex, token.Length, kind);
+    }
+
+    private byte GetTokenKind(string name, TokenKind kind)
+    {
+        if (_scope.IsFunction(name)) return (byte)TokenKindExtra.Function;
+        if (_scope.IsConstant(name)) return (byte)TokenKindExtra.Constant;
+
+        return (byte)kind;
     }
 
     public IEnumerable<TokenColor> GetColors()
@@ -60,6 +68,7 @@ public class LunaCodeProvider : ILunaCodeProvider
             new((byte) TokenKind.BooleanFalse, CodeProviderColors.Magenta),
             new((byte) TokenKind.Comment, CodeProviderColors.Gray),
             new((byte) TokenKind.Dot, CodeProviderColors.Gray),
+            new((byte) TokenKindExtra.Constant, CodeProviderColors.LightBlue),
             new((byte) TokenKindExtra.Function, CodeProviderColors.Yellow)
         };
     }
@@ -67,18 +76,19 @@ public class LunaCodeProvider : ILunaCodeProvider
     public void UpdateIdentificators()
     {
         if (TokenKindUpdated == null) return;
-        var functions = new List<UpdatedTokenKind>();
-        var identificators = new List<UpdatedTokenKind>();
+        var updatedTokens = new List<UpdatedTokenKind>();
         foreach (var identificator in _scannedIdentificators)
         {
-            if (_scope.IsFunction(identificator)) functions.Add(new(identificator, (byte)TokenKindExtra.Function));
-            else identificators.Add(new(identificator, (byte)TokenKind.Identificator));
+            if (_scope.IsFunction(identificator)) updatedTokens.Add(new(identificator, (byte)TokenKindExtra.Function));
+            else if (_scope.IsConstant(identificator)) updatedTokens.Add(new(identificator, (byte)TokenKindExtra.Constant));
+            else updatedTokens.Add(new(identificator, (byte)TokenKind.Identificator));
         }
-        TokenKindUpdated.Invoke(this, new(functions.Concat(identificators)));
+        TokenKindUpdated.Invoke(this, new(updatedTokens));
     }
 }
 
 public enum TokenKindExtra : byte
 {
+    Constant = 254,
     Function = 255
 }

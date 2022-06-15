@@ -6,6 +6,7 @@ namespace Luna.IDE.CodeEditor;
 
 public interface ICodeProviderScope
 {
+    bool IsConstant(string name);
     bool IsFunction(string tokenName);
 }
 
@@ -19,10 +20,15 @@ public class CodeProviderScope : ICodeProviderScope
         _codeFile = codeFile;
     }
 
-    public bool IsFunction(string tokenName)
+    public bool IsConstant(string name)
     {
-        return _embeddedFunctions.Contains(tokenName) ||
-            _codeFile.CodeModel.Functions.Contains(tokenName) ||
-            _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Functions.Contains(tokenName));
+        return _codeFile.CodeModel.Constants.Contains(name) || _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Constants.Contains(name));
+    }
+
+    public bool IsFunction(string name)
+    {
+        return _embeddedFunctions.Contains(name) ||
+            _codeFile.CodeModel.Functions.Contains(name) ||
+            _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Functions.Contains(name));
     }
 }

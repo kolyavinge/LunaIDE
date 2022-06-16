@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter;
 using Luna.IDE.CodeEditor;
@@ -39,23 +38,41 @@ internal class CodeFileEditorTest
         _codeModelUpdater.Verify(x => x.Attach(_codeFileProjectItem, It.IsAny<CodeModelUpdatedCallback>()), Times.Once());
     }
 
-    //[Test]
-    //public void OnCodeModelUpdated_NoDifferent()
-    //{
-    //    _editor.OnCodeModelUpdated(new(new CodeModel(), new CodeModel()));
-    //    _codeProvider.Verify(x => x.UpdateTokenKinds(It.IsAny<IEnumerable<UpdatedTokenKind>>()), Times.Never());
-    //}
+    [Test]
+    public void OnCodeModelUpdated_NoDifferent()
+    {
+        _editor.OnCodeModelUpdated(new(new CodeModel(), new CodeModelScopeIdentificatorsDifferent()));
+        _codeProvider.Verify(x => x.UpdateTokenKinds(It.IsAny<IEnumerable<UpdatedTokenKind>>()), Times.Never());
+    }
 
-    //[Test]
-    //public void OnCodeModelUpdated()
-    //{
-    //    var oldModel = new CodeModel();
-    //    var newModel = new CodeModel();
-    //    oldModel.AddFunctionDeclaration(new("removed", Enumerable.Empty<FunctionArgument>(), new()));
-    //    newModel.AddFunctionDeclaration(new("added", Enumerable.Empty<FunctionArgument>(), new()));
-    //    _editor.OnCodeModelUpdated(new(oldModel, newModel));
-    //    _codeProvider.Verify(x => x.UpdateTokenKinds(new UpdatedTokenKind[] { new("removed", (byte)TokenKind.Identificator), new("added", (byte)TokenKindExtra.Function) }), Times.Once());
-    //}
+    [Test]
+    public void OnCodeModelUpdated()
+    {
+        var diff = new CodeModelScopeIdentificatorsDifferent(
+            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("addedDeclaredConst", new IntegerValueElement(1)) }),
+            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("addedDeclaredFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
+            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedDeclaredConst", new IntegerValueElement(1)) }),
+            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedDeclaredFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
+            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("addedImportedConst", new IntegerValueElement(1)) }),
+            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("addedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
+            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedImportedConst", new IntegerValueElement(1)) }),
+            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }));
+
+        _editor.OnCodeModelUpdated(new(new CodeModel(), diff));
+
+        _codeProvider.Verify(x => x.UpdateTokenKinds(new UpdatedTokenKind[]
+        {
+            new("addedDeclaredConst", (byte)TokenKindExtra.Constant),
+            new("addedImportedConst", (byte)TokenKindExtra.Constant),
+            new("addedDeclaredFunc", (byte)TokenKindExtra.Function),
+            new("addedImportedFunc", (byte)TokenKindExtra.Function),
+            new("removedDeclaredConst", (byte)TokenKind.Identificator),
+            new("removedImportedConst", (byte)TokenKind.Identificator),
+            new("removedDeclaredFunc", (byte)TokenKind.Identificator),
+            new("removedImportedFunc", (byte)TokenKind.Identificator)
+        }),
+        Times.Once());
+    }
 
     [Test]
     public void Close()

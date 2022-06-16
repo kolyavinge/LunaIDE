@@ -6,7 +6,7 @@ namespace Luna.Parsing;
 
 public interface IFunctionParserScope
 {
-    bool IsConstExist(string name);
+    bool IsConstantExist(string name);
     bool IsFunctionExist(string name);
     bool IsRunFunctionExist();
 }
@@ -15,21 +15,23 @@ public class FunctionParserScope : IFunctionParserScope
 {
     private readonly List<CodeModel> _allCodeModels;
     private readonly CodeModel _currentCodeModel;
+    private readonly CodeModelScope _codeModelScope;
 
     public FunctionParserScope(IEnumerable<CodeModel> allCodeModels, CodeModel currentCodeModel)
     {
         _allCodeModels = allCodeModels.ToList();
         _currentCodeModel = currentCodeModel;
+        _codeModelScope = new CodeModelScope();
     }
 
-    public bool IsConstExist(string name)
+    public bool IsConstantExist(string name)
     {
-        return _currentCodeModel.Constants.Contains(name) || _currentCodeModel.Imports.Any(x => x.CodeFile.CodeModel.Constants.Contains(name));
+        return _codeModelScope.IsConstantExist(_currentCodeModel, name);
     }
 
     public bool IsFunctionExist(string name)
     {
-        return _currentCodeModel.Functions.Contains(name) || _currentCodeModel.Imports.Any(x => x.CodeFile.CodeModel.Functions.Contains(name));
+        return _codeModelScope.IsFunctionExist(_currentCodeModel, name);
     }
 
     public bool IsRunFunctionExist()

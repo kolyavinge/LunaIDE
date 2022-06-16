@@ -51,7 +51,7 @@ public class FunctionParser : AbstractParser
             _result.SetError(ParserMessageType.FunctionNameExist, Token);
             return;
         }
-        if (_scope.IsConstExist(constName))
+        if (_scope.IsConstantExist(constName))
         {
             _result.SetError(ParserMessageType.ConstNameExist, Token);
             return;
@@ -67,7 +67,7 @@ public class FunctionParser : AbstractParser
         }
         else if (constValue != null)
         {
-            _codeModel.AddConstDeclaration(new ConstDeclaration(constName, constValue, constNameToken.LineIndex, constNameToken.StartColumnIndex));
+            _codeModel.AddConstantDeclaration(new ConstantDeclaration(constName, constValue, constNameToken.LineIndex, constNameToken.StartColumnIndex));
         }
     }
 
@@ -129,7 +129,7 @@ public class FunctionParser : AbstractParser
             _result.SetError(ParserMessageType.FunctionNameExist, Token);
             return;
         }
-        if (_scope.IsConstExist(funcName))
+        if (_scope.IsConstantExist(funcName))
         {
             _result.SetError(ParserMessageType.ConstNameExist, Token);
             return;
@@ -237,11 +237,11 @@ public class FunctionParser : AbstractParser
         else if (Token.Kind == TokenKind.Identificator)
         {
             var name = GetTokenName();
-            if (!_scope.IsConstExist(name) && !_scope.IsFunctionExist(name))
+            if (!_scope.IsConstantExist(name) && !_scope.IsFunctionExist(name))
             {
                 body = new FunctionArgumentValueElement(name, Token.LineIndex, Token.StartColumnIndex);
             }
-            else if (_scope.IsConstExist(name))
+            else if (_scope.IsConstantExist(name))
             {
                 body = new NamedConstantValueElement(name, Token.LineIndex, Token.StartColumnIndex);
             }
@@ -259,7 +259,7 @@ public class FunctionParser : AbstractParser
         {
             MoveNext();
             var name = GetTokenName();
-            if (Token.Kind == TokenKind.Identificator && _scope.IsConstExist(name))
+            if (Token.Kind == TokenKind.Identificator && _scope.IsConstantExist(name))
             {
                 body = ParseList();
             }

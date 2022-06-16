@@ -28,7 +28,7 @@ internal class RuntimeScope : IRuntimeScope
     private readonly IValueElementEvaluator _evaluator;
     private readonly IEmbeddedFunctionsCollection _embeddedFunctions;
     private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
-    private readonly Dictionary<string, ConstDeclaration> _constDeclarations;
+    private readonly Dictionary<string, ConstantDeclaration> _constDeclarations;
 
     private readonly Stack<Dictionary<string, IRuntimeValue>> _argumentStack;
 
@@ -36,7 +36,7 @@ internal class RuntimeScope : IRuntimeScope
         IValueElementEvaluator evaluator,
         IEmbeddedFunctionsCollection embeddedFunctions,
         IEnumerable<FunctionDeclaration> declaredFunctions,
-        IEnumerable<ConstDeclaration> constDeclarations)
+        IEnumerable<ConstantDeclaration> constDeclarations)
     {
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;

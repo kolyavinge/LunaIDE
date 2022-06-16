@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Luna.Functions;
-using Luna.ProjectModel;
+﻿using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditor;
 
@@ -12,23 +10,22 @@ public interface ICodeProviderScope
 
 public class CodeProviderScope : ICodeProviderScope
 {
-    private readonly EmbeddedFunctionDeclarationsCollection _embeddedFunctions = new();
     private readonly CodeFileProjectItem _codeFile;
+    private readonly CodeModelScope _scope;
 
     public CodeProviderScope(CodeFileProjectItem codeFile)
     {
         _codeFile = codeFile;
+        _scope = new CodeModelScope();
     }
 
     public bool IsConstant(string name)
     {
-        return _codeFile.CodeModel.Constants.Contains(name) || _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Constants.Contains(name));
+        return _scope.IsConstantExist(_codeFile.CodeModel, name);
     }
 
     public bool IsFunction(string name)
     {
-        return _embeddedFunctions.Contains(name) ||
-            _codeFile.CodeModel.Functions.Contains(name) ||
-            _codeFile.CodeModel.Imports.Any(x => x.CodeFile.CodeModel.Functions.Contains(name));
+        return _scope.IsFunctionExist(_codeFile.CodeModel, name);
     }
 }

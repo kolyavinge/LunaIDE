@@ -1,5 +1,7 @@
-﻿using CodeHighlighter;
+﻿using System.Linq;
+using CodeHighlighter;
 using Luna.IDE.CodeEditor;
+using Luna.Parsing;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Model;
@@ -37,7 +39,19 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
     public void OnCodeModelUpdated(CodeModelUpdatedEventArgs e)
     {
-        CodeProvider.UpdateIdentificators();
+        var diff = e.Different;
+
+        var updatedTokens =
+            diff.AddedDeclaredConstants.Concat(diff.AddedImportedConstants).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKindExtra.Constant)).
+            Concat(diff.AddedDeclaredFunctions.Concat(diff.AddedImportedFunctions).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKindExtra.Function))).
+            Concat(diff.RemovedDeclaredConstants.Concat(diff.RemovedImportedConstants).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKind.Identificator))).
+            Concat(diff.RemovedDeclaredFunctions.Concat(diff.RemovedImportedFunctions).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKind.Identificator))).
+            ToList();
+
+        if (updatedTokens.Any())
+        {
+            CodeProvider.UpdateTokenKinds(updatedTokens);
+        }
     }
 
     public void Save()

@@ -8,13 +8,12 @@ namespace Luna.IDE.CodeEditor;
 
 public interface ILunaCodeProvider : ICodeProvider, ITokenKindUpdatable
 {
-    void UpdateIdentificators();
+    void UpdateTokenKinds(IEnumerable<UpdatedTokenKind> updatedTokens);
 }
 
 public class LunaCodeProvider : ILunaCodeProvider
 {
     private readonly ICodeProviderScope _scope;
-    private HashSet<string> _scannedIdentificators = new();
 
     public event EventHandler<TokenKindUpdatedEventArgs>? TokenKindUpdated;
 
@@ -26,9 +25,7 @@ public class LunaCodeProvider : ILunaCodeProvider
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)
     {
         var scanner = new Parsing.Scanner();
-        var scannedTokens = scanner.GetTokens(new TextIteratorWrapper(textIterator)).ToList();
-        _scannedIdentificators = scannedTokens.Where(x => x.Kind == TokenKind.Identificator).Select(x => x.Name).ToHashSet();
-        var tokens = scannedTokens.Select(Convert).ToList();
+        var tokens = scanner.GetTokens(new TextIteratorWrapper(textIterator)).Select(Convert).ToList();
 
         return tokens;
     }
@@ -73,17 +70,9 @@ public class LunaCodeProvider : ILunaCodeProvider
         };
     }
 
-    public void UpdateIdentificators()
+    public void UpdateTokenKinds(IEnumerable<UpdatedTokenKind> updatedTokens)
     {
-        if (TokenKindUpdated == null) return;
-        var updatedTokens = new List<UpdatedTokenKind>();
-        foreach (var identificator in _scannedIdentificators)
-        {
-            if (_scope.IsFunction(identificator)) updatedTokens.Add(new(identificator, (byte)TokenKindExtra.Function));
-            else if (_scope.IsConstant(identificator)) updatedTokens.Add(new(identificator, (byte)TokenKindExtra.Constant));
-            else updatedTokens.Add(new(identificator, (byte)TokenKind.Identificator));
-        }
-        TokenKindUpdated.Invoke(this, new(updatedTokens));
+        TokenKindUpdated?.Invoke(this, new(updatedTokens));
     }
 }
 

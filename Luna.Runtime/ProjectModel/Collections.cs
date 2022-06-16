@@ -1,31 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Luna.Utils;
 
 namespace Luna.ProjectModel;
 
-public interface IConstDeclarationDictionary : IEnumerable<ConstDeclaration>
+public interface IConstantDeclarationDictionary : IEnumerable<ConstantDeclaration>
 {
-    ConstDeclaration? this[string name] { get; }
+    ConstantDeclaration? this[string name] { get; }
     int Count { get; }
     bool Contains(string name);
+    IConstantDeclarationDictionary Subtraction(IConstantDeclarationDictionary x);
 }
 
-internal class ConstDeclarationDictionary : IConstDeclarationDictionary, IEnumerable<ConstDeclaration>
+internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary, IEnumerable<ConstantDeclaration>
 {
-    private readonly Dictionary<string, ConstDeclaration> _dictionary = new();
+    private readonly Dictionary<string, ConstantDeclaration> _dictionary = new();
 
-    public ConstDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
+    public ConstantDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
 
     public int Count => _dictionary.Count;
 
-    public void Add(ConstDeclaration constDeclaration)
+    public ConstantDeclarationDictionary() { }
+
+    public ConstantDeclarationDictionary(IEnumerable<ConstantDeclaration> constantDeclarations)
     {
-        _dictionary.Add(constDeclaration.Name, constDeclaration);
+        constantDeclarations.Each(Add);
+    }
+
+    public void Add(ConstantDeclaration constantDeclaration)
+    {
+        _dictionary.Add(constantDeclaration.Name, constantDeclaration);
     }
 
     public bool Contains(string name) => _dictionary.ContainsKey(name);
 
-    public IEnumerator<ConstDeclaration> GetEnumerator() => _dictionary.Values.GetEnumerator();
+    public IConstantDeclarationDictionary Subtraction(IConstantDeclarationDictionary x)
+    {
+        var result = new ConstantDeclarationDictionary();
+        foreach (var item in this)
+        {
+            if (!x.Contains(item.Name))
+            {
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
+
+    public IEnumerator<ConstantDeclaration> GetEnumerator() => _dictionary.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _dictionary.Values.GetEnumerator();
 }
@@ -35,6 +58,7 @@ public interface IFunctionDeclarationDictionary : IEnumerable<FunctionDeclaratio
     FunctionDeclaration? this[string name] { get; }
     int Count { get; }
     bool Contains(string name);
+    IFunctionDeclarationDictionary Subtraction(IFunctionDeclarationDictionary x);
 }
 
 internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, IEnumerable<FunctionDeclaration>
@@ -45,12 +69,33 @@ internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, I
 
     public int Count => _dictionary.Count;
 
+    public FunctionDeclarationDictionary() { }
+
+    public FunctionDeclarationDictionary(IEnumerable<FunctionDeclaration> functionDeclarations)
+    {
+        functionDeclarations.Each(Add);
+    }
+
     public void Add(FunctionDeclaration functionDeclaration)
     {
         _dictionary.Add(functionDeclaration.Name, functionDeclaration);
     }
 
     public bool Contains(string name) => _dictionary.ContainsKey(name);
+
+    public IFunctionDeclarationDictionary Subtraction(IFunctionDeclarationDictionary x)
+    {
+        var result = new FunctionDeclarationDictionary();
+        foreach (var item in this)
+        {
+            if (!x.Contains(item.Name))
+            {
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
 
     public IEnumerator<FunctionDeclaration> GetEnumerator() => _dictionary.Values.GetEnumerator();
 

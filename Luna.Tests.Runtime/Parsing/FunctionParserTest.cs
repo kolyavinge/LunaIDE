@@ -18,7 +18,7 @@ internal class FunctionParserTest
     public void Setup()
     {
         _scopeMock = new Mock<IFunctionParserScope>();
-        _scopeMock.Setup(x => x.IsConstExist(It.IsAny<string>())).Returns(false);
+        _scopeMock.Setup(x => x.IsConstantExist(It.IsAny<string>())).Returns(false);
         _scopeMock.Setup(x => x.IsFunctionExist(It.IsAny<string>())).Returns(false);
         _codeModel = new CodeModel();
     }
@@ -148,7 +148,7 @@ internal class FunctionParserTest
     public void ConstDeclaration_ConstNameExist()
     {
         // const WIDTH 123 // comment
-        _scopeMock.Setup(x => x.IsConstExist("WIDTH")).Returns(true);
+        _scopeMock.Setup(x => x.IsConstantExist("WIDTH")).Returns(true);
         Parse(new Token[]
         {
             new("const", 0, 0, 5, TokenKind.ConstDeclaration),
@@ -609,7 +609,7 @@ internal class FunctionParserTest
     public void FunctionDeclaration_OneNamedConstant()
     {
         // (func () WIDTH)
-        _scopeMock.Setup(x => x.IsConstExist("WIDTH")).Returns(true);
+        _scopeMock.Setup(x => x.IsConstantExist("WIDTH")).Returns(true);
         Parse(new Token[]
         {
             new("(", 0, 0, 1, TokenKind.OpenBracket),
@@ -635,7 +635,7 @@ internal class FunctionParserTest
     public void FunctionDeclaration_OneNamedConstantInList()
     {
         // (func () (WIDTH))
-        _scopeMock.Setup(x => x.IsConstExist("WIDTH")).Returns(true);
+        _scopeMock.Setup(x => x.IsConstantExist("WIDTH")).Returns(true);
         Parse(new Token[]
         {
             new("(", 0, 0, 1, TokenKind.OpenBracket),
@@ -712,7 +712,7 @@ internal class FunctionParserTest
     public void FunctionDeclaration_ConstAlreadyExist()
     {
         // (func () print)
-        _scopeMock.Setup(x => x.IsConstExist("func")).Returns(true);
+        _scopeMock.Setup(x => x.IsConstantExist("func")).Returns(true);
         Parse(new Token[]
         {
             new("(", 0, 0, 1, TokenKind.OpenBracket),

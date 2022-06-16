@@ -14,14 +14,13 @@ public interface ICodeModelUpdater
 
 public class CodeModelUpdatedEventArgs : EventArgs
 {
-    public CodeModel OldModel { get; }
-
     public CodeModel NewModel { get; }
+    public CodeModelScopeIdentificatorsDifferent Different { get; }
 
-    internal CodeModelUpdatedEventArgs(CodeModel oldModel, CodeModel newModel)
+    internal CodeModelUpdatedEventArgs(CodeModel newModel, CodeModelScopeIdentificatorsDifferent different)
     {
-        OldModel = oldModel;
         NewModel = newModel;
+        Different = different;
     }
 }
 

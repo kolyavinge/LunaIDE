@@ -29,7 +29,8 @@ public class CodeModelUpdater : ICodeModelUpdater
 
     public void Attach(CodeFileProjectItem projectItem, CodeModelUpdatedCallback updatedCallback)
     {
-        _attached.Add(projectItem, new(projectItem, projectItem.CodeModel, updatedCallback));
+        var scope = new CodeModelScope();
+        _attached.Add(projectItem, new(projectItem, scope.GetScopeIdentificators(projectItem.CodeModel), updatedCallback));
     }
 
     public void Detach(CodeFileProjectItem projectItem)
@@ -41,30 +42,28 @@ public class CodeModelUpdater : ICodeModelUpdater
     {
         _codeModelBuilder.BuildFor(_projectItems);
         _attached.Each(x => x.Value.RaiseCallback());
-        _attached.Each(x => x.Value.UpdateOldCodeModel());
     }
 }
 
 class AttachedItem
 {
-    public readonly CodeFileProjectItem ProjectItem;
-    public CodeModel OldCodeModel;
-    public readonly CodeModelUpdatedCallback Callback;
+    private readonly CodeFileProjectItem _projectItem;
+    private CodeModelScopeIdentificators _oldScopeIdentificators;
+    private readonly CodeModelUpdatedCallback _callback;
 
-    public AttachedItem(CodeFileProjectItem projectItem, CodeModel oldCodeModel, CodeModelUpdatedCallback callback)
+    public AttachedItem(CodeFileProjectItem projectItem, CodeModelScopeIdentificators oldScopeIdentificators, CodeModelUpdatedCallback callback)
     {
-        ProjectItem = projectItem;
-        OldCodeModel = oldCodeModel;
-        Callback = callback;
+        _projectItem = projectItem;
+        _oldScopeIdentificators = oldScopeIdentificators;
+        _callback = callback;
     }
 
     public void RaiseCallback()
     {
-        Callback(new(OldCodeModel, ProjectItem.CodeModel));
-    }
-
-    public void UpdateOldCodeModel()
-    {
-        OldCodeModel = ProjectItem.CodeModel;
+        var scope = new CodeModelScope();
+        var newScopeIdentificators = scope.GetScopeIdentificators(_projectItem.CodeModel);
+        var diff = IdentificatorsComparator.GetDifferent(_oldScopeIdentificators, newScopeIdentificators);
+        _callback(new(_projectItem.CodeModel, diff));
+        _oldScopeIdentificators = newScopeIdentificators;
     }
 }

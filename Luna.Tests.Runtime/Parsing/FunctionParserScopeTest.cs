@@ -19,13 +19,13 @@ internal class FunctionParserScopeTest
         _fileSystem = new Mock<IFileSystem>();
 
         _importCodeModel = new CodeModel();
-        _importCodeModel.AddConstDeclaration(new ConstDeclaration("importConst", new IntegerValueElement(1, 0, 0), 0, 0));
+        _importCodeModel.AddConstantDeclaration(new ConstantDeclaration("importConst", new IntegerValueElement(1, 0, 0), 0, 0));
         _importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("importFunc", new List<FunctionArgument>(), null, 0, 0));
         _importCodeModel.RunFunction = new FunctionValueElement(_importCodeModel, "", new List<ValueElement>(), 0, 0);
 
         _currentCodeModel = new CodeModel();
         _currentCodeModel.AddImportDirective(new ImportDirective("", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = _importCodeModel }, 0, 0));
-        _currentCodeModel.AddConstDeclaration(new ConstDeclaration("currentConst", new IntegerValueElement(1, 0, 0), 0, 0));
+        _currentCodeModel.AddConstantDeclaration(new ConstantDeclaration("currentConst", new IntegerValueElement(1, 0, 0), 0, 0));
         _currentCodeModel.AddFunctionDeclaration(new FunctionDeclaration("currentFunc", new List<FunctionArgument>(), null, 0, 0));
 
         var allCodeModels = new[] { _importCodeModel, _currentCodeModel };
@@ -36,9 +36,9 @@ internal class FunctionParserScopeTest
     [Test]
     public void IsConstExist()
     {
-        Assert.False(_scope.IsConstExist("const"));
-        Assert.True(_scope.IsConstExist("currentConst"));
-        Assert.True(_scope.IsConstExist("importConst"));
+        Assert.False(_scope.IsConstantExist("const"));
+        Assert.True(_scope.IsConstantExist("currentConst"));
+        Assert.True(_scope.IsConstantExist("importConst"));
     }
 
     [Test]

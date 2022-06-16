@@ -6,11 +6,11 @@ namespace Luna.ProjectModel;
 public class CodeModel
 {
     private readonly List<ImportDirective> _imports = new();
-    private readonly ConstDeclarationDictionary _constants = new();
+    private readonly ConstantDeclarationDictionary _constants = new();
     private readonly FunctionDeclarationDictionary _functions = new();
 
     public IReadOnlyCollection<ImportDirective> Imports => _imports;
-    public IConstDeclarationDictionary Constants => _constants;
+    public IConstantDeclarationDictionary Constants => _constants;
     public IFunctionDeclarationDictionary Functions => _functions;
     public FunctionValueElement? RunFunction { get; internal set; }
 
@@ -19,7 +19,7 @@ public class CodeModel
         _imports.Add(import);
     }
 
-    internal void AddConstDeclaration(ConstDeclaration constDirective)
+    internal void AddConstantDeclaration(ConstantDeclaration constDirective)
     {
         _constants.Add(constDirective);
     }
@@ -57,18 +57,18 @@ public class ImportDirective : CodeElement
     internal ImportDirective(string filePath, CodeFileProjectItem codeFile) : this(filePath, codeFile, 0, 0) { }
 }
 
-public class ConstDeclaration : CodeElement
+public class ConstantDeclaration : CodeElement
 {
     public string Name { get; }
     public ValueElement Value { get; }
 
-    public ConstDeclaration(string name, ValueElement value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    public ConstantDeclaration(string name, ValueElement value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
         Name = name;
         Value = value;
     }
 
-    internal ConstDeclaration(string name, ValueElement value) : this(name, value, 0, 0) { }
+    internal ConstantDeclaration(string name, ValueElement value) : this(name, value, 0, 0) { }
 }
 
 public class FunctionArgument : CodeElement

@@ -17,7 +17,7 @@ internal class RuntimeScopeTest
     private Mock<IValueElementEvaluator> _evaluator;
     private Mock<IEmbeddedFunctionsCollection> _embeddedFunctions;
     private List<FunctionDeclaration> _declaredFunctions;
-    private List<ConstDeclaration> _constDeclarations;
+    private List<ConstantDeclaration> _constDeclarations;
     private RuntimeScope _scope;
 
     [SetUp]
@@ -27,7 +27,7 @@ internal class RuntimeScopeTest
         _evaluator = new Mock<IValueElementEvaluator>();
         _embeddedFunctions = new Mock<IEmbeddedFunctionsCollection>();
         _declaredFunctions = new List<FunctionDeclaration>();
-        _constDeclarations = new List<ConstDeclaration>();
+        _constDeclarations = new List<ConstantDeclaration>();
     }
 
     private void MakeScope()
@@ -73,10 +73,10 @@ internal class RuntimeScopeTest
     public void FromCodeModel()
     {
         var codeModel = new CodeModel();
-        codeModel.AddConstDeclaration(new ConstDeclaration("const_1", new BooleanValueElement(true)));
+        codeModel.AddConstantDeclaration(new ConstantDeclaration("const_1", new BooleanValueElement(true)));
         codeModel.AddFunctionDeclaration(new FunctionDeclaration("func_1", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
         var importCodeModel = new CodeModel();
-        importCodeModel.AddConstDeclaration(new ConstDeclaration("import_const_1", new IntegerValueElement(123)));
+        importCodeModel.AddConstantDeclaration(new ConstantDeclaration("import_const_1", new IntegerValueElement(123)));
         importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("import_func_1", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
         codeModel.AddImportDirective(new ImportDirective("importFile", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = importCodeModel }));
 

@@ -5,9 +5,9 @@ namespace Luna.Parsing;
 
 public class ParserMessage
 {
-    public ParserMessageType Type { get; private set; }
-    public Token Token { get; private set; }
-    public List<Token> Tokens { get; private set; }
+    public ParserMessageType Type { get; }
+    public Token Token { get; }
+    public List<Token> Tokens { get; }
 
     public ParserMessage(ParserMessageType type, in Token token)
     {

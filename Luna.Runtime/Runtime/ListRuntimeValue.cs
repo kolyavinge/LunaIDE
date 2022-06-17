@@ -22,7 +22,7 @@ internal class ListRuntimeValue : RuntimeValue
 
     public override string ToString()
     {
-        return String.Format("({0})", String.Join(" ", _runtimeValues));
+        return $"({String.Join(" ", _runtimeValues)})";
     }
 
     public override bool Equals(object? obj)

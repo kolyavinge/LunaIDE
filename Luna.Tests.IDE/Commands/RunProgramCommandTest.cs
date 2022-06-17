@@ -56,9 +56,9 @@ internal class RunProgramCommandTest
         var model3 = new Mock<IEnvironmentWindowModel>();
         var windows = new List<EnvironmentWindow>
         {
-            new EnvironmentWindow("1", model1.Object, null),
-            new EnvironmentWindow("1", model2.Object, null),
-            new EnvironmentWindow("1", model3.Object, null)
+            new("1", model1.Object, new object()),
+            new("1", model2.Object, new object()),
+            new("1", model3.Object, new object())
         };
         _windowsManager.SetupGet(x => x.Windows).Returns(windows);
 

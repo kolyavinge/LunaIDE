@@ -1,6 +1,6 @@
 ﻿namespace Luna.IDE.CodeEditor;
 
-class TextIteratorWrapper : Luna.Parsing.ITextIterator
+class TextIteratorWrapper : Parsing.ITextIterator
 {
     private readonly CodeHighlighter.ITextIterator _textIterator;
 

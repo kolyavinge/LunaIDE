@@ -20,7 +20,7 @@ internal class FloatRuntimeValue : NumericRuntimeValue
     public override bool Equals(object? obj)
     {
         return obj is FloatRuntimeValue value &&
-               FloatValue == value.FloatValue;
+               Math.Abs(FloatValue - value.FloatValue) < 0.00001;
     }
 
     public override int GetHashCode()

@@ -21,7 +21,7 @@ internal class ValueElementEvaluator : IValueElementEvaluator
         if (element is StringValueElement stringElement) return new StringRuntimeValue(stringElement.Value);
         if (element is ListValueElement listElement) return new ListRuntimeValue(listElement.Items.Select(item => Eval(scope, item)));
         if (element is NamedConstantValueElement constElement) return Eval(scope, scope.GetConstantValue(constElement.Name));
-        if (element is FunctionArgumentValueElement argElement) return scope.GetFunctionArgumentValue(argElement.Name)!;
+        if (element is FunctionArgumentValueElement argElement) return scope.GetFunctionArgumentValue(argElement.Name);
         if (element is FunctionValueElement funcElement && scope.IsDeclaredOrEmbeddedFunction(funcElement.Name))
         {
             var arguments = funcElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray();

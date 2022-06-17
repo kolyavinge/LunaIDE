@@ -12,7 +12,7 @@ public interface IConstantDeclarationDictionary : IEnumerable<ConstantDeclaratio
     IConstantDeclarationDictionary Subtraction(IConstantDeclarationDictionary x);
 }
 
-internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary, IEnumerable<ConstantDeclaration>
+internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary
 {
     private readonly Dictionary<string, ConstantDeclaration> _dictionary = new();
 
@@ -61,7 +61,7 @@ public interface IFunctionDeclarationDictionary : IEnumerable<FunctionDeclaratio
     IFunctionDeclarationDictionary Subtraction(IFunctionDeclarationDictionary x);
 }
 
-internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, IEnumerable<FunctionDeclaration>
+internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary
 {
     private readonly Dictionary<string, FunctionDeclaration> _dictionary = new();
 

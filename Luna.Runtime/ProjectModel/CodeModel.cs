@@ -103,7 +103,7 @@ public class FunctionDeclaration : CodeElement
 
 public abstract class ValueElement : CodeElement
 {
-    public ValueElement(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
+    protected ValueElement(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
 }
 
 public class BooleanValueElement : ValueElement

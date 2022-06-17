@@ -28,7 +28,7 @@ internal class RuntimeScope : IRuntimeScope
     private readonly IValueElementEvaluator _evaluator;
     private readonly IEmbeddedFunctionsCollection _embeddedFunctions;
     private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
-    private readonly Dictionary<string, ConstantDeclaration> _constDeclarations;
+    private readonly Dictionary<string, ConstantDeclaration> _constantDeclarations;
 
     private readonly Stack<Dictionary<string, IRuntimeValue>> _argumentStack;
 
@@ -36,19 +36,19 @@ internal class RuntimeScope : IRuntimeScope
         IValueElementEvaluator evaluator,
         IEmbeddedFunctionsCollection embeddedFunctions,
         IEnumerable<FunctionDeclaration> declaredFunctions,
-        IEnumerable<ConstantDeclaration> constDeclarations)
+        IEnumerable<ConstantDeclaration> constantDeclarations)
     {
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;
         _declaredFunctions = declaredFunctions.Select(x => new ScopeFunctionDeclaration(x.Name, x.Arguments, x.Body)).ToDictionary(x => x.Name, v => v);
-        _constDeclarations = constDeclarations.ToDictionary(x => x.Name, v => v);
+        _constantDeclarations = constantDeclarations.ToDictionary(x => x.Name, v => v);
         _argumentStack = new();
         _argumentStack.Push(new());
     }
 
     public ValueElement GetConstantValue(string constantName)
     {
-        return _constDeclarations[constantName].Value;
+        return _constantDeclarations[constantName].Value;
     }
 
     public bool IsDeclaredOrEmbeddedFunction(string functionName)

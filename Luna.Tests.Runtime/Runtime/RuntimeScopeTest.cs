@@ -17,7 +17,7 @@ internal class RuntimeScopeTest
     private Mock<IValueElementEvaluator> _evaluator;
     private Mock<IEmbeddedFunctionsCollection> _embeddedFunctions;
     private List<FunctionDeclaration> _declaredFunctions;
-    private List<ConstantDeclaration> _constDeclarations;
+    private List<ConstantDeclaration> _constantDeclarations;
     private RuntimeScope _scope;
 
     [SetUp]
@@ -27,12 +27,22 @@ internal class RuntimeScopeTest
         _evaluator = new Mock<IValueElementEvaluator>();
         _embeddedFunctions = new Mock<IEmbeddedFunctionsCollection>();
         _declaredFunctions = new List<FunctionDeclaration>();
-        _constDeclarations = new List<ConstantDeclaration>();
+        _constantDeclarations = new List<ConstantDeclaration>();
     }
 
     private void MakeScope()
     {
-        _scope = new RuntimeScope(_evaluator.Object, _embeddedFunctions.Object, _declaredFunctions, _constDeclarations);
+        _scope = new RuntimeScope(_evaluator.Object, _embeddedFunctions.Object, _declaredFunctions, _constantDeclarations);
+    }
+
+    [Test]
+    public void GetConstantValue()
+    {
+        _constantDeclarations.Add(new("const", new IntegerValueElement(123)));
+        MakeScope();
+        var value = _scope.GetConstantValue("const");
+        Assert.True(value is IntegerValueElement);
+        Assert.AreEqual(123, ((IntegerValueElement)value).Value);
     }
 
     [Test]

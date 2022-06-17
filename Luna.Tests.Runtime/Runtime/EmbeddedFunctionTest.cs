@@ -31,7 +31,7 @@ internal class EmbeddedFunctionTest
     {
         try
         {
-            var value = _func.GetValueOrError<IRuntimeValue>(0);
+            _func.GetValueOrError<IRuntimeValue>(0);
             Assert.Fail();
         }
         catch (RuntimeException exp)
@@ -47,7 +47,7 @@ internal class EmbeddedFunctionTest
         {
             var value = new Mock<IRuntimeValue>();
             value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
-            var argumentValues = new IRuntimeValue[] { value.Object }.ToReadonlyArray();
+            var argumentValues = new[] { value.Object }.ToReadonlyArray();
             _func.SetArgumentValues(argumentValues);
             _func.GetValueOrError<StringRuntimeValue>(0);
             Assert.Fail();
@@ -63,7 +63,7 @@ internal class EmbeddedFunctionTest
     {
         var value = new Mock<IRuntimeValue>();
         value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
-        var argumentValues = new IRuntimeValue[] { value.Object }.ToReadonlyArray();
+        var argumentValues = new[] { value.Object }.ToReadonlyArray();
         _func.SetArgumentValues(argumentValues);
         var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
         Assert.AreEqual(123, argumentValue.IntegerValue);

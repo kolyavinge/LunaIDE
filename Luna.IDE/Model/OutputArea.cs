@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using CodeHighlighter;
 using CodeHighlighter.Commands;
+using Luna.IDE.Utils;
 using Luna.Output;
 
 namespace Luna.IDE.Model;
@@ -55,9 +55,9 @@ public class OutputArea : IOutputArea
     {
         return new TokenColor[]
         {
-            new ((byte)OutputMessageKind.Info, new() { R = 78, G = 220, B = 57, A = 255 }),
-            new ((byte)OutputMessageKind.Warning, Colors.Yellow),
-            new ((byte)OutputMessageKind.Error, new() { R = 244, G = 71, B = 83, A = 255 }),
+            new ((byte)OutputMessageKind.Info, ColorUtils.FromHex("4edc39")),
+            new ((byte)OutputMessageKind.Warning, ColorUtils.FromHex("ffff00")),
+            new ((byte)OutputMessageKind.Error, ColorUtils.FromHex("f44753"))
         };
     }
 }

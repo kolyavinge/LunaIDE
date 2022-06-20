@@ -1,8 +1,12 @@
 // 15-th game on luna language
 
-const CELL_SIZE             26
-const CELL_SIZE_HALF        13
-const CELL_COLOR            'ffd769'
-const CHIP_NUMBER_COLOR     0
-const CHIP_NUMBER_FONT_SIZE 12
-const FIELD_COLOR           'e6e6e6'
+const ROWS           4
+const COLS           4
+const CHIPS_COUNT    16
+const EMPTY_NUMBER   0
+const CELL_SIZE      26
+const CELL_SIZE_HALF 13
+const CELL_COLOR     'ffd769'
+const FONT_COLOR     0
+const FONT_SIZE      12
+const FIELD_COLOR    'e6e6e6'

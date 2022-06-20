@@ -108,7 +108,7 @@ internal class ScannerTest
     }
 
     [Test]
-    public void ComplexIdentificator_1()
+    public void ListItemAccessor()
     {
         var tokens = GetTokens("xxx.yyy.zzz");
         Assert.AreEqual(5, tokens.Count);
@@ -117,6 +117,16 @@ internal class ScannerTest
         Assert.AreEqual(new Token("yyy", 0, 4, 3, TokenKind.Identificator), tokens[2]);
         Assert.AreEqual(new Token(".", 0, 7, 1, TokenKind.Dot), tokens[3]);
         Assert.AreEqual(new Token("zzz", 0, 8, 3, TokenKind.Identificator), tokens[4]);
+    }
+
+    [Test]
+    public void NamedListItem()
+    {
+        var tokens = GetTokens("x:1");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("x", 0, 0, 1, TokenKind.Identificator), tokens[0]);
+        Assert.AreEqual(new Token(":", 0, 1, 1, TokenKind.Colon), tokens[1]);
+        Assert.AreEqual(new Token("1", 0, 2, 1, TokenKind.IntegerNumber), tokens[2]);
     }
 
     [Test]

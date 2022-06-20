@@ -113,7 +113,7 @@ public class LunaCodeProviderTest
     }
 
     [Test]
-    public void ComplexIdentificator()
+    public void ListItemAccessor()
     {
         var tokens = GetTokens("xxx.yyy.zzz");
         Assert.AreEqual(5, tokens.Count);
@@ -125,7 +125,17 @@ public class LunaCodeProviderTest
     }
 
     [Test]
-    public void FunctionDeclare()
+    public void NamedListItem()
+    {
+        var tokens = GetTokens("x:1");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("x", 0, 0, 1, (byte)TokenKind.Identificator), tokens[0]);
+        Assert.AreEqual(new Token(":", 0, 1, 1, (byte)TokenKind.Colon), tokens[1]);
+        Assert.AreEqual(new Token("1", 0, 2, 1, (byte)TokenKind.IntegerNumber), tokens[2]);
+    }
+
+    [Test]
+    public void FunctionDeclaration()
     {
         var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
         Assert.AreEqual(13, tokens.Count);

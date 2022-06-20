@@ -65,6 +65,7 @@ public class LunaCodeProvider : ILunaCodeProvider
             new((byte) TokenKind.BooleanFalse, CodeProviderColors.Magenta),
             new((byte) TokenKind.Comment, CodeProviderColors.Gray),
             new((byte) TokenKind.Dot, CodeProviderColors.Gray),
+            new((byte) TokenKind.Colon, CodeProviderColors.Gray),
             new((byte) TokenKindExtra.Constant, CodeProviderColors.LightBlue),
             new((byte) TokenKindExtra.Function, CodeProviderColors.Yellow)
         };

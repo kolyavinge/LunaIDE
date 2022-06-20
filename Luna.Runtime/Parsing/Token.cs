@@ -57,5 +57,6 @@ public enum TokenKind : byte
     BooleanTrue,
     BooleanFalse,
     Comment,
-    Dot
+    Dot,
+    Colon
 }

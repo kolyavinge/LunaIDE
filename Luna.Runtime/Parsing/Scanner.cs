@@ -105,6 +105,17 @@ public class Scanner
                     textIterator.MoveNext();
                     goto case State.Begin;
                 }
+                else if (_textIterator!.Char == ':')
+                {
+                    _lineIndex = textIterator.LineIndex;
+                    _columnIndex = textIterator.ColumnIndex;
+                    _nameLength = 0;
+                    _kind = TokenKind.Colon;
+                    AddTokenChar();
+                    MakeToken();
+                    textIterator.MoveNext();
+                    goto case State.Begin;
+                }
                 else
                 {
                     _lineIndex = textIterator.LineIndex;
@@ -191,7 +202,7 @@ public class Scanner
 
     private bool IsDelimiter()
     {
-        return _textIterator!.Char == '(' || _textIterator!.Char == ')' || _textIterator!.Char == '.' || IsOperator();
+        return _textIterator!.Char == '(' || _textIterator!.Char == ')' || _textIterator!.Char == '.' || _textIterator!.Char == ':' || IsOperator();
     }
 
     private bool IsSpace()

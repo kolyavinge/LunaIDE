@@ -5,11 +5,8 @@ namespace Luna.Runtime;
 
 internal class FloatRuntimeValue : NumericRuntimeValue
 {
-    public override double FloatValue { get; }
-
-    public FloatRuntimeValue(double value)
+    public FloatRuntimeValue(double value) : base(value)
     {
-        FloatValue = value;
     }
 
     public override string ToString()

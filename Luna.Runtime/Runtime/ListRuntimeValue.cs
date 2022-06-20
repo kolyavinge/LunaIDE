@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Luna.Runtime;
 
-internal class ListRuntimeValue : RuntimeValue
+internal class ListRuntimeValue : RuntimeValue, IEnumerable<IRuntimeValue>
 {
     private readonly List<IRuntimeValue> _runtimeValues;
 
@@ -35,5 +36,15 @@ internal class ListRuntimeValue : RuntimeValue
     public override int GetHashCode()
     {
         return HashCode.Combine(_runtimeValues);
+    }
+
+    public IEnumerator<IRuntimeValue> GetEnumerator()
+    {
+        return _runtimeValues.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _runtimeValues.GetEnumerator();
     }
 }

@@ -44,6 +44,26 @@ internal class ScannerTest
     }
 
     [Test]
+    public void Const_PositiveIntegerNumber()
+    {
+        var tokens = GetTokens("const VALUE +123");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
+        Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
+        Assert.AreEqual(new Token("123", 0, 12, 3, TokenKind.IntegerNumber), tokens[2]);
+    }
+
+    [Test]
+    public void Const_NegativeIntegerNumber()
+    {
+        var tokens = GetTokens("const VALUE -123");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
+        Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
+        Assert.AreEqual(new Token("-123", 0, 12, 4, TokenKind.IntegerNumber), tokens[2]);
+    }
+
+    [Test]
     public void Const_FloatNumber()
     {
         var tokens = GetTokens("const VALUE 1.23");
@@ -51,6 +71,26 @@ internal class ScannerTest
         Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
         Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
         Assert.AreEqual(new Token("1.23", 0, 12, 4, TokenKind.FloatNumber), tokens[2]);
+    }
+
+    [Test]
+    public void Const_PositiveFloatNumber()
+    {
+        var tokens = GetTokens("const VALUE +1.23");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
+        Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
+        Assert.AreEqual(new Token("1.23", 0, 12, 4, TokenKind.FloatNumber), tokens[2]);
+    }
+
+    [Test]
+    public void Const_NegativeFloatNumber()
+    {
+        var tokens = GetTokens("const VALUE -1.23");
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
+        Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
+        Assert.AreEqual(new Token("-1.23", 0, 12, 5, TokenKind.FloatNumber), tokens[2]);
     }
 
     [Test]

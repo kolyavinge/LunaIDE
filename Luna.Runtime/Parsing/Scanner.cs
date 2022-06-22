@@ -65,6 +65,23 @@ public class Scanner
                     textIterator.MoveNext();
                     goto case State.Identificator;
                 }
+                else if (textIterator.Char == '+' && IsNextDigit())
+                {
+                    _lineIndex = textIterator.LineIndex;
+                    _columnIndex = textIterator.ColumnIndex;
+                    _nameLength = 0;
+                    textIterator.MoveNext();
+                    goto case State.Number;
+                }
+                else if (textIterator.Char == '-' && IsNextDigit())
+                {
+                    _lineIndex = textIterator.LineIndex;
+                    _columnIndex = textIterator.ColumnIndex;
+                    _nameLength = 0;
+                    AddTokenChar();
+                    textIterator.MoveNext();
+                    goto case State.Number;
+                }
                 else if (IsDigit())
                 {
                     _lineIndex = textIterator.LineIndex;
@@ -137,13 +154,13 @@ public class Scanner
                 else if (textIterator.Char == '\'') { AddTokenChar(); MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else { AddTokenChar(); textIterator.MoveNext(); goto case State.String; }
             case State.Number:
-                if (textIterator.Eof) { MakeToken(); goto case State.End; }
-                else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                if (textIterator.Eof) { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.End; }
+                else if (IsSpace()) { _kind = TokenKind.IntegerNumber; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                else if (IsReturn()) { _kind = TokenKind.IntegerNumber; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else if (textIterator.Char == '.') { _kind = TokenKind.FloatNumber; AddTokenChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
-                else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
-                else if (textIterator.Char == ')') { MakeToken(); goto case State.Begin; }
-                else if (IsDigit()) { AddTokenChar(); textIterator.MoveNext(); goto case State.Number; }
+                else if (IsDelimiter()) { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.Begin; }
+                else if (textIterator.Char == ')') { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.Begin; }
+                else if (IsDigit()) { _kind = TokenKind.IntegerNumber; AddTokenChar(); textIterator.MoveNext(); goto case State.Number; }
                 else goto case State.Error;
             case State.FloatNumber:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
@@ -195,6 +212,11 @@ public class Scanner
         return Char.IsDigit(_textIterator!.Char);
     }
 
+    private bool IsNextDigit()
+    {
+        return Char.IsDigit(_textIterator!.NextChar);
+    }
+
     private bool IsOperator()
     {
         return _textIterator!.Char == '+' || _textIterator.Char == '-' || _textIterator.Char == '*' || _textIterator.Char == '/';
@@ -227,15 +249,8 @@ public class Scanner
         if (StringUtils.StringEquals("-", _nameArray, _nameLength)) return TokenKind.Minus;
         if (StringUtils.StringEquals("*", _nameArray, _nameLength)) return TokenKind.Asterisk;
         if (StringUtils.StringEquals("/", _nameArray, _nameLength)) return TokenKind.Slash;
-        if (IsIntegerNumber()) return TokenKind.IntegerNumber;
 
         return TokenKind.Identificator;
-    }
-
-    private bool IsIntegerNumber()
-    {
-        for (int i = 0; i < _nameLength; i++) if (!Char.IsDigit(_nameArray[i])) return false;
-        return true;
     }
 
     enum State

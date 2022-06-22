@@ -2,11 +2,16 @@
 
 namespace Luna.Functions.Lang;
 
-[EmbeddedFunctionDeclaration("set", "var value")]
+[EmbeddedFunctionDeclaration("set", "variable value")]
 internal class Set : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()
     {
-        return null;
+        var variable = GetVariableOrError(0);
+        var value = GetValueOrError<IRuntimeValue>(1);
+
+        variable.SetValue(value);
+
+        return value;
     }
 }

@@ -50,6 +50,7 @@ public enum TokenKind : byte
     Slash,
     String,
     Identificator,
+    Variable,
     Lambda,
     RunFunction,
     IntegerNumber,

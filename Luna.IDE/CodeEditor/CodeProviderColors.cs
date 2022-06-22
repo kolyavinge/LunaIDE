@@ -7,6 +7,7 @@ static class CodeProviderColors
 {
     public static readonly Color Magenta = ColorUtils.FromHex("e65a89");
     public static readonly Color Green = ColorUtils.FromHex("5ae65c");
+    public static readonly Color Purple = ColorUtils.FromHex("d9b8f2");
     public static readonly Color Blue = ColorUtils.FromHex("5aa7e6");
     public static readonly Color LightBlue = ColorUtils.FromHex("5ad6e6");
     public static readonly Color Yellow = ColorUtils.FromHex("dbd97d");

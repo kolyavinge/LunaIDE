@@ -1002,6 +1002,59 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_GetVariable()
+    {
+        // (f () @var)
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("@var", 0, 6, 4, TokenKind.Variable),
+            new(")", 0, 11, 1, TokenKind.CloseBracket)
+        });
+        Assert.AreEqual(null, _result.Error);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.True(func.Body.First() is VariableValueElement);
+        var body = (VariableValueElement)func.Body.First();
+        Assert.AreEqual("@var", body.Name);
+    }
+
+    [Test]
+    public void FunctionDeclaration_SetVariable()
+    {
+        // (f () (set @var 1))
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("set", 0, 7, 3, TokenKind.Identificator),
+            new("@var", 0, 11, 4, TokenKind.Variable),
+            new("1", 0, 16, 1, TokenKind.IntegerNumber),
+            new(")", 0, 17, 1, TokenKind.CloseBracket),
+            new(")", 0, 18, 1, TokenKind.CloseBracket)
+        });
+        Assert.AreEqual(null, _result.Error);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.True(func.Body.First() is FunctionValueElement);
+        var body = (FunctionValueElement)func.Body.First();
+        Assert.AreEqual(2, body.ArgumentValues.Count);
+        var variable = body.ArgumentValues[0];
+        var value = body.ArgumentValues[1];
+        Assert.True(variable is VariableValueElement);
+        Assert.True(value is IntegerValueElement);
+        Assert.AreEqual("@var", ((VariableValueElement)variable).Name);
+    }
+
+    [Test]
     public void RunFunctionCall()
     {
         // (run (f 1))

@@ -27,11 +27,15 @@ internal abstract class EmbeddedFunction
 
     public TValue GetValueOrError<TValue>(int argumentIndex) where TValue : IRuntimeValue
     {
-        if (_argumentValues == null) throw new RuntimeException("Argument values have not been passed.");
+        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
         var value = _argumentValues[argumentIndex].GetValue();
+        if (value is not TValue && value is VariableRuntimeValue variable)
+        {
+            value = variable.Value;
+        }
         if (value is not TValue valueConverted)
         {
-            throw new RuntimeException("Embedded function argument cannot be get.");
+            throw RuntimeException.ArgumentСannotGet();
         }
 
         return valueConverted;
@@ -39,11 +43,23 @@ internal abstract class EmbeddedFunction
 
     public FunctionRuntimeValue GetFunctionOrError(int argumentIndex)
     {
-        if (_argumentValues == null) throw new RuntimeException("Argument values have not been passed.");
+        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
         var value = _argumentValues[argumentIndex];
         if (value is not FunctionRuntimeValue valueConverted)
         {
-            throw new RuntimeException("Embedded function argument cannot be get.");
+            throw RuntimeException.ArgumentСannotGet();
+        }
+
+        return valueConverted;
+    }
+
+    public VariableRuntimeValue GetVariableOrError(int argumentIndex)
+    {
+        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
+        var value = _argumentValues[argumentIndex];
+        if (value is not VariableRuntimeValue valueConverted)
+        {
+            throw RuntimeException.ArgumentСannotGet();
         }
 
         return valueConverted;

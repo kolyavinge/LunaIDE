@@ -177,4 +177,15 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run();
         Assert.AreEqual("4", _resultString);
     }
+
+    [Test]
+    public void SetVariable()
+    {
+        CodeFile(@"
+            (set_get_var () (set @var 123) @var)
+            (run (set_get_var))
+");
+        Run();
+        Assert.AreEqual("123", _resultString);
+    }
 }

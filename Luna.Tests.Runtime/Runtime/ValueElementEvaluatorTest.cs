@@ -104,4 +104,15 @@ internal class ValueElementEvaluatorTest
         _scope.Verify(x => x.PushFunctionArguments(), Times.Never());
         _scope.Verify(x => x.PopFunctionArguments(), Times.Never());
     }
+
+    [Test]
+    public void VariableValueElement()
+    {
+        var variableValueElement = new VariableValueElement("@var");
+        var variableRuntimeValue = new VariableRuntimeValue();
+        _scope.Setup(x => x.GetVariableOrCreateNew("@var")).Returns(variableRuntimeValue);
+        var result = (VariableRuntimeValue)_evaluator.Eval(_scope.Object, variableValueElement);
+        Assert.AreEqual(variableRuntimeValue, result);
+        _scope.Verify(x => x.GetVariableOrCreateNew("@var"), Times.Once());
+    }
 }

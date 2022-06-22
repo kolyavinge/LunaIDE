@@ -255,6 +255,12 @@ public class FunctionParser : AbstractParser
             }
             MoveNext();
         }
+        else if (Token.Kind == TokenKind.Variable)
+        {
+            var name = GetTokenName();
+            body = new VariableValueElement(name, Token.LineIndex, Token.StartColumnIndex);
+            MoveNext();
+        }
         else if (Token.Kind == TokenKind.OpenBracket)
         {
             MoveNext();

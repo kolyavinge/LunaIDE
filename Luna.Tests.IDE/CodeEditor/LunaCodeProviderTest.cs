@@ -175,6 +175,18 @@ public class LunaCodeProviderTest
     }
 
     [Test]
+    public void VariableSet()
+    {
+        var tokens = GetTokens("(set @var 1)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token("(", 0, 0, 1, (byte)TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token("set", 0, 1, 3, (byte)TokenKind.Identificator), tokens[1]);
+        Assert.AreEqual(new Token("@var", 0, 5, 4, (byte)TokenKind.Variable), tokens[2]);
+        Assert.AreEqual(new Token("1", 0, 10, 1, (byte)TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(")", 0, 11, 1, (byte)TokenKind.CloseBracket), tokens[4]);
+    }
+
+    [Test]
     public void FunctionDeclaration()
     {
         var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
@@ -233,11 +245,10 @@ public class LunaCodeProviderTest
     public void Unknown()
     {
         var tokens = GetTokens("@123 1x 2.3!");
-        Assert.AreEqual(4, tokens.Count);
-        Assert.AreEqual(new Token("@", 0, 0, 1, (byte)TokenKind.Unknown), tokens[0]);
-        Assert.AreEqual(new Token("123", 0, 1, 3, (byte)TokenKind.IntegerNumber), tokens[1]);
-        Assert.AreEqual(new Token("1x", 0, 5, 2, (byte)TokenKind.Unknown), tokens[2]);
-        Assert.AreEqual(new Token("2.3!", 0, 8, 4, (byte)TokenKind.Unknown), tokens[3]);
+        Assert.AreEqual(3, tokens.Count);
+        Assert.AreEqual(new Token("@123", 0, 0, 4, (byte)TokenKind.Unknown), tokens[0]);
+        Assert.AreEqual(new Token("1x", 0, 5, 2, (byte)TokenKind.Unknown), tokens[1]);
+        Assert.AreEqual(new Token("2.3!", 0, 8, 4, (byte)TokenKind.Unknown), tokens[2]);
     }
 
     private List<Token> GetTokens(string text)

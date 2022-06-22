@@ -178,6 +178,18 @@ public class NamedConstantValueElement : ValueElement
     internal NamedConstantValueElement(string name) : this(name, 0, 0) { }
 }
 
+public class VariableValueElement : ValueElement
+{
+    public string Name { get; }
+
+    public VariableValueElement(string name, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    {
+        Name = name;
+    }
+
+    internal VariableValueElement(string name) : this(name, 0, 0) { }
+}
+
 public class FunctionArgumentValueElement : ValueElement
 {
     public string Name { get; }

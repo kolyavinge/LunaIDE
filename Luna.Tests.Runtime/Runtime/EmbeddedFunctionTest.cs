@@ -68,4 +68,15 @@ internal class EmbeddedFunctionTest
         var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
         Assert.AreEqual(123, argumentValue.IntegerValue);
     }
+
+    [Test]
+    public void GetValueOrError_Variable()
+    {
+        var value = new Mock<IRuntimeValue>();
+        value.Setup(x => x.GetValue(default)).Returns(new VariableRuntimeValue(new IntegerRuntimeValue(123)));
+        var argumentValues = new[] { value.Object }.ToReadonlyArray();
+        _func.SetArgumentValues(argumentValues);
+        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
+        Assert.AreEqual(123, argumentValue.IntegerValue);
+    }
 }

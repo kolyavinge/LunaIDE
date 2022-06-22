@@ -29,6 +29,7 @@ internal class RuntimeScope : IRuntimeScope
     private readonly IEmbeddedFunctionsCollection _embeddedFunctions;
     private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
     private readonly Dictionary<string, ConstantDeclaration> _constantDeclarations;
+    private readonly Dictionary<string, VariableRuntimeValue> _variables;
 
     private readonly Stack<Dictionary<string, IRuntimeValue>> _argumentStack;
 
@@ -42,6 +43,7 @@ internal class RuntimeScope : IRuntimeScope
         _embeddedFunctions = embeddedFunctions;
         _declaredFunctions = declaredFunctions.Select(x => new ScopeFunctionDeclaration(x.Name, x.Arguments, x.Body)).ToDictionary(x => x.Name, v => v);
         _constantDeclarations = constantDeclarations.ToDictionary(x => x.Name, v => v);
+        _variables = new();
         _argumentStack = new();
         _argumentStack.Push(new());
     }
@@ -54,6 +56,20 @@ internal class RuntimeScope : IRuntimeScope
     public bool IsDeclaredOrEmbeddedFunction(string functionName)
     {
         return _declaredFunctions.ContainsKey(functionName) || _embeddedFunctions.Contains(functionName);
+    }
+
+    public VariableRuntimeValue GetVariableOrCreateNew(string variableName)
+    {
+        if (_variables.ContainsKey(variableName))
+        {
+            return _variables[variableName];
+        }
+        else
+        {
+            var variable = new VariableRuntimeValue();
+            _variables.Add(variableName, variable);
+            return variable;
+        }
     }
 
     public string[] GetFunctionArgumentNames(string functionName)
@@ -89,10 +105,10 @@ internal class RuntimeScope : IRuntimeScope
         var declaration = _declaredFunctions[functionName];
         foreach (var item in declaration.Body)
         {
-            result = _evaluator.Eval(this, item);
+            result = _evaluator.Eval(this, item).GetValue();
         }
 
-        return result.GetValue();
+        return result;
     }
 
     public bool IsEmbeddedFunction(string functionName)

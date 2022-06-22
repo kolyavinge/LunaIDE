@@ -56,6 +56,15 @@ public class Scanner
                     textIterator.MoveNext();
                     goto case State.String;
                 }
+                else if (textIterator.Char == '@')
+                {
+                    _lineIndex = textIterator.LineIndex;
+                    _columnIndex = textIterator.ColumnIndex;
+                    _nameLength = 0;
+                    AddTokenChar();
+                    textIterator.MoveNext();
+                    goto case State.Variable;
+                }
                 else if (IsStartIdentificatorNameChar())
                 {
                     _lineIndex = textIterator.LineIndex;
@@ -140,10 +149,11 @@ public class Scanner
                     _nameLength = 0;
                     goto case State.Error;
                 }
+            case State.Variable:
+                if (IsStartIdentificatorNameChar()) { _kind = TokenKind.Variable; AddTokenChar(); textIterator.MoveNext(); goto case State.Identificator; }
+                else goto case State.Error;
             case State.Identificator:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
-                else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else if (textIterator.Char == ')') { MakeToken(); goto case State.Begin; }
                 else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
                 else if (IsIdentificatorNameChar()) { AddTokenChar(); textIterator.MoveNext(); goto case State.Identificator; }
@@ -155,17 +165,12 @@ public class Scanner
                 else { AddTokenChar(); textIterator.MoveNext(); goto case State.String; }
             case State.Number:
                 if (textIterator.Eof) { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.End; }
-                else if (IsSpace()) { _kind = TokenKind.IntegerNumber; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else if (IsReturn()) { _kind = TokenKind.IntegerNumber; MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else if (textIterator.Char == '.') { _kind = TokenKind.FloatNumber; AddTokenChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
                 else if (IsDelimiter()) { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.Begin; }
-                else if (textIterator.Char == ')') { _kind = TokenKind.IntegerNumber; MakeToken(); goto case State.Begin; }
                 else if (IsDigit()) { _kind = TokenKind.IntegerNumber; AddTokenChar(); textIterator.MoveNext(); goto case State.Number; }
                 else goto case State.Error;
             case State.FloatNumber:
                 if (textIterator.Eof) { MakeToken(); goto case State.End; }
-                else if (IsSpace()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
-                else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else if (IsDelimiter()) { MakeToken(); goto case State.Begin; }
                 else if (IsDigit()) { AddTokenChar(); textIterator.MoveNext(); goto case State.FloatNumber; }
                 else goto case State.Error;
@@ -174,11 +179,9 @@ public class Scanner
                 else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else { AddTokenChar(); textIterator.MoveNext(); goto case State.Comment; }
             case State.Error:
-                _kind = TokenKind.Unknown;
-                AddTokenChar();
-                MakeToken();
-                textIterator.MoveNext();
-                goto case State.Begin;
+                if (textIterator.Eof) { _kind = TokenKind.Unknown; MakeToken(); goto case State.End; }
+                else if (IsDelimiter()) { _kind = TokenKind.Unknown; MakeToken(); goto case State.Begin; }
+                else { AddTokenChar(); textIterator.MoveNext(); goto case State.Error; }
             case State.End:
                 break;
         }
@@ -224,7 +227,7 @@ public class Scanner
 
     private bool IsDelimiter()
     {
-        return _textIterator!.Char == '(' || _textIterator!.Char == ')' || _textIterator!.Char == '.' || _textIterator!.Char == ':' || IsOperator();
+        return _textIterator!.Char == '(' || _textIterator!.Char == ')' || _textIterator!.Char == '.' || _textIterator!.Char == ':' || IsSpace() || IsReturn() || IsOperator();
     }
 
     private bool IsSpace()
@@ -257,6 +260,7 @@ public class Scanner
     {
         Begin,
         Identificator,
+        Variable,
         Number,
         FloatNumber,
         String,

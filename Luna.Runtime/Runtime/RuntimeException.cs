@@ -13,6 +13,10 @@ public class RuntimeException : Exception
 
     internal static RuntimeException ToManyArguments(string funcName) => new($"Function {funcName} has too many passed arguments and cannot be evaluated.");
 
+    internal static RuntimeException ArgumentsNotPassed() => new("Argument values have not been passed.");
+
+    internal static RuntimeException ArgumentСannotGet() => new("Embedded function argument cannot be get.");
+
     internal RuntimeException(string message) : base(message)
     {
     }

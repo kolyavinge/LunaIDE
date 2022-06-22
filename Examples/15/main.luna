@@ -4,8 +4,6 @@ import 'const.luna'
 
 // ----- game -----
 
-var @chips
-
 (shuffle (list) (sort list (lambda (a b) (rand -1 1))))
 
 (swap (list a b)

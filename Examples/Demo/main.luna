@@ -1,4 +1,4 @@
-// program for testing
+// demo program
 
 import 'imported.luna'
 
@@ -8,8 +8,13 @@ const ANY_CONST 111
 
 (lambdaCall (l) (l 'called lambda'))
 
+(set_get_global_variable ()
+    (set @global_variable 123)
+    @global_variable
+)
+
+// examples 
+
 //(run (lambdaCall (lambda (x) x)))
-
-//(run (func (INT_CONST FLOAT_CONST STR_CONST)))
-
-(run (if (eq 1 1) (func 10) (func 20)))
+//(run (if (eq 1 5) (func 10) (func 20)))
+(run (set_get_global_variable))

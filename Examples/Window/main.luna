@@ -1,0 +1,17 @@
+// Demo window app
+
+(mouse_handler (event x y)
+    ('mouse_handler' event x y)
+)
+
+(render_handler (context)
+    (draw_text context 10 20 'text from app' '32a852' 20)
+    (draw_line context 50 100 150 250 '984ccf')
+    (fill_rect context 300 50 100 150 'c0cf4c')
+)
+
+(main_window () (window 'Demo window app' render_handler mouse_handler))
+
+(start_app () (app (main_window)))
+
+(run (start_app))

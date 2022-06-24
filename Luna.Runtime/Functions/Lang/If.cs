@@ -2,7 +2,7 @@
 
 namespace Luna.Functions.Lang;
 
-[EmbeddedFunctionDeclaration("if", "condition trueFunc falseFunc")]
+[EmbeddedFunctionDeclaration("if", "condition true_func false_func")]
 internal class If : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

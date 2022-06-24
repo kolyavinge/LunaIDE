@@ -28,29 +28,29 @@ import 'const.luna'
 
 (render_field (context)
     (fill_rect context 0 0 (* COLS CELL_SIZE) (* ROWS CELL_SIZE) FIELD_COLOR)
-    (loop 0 ROWS (lambda (row) (draw_line context                 0 (* row CELL_SIZE) (* COLS CELL_SIZE) (*  row CELL_SIZE))))
-    (loop 0 COLS (lambda (col) (draw_line context (* col CELL_SIZE)                 0 (*  col CELL_SIZE) (* ROWS CELL_SIZE))))
+    (loop 0 ROWS (lambda (row) (draw_line context                 0 (* row CELL_SIZE) (* COLS CELL_SIZE) (*  row CELL_SIZE) BLACK)))
+    (loop 0 COLS (lambda (col) (draw_line context (* col CELL_SIZE)                 0 (*  col CELL_SIZE) (* ROWS CELL_SIZE) BLACK)))
 )
 
 (render_chip (row col number context)
     (fill_rect context (* col CELL_SIZE) (* row CELL_SIZE) CELL_SIZE CELL_SIZE CELL_COLOR)
-    (draw_text context (* col (+ CELL_SIZE CELL_SIZE_HALF)) (* row (+ CELL_SIZE CELL_SIZE_HALF)) number FONT_COLOR FONT_SIZE 'center')
+    (draw_text context (* col (+ CELL_SIZE CELL_SIZE_HALF)) (* row (+ CELL_SIZE CELL_SIZE_HALF)) number FONT_COLOR FONT_SIZE)
 )
 
 (render_chips (context)
     (loop 0 CHIPS_COUNT (lambda (i) (render_chip (/ i COLS) (% i COLS) (item i @chips) context)))
 )
 
-(render (context)
+(render_handler (context)
     (render_field context)
     (render_chips context)
 )
 
-(main_window () (window 'Main window' render mouse_handler))
+(main_window () (window 'Luna 15 application' render_handler mouse_handler))
 
 (start_app ()
     (init_game)
-    (app 'Luna 15 application' main_window)
+    (app (main_window))
 )
 
 (run (start_app))

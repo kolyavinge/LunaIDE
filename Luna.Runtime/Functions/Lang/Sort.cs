@@ -6,7 +6,7 @@ using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
-[EmbeddedFunctionDeclaration("sort", "list compareFunc")]
+[EmbeddedFunctionDeclaration("sort", "list compare_func")]
 internal class Sort : EmbeddedFunction
 {
     public override IRuntimeValue GetValue()

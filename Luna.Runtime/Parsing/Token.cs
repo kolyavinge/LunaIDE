@@ -48,6 +48,7 @@ public enum TokenKind : byte
     Minus,
     Asterisk,
     Slash,
+    Percent,
     String,
     Identificator,
     Variable,

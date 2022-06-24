@@ -959,7 +959,7 @@ internal class FunctionParserTest
     [Test]
     public void FunctionDeclaration_MathOperators()
     {
-        // ( f () (+ 1 2) (- 1 2) (* 1 2) (/ 1 2) )
+        // ( f () (+ 1 2) (- 1 2) (* 1 2) (/ 1 2) (% 1 2) )
         Parse(new Token[]
         {
             new("(", 0, 0, 1, TokenKind.OpenBracket),
@@ -992,13 +992,19 @@ internal class FunctionParserTest
             new("2", 0, 36, 1, TokenKind.IntegerNumber),
             new(")", 0, 37, 1, TokenKind.CloseBracket),
 
+            new("(", 0, 39, 1, TokenKind.OpenBracket),
+            new("%", 0, 40, 1, TokenKind.Percent),
+            new("1", 0, 42, 1, TokenKind.IntegerNumber),
+            new("2", 0, 44, 1, TokenKind.IntegerNumber),
+            new(")", 0, 45, 1, TokenKind.CloseBracket),
+
             new(")", 0, 39, 1, TokenKind.CloseBracket)
         });
         Assert.AreEqual(null, _result.Error);
         Assert.AreEqual(0, _result.Warnings.Count);
         Assert.AreEqual(1, _codeModel.Functions.Count);
         var func = _codeModel.Functions.First();
-        Assert.AreEqual(4, func.Body.Count);
+        Assert.AreEqual(5, func.Body.Count);
     }
 
     [Test]

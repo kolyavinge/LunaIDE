@@ -269,8 +269,8 @@ public class FunctionParser : AbstractParser
             {
                 body = ParseList();
             }
-            else if (Token.Kind == TokenKind.Identificator ||
-                     Token.Kind == TokenKind.Plus || Token.Kind == TokenKind.Minus || Token.Kind == TokenKind.Asterisk || Token.Kind == TokenKind.Slash)
+            else if (Token.Kind is TokenKind.Identificator or
+                     TokenKind.Plus or TokenKind.Minus or TokenKind.Asterisk or TokenKind.Slash or TokenKind.Percent)
             {
                 body = ParseFunctionCall(name);
             }

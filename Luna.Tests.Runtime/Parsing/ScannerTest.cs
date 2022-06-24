@@ -250,6 +250,18 @@ internal class ScannerTest
     }
 
     [Test]
+    public void FunctionCall_Remainder()
+    {
+        var tokens = GetTokens("(% 1 2)");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token("(", 0, 0, 1, TokenKind.OpenBracket), tokens[0]);
+        Assert.AreEqual(new Token("%", 0, 1, 1, TokenKind.Percent), tokens[1]);
+        Assert.AreEqual(new Token("1", 0, 3, 1, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token("2", 0, 5, 1, TokenKind.IntegerNumber), tokens[3]);
+        Assert.AreEqual(new Token(")", 0, 6, 1, TokenKind.CloseBracket), tokens[4]);
+    }
+
+    [Test]
     public void RunFunction()
     {
         var tokens = GetTokens("(run (myfunc))");

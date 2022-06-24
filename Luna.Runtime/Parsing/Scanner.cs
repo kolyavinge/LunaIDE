@@ -222,7 +222,7 @@ public class Scanner
 
     private bool IsOperator()
     {
-        return _textIterator!.Char == '+' || _textIterator.Char == '-' || _textIterator.Char == '*' || _textIterator.Char == '/';
+        return _textIterator!.Char == '+' || _textIterator.Char == '-' || _textIterator.Char == '*' || _textIterator.Char == '/' || _textIterator.Char == '%';
     }
 
     private bool IsDelimiter()
@@ -252,6 +252,7 @@ public class Scanner
         if (StringUtils.StringEquals("-", _nameArray, _nameLength)) return TokenKind.Minus;
         if (StringUtils.StringEquals("*", _nameArray, _nameLength)) return TokenKind.Asterisk;
         if (StringUtils.StringEquals("/", _nameArray, _nameLength)) return TokenKind.Slash;
+        if (StringUtils.StringEquals("%", _nameArray, _nameLength)) return TokenKind.Percent;
 
         return TokenKind.Identificator;
     }

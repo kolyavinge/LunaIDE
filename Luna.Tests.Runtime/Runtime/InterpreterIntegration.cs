@@ -179,6 +179,16 @@ internal class InterpreterIntegration : BaseInterpreterTest
     }
 
     [Test]
+    public void Remainder()
+    {
+        CodeFile(@"
+            (run (% 8 3))
+");
+        Run();
+        Assert.AreEqual("2", _resultString);
+    }
+
+    [Test]
     public void SetVariable()
     {
         CodeFile(@"

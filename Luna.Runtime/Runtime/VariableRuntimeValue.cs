@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Luna.Runtime;
 
@@ -24,7 +23,7 @@ internal class VariableRuntimeValue : RuntimeValue
 
     public override string ToString()
     {
-        return Value.ToString();
+        return Value?.ToString() ?? "";
     }
 
     public override bool Equals(object? obj)
@@ -35,6 +34,6 @@ internal class VariableRuntimeValue : RuntimeValue
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Value);
+        return Value?.GetHashCode() ?? 0;
     }
 }

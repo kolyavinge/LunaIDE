@@ -64,7 +64,7 @@ internal class OutputWriter : IOutputWriter
         _output.NewMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("Program result: ", OutputMessageKind.Info),
-            new(runtimeValue.ToString(), OutputMessageKind.Text),
+            new(runtimeValue.ToString() ?? "", OutputMessageKind.Text)
         }));
     }
 

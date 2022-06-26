@@ -14,6 +14,7 @@ public class EmbeddedFunctionDeclarationsCollection
             .GetTypes()
             .Select(t => t.GetCustomAttribute<EmbeddedFunctionDeclaration>())
             .Where(x => x != null)
+            .Select(x => x!)
             .ToList();
 
         _functions = functions.ToDictionary(k => k.Name, v => v);

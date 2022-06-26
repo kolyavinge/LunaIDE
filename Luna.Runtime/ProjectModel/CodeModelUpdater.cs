@@ -38,7 +38,7 @@ public class CodeModelUpdater : ICodeModelUpdater
         _attached.Remove(projectItem);
     }
 
-    public void OnTimerTick(object sender, EventArgs e)
+    public void OnTimerTick(object? sender, EventArgs e)
     {
         _codeModelBuilder.BuildFor(_projectItems);
         _attached.Each(x => x.Value.RaiseCallback());

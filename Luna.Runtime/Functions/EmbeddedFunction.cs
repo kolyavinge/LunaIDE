@@ -15,7 +15,7 @@ internal abstract class EmbeddedFunction
 
     protected EmbeddedFunction()
     {
-        var attr = GetType().GetCustomAttribute<EmbeddedFunctionDeclaration>();
+        var attr = GetType().GetCustomAttribute<EmbeddedFunctionDeclaration>() ?? throw new NullReferenceException();
         Name = attr.Name;
         Arguments = attr.Arguments;
     }

@@ -1,4 +1,6 @@
-﻿namespace Luna.Runtime;
+﻿using System;
+
+namespace Luna.Runtime;
 
 internal abstract class NumericRuntimeValue : RuntimeValue
 {
@@ -16,5 +18,16 @@ internal abstract class NumericRuntimeValue : RuntimeValue
     {
         IntegerValue = (int)value;
         FloatValue = value;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is NumericRuntimeValue value &&
+               Math.Abs(FloatValue - value.FloatValue) < 0.0001;
+    }
+
+    public override int GetHashCode()
+    {
+        return FloatValue.GetHashCode();
     }
 }

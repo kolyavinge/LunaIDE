@@ -23,7 +23,8 @@ internal class Sort : EmbeddedFunction
         }
         catch (InvalidOperationException e)
         {
-            throw e.InnerException;
+            if (e.InnerException != null) throw e.InnerException;
+            else throw;
         }
     }
 
@@ -36,9 +37,13 @@ internal class Sort : EmbeddedFunction
             _compareFunc = compareFunc;
         }
 
-        public int Compare(IRuntimeValue x, IRuntimeValue y)
+        public int Compare(IRuntimeValue? x, IRuntimeValue? y)
         {
-            var result = _compareFunc.GetValue(new[] { x, y }.ToReadonlyArray());
+            if (x == null && y == null) return 0;
+            if (x != null && y == null) return -1;
+            if (x == null) return 1;
+
+            var result = _compareFunc.GetValue(new[] { x!, y! }.ToReadonlyArray());
             if (result is not NumericRuntimeValue numeric)
             {
                 throw new RuntimeException("Compare function must return a numeric value.");

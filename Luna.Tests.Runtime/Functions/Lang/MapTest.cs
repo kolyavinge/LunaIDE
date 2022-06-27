@@ -32,13 +32,11 @@ internal class MapTest : BaseFunctionTest<Map>
     {
         var list = new[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2), new IntegerRuntimeValue(3) };
 
-        var result = GetValue(new IRuntimeValue[] { new ListRuntimeValue(list), _func });
+        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new ListRuntimeValue(list), _func });
 
-        Assert.AreEqual(typeof(ListRuntimeValue), result.GetType());
-        var resultList = (ListRuntimeValue)result;
-        Assert.AreEqual(3, resultList.Count);
-        Assert.AreEqual(new IntegerRuntimeValue(1), resultList.GetItem(0));
-        Assert.AreEqual(new IntegerRuntimeValue(2), resultList.GetItem(1));
-        Assert.AreEqual(new IntegerRuntimeValue(3), resultList.GetItem(2));
+        Assert.AreEqual(3, result.Count);
+        Assert.AreEqual(new IntegerRuntimeValue(1), result.GetItem(0));
+        Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(1));
+        Assert.AreEqual(new IntegerRuntimeValue(3), result.GetItem(2));
     }
 }

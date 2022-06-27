@@ -10,23 +10,19 @@ internal class RangeTest : BaseFunctionTest<Range>
     [Test]
     public void GetValue()
     {
-        var result = GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(5) });
-        Assert.AreEqual(typeof(ListRuntimeValue), result.GetType());
-        var list = (ListRuntimeValue)result;
-        Assert.AreEqual(5, list.Count);
-        Assert.AreEqual(new IntegerRuntimeValue(1), list.GetItem(0));
-        Assert.AreEqual(new IntegerRuntimeValue(2), list.GetItem(1));
-        Assert.AreEqual(new IntegerRuntimeValue(3), list.GetItem(2));
-        Assert.AreEqual(new IntegerRuntimeValue(4), list.GetItem(3));
-        Assert.AreEqual(new IntegerRuntimeValue(5), list.GetItem(4));
+        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(5) });
+        Assert.AreEqual(5, result.Count);
+        Assert.AreEqual(new IntegerRuntimeValue(1), result.GetItem(0));
+        Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(1));
+        Assert.AreEqual(new IntegerRuntimeValue(3), result.GetItem(2));
+        Assert.AreEqual(new IntegerRuntimeValue(4), result.GetItem(3));
+        Assert.AreEqual(new IntegerRuntimeValue(5), result.GetItem(4));
     }
 
     [Test]
     public void Empty()
     {
-        var result = GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(0) });
-        Assert.AreEqual(typeof(ListRuntimeValue), result.GetType());
-        var list = (ListRuntimeValue)result;
+        var list = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(0) });
         Assert.AreEqual(0, list.Count);
     }
 
@@ -35,7 +31,7 @@ internal class RangeTest : BaseFunctionTest<Range>
     {
         try
         {
-            GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1) });
+            GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1) });
             Assert.Fail();
         }
         catch (RuntimeException exp)

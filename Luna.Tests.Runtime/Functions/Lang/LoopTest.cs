@@ -34,8 +34,7 @@ internal class LoopTest : BaseFunctionTest<Loop>
     [Test]
     public void GetValue()
     {
-        var result = GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(5), _func });
-        Assert.AreEqual(VoidRuntimeValue.Instance, result);
+        GetValue<VoidRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(5), _func });
         Assert.AreEqual(_func.Values[0], new IntegerRuntimeValue(1));
         Assert.AreEqual(_func.Values[1], new IntegerRuntimeValue(2));
         Assert.AreEqual(_func.Values[2], new IntegerRuntimeValue(3));
@@ -48,7 +47,7 @@ internal class LoopTest : BaseFunctionTest<Loop>
     {
         try
         {
-            GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1), _func });
+            GetValue<VoidRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1), _func });
             Assert.Fail();
         }
         catch (RuntimeException e)

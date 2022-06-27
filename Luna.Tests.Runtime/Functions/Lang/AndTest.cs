@@ -21,21 +21,21 @@ internal class AndTest : BaseFunctionTest<And>
     [Test]
     public void GetValue_1()
     {
-        var result = (BooleanRuntimeValue)GetValue(new IRuntimeValue[] { new BooleanRuntimeValue(true), new BooleanRuntimeValue(true) });
+        var result = GetValue<BooleanRuntimeValue>(new IRuntimeValue[] { new BooleanRuntimeValue(true), new BooleanRuntimeValue(true) });
         Assert.True(result.Value);
     }
 
     [Test]
     public void GetValue_2()
     {
-        var result = (BooleanRuntimeValue)GetValue(new IRuntimeValue[] { new BooleanRuntimeValue(false), new ErrorBooleanRuntimeValue() });
+        var result = GetValue<BooleanRuntimeValue>(new IRuntimeValue[] { new BooleanRuntimeValue(false), new ErrorBooleanRuntimeValue() });
         Assert.False(result.Value);
     }
 
     [Test]
     public void GetValue_3()
     {
-        var result = (BooleanRuntimeValue)GetValue(new IRuntimeValue[] { new BooleanRuntimeValue(true), new BooleanRuntimeValue(false) });
+        var result = GetValue<BooleanRuntimeValue>(new IRuntimeValue[] { new BooleanRuntimeValue(true), new BooleanRuntimeValue(false) });
         Assert.False(result.Value);
     }
 }

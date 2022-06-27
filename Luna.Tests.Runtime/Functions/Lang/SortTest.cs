@@ -55,14 +55,12 @@ internal class SortTest : BaseFunctionTest<Sort>
         var list = new ListRuntimeValue(new[] { new IntegerRuntimeValue(5), new IntegerRuntimeValue(2), new IntegerRuntimeValue(-1) });
         var compareFunc = new IntegerCompareFunc();
 
-        var result = GetValue(new IRuntimeValue[] { list, compareFunc });
+        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { list, compareFunc });
 
-        Assert.AreEqual(typeof(ListRuntimeValue), result.GetType());
-        var listResult = (ListRuntimeValue)result;
-        Assert.AreEqual(3, listResult.Count);
-        Assert.AreEqual(new IntegerRuntimeValue(-1), listResult.GetItem(0));
-        Assert.AreEqual(new IntegerRuntimeValue(2), listResult.GetItem(1));
-        Assert.AreEqual(new IntegerRuntimeValue(5), listResult.GetItem(2));
+        Assert.AreEqual(3, result.Count);
+        Assert.AreEqual(new IntegerRuntimeValue(-1), result.GetItem(0));
+        Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(1));
+        Assert.AreEqual(new IntegerRuntimeValue(5), result.GetItem(2));
     }
 
     [Test]
@@ -71,14 +69,12 @@ internal class SortTest : BaseFunctionTest<Sort>
         var list = new ListRuntimeValue(new[] { new IntegerRuntimeValue(5), new IntegerRuntimeValue(2), new IntegerRuntimeValue(-1) });
         var compareFunc = new FloatCompareFunc();
 
-        var result = GetValue(new IRuntimeValue[] { list, compareFunc });
+        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { list, compareFunc });
 
-        Assert.AreEqual(typeof(ListRuntimeValue), result.GetType());
-        var listResult = (ListRuntimeValue)result;
-        Assert.AreEqual(3, listResult.Count);
-        Assert.AreEqual(new IntegerRuntimeValue(-1), listResult.GetItem(0));
-        Assert.AreEqual(new IntegerRuntimeValue(2), listResult.GetItem(1));
-        Assert.AreEqual(new IntegerRuntimeValue(5), listResult.GetItem(2));
+        Assert.AreEqual(3, result.Count);
+        Assert.AreEqual(new IntegerRuntimeValue(-1), result.GetItem(0));
+        Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(1));
+        Assert.AreEqual(new IntegerRuntimeValue(5), result.GetItem(2));
     }
 
     [Test]
@@ -89,7 +85,7 @@ internal class SortTest : BaseFunctionTest<Sort>
 
         try
         {
-            GetValue(new IRuntimeValue[] { list, compareFunc });
+            GetValue<ListRuntimeValue>(new IRuntimeValue[] { list, compareFunc });
             Assert.Fail();
         }
         catch (RuntimeException exp)

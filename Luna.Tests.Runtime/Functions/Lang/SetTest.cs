@@ -12,7 +12,7 @@ internal class SetTest : BaseFunctionTest<Set>
     {
         var variable = new VariableRuntimeValue();
         var value = new IntegerRuntimeValue(123);
-        var result = GetValue(new IRuntimeValue[] { variable, value });
+        var result = GetValue<IntegerRuntimeValue>(new IRuntimeValue[] { variable, value });
         Assert.AreEqual(value, result);
         Assert.AreEqual(new VariableRuntimeValue(value), variable.GetValue());
     }

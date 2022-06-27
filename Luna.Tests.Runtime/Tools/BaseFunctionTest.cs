@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Luna.Collections;
+﻿using Luna.Collections;
 using Luna.Functions;
 using Luna.Runtime;
 
@@ -9,8 +8,8 @@ internal class BaseFunctionTest<TFunction> where TFunction : EmbeddedFunction, n
 {
     protected readonly TFunction _function = new();
 
-    protected TValue GetValue<TValue>(params TValue[] values) where TValue : IRuntimeValue
+    protected TResult GetValue<TResult>(IRuntimeValue[] values) where TResult : IRuntimeValue
     {
-        return (TValue)_function.GetValue(new ReadonlyArray<IRuntimeValue>(values.Cast<IRuntimeValue>()));
+        return (TResult)_function.GetValue(new ReadonlyArray<IRuntimeValue>(values));
     }
 }

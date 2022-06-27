@@ -10,10 +10,10 @@ internal class NotTest : BaseFunctionTest<Not>
     [Test]
     public void GetValue()
     {
-        var result = GetValue<BooleanRuntimeValue>(new IRuntimeValue[] { new BooleanRuntimeValue(true) });
+        var result = GetValue<BooleanRuntimeValue>(new BooleanRuntimeValue(true));
         Assert.AreEqual(false, result.Value);
 
-        result = GetValue<BooleanRuntimeValue>(new IRuntimeValue[] { new BooleanRuntimeValue(false) });
+        result = GetValue<BooleanRuntimeValue>(new BooleanRuntimeValue(false));
         Assert.AreEqual(true, result.Value);
     }
 }

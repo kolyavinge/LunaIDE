@@ -10,7 +10,7 @@ internal class RangeTest : BaseFunctionTest<Range>
     [Test]
     public void GetValue()
     {
-        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(5) });
+        var result = GetValue<ListRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(5));
         Assert.AreEqual(5, result.Count);
         Assert.AreEqual(new IntegerRuntimeValue(1), result.GetItem(0));
         Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(1));
@@ -22,7 +22,7 @@ internal class RangeTest : BaseFunctionTest<Range>
     [Test]
     public void Empty()
     {
-        var list = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(0) });
+        var list = GetValue<ListRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(0));
         Assert.AreEqual(0, list.Count);
     }
 
@@ -31,7 +31,7 @@ internal class RangeTest : BaseFunctionTest<Range>
     {
         try
         {
-            GetValue<ListRuntimeValue>(new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1) });
+            GetValue<ListRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1));
             Assert.Fail();
         }
         catch (RuntimeException exp)

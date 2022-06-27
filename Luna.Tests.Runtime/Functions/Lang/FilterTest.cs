@@ -33,7 +33,7 @@ internal class FilterTest : BaseFunctionTest<Filter>
     {
         var list = new[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2), new IntegerRuntimeValue(3), new IntegerRuntimeValue(4) };
 
-        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new ListRuntimeValue(list), _func });
+        var result = GetValue<ListRuntimeValue>(new ListRuntimeValue(list), _func);
 
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual(new IntegerRuntimeValue(2), result.GetItem(0));
@@ -43,7 +43,7 @@ internal class FilterTest : BaseFunctionTest<Filter>
     [Test]
     public void GetValue_Empty()
     {
-        var result = GetValue<ListRuntimeValue>(new IRuntimeValue[] { new ListRuntimeValue(new IRuntimeValue[0]), _func });
+        var result = GetValue<ListRuntimeValue>(new ListRuntimeValue(new IRuntimeValue[0]), _func);
         Assert.AreEqual(0, result.Count);
     }
 }

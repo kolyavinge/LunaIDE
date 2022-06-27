@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
@@ -6,10 +7,10 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("map", "list func")]
 internal class Map : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue()
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var list = GetValueOrError<ListRuntimeValue>(0);
-        var func = GetFunctionOrError(1);
+        var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
+        var func = GetFunctionOrError(argumentValues, 1);
 
         var result = new List<IRuntimeValue>();
 

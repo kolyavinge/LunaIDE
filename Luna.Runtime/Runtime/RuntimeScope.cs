@@ -119,8 +119,7 @@ internal class RuntimeScope : IRuntimeScope
     public IRuntimeValue GetEmbeddedFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var func = _embeddedFunctions.GetByName(functionName);
-        func.SetArgumentValues(argumentValues);
-        return func.GetValue();
+        return func.GetValue(argumentValues);
     }
 
     private int _lambdaNameIncrement;

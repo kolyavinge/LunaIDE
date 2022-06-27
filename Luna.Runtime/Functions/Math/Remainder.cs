@@ -1,14 +1,15 @@
-﻿using Luna.Runtime;
+﻿using Luna.Collections;
+using Luna.Runtime;
 
 namespace Luna.Functions.Math;
 
 [EmbeddedFunctionDeclaration("%", "x y")]
 internal class Remainder : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue()
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var x = GetValueOrError<NumericRuntimeValue>(0);
-        var y = GetValueOrError<NumericRuntimeValue>(1);
+        var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 0);
+        var y = GetValueOrError<NumericRuntimeValue>(argumentValues, 1);
 
         if (x is IntegerRuntimeValue xint && y is IntegerRuntimeValue yint)
         {

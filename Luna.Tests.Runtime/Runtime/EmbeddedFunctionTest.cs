@@ -12,7 +12,7 @@ internal class EmbeddedFunctionTest
     [EmbeddedFunctionDeclaration("test", "x")]
     class TestEmbeddedFunction : EmbeddedFunction
     {
-        public override IRuntimeValue GetValue()
+        public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
         {
             throw new NotImplementedException();
         }
@@ -27,20 +27,6 @@ internal class EmbeddedFunctionTest
     }
 
     [Test]
-    public void ArgumentsNotPassed()
-    {
-        try
-        {
-            _func.GetValueOrError<IRuntimeValue>(0);
-            Assert.Fail();
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Argument values have not been passed.", exp.Message);
-        }
-    }
-
-    [Test]
     public void ArgumentCannotBeGet()
     {
         try
@@ -48,8 +34,7 @@ internal class EmbeddedFunctionTest
             var value = new Mock<IRuntimeValue>();
             value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
             var argumentValues = new[] { value.Object }.ToReadonlyArray();
-            _func.SetArgumentValues(argumentValues);
-            _func.GetValueOrError<StringRuntimeValue>(0);
+            _func.GetValueOrError<StringRuntimeValue>(argumentValues, 0);
             Assert.Fail();
         }
         catch (RuntimeException exp)
@@ -64,8 +49,7 @@ internal class EmbeddedFunctionTest
         var value = new Mock<IRuntimeValue>();
         value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
         var argumentValues = new[] { value.Object }.ToReadonlyArray();
-        _func.SetArgumentValues(argumentValues);
-        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
+        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
         Assert.AreEqual(123, argumentValue.IntegerValue);
     }
 
@@ -75,8 +59,7 @@ internal class EmbeddedFunctionTest
         var value = new Mock<IRuntimeValue>();
         value.Setup(x => x.GetValue(default)).Returns(new VariableRuntimeValue(new IntegerRuntimeValue(123)));
         var argumentValues = new[] { value.Object }.ToReadonlyArray();
-        _func.SetArgumentValues(argumentValues);
-        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(0);
+        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
         Assert.AreEqual(123, argumentValue.IntegerValue);
     }
 }

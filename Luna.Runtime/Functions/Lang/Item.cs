@@ -1,14 +1,15 @@
-﻿using Luna.Runtime;
+﻿using Luna.Collections;
+using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
 [EmbeddedFunctionDeclaration("item", "index list")]
 internal class Item : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue()
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var index = GetValueOrError<NumericRuntimeValue>(0).IntegerValue;
-        var list = GetValueOrError<ListRuntimeValue>(1);
+        var index = GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
+        var list = GetValueOrError<ListRuntimeValue>(argumentValues, 1);
 
         if (index < 0 || index >= list.Count)
         {

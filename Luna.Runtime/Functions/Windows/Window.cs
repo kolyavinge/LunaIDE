@@ -10,11 +10,11 @@ namespace Luna.Functions.Windows;
 [EmbeddedFunctionDeclaration("window", "title render_func mouse_handler_func")]
 internal class Window : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue()
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var title = GetValueOrError<StringRuntimeValue>(0).Value;
-        var renderFunc = GetFunctionOrError(1);
-        var mouseHandlerFunc = GetFunctionOrError(2);
+        var title = GetValueOrError<StringRuntimeValue>(argumentValues, 0).Value;
+        var renderFunc = GetFunctionOrError(argumentValues, 1);
+        var mouseHandlerFunc = GetFunctionOrError(argumentValues, 2);
 
         var window = new AppWindow(renderFunc, mouseHandlerFunc);
         window.Title = title;

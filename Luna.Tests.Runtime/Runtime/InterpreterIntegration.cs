@@ -198,4 +198,14 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run();
         Assert.AreEqual("123", _resultString);
     }
+
+    [Test]
+    public void InnerEmbeddedFunctions()
+    {
+        CodeFile(@"
+            (run (+ (+ 1 2) (+ 3 4)))
+");
+        Run();
+        Assert.AreEqual("10", _resultString);
+    }
 }

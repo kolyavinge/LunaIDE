@@ -7,8 +7,6 @@ namespace Luna.Functions;
 
 internal abstract class EmbeddedFunction
 {
-    private ReadonlyArray<IRuntimeValue>? _argumentValues;
-
     public string Name { get; }
 
     public string[] Arguments { get; }
@@ -20,15 +18,9 @@ internal abstract class EmbeddedFunction
         Arguments = attr.Arguments;
     }
 
-    public void SetArgumentValues(ReadonlyArray<IRuntimeValue> argumentValues)
+    public TValue GetValueOrError<TValue>(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex) where TValue : IRuntimeValue
     {
-        _argumentValues = argumentValues;
-    }
-
-    public TValue GetValueOrError<TValue>(int argumentIndex) where TValue : IRuntimeValue
-    {
-        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
-        var value = _argumentValues[argumentIndex].GetValue();
+        var value = argumentValues[argumentIndex].GetValue();
         if (value is not TValue && value is VariableRuntimeValue variable)
         {
             value = variable.Value;
@@ -41,10 +33,9 @@ internal abstract class EmbeddedFunction
         return valueConverted;
     }
 
-    public FunctionRuntimeValue GetFunctionOrError(int argumentIndex)
+    public FunctionRuntimeValue GetFunctionOrError(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex)
     {
-        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
-        var value = _argumentValues[argumentIndex];
+        var value = argumentValues[argumentIndex];
         if (value is not FunctionRuntimeValue valueConverted)
         {
             throw RuntimeException.ArgumentСannotGet();
@@ -53,10 +44,9 @@ internal abstract class EmbeddedFunction
         return valueConverted;
     }
 
-    public VariableRuntimeValue GetVariableOrError(int argumentIndex)
+    public VariableRuntimeValue GetVariableOrError(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex)
     {
-        if (_argumentValues == null) throw RuntimeException.ArgumentsNotPassed();
-        var value = _argumentValues[argumentIndex];
+        var value = argumentValues[argumentIndex];
         if (value is not VariableRuntimeValue valueConverted)
         {
             throw RuntimeException.ArgumentСannotGet();
@@ -65,7 +55,7 @@ internal abstract class EmbeddedFunction
         return valueConverted;
     }
 
-    public abstract IRuntimeValue GetValue();
+    public abstract IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues);
 }
 
 [AttributeUsage(AttributeTargets.Class)]

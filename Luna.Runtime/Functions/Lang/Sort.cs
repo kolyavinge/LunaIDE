@@ -9,10 +9,10 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("sort", "list compare_func")]
 internal class Sort : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue()
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var list = GetValueOrError<ListRuntimeValue>(0);
-        var compareFunc = GetFunctionOrError(1);
+        var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
+        var compareFunc = GetFunctionOrError(argumentValues, 1);
 
         var comparer = new ListRuntimeValueComparer(compareFunc);
 

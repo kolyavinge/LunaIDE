@@ -99,7 +99,7 @@ internal class RuntimeScope : IRuntimeScope
         _argumentStack.Peek().Add(argumentName, argumentValue);
     }
 
-    public IRuntimeValue GetDeclaredFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues)
+    public IRuntimeValue GetDeclaredFunctionValue(string functionName)
     {
         IRuntimeValue result = VoidRuntimeValue.Instance;
         var declaration = _declaredFunctions[functionName];

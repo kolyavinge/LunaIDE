@@ -37,6 +37,17 @@ internal class InterpreterIntegration : BaseInterpreterTest
     }
 
     [Test]
+    public void ListGetValue()
+    {
+        CodeFile(@"
+            (get_list () ((+ 1 2) (+ 3 4)))
+            (run (get_list))
+");
+        Run();
+        Assert.AreEqual("(3 7)", _resultString);
+    }
+
+    [Test]
     public void Func()
     {
         CodeFile(@"

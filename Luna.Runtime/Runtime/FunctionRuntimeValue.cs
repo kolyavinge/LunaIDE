@@ -40,7 +40,7 @@ internal class FunctionRuntimeValue : RuntimeValue
         }
         else
         {
-            result = _scope.GetDeclaredFunctionValue(Name, argumentValues);
+            result = _scope.GetDeclaredFunctionValue(Name);
         }
         _scope.PopFunctionArguments();
         if (argumentValues.Count - argumentNames.Length > 0)

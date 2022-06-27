@@ -13,7 +13,7 @@ internal interface IRuntimeScope
     void PushFunctionArguments();
     void PopFunctionArguments();
     void AddFunctionArgument(string argumentName, IRuntimeValue argumentValue);
-    IRuntimeValue GetDeclaredFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues);
+    IRuntimeValue GetDeclaredFunctionValue(string functionName);
     bool IsEmbeddedFunction(string functionName);
     IRuntimeValue GetEmbeddedFunctionValue(string functionName, ReadonlyArray<IRuntimeValue> argumentValues);
     AddLambdaResult AddLambda(LambdaValueElement lambdaElement);

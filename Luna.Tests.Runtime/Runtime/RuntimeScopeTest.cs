@@ -76,7 +76,7 @@ internal class RuntimeScopeTest
     {
         _declaredFunctions.Add(new FunctionDeclaration("func", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
         MakeScope();
-        Assert.AreEqual(VoidRuntimeValue.Instance, _scope.GetDeclaredFunctionValue("func", new IRuntimeValue[0].ToReadonlyArray()));
+        Assert.AreEqual(VoidRuntimeValue.Instance, _scope.GetDeclaredFunctionValue("func"));
     }
 
     [Test]

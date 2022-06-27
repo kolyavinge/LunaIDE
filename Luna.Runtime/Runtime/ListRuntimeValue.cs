@@ -2,49 +2,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Luna.Collections;
 
 namespace Luna.Runtime;
 
 internal class ListRuntimeValue : RuntimeValue, IEnumerable<IRuntimeValue>
 {
-    private readonly List<IRuntimeValue> _runtimeValues;
+    private readonly List<IRuntimeValue> _items;
 
-    public int Count => _runtimeValues.Count;
+    public int Count => _items.Count;
 
     public ListRuntimeValue(IEnumerable<IRuntimeValue> items)
     {
-        _runtimeValues = items.ToList();
+        _items = items.ToList();
     }
 
     public IRuntimeValue GetItem(int index)
     {
-        return _runtimeValues[index];
+        return _items[index];
+    }
+
+    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue>? argumentValues = null)
+    {
+        return new ListRuntimeValue(_items.Select(i => i.GetValue()));
     }
 
     public override string ToString()
     {
-        return $"({String.Join(" ", _runtimeValues)})";
+        return $"({String.Join(" ", _items)})";
     }
 
     public override bool Equals(object? obj)
     {
         return obj is ListRuntimeValue list &&
-            _runtimeValues.Count == list.Count &&
-            new HashSet<IRuntimeValue>(_runtimeValues).IsSubsetOf(list._runtimeValues);
+            _items.Count == list.Count &&
+            new HashSet<IRuntimeValue>(_items).IsSubsetOf(list._items);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_runtimeValues);
+        return HashCode.Combine(_items);
     }
 
     public IEnumerator<IRuntimeValue> GetEnumerator()
     {
-        return _runtimeValues.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _runtimeValues.GetEnumerator();
+        return _items.GetEnumerator();
     }
 }

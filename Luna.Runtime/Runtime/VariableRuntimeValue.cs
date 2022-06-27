@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Luna.Runtime;
+﻿namespace Luna.Runtime;
 
 internal class VariableRuntimeValue : RuntimeValue
 {
@@ -28,8 +26,7 @@ internal class VariableRuntimeValue : RuntimeValue
 
     public override bool Equals(object? obj)
     {
-        return obj is VariableRuntimeValue value &&
-               EqualityComparer<IRuntimeValue>.Default.Equals(Value, value.Value);
+        return obj is VariableRuntimeValue value && Value.Equals(value.Value);
     }
 
     public override int GetHashCode()

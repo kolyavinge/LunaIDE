@@ -2,7 +2,6 @@
 using Luna.Collections;
 using Luna.Functions;
 using Luna.Runtime;
-using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Runtime;
@@ -31,9 +30,8 @@ internal class EmbeddedFunctionTest
     {
         try
         {
-            var value = new Mock<IRuntimeValue>();
-            value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
-            var argumentValues = new[] { value.Object }.ToReadonlyArray();
+            var value = new IntegerRuntimeValue(123);
+            var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
             _func.GetValueOrError<StringRuntimeValue>(argumentValues, 0);
             Assert.Fail();
         }
@@ -46,9 +44,8 @@ internal class EmbeddedFunctionTest
     [Test]
     public void GetValueOrError()
     {
-        var value = new Mock<IRuntimeValue>();
-        value.Setup(x => x.GetValue(default)).Returns(new IntegerRuntimeValue(123));
-        var argumentValues = new[] { value.Object }.ToReadonlyArray();
+        var value = new IntegerRuntimeValue(123);
+        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
         var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
         Assert.AreEqual(123, argumentValue.IntegerValue);
     }
@@ -56,9 +53,8 @@ internal class EmbeddedFunctionTest
     [Test]
     public void GetValueOrError_Variable()
     {
-        var value = new Mock<IRuntimeValue>();
-        value.Setup(x => x.GetValue(default)).Returns(new VariableRuntimeValue(new IntegerRuntimeValue(123)));
-        var argumentValues = new[] { value.Object }.ToReadonlyArray();
+        var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
+        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
         var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
         Assert.AreEqual(123, argumentValue.IntegerValue);
     }

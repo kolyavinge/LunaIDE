@@ -14,7 +14,7 @@ internal class DrawText : EmbeddedFunction
         var context = GetValueOrError<ObjectRuntimeValue>(argumentValues, 0).Get<DrawingContext>();
         var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 1).FloatValue;
         var y = GetValueOrError<NumericRuntimeValue>(argumentValues, 2).FloatValue;
-        var text = GetValueOrError<StringRuntimeValue>(argumentValues, 3).Value;
+        var text = GetValueOrError<IRuntimeValue>(argumentValues, 3).ToString();
         var color = GetValueOrError<StringRuntimeValue>(argumentValues, 4).Value;
         var size = GetValueOrError<NumericRuntimeValue>(argumentValues, 5).FloatValue;
 

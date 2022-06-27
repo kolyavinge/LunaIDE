@@ -4,37 +4,81 @@ import 'const.luna'
 
 // ----- game -----
 
-(shuffle (list) (sort list (lambda (a b) (rand -1 1))))
+(shuffle (list n)
+    (if (eq n 0)
+        list
+        (shuffle (sort list (lambda (a b) (rand -1 1))) (- n 1)))
+)
 
 (swap (list a b)
     (map list (lambda (x) (if (eq x a) b (if (eq x b) a x))))
 )
 
-(get_chips () (shuffle (range 0 CHIPS_COUNT)))
+(in_field (row col)
+    (and (and (gte row 0) (ls row ROWS))
+         (and (gte col 0) (ls col COLS)))
+)
 
-(init_game () (set @chips (get_chips)))
+(get_chip (row col)
+    (if (in_field row col)
+        (item (+ (* row COLS) col) @chips)
+        NULL_NUMBER)
+)
+
+(can_move (row col)
+    (any
+        (filter
+            ((get_chip (+ row 1) col)
+             (get_chip (- row 1) col)
+             (get_chip row (+ col 1))
+             (get_chip row (- col 1)))
+             (eq EMPTY_NUMBER)
+        )
+    )
+)
+
+(valid_step (row col)
+    (and (in_field row col) (can_move row col))
+)
+
+(check_completed ()
+    (set @complete (eq @chips (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0)))
+)
 
 (step (row col)
-    (set @chips (swap (item (+ (* row COLS) cols) @chips) EMPTY_NUMBER))
+    (if (valid_step row col)
+        ((set @chips (swap @chips (get_chip row col) EMPTY_NUMBER))
+         (check_completed))
+        (ignore))
 )
+
+(init_chips ()
+    (shuffle (range 0 CHIPS_COUNT) 10)
+)
+
+(init_game () (set @chips (init_chips)))
 
 // ----- input -----
 
-(mouse_handler (event x y)
-    (if (eq event 'click') (step (/ y CELL_SIZE) (/ x CELL_SIZE)) (ignore))
+(mouse_handler (window event x y)
+    (if (eq event 'click')
+        ((step (int (/ y CELL_SIZE)) (int (/ x CELL_SIZE)))
+         (update_window window))
+        (ignore))
 )
 
 // ----- render -----
 
 (render_field (context)
-    (fill_rect context 0 0 (* COLS CELL_SIZE) (* ROWS CELL_SIZE) FIELD_COLOR)
-    (loop 0 ROWS (lambda (row) (draw_line context                 0 (* row CELL_SIZE) (* COLS CELL_SIZE) (*  row CELL_SIZE) BLACK)))
-    (loop 0 COLS (lambda (col) (draw_line context (* col CELL_SIZE)                 0 (*  col CELL_SIZE) (* ROWS CELL_SIZE) BLACK)))
+    (fill_rect context 0 0 (* COLS CELL_SIZE) (* ROWS CELL_SIZE) (if (eq @complete true) FIELD_COMPLETE_COLOR FIELD_COLOR))
+    (loop 0 (+ ROWS 1) (lambda (row) (draw_line context                 0 (* row CELL_SIZE) (* COLS CELL_SIZE) (*  row CELL_SIZE) BLACK)))
+    (loop 0 (+ COLS 1) (lambda (col) (draw_line context (* col CELL_SIZE)                 0 (*  col CELL_SIZE) (* ROWS CELL_SIZE) BLACK)))
 )
 
 (render_chip (row col number context)
-    (fill_rect context (* col CELL_SIZE) (* row CELL_SIZE) CELL_SIZE CELL_SIZE CELL_COLOR)
-    (draw_text context (* col (+ CELL_SIZE CELL_SIZE_HALF)) (* row (+ CELL_SIZE CELL_SIZE_HALF)) number FONT_COLOR FONT_SIZE)
+    (if (eq number EMPTY_NUMBER)
+        (fill_rect context (* col CELL_SIZE) (* row CELL_SIZE) CELL_SIZE CELL_SIZE BLACK)
+        (draw_text context (+ (* col CELL_SIZE) NUMBER_OFFSET) (+ (* row CELL_SIZE) NUMBER_OFFSET) number BLACK FONT_SIZE))
 )
 
 (render_chips (context)
@@ -46,7 +90,7 @@ import 'const.luna'
     (render_chips context)
 )
 
-(main_window () (window 'Luna 15 application' render_handler mouse_handler))
+(main_window () (show_window 'Luna 15 application' render_handler mouse_handler))
 
 (start_app ()
     (init_game)

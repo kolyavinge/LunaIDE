@@ -1,6 +1,6 @@
 // Demo window app
 
-(mouse_handler (event x y)
+(mouse_handler (window event x y)
     ('mouse_handler' event x y)
 )
 
@@ -10,7 +10,7 @@
     (fill_rect context 300 50 100 150 'c0cf4c')
 )
 
-(main_window () (window 'Demo window app' render_handler mouse_handler))
+(main_window () (show_window 'Demo window app' render_handler mouse_handler))
 
 (start_app () (app (main_window)))
 

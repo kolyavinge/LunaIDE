@@ -21,9 +21,9 @@ internal abstract class EmbeddedFunction
     public TValue GetValueOrError<TValue>(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex) where TValue : IRuntimeValue
     {
         var value = argumentValues[argumentIndex].GetValue();
-        if (value is not TValue && value is VariableRuntimeValue variable)
+        if (value is VariableRuntimeValue variable)
         {
-            value = variable.Value;
+            return (TValue)variable.Value;
         }
         if (value is not TValue valueConverted)
         {

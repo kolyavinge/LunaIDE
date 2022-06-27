@@ -211,6 +211,19 @@ internal class InterpreterIntegration : BaseInterpreterTest
     }
 
     [Test]
+    public void EqVariableTrue()
+    {
+        CodeFile(@"
+            (eq_var ()
+                (set @var true)
+                (eq @var true))
+            (run (eq_var))
+");
+        Run();
+        Assert.AreEqual("true", _resultString);
+    }
+
+    [Test]
     public void InnerEmbeddedFunctions()
     {
         CodeFile(@"
@@ -218,5 +231,25 @@ internal class InterpreterIntegration : BaseInterpreterTest
 ");
         Run();
         Assert.AreEqual("10", _resultString);
+    }
+
+    [Test]
+    public void ListsEqual()
+    {
+        CodeFile(@"
+            (run (eq (1 2 3) (1.0 2.0 3.0)))
+");
+        Run();
+        Assert.AreEqual("true", _resultString);
+    }
+
+    [Test]
+    public void ListsNotEqual()
+    {
+        CodeFile(@"
+            (run (eq (1 2 3) (3 2 1)))
+");
+        Run();
+        Assert.AreEqual("false", _resultString);
     }
 }

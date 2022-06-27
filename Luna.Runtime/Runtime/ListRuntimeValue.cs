@@ -34,9 +34,15 @@ internal class ListRuntimeValue : RuntimeValue, IEnumerable<IRuntimeValue>
 
     public override bool Equals(object? obj)
     {
-        return obj is ListRuntimeValue list &&
-            _items.Count == list.Count &&
-            new HashSet<IRuntimeValue>(_items).IsSubsetOf(list._items);
+        var list = obj as ListRuntimeValue;
+        var result = list != null && _items.Count == list.Count;
+        if (!result) return false;
+        for (int i = 0; i < Count; i++)
+        {
+            if (!_items[i].Equals(list._items[i])) return false;
+        }
+
+        return true;
     }
 
     public override int GetHashCode()

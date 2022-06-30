@@ -184,7 +184,7 @@
         <Setter Property="CursorLineHighlightingBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
     </Style>
 
-    <Style x:Key="ProjectTreeListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+    <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -227,15 +227,14 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ProjectTreeListBoxStyle" TargetType="{x:Type ListBox}">
+    <Style x:Key="ListBoxStyle" TargetType="{x:Type ListBox}">
         <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Style.Resources>
-            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ProjectTreeListBoxItemStyle}" />
+            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ListBoxItemStyle}" />
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource VerticalLineScrollBarStyle}">
-
             </Style>
         </Style.Resources>
     </Style>

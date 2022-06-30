@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Infrastructure;
 using Luna.Infrastructure;
@@ -11,7 +10,6 @@ public interface IProjectExplorer
 {
     Project? Project { get; }
     ProjectTreeItem? ProjectTreeRoot { get; }
-    IEnumerable<ProjectTreeItem> SelectedItems { get; }
     void OpenProject(string path);
     event EventHandler ProjectOpened;
 }
@@ -27,8 +25,6 @@ public class ProjectExplorer : IProjectExplorer
 
     public ProjectTreeItem? ProjectTreeRoot { get; private set; }
 
-    public IEnumerable<ProjectTreeItem> SelectedItems => ProjectTreeRoot!.GetAllChildren().Where(x => x.IsSelected);
-
     public event EventHandler? ProjectOpened;
 
     public ProjectExplorer(ICodeModelUpdater codeModelUpdater)
@@ -40,7 +36,7 @@ public class ProjectExplorer : IProjectExplorer
     {
         Project = Project.Open(path, FileSystem!);
         _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
-        ProjectTreeRoot = new ProjectTreeItem(Project.Root);
+        ProjectTreeRoot = new ProjectTreeItem(null, Project.Root);
         ProjectOpened?.Invoke(this, EventArgs.Empty);
     }
 }

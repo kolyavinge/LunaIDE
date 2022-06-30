@@ -24,7 +24,7 @@ public class ProjectTreeItemOpenCommandTest
         root.AddChild(new DirectoryProjectItem("directory 2", root));
         root.AddChild(new CodeFileProjectItem("file 1", root, fileSystem.Object));
         root.AddChild(new CodeFileProjectItem("file 2", root, fileSystem.Object));
-        _rootTreeItem = new ProjectTreeItem(root);
+        _rootTreeItem = new ProjectTreeItem(null, root);
 
         _projectItemOpenCommand = new Mock<IProjectItemOpenCommand>();
         _command = new ProjectTreeItemOpenCommand(_projectItemOpenCommand.Object);
@@ -78,8 +78,8 @@ public class ProjectTreeItemOpenCommandTest
     [Test]
     public void TwoProjectItemsSelected_Open()
     {
-        var file1 = _rootTreeItem.Children.ToArray()[2];
-        var file2 = _rootTreeItem.Children.ToArray()[3];
+        var file1 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[2];
+        var file2 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[3];
         _command.Execute(new[] { file1, file2 });
         _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.ProjecItem, file2.ProjecItem }), Times.Once());
     }
@@ -89,8 +89,8 @@ public class ProjectTreeItemOpenCommandTest
     {
         var directory1 = _rootTreeItem.Children.ToArray()[0];
         var directory2 = _rootTreeItem.Children.ToArray()[1];
-        var file1 = _rootTreeItem.Children.ToArray()[2];
-        var file2 = _rootTreeItem.Children.ToArray()[3];
+        var file1 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[2];
+        var file2 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[3];
         _command.Execute(new[] { directory1, directory2, file1, file2 });
         _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.ProjecItem, file2.ProjecItem }), Times.Once());
     }

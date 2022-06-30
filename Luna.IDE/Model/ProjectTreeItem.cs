@@ -1,98 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Luna.IDE.Mvvm;
+using Luna.IDE.Controls.Tree;
 using Luna.ProjectModel;
-using Luna.Utils;
 
 namespace Luna.IDE.Model;
 
-public class ProjectTreeItem : NotificationObject
+public class ProjectTreeItem : TreeItem
 {
-    private bool _isExpanded;
-    private bool _isSelected;
-
     public ProjectItem ProjecItem { get; }
 
-    public string Name => ProjecItem.Name;
-
-    public bool HasChildren => Children != null && Children.Any();
-
-    public IReadOnlyCollection<ProjectTreeItem> Children { get; }
-
-    public ProjectTreeItemKind Kind { get; }
-
-    public int Depth { get; }
-
-    public bool IsExpanded
-    {
-        get => _isExpanded;
-        set
-        {
-            _isExpanded = value;
-            RaisePropertyChanged(() => IsExpanded);
-            if (!_isExpanded && GetAllChildren().Any(x => x.IsSelected))
-            {
-                GetAllChildren().Each(c => c.IsSelected = false);
-                IsSelected = true;
-            }
-        }
-    }
-
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set
-        {
-            _isSelected = value;
-            RaisePropertyChanged(() => IsSelected);
-        }
-    }
-
-    public ProjectTreeItem(ProjectItem projecItem)
+    public ProjectTreeItem(ProjectTreeItem? parent, ProjectItem projecItem) :
+        base(parent, projecItem.Name, GetImageFileName(projecItem))
     {
         ProjecItem = projecItem;
-        Children = ProjecItem is DirectoryProjectItem
-            ? ((DirectoryProjectItem)ProjecItem).Children.Select(i => new ProjectTreeItem(i)).ToList()
-            : new List<ProjectTreeItem>();
-        Kind = GetKind();
-        Depth = GetDepth();
-        IsExpanded = projecItem.Parent == null;
-        IsSelected = false;
     }
 
-    public List<ProjectTreeItem> GetAllChildren()
+    protected override IEnumerable<TreeItem> GetChildren()
     {
-        var result = new List<ProjectTreeItem>();
-        result.Add(this);
-        Children.Each(child => result.AddRange(child.GetAllChildren()));
-
-        return result;
+        return ProjecItem is DirectoryProjectItem dir
+            ? dir.Children.Select(i => new ProjectTreeItem(this, i)).ToArray()
+            : new ProjectTreeItem[0];
     }
 
-    private int GetDepth()
+    private static string GetImageFileName(ProjectItem projecItem)
     {
-        var parent = ProjecItem.Parent;
-        if (parent == null) return 0;
-        int depth = -1;
-        while (parent != null) { parent = parent.Parent; depth++; }
+        if (projecItem is DirectoryProjectItem && projecItem.Parent == null) return "project.png";
+        if (projecItem is DirectoryProjectItem) return "directory.png";
+        if (projecItem is CodeFileProjectItem) return "codefile.png";
 
-        return depth;
+        throw new ArgumentException();
     }
-
-    private ProjectTreeItemKind GetKind()
-    {
-        if (ProjecItem is DirectoryProjectItem && ProjecItem.Parent == null) return ProjectTreeItemKind.Project;
-        if (ProjecItem is DirectoryProjectItem) return ProjectTreeItemKind.Directory;
-        if (ProjecItem is CodeFileProjectItem) return ProjectTreeItemKind.CodeFile;
-
-        return ProjectTreeItemKind.Unknown;
-    }
-}
-
-public enum ProjectTreeItemKind : int
-{
-    Unknown = 0,
-    Project = 1,
-    Directory = 2,
-    CodeFile = 3
 }

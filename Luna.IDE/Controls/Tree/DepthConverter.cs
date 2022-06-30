@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Luna.IDE.View;
+namespace Luna.IDE.Controls.Tree;
 
-public class ProjectTreeItemDepthConverter : IValueConverter
+public class DepthConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

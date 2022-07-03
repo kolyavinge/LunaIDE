@@ -34,8 +34,8 @@ internal class ListRuntimeValue : RuntimeValue, IEnumerable<IRuntimeValue>
 
     public override bool Equals(object? obj)
     {
-        var list = obj as ListRuntimeValue;
-        var result = list != null && _items.Count == list.Count;
+        if (obj is not ListRuntimeValue list) return false;
+        var result = _items.Count == list.Count;
         if (!result) return false;
         for (int i = 0; i < Count; i++)
         {

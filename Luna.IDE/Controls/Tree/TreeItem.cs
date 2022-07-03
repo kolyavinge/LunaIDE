@@ -60,6 +60,12 @@ public abstract class TreeItem : NotificationObject
 
     protected abstract IEnumerable<TreeItem> GetChildren();
 
+    protected void UpdateChildren()
+    {
+        _children = GetChildren().ToList();
+        RaisePropertyChanged(() => Children);
+    }
+
     private List<TreeItem> GetAllChildren()
     {
         var result = new List<TreeItem>();

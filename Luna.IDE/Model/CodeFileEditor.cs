@@ -9,6 +9,7 @@ namespace Luna.IDE.Model;
 public interface ICodeFileEditor
 {
     CodeFileProjectItem ProjectItem { get; }
+    void NavigateTo(CodeElement codeElement);
 }
 
 [EditorFor(typeof(CodeFileProjectItem))]
@@ -17,6 +18,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     private readonly ICodeModelUpdater _codeModelUpdater;
 
     public CodeFileProjectItem ProjectItem { get; }
+
+    public CodeTextBoxCommands TextBoxCommands { get; }
 
     public TextHolder TextHolder { get; set; }
 
@@ -31,6 +34,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     {
         ProjectItem = projectItem;
         _codeModelUpdater = codeModelUpdater;
+        TextBoxCommands = new CodeTextBoxCommands();
         TextHolder = new TextHolder(projectItem.GetText());
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(TextHolder));
         CodeProvider = codeProviderFactory.Make(projectItem);
@@ -63,6 +67,11 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     {
         ProjectItem.ResetTextGettingStrategy();
         _codeModelUpdater.Detach(ProjectItem);
+    }
+
+    public void NavigateTo(CodeElement codeElement)
+    {
+        TextBoxCommands.GotoLineCommand.Execute(new CodeHighlighter.Commands.GotoLineCommandParameter(codeElement.LineIndex));
     }
 }
 

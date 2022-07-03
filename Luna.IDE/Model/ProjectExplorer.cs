@@ -9,7 +9,7 @@ namespace Luna.IDE.Model;
 public interface IProjectExplorer
 {
     Project? Project { get; }
-    ProjectTreeItem? ProjectTreeRoot { get; }
+    DirectoryTreeItem? ProjectTreeRoot { get; }
     void OpenProject(string path);
     event EventHandler ProjectOpened;
 }
@@ -23,7 +23,7 @@ public class ProjectExplorer : IProjectExplorer
 
     public Project? Project { get; private set; }
 
-    public ProjectTreeItem? ProjectTreeRoot { get; private set; }
+    public DirectoryTreeItem? ProjectTreeRoot { get; private set; }
 
     public event EventHandler? ProjectOpened;
 
@@ -36,7 +36,7 @@ public class ProjectExplorer : IProjectExplorer
     {
         Project = Project.Open(path, FileSystem!);
         _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
-        ProjectTreeRoot = new ProjectTreeItem(null, Project.Root);
+        ProjectTreeRoot = new DirectoryTreeItem(null, Project.Root);
         ProjectOpened?.Invoke(this, EventArgs.Empty);
     }
 }

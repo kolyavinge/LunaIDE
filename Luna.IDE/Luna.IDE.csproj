@@ -13,7 +13,9 @@
       <None Remove="Images\arrow-down.png" />
       <None Remove="Images\arrow-right.png" />
       <None Remove="Images\codefile.png" />
+      <None Remove="Images\const.png" />
       <None Remove="Images\directory.png" />
+      <None Remove="Images\func.png" />
       <None Remove="Images\project.png" />
       <None Remove="Images\runarrow.png" />
     </ItemGroup>
@@ -29,6 +31,7 @@
       <Resource Include="Images\arrow-right.png">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Resource>
+      <Resource Include="Images\const.png" />
       <Resource Include="Images\directory.png">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Resource>
@@ -44,6 +47,7 @@
       <Resource Include="Images\codefile.png">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Resource>
+      <Resource Include="Images\func.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -55,6 +59,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+      <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     </ItemGroup>
 
 </Project>

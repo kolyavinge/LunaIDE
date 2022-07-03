@@ -11,7 +11,7 @@ public class ProjectTreeViewModel : NotificationObject
 
     public ProjectTreeViewModel(
         IProjectExplorer projectExplorer,
-        IProjectTreeItemOpenCommand itemOpenCommand,
+        IProjectExplorerItemOpenCommand itemOpenCommand,
         TreeViewModel treeViewModel)
     {
         TreeViewModel = treeViewModel;

@@ -41,7 +41,7 @@ public class TreeViewModel : NotificationObject
 
     private void OnTreeItemPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == "IsExpanded")
+        if (e.PropertyName == "IsExpanded" || e.PropertyName == "Children")
         {
             UpdateTreeItems();
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using Luna.IDE.Commands;
 using Luna.IDE.Model;
 using Luna.Infrastructure;
@@ -8,11 +9,12 @@ using NUnit.Framework;
 
 namespace Luna.Tests.IDE.Commands;
 
-public class ProjectTreeItemOpenCommandTest
+public class ProjectExplorerItemOpenCommandTest
 {
-    private ProjectTreeItem _rootTreeItem;
+    private DirectoryTreeItem _rootTreeItem;
     private Mock<IProjectItemOpenCommand> _projectItemOpenCommand;
-    private ProjectTreeItemOpenCommand _command;
+    private Mock<ICodeElementNavigateCommand> _codeElementNavigateCommand;
+    private ProjectExplorerItemOpenCommand _command;
 
     [SetUp]
     public void Setup()
@@ -24,16 +26,17 @@ public class ProjectTreeItemOpenCommandTest
         root.AddChild(new DirectoryProjectItem("directory 2", root));
         root.AddChild(new CodeFileProjectItem("file 1", root, fileSystem.Object));
         root.AddChild(new CodeFileProjectItem("file 2", root, fileSystem.Object));
-        _rootTreeItem = new ProjectTreeItem(null, root);
+        _rootTreeItem = new DirectoryTreeItem(null, root);
 
         _projectItemOpenCommand = new Mock<IProjectItemOpenCommand>();
-        _command = new ProjectTreeItemOpenCommand(_projectItemOpenCommand.Object);
+        _codeElementNavigateCommand = new Mock<ICodeElementNavigateCommand>();
+        _command = new ProjectExplorerItemOpenCommand(_projectItemOpenCommand.Object, _codeElementNavigateCommand.Object);
     }
 
     [Test]
     public void EmptyItemList()
     {
-        _command.Execute(Enumerable.Empty<ProjectTreeItem>());
+        _command.Execute(Enumerable.Empty<DirectoryTreeItem>());
     }
 
     [Test]
@@ -78,20 +81,33 @@ public class ProjectTreeItemOpenCommandTest
     [Test]
     public void TwoProjectItemsSelected_Open()
     {
-        var file1 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[2];
-        var file2 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[3];
+        var file1 = _rootTreeItem.Children.ToArray()[2] as CodeFileTreeItem;
+        var file2 = _rootTreeItem.Children.ToArray()[3] as CodeFileTreeItem;
         _command.Execute(new[] { file1, file2 });
-        _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.ProjecItem, file2.ProjecItem }), Times.Once());
+        _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.CodeFile, file2.CodeFile }), Times.Once());
     }
 
     [Test]
-    public void AllSelected_Filespen()
+    public void AllSelected_FilesOpen()
     {
         var directory1 = _rootTreeItem.Children.ToArray()[0];
         var directory2 = _rootTreeItem.Children.ToArray()[1];
-        var file1 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[2];
-        var file2 = _rootTreeItem.Children.Cast<ProjectTreeItem>().ToArray()[3];
+        var file1 = _rootTreeItem.Children.ToArray()[2] as CodeFileTreeItem;
+        var file2 = _rootTreeItem.Children.ToArray()[3] as CodeFileTreeItem;
         _command.Execute(new[] { directory1, directory2, file1, file2 });
-        _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.ProjecItem, file2.ProjecItem }), Times.Once());
+        _projectItemOpenCommand.Verify(x => x.Execute(new[] { file1.CodeFile, file2.CodeFile }), Times.Once());
+    }
+
+    [Test]
+    public void CodeElementNavigate()
+    {
+        var root = new DirectoryProjectItem("", null);
+        var codeFile = new CodeFileProjectItem("", root, null);
+        var parentCodeFile = new CodeFileTreeItem(new DirectoryTreeItem(null, root), codeFile);
+        var constantDeclaration = new ConstantDeclaration("ANY_CONST", new IntegerValueElement(1));
+        var treeItem = new CodeElementTreeItem(parentCodeFile, constantDeclaration);
+        _command.Execute(new[] { treeItem });
+        _codeElementNavigateCommand.Verify(x => x.Execute(new CodeElementNavigateCommandParameter(codeFile, constantDeclaration)), Times.Once());
+        _projectItemOpenCommand.Verify(x => x.Execute(It.IsAny<IEnumerable>()), Times.Never());
     }
 }

@@ -43,7 +43,11 @@ internal class CodeModelBuilder : ICodeModelBuilder
         {
             hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.ImportDirectivesResult!);
         }
-        if (hasErrors) return new() { HasErrors = true };
+        if (hasErrors)
+        {
+            codeFiles.Each(x => x.RaiseUpdateCodeModel());
+            return new() { HasErrors = true };
+        }
         var orderedCodeFiles = _orderLogic.ByImports(codeFiles).ToList();
         var contextsDictionary = contexts.ToDictionary(k => k.CodeFile, v => v);
         orderedCodeFiles.Each(codeFile => contextsDictionary[codeFile].ParseFunctions());
@@ -55,6 +59,7 @@ internal class CodeModelBuilder : ICodeModelBuilder
         {
             hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.FunctionParserResult!);
         }
+        codeFiles.Each(x => x.RaiseUpdateCodeModel());
         if (hasErrors) return new() { HasErrors = true };
 
         return new() { HasErrors = false };

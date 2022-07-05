@@ -20,7 +20,7 @@ public abstract class TreeItem : NotificationObject
 
     public string Name { get; }
 
-    public IReadOnlyCollection<TreeItem> Children => _children ?? (_children = GetChildren().ToList());
+    public IReadOnlyCollection<TreeItem> Children => _children ??= GetChildren().ToList();
 
     public int Depth { get; }
 
@@ -62,7 +62,9 @@ public abstract class TreeItem : NotificationObject
 
     protected void UpdateChildren()
     {
+        var lastSelectedNames = Children.Where(x => x.IsSelected).Select(x => x.Name).ToHashSet();
         _children = GetChildren().ToList();
+        _children.Each(x => x.IsSelected = lastSelectedNames.Contains(x.Name));
         RaisePropertyChanged(() => Children);
     }
 

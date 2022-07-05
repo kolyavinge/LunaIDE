@@ -2,7 +2,6 @@
 using System.Linq;
 using Luna.IDE.Controls.Tree;
 using Luna.ProjectModel;
-using Luna.Utils;
 
 namespace Luna.IDE.Model;
 
@@ -34,31 +33,24 @@ public class DirectoryTreeItem : TreeItem
 
 public class CodeFileTreeItem : TreeItem
 {
-    private readonly HashSet<string> _lastSelectedNames = new();
-
     public CodeFileProjectItem CodeFile { get; }
 
     public CodeFileTreeItem(DirectoryTreeItem parent, CodeFileProjectItem codeFile) :
         base(parent, codeFile.Name, "codefile.png")
     {
         CodeFile = codeFile;
-        CodeFile.CodeModelUpdated += (s, e) =>
-        {
-            _lastSelectedNames.Clear();
-            _lastSelectedNames.AddRange(Children.Where(x => x.IsSelected).Select(x => x.Name).ToList());
-            UpdateChildren();
-        };
+        CodeFile.CodeModelUpdated += (s, e) => UpdateChildren();
     }
 
     protected override IEnumerable<TreeItem> GetChildren()
     {
         foreach (var constant in CodeFile.CodeModel.Constants)
         {
-            yield return new CodeElementTreeItem(this, constant) { IsSelected = _lastSelectedNames.Contains(constant.Name) };
+            yield return new CodeElementTreeItem(this, constant);
         }
         foreach (var func in CodeFile.CodeModel.Functions)
         {
-            yield return new CodeElementTreeItem(this, func) { IsSelected = _lastSelectedNames.Contains(func.Name) };
+            yield return new CodeElementTreeItem(this, func);
         }
     }
 }

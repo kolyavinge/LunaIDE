@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Luna.Infrastructure;
 using Luna.Parsing;
 using Luna.Utils;
@@ -12,6 +13,7 @@ public class CodeModelUpdater : ICodeModelUpdater
     private readonly ICodeModelBuilder _codeModelBuilder;
     private readonly Dictionary<CodeFileProjectItem, AttachedItem> _attached = new();
     private List<CodeFileProjectItem> _projectItems = new();
+    private int _updateRequest;
 
     public CodeModelUpdater(ITimerManager timerManager) : this(timerManager, new CodeModelBuilder()) { }
 
@@ -25,6 +27,7 @@ public class CodeModelUpdater : ICodeModelUpdater
     {
         _projectItems = projectItems.ToList();
         _attached.Clear();
+        UpdateRequest();
     }
 
     public void Attach(CodeFileProjectItem projectItem, CodeModelUpdatedCallback updatedCallback)
@@ -38,8 +41,15 @@ public class CodeModelUpdater : ICodeModelUpdater
         _attached.Remove(projectItem);
     }
 
+    public void UpdateRequest()
+    {
+        Interlocked.Exchange(ref _updateRequest, 1);
+    }
+
     public void OnTimerTick(object? sender, EventArgs e)
     {
+        if (_updateRequest == 0) return;
+        Interlocked.Exchange(ref _updateRequest, 0);
         _codeModelBuilder.BuildFor(_projectItems);
         _attached.Each(x => x.Value.RaiseCallback());
     }

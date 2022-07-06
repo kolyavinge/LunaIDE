@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Windows.Input;
 using CodeHighlighter;
 using Luna.IDE.CodeEditor;
+using Luna.IDE.Mvvm;
 using Luna.Parsing;
 using Luna.ProjectModel;
 
@@ -23,6 +25,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
     public TextHolder TextHolder { get; set; }
 
+    public ICommand TextChangedCommand { get; set; }
+
     public ILunaCodeProvider CodeProvider { get; set; }
 
     public string Header => ProjectItem.Name;
@@ -36,6 +40,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         _codeModelUpdater = codeModelUpdater;
         TextBoxCommands = new CodeTextBoxCommands();
         TextHolder = new TextHolder(projectItem.GetText());
+        TextChangedCommand = new ActionCommand(OnTextChanged);
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(TextHolder));
         CodeProvider = codeProviderFactory.Make(projectItem);
         _codeModelUpdater.Attach(ProjectItem, OnCodeModelUpdated);
@@ -56,6 +61,11 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         {
             CodeProvider.UpdateTokenKinds(updatedTokens);
         }
+    }
+
+    private void OnTextChanged()
+    {
+        _codeModelUpdater.UpdateRequest();
     }
 
     public void Save()

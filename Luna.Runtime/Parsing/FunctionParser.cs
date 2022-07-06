@@ -20,62 +20,88 @@ public class FunctionParser : AbstractParser
         {
             case State.Begin:
                 if (Eof) break;
-                else if (Token.Kind == TokenKind.ConstDeclaration) { ParseConstDeclaration(); goto case State.Begin; }
-                else if (Token.Kind == TokenKind.ImportDirective) { _result.SetError(ParserMessageType.UnexpectedImport, Token); break; }
-                else if (Token.Kind == TokenKind.OpenBracket) { ParseRunFunctionOrFunctionDeclaration(); goto case State.Begin; }
+                else if (Token.Kind == TokenKind.ConstDeclaration)
+                {
+                    ParserMessage? error = null;
+                    ParseConstDeclaration(ref error);
+                    if (error != null) _result.AddError(error);
+                    goto case State.Begin;
+                }
+                else if (Token.Kind == TokenKind.ImportDirective) { _result.AddError(new(ParserMessageType.UnexpectedImport, Token)); break; }
+                else if (Token.Kind == TokenKind.OpenBracket)
+                {
+                    ParserMessage? error = null;
+                    ParseRunFunctionOrFunctionDeclaration(ref error);
+                    if (error != null)
+                    {
+                        _result.AddError(error);
+                        SkipFunctionDeclaration();
+                    }
+                    goto case State.Begin;
+                }
                 else goto case State.Error;
             case State.Error:
-                if (_result.Error == null) _result.SetError(ParserMessageType.UnexpectedToken, Token);
+                if (!_result.Errors.Any()) _result.AddError(new(ParserMessageType.UnexpectedToken, Token));
                 break;
         }
     }
 
-    private void ParseConstDeclaration()
+    private void ParseConstDeclaration(ref ParserMessage? error)
     {
         var constToken = Token;
         MoveNext();
         if (Eof || constToken.LineIndex != Token.LineIndex)
         {
-            _result.SetError(ParserMessageType.EmptyConstDeclaration, constToken);
+            error = new(ParserMessageType.EmptyConstDeclaration, constToken);
             return;
         }
         else if (Token.Kind != TokenKind.Identificator)
         {
-            _result.SetError(ParserMessageType.IncorrectConstName, Token);
+            error = new(ParserMessageType.IncorrectConstName, Token);
             return;
         }
         var constNameToken = Token;
         var constName = GetTokenName();
         if (_scope.IsFunctionExist(constName))
         {
-            _result.SetError(ParserMessageType.FunctionNameExist, Token);
+            error = new(ParserMessageType.FunctionNameExist, Token);
             return;
         }
         if (_scope.IsConstantExist(constName))
         {
-            _result.SetError(ParserMessageType.ConstNameExist, Token);
+            error = new(ParserMessageType.ConstNameExist, Token);
             return;
         }
         MoveNext();
+        if (Eof || constToken.LineIndex != Token.LineIndex)
+        {
+            _codeModel.AddConstantDeclaration(new(constName, new FakeValueElement(), constNameToken.LineIndex, constNameToken.StartColumnIndex));
+            error = new(ParserMessageType.ConstNoValue, constToken);
+            return;
+        }
         ValueElement? constValue = null;
-        ParseConstValue(in constToken, ref constValue);
+        ParseConstValue(constToken, ref constValue, ref error);
         MoveNext();
         var unexpectedTokens = GetRemainingTokens(constToken.LineIndex);
         if (unexpectedTokens.Any())
         {
-            _result.SetError(ParserMessageType.UnexpectedToken, unexpectedTokens);
+            error = new(ParserMessageType.UnexpectedToken, unexpectedTokens);
         }
         else if (constValue != null)
         {
-            _codeModel.AddConstantDeclaration(new ConstantDeclaration(constName, constValue, constNameToken.LineIndex, constNameToken.StartColumnIndex));
+            _codeModel.AddConstantDeclaration(new(constName, constValue, constNameToken.LineIndex, constNameToken.StartColumnIndex));
+        }
+        else
+        {
+            _codeModel.AddConstantDeclaration(new(constName, new FakeValueElement(), constNameToken.LineIndex, constNameToken.StartColumnIndex));
         }
     }
 
-    private void ParseConstValue(in Token constToken, ref ValueElement? constValue)
+    private void ParseConstValue(Token constToken, ref ValueElement? constValue, ref ParserMessage? error)
     {
         if (Eof || constToken.LineIndex != Token.LineIndex)
         {
-            _result.SetError(ParserMessageType.ConstNoValue, constToken);
+            error = new(ParserMessageType.ConstNoValue, constToken);
         }
         else if (Token.Kind == TokenKind.IntegerNumber)
         {
@@ -85,7 +111,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                _result.SetError(ParserMessageType.IntegerValueOverflow, Token);
+                error = new(ParserMessageType.IntegerValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
@@ -96,7 +122,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                _result.SetError(ParserMessageType.FloatValueOverflow, Token);
+                error = new(ParserMessageType.FloatValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.String)
@@ -113,69 +139,69 @@ public class FunctionParser : AbstractParser
         }
         else
         {
-            _result.SetError(ParserMessageType.ConstIncorrectValue, Token);
+            error = new(ParserMessageType.ConstIncorrectValue, Token);
         }
     }
 
-    private void ParseRunFunctionOrFunctionDeclaration()
+    private void ParseRunFunctionOrFunctionDeclaration(ref ParserMessage? error)
     {
         MoveNext();
         if (Token.Kind == TokenKind.Identificator)
         {
-            ParseFunctionDeclaration();
+            ParseFunctionDeclaration(ref error);
         }
         else if (Token.Kind == TokenKind.RunFunction)
         {
-            ParseRunFunctionCall();
+            ParseRunFunctionCall(ref error);
         }
         else
         {
-            _result.SetError(ParserMessageType.IncorrectFunctionName, Token);
+            error = new(ParserMessageType.IncorrectFunctionName, Token);
         }
     }
 
-    private void ParseFunctionDeclaration()
+    private void ParseFunctionDeclaration(ref ParserMessage? error)
     {
         var funcToken = Token;
         var funcName = GetTokenName();
         if (_scope.IsFunctionExist(funcName))
         {
-            _result.SetError(ParserMessageType.FunctionNameExist, Token);
+            error = new(ParserMessageType.FunctionNameExist, Token);
             return;
         }
         if (_scope.IsConstantExist(funcName))
         {
-            _result.SetError(ParserMessageType.ConstNameExist, Token);
+            error = new(ParserMessageType.ConstNameExist, Token);
             return;
         }
         MoveNext();
-        var (arguments, body) = ParseFunctionArgumentsAndBody();
+        var (arguments, body) = ParseFunctionArgumentsAndBody(ref error);
         if (arguments != null && body != null)
         {
-            _codeModel.AddFunctionDeclaration(new FunctionDeclaration(funcName, arguments, body, funcToken.LineIndex, funcToken.StartColumnIndex));
+            _codeModel.AddFunctionDeclaration(new(funcName, arguments, body, funcToken.LineIndex, funcToken.StartColumnIndex));
         }
         else if (arguments != null)
         {
-            _codeModel.AddFunctionDeclaration(new FunctionDeclaration(funcName, arguments, new(), funcToken.LineIndex, funcToken.StartColumnIndex));
+            _codeModel.AddFunctionDeclaration(new(funcName, arguments, new(), funcToken.LineIndex, funcToken.StartColumnIndex));
         }
     }
 
-    private (List<FunctionArgument>?, FunctionBody?) ParseFunctionArgumentsAndBody()
+    private (List<FunctionArgument>?, FunctionBody?) ParseFunctionArgumentsAndBody(ref ParserMessage? error)
     {
-        var arguments = ParseFunctionArguments();
+        var arguments = ParseFunctionArguments(ref error);
         if (arguments == null) return (null, null);
 
-        var body = ParseFunctionBody();
+        var body = ParseFunctionBody(ref error);
         if (body == null) return (arguments, null);
 
         return (arguments, body);
     }
 
-    private List<FunctionArgument>? ParseFunctionArguments()
+    private List<FunctionArgument>? ParseFunctionArguments(ref ParserMessage? error)
     {
         if (Token.Kind != TokenKind.OpenBracket)
         {
-            _result.SetError(ParserMessageType.IncorrectFunctionAgrumentsDeclaration, Token);
+            error = new(ParserMessageType.IncorrectFunctionAgrumentsDeclaration, Token);
             return null;
         }
         MoveNext();
@@ -184,16 +210,16 @@ public class FunctionParser : AbstractParser
         {
             if (Token.Kind != TokenKind.Identificator)
             {
-                _result.SetError(ParserMessageType.IncorrectFunctionAgrument, Token);
+                error = new(ParserMessageType.IncorrectFunctionAgrument, Token);
                 return null;
             }
             var argName = GetTokenName();
-            arguments.Add(new FunctionArgument(argName, Token.LineIndex, Token.StartColumnIndex));
+            arguments.Add(new(argName, Token.LineIndex, Token.StartColumnIndex));
             MoveNext();
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
-            _result.SetError(ParserMessageType.IncorrectFunctionAgrumentsDeclaration, Token);
+            error = new(ParserMessageType.IncorrectFunctionAgrumentsDeclaration, Token);
             return null;
         }
         MoveNext();
@@ -201,18 +227,18 @@ public class FunctionParser : AbstractParser
         return arguments;
     }
 
-    private FunctionBody? ParseFunctionBody()
+    private FunctionBody? ParseFunctionBody(ref ParserMessage? error)
     {
         var body = new FunctionBody();
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
-            var item = ParseFunctionBodyItem();
+            var item = ParseFunctionBodyItem(ref error);
             if (item == null) return null;
             body.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
-            _result.SetError(ParserMessageType.UnexpectedFunctionEnd, Prev);
+            error = new(ParserMessageType.UnexpectedFunctionEnd, Prev);
             return null;
         }
         MoveNext();
@@ -220,7 +246,7 @@ public class FunctionParser : AbstractParser
         return body;
     }
 
-    private ValueElement? ParseFunctionBodyItem()
+    private ValueElement? ParseFunctionBodyItem(ref ParserMessage? error)
     {
         ValueElement? body = null;
         if (Token.Kind == TokenKind.IntegerNumber)
@@ -232,7 +258,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                _result.SetError(ParserMessageType.IntegerValueOverflow, Token);
+                error = new(ParserMessageType.IntegerValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
@@ -244,7 +270,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                _result.SetError(ParserMessageType.FloatValueOverflow, Token);
+                error = new(ParserMessageType.FloatValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.String)
@@ -279,7 +305,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                _result.SetError(ParserMessageType.UnknownIdentificator, Token);
+                error = new(ParserMessageType.UnknownIdentificator, Token);
             }
             MoveNext();
         }
@@ -295,43 +321,43 @@ public class FunctionParser : AbstractParser
             var name = GetTokenName();
             if (Token.Kind == TokenKind.Identificator && _scope.IsConstantExist(name))
             {
-                body = ParseList();
+                body = ParseList(ref error);
             }
             else if (Token.Kind is TokenKind.Identificator or
                      TokenKind.Plus or TokenKind.Minus or TokenKind.Asterisk or TokenKind.Slash or TokenKind.Percent)
             {
-                body = ParseFunctionCall(name);
+                body = ParseFunctionCall(name, ref error);
             }
             else if (Token.Kind == TokenKind.Lambda)
             {
-                body = ParseLambda();
+                body = ParseLambda(ref error);
             }
             else
             {
-                body = ParseList();
+                body = ParseList(ref error);
             }
         }
         else
         {
-            _result.SetError(ParserMessageType.IncorrectToken, Token);
+            error = new(ParserMessageType.IncorrectToken, Token);
         }
 
         return body;
     }
 
-    private FunctionValueElement? ParseFunctionCall(string funcName)
+    private FunctionValueElement? ParseFunctionCall(string funcName, ref ParserMessage? error)
     {
         MoveNext();
         var argumentValues = new List<ValueElement>();
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
-            var value = ParseFunctionBodyItem();
+            var value = ParseFunctionBodyItem(ref error);
             if (value == null) return null;
             argumentValues.Add(value);
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
-            _result.SetError(ParserMessageType.UnexpectedToken, Token);
+            error = new(ParserMessageType.UnexpectedToken, Token);
             return null;
         }
         MoveNext();
@@ -339,36 +365,36 @@ public class FunctionParser : AbstractParser
         return new FunctionValueElement(_codeModel, funcName, argumentValues, Token.LineIndex, Token.StartColumnIndex);
     }
 
-    private void ParseRunFunctionCall()
+    private void ParseRunFunctionCall(ref ParserMessage? error)
     {
         if (_scope.IsRunFunctionExist())
         {
-            _result.SetError(ParserMessageType.RunFunctionExist, Token);
+            error = new(ParserMessageType.RunFunctionExist, Token);
             return;
         }
         MoveNext();
-        if (ParseFunctionBodyItem() is not FunctionValueElement body)
+        if (ParseFunctionBodyItem(ref error) is not FunctionValueElement body)
         {
-            _result.SetError(ParserMessageType.IncorrectFunctionCall, Token);
+            error = new(ParserMessageType.IncorrectFunctionCall, Token);
             return;
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
-            _result.SetError(ParserMessageType.UnexpectedToken, Token);
+            error = new(ParserMessageType.UnexpectedToken, Token);
             return;
         }
         MoveNext();
         _codeModel.RunFunction = body;
     }
 
-    private LambdaValueElement? ParseLambda()
+    private LambdaValueElement? ParseLambda(ref ParserMessage? error)
     {
         var lambdaToken = Token;
         MoveNext();
-        var (lambdaArguments, lambdaBody) = ParseFunctionArgumentsAndBody();
+        var (lambdaArguments, lambdaBody) = ParseFunctionArgumentsAndBody(ref error);
         if (lambdaArguments != null && lambdaBody != null)
         {
-            return new LambdaValueElement(lambdaArguments, lambdaBody, lambdaToken.LineIndex, lambdaToken.StartColumnIndex);
+            return new(lambdaArguments, lambdaBody, lambdaToken.LineIndex, lambdaToken.StartColumnIndex);
         }
         else
         {
@@ -376,24 +402,24 @@ public class FunctionParser : AbstractParser
         }
     }
 
-    private ListValueElement? ParseList()
+    private ListValueElement? ParseList(ref ParserMessage? error)
     {
         var listToken = Prev;
         var items = new List<ValueElement>();
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
-            var item = ParseFunctionBodyItem();
+            var item = ParseFunctionBodyItem(ref error);
             if (item == null) return null;
             items.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
-            _result.SetError(ParserMessageType.IncorrectToken, Token);
+            error = new(ParserMessageType.IncorrectToken, Token);
             return null;
         }
         MoveNext();
 
-        return new ListValueElement(items, listToken.LineIndex, listToken.StartColumnIndex);
+        return new(items, listToken.LineIndex, listToken.StartColumnIndex);
     }
 
     enum State

@@ -1,6 +1,7 @@
 // demo program
 
 import 'imported.luna'
+import 'imported.luna'
 
 const ANY_CONST 111
 

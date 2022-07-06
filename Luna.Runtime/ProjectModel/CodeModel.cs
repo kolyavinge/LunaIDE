@@ -106,6 +106,11 @@ public abstract class ValueElement : CodeElement
     protected ValueElement(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
 }
 
+public class FakeValueElement : ValueElement
+{
+    public FakeValueElement() : base(0, 0) { }
+}
+
 public class BooleanValueElement : ValueElement
 {
     public bool Value { get; }

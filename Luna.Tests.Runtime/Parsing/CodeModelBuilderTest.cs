@@ -71,12 +71,12 @@ internal class CodeModelBuilderTest
     public void BuildCodeModelsFor_Warnings()
     {
         var parseResult1 = new ParseResult();
-        parseResult1.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
-        parseResult1.AddWarning(ParserMessageType.ConstIncorrectValue, Token.Default);
+        parseResult1.AddWarning(new(ParserMessageType.ConstNoValue, Token.Default));
+        parseResult1.AddWarning(new(ParserMessageType.ConstIncorrectValue, Token.Default));
         _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
         var parseResult2 = new ParseResult();
-        parseResult2.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
-        parseResult2.AddWarning(ParserMessageType.ConstIncorrectValue, Token.Default);
+        parseResult2.AddWarning(new(ParserMessageType.ConstNoValue, Token.Default));
+        parseResult2.AddWarning(new(ParserMessageType.ConstIncorrectValue, Token.Default));
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
         var result = _builder.BuildFor(_allCodeFiles);
@@ -102,12 +102,13 @@ internal class CodeModelBuilderTest
     public void BuildCodeModelsFor_WarningsAndErrors()
     {
         var parseResult1 = new ParseResult();
-        parseResult1.SetError(ParserMessageType.FunctionNameExist, Token.Default);
-        parseResult1.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
+        parseResult1.AddWarning(new(ParserMessageType.ConstNoValue, Token.Default));
         _codeFile1ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult1);
         var parseResult2 = new ParseResult();
-        parseResult2.SetError(ParserMessageType.FunctionNameExist, Token.Default);
-        parseResult2.AddWarning(ParserMessageType.ConstNoValue, Token.Default);
+        parseResult2.AddError(new(ParserMessageType.ConstIncorrectValue, Token.Default));
+        parseResult2.AddError(new(ParserMessageType.FunctionNameExist, Token.Default));
+        parseResult2.AddWarning(new(ParserMessageType.ConstNoValue, Token.Default));
+        parseResult2.AddWarning(new(ParserMessageType.UnexpectedImport, Token.Default));
         _codeFile2ParsingContext.SetupGet(x => x.ImportDirectivesResult).Returns(parseResult2);
 
         var result = _builder.BuildFor(_allCodeFiles);
@@ -117,16 +118,17 @@ internal class CodeModelBuilderTest
         Assert.NotNull(_codeFile2.CodeModel);
         _codeFile1ParsingContext.Verify(x => x.ParseImports(), Times.Once());
         _codeFile2ParsingContext.Verify(x => x.ParseImports(), Times.Once());
-        _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Never());
-        _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Never());
-        _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Never());
+        _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
+        _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
+        _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
         AssertRaiseUpdateModelForAllCodeFiles();
-        _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Never());
+        _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Never());
-        _outputWriter.Verify(x => x.WriteError(_codeFile1, parseResult1.Error), Times.Once());
         _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.First()), Times.Once());
-        _outputWriter.Verify(x => x.WriteError(_codeFile2, parseResult2.Error), Times.Once());
+        _outputWriter.Verify(x => x.WriteError(_codeFile2, parseResult2.Errors.First()), Times.Once());
+        _outputWriter.Verify(x => x.WriteError(_codeFile2, parseResult2.Errors.Last()), Times.Once());
         _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.First()), Times.Once());
+        _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.Last()), Times.Once());
     }
 
     private void AssertRaiseUpdateModelForAllCodeFiles()

@@ -55,8 +55,8 @@ public class OutputArea : IOutputArea
     {
         return new TokenColor[]
         {
-            new ((byte)OutputMessageKind.Info, ColorUtils.FromHex("4edc39")),
-            new ((byte)OutputMessageKind.Warning, ColorUtils.FromHex("ffff00")),
+            new ((byte)OutputMessageKind.Info, ColorUtils.FromHex("5ae65c")),
+            new ((byte)OutputMessageKind.Warning, ColorUtils.FromHex("d9d177")),
             new ((byte)OutputMessageKind.Error, ColorUtils.FromHex("f44753"))
         };
     }

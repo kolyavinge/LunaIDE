@@ -18,55 +18,68 @@ public class ImportDirectiveParser : AbstractParser
     {
         while (!Eof && Token.Kind == TokenKind.ImportDirective)
         {
-            var import = ParseImportDirective();
-            if (import == null) return;
-            _codeModel.AddImportDirective(import);
+            ParserMessage? error = null;
+            ParseImportDirective(ref error);
+            if (error != null)
+            {
+                _result.AddError(error);
+            }
         }
     }
 
-    private ImportDirective? ParseImportDirective()
+    private void ParseImportDirective(ref ParserMessage? error)
     {
         string filePath;
         var importToken = Token;
         MoveNext();
         if (Eof || importToken.LineIndex != Token.LineIndex)
         {
-            _result.SetError(ParserMessageType.ImportNoFilePath, importToken);
-            return null;
+            error = new(ParserMessageType.ImportNoFilePath, importToken);
+            return;
         }
         else if (Token.Kind == TokenKind.IntegerNumber || Token.Kind == TokenKind.FloatNumber)
         {
-            _result.SetError(ParserMessageType.ImportFilePathNotString, Token);
-            return null;
+            error = new(ParserMessageType.ImportFilePathNotString, Token);
+            SkipLine(importToken.LineIndex);
+            return;
         }
         else if (Token.Kind == TokenKind.String)
         {
             filePath = GetTokenName();
             if (String.IsNullOrWhiteSpace(filePath))
             {
-                _result.SetError(ParserMessageType.ImportEmptyFilePath, Token);
-                return null;
+                error = new(ParserMessageType.ImportEmptyFilePath, Token);
+                SkipLine(importToken.LineIndex);
+                return;
             }
         }
         else
         {
-            _result.SetError(ParserMessageType.IncorrectTokenAfterImport, Token);
-            return null;
+            error = new(ParserMessageType.IncorrectTokenAfterImport, Token);
+            SkipLine(importToken.LineIndex);
+            return;
         }
         MoveNext();
         var unexpectedTokens = GetRemainingTokens(importToken.LineIndex);
         if (unexpectedTokens.Any())
         {
-            _result.SetError(ParserMessageType.UnexpectedToken, unexpectedTokens);
-            return null;
+            error = new(ParserMessageType.UnexpectedToken, unexpectedTokens);
+            return;
         }
         var codeFile = _scope.GetCodeFileByPath(filePath);
         if (codeFile == null)
         {
-            _result.SetError(ParserMessageType.ImportFileNotFound, importToken);
-            return null;
+            error = new(ParserMessageType.ImportFileNotFound, importToken);
+            return;
         }
-
-        return new ImportDirective(filePath, codeFile, importToken.LineIndex, importToken.StartColumnIndex);
+        if (_codeModel.Imports.All(x => x.FilePath != filePath))
+        {
+            var import = new ImportDirective(filePath, codeFile, importToken.LineIndex, importToken.StartColumnIndex);
+            _codeModel.AddImportDirective(import);
+        }
+        else
+        {
+            _result.AddWarning(new(ParserMessageType.DuplicateImport, importToken));
+        }
     }
 }

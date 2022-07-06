@@ -13,6 +13,7 @@ internal struct CodeModelBuilderResult
 
 internal interface ICodeModelBuilder
 {
+
     CodeModelBuilderResult BuildFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles);
 }
 
@@ -43,15 +44,14 @@ internal class CodeModelBuilder : ICodeModelBuilder
         {
             hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.ImportDirectivesResult!);
         }
-        if (hasErrors)
-        {
-            codeFiles.Each(x => x.RaiseUpdateCodeModel());
-            return new() { HasErrors = true };
-        }
         var orderedCodeFiles = _orderLogic.ByImports(codeFiles).ToList();
         var contextsDictionary = contexts.ToDictionary(k => k.CodeFile, v => v);
         orderedCodeFiles.Each(codeFile => contextsDictionary[codeFile].ParseFunctions());
-        foreach (var context in contexts.Where(x => x.FunctionParserResult?.Error == null))
+        foreach (var context in contexts.Where(x =>
+                                               x.ImportDirectivesResult != null &&
+                                               x.FunctionParserResult != null &&
+                                               !x.ImportDirectivesResult.Errors.Any() &&
+                                               !x.FunctionParserResult.Errors.Any()))
         {
             _outputWriter.SuccessfullyParsed(context.CodeFile);
         }
@@ -68,13 +68,9 @@ internal class CodeModelBuilder : ICodeModelBuilder
     private bool WriteErrorsAndWarnings(CodeFileProjectItem codeFile, ParseResult parseResult)
     {
         parseResult.Warnings.Each(warning => _outputWriter.WriteWarning(codeFile, warning));
-        if (parseResult.Error != null)
-        {
-            _outputWriter.WriteError(codeFile, parseResult.Error);
-            return true;
-        }
+        parseResult.Errors.Each(error => _outputWriter.WriteError(codeFile, error));
 
-        return false;
+        return parseResult.Errors.Any();
     }
 }
 

@@ -40,11 +40,4 @@ public class TokenIterator
             }
         }
     }
-
-    public void SkipTokensInLine()
-    {
-        var lineIndex = Token.LineIndex;
-        MoveNext();
-        while (!Eof && lineIndex == Token.LineIndex) MoveNext();
-    }
 }

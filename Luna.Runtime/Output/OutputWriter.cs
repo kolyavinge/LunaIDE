@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Luna.Parsing;
 using Luna.ProjectModel;
 using Luna.Runtime;
@@ -42,7 +41,7 @@ internal class OutputWriter : IOutputWriter
         {
             new("Warning in file ", OutputMessageKind.Warning),
             new(codeFile.Name, OutputMessageKind.Info),
-            new(String.Format(". Line {0}, col {1}. {2}.", token.LineIndex + 1, token.StartColumnIndex + 1, _textMessage[message.Type]), OutputMessageKind.Warning)
+            new($". Line {token.LineIndex + 1}, col {token.StartColumnIndex + 1}. {_textMessage[message.Type]}.", OutputMessageKind.Warning)
         })
         { ProjectItem = codeFile });
     }
@@ -54,7 +53,7 @@ internal class OutputWriter : IOutputWriter
         {
             new("Error in file ", OutputMessageKind.Error),
             new(codeFile.Name, OutputMessageKind.Info),
-            new(String.Format(". Line {0}, col {1}. {2}.", token.LineIndex + 1, token.StartColumnIndex + 1, _textMessage[message.Type]), OutputMessageKind.Error)
+            new($". Line {token.LineIndex + 1}, col {token.StartColumnIndex + 1}. {_textMessage[message.Type]}.", OutputMessageKind.Error)
         })
         { ProjectItem = codeFile });
     }
@@ -87,6 +86,7 @@ internal class OutputWriter : IOutputWriter
         { ParserMessageType.ImportFilePathNotString, "Import file path is not string" },
         { ParserMessageType.ImportFileNotFound, "Import file not found" },
         { ParserMessageType.UnexpectedImport, "Unexpected import directive" },
+        { ParserMessageType.DuplicateImport, "Duplicate import directive" },
         { ParserMessageType.EmptyConstDeclaration, "Empty constant declaration" },
         { ParserMessageType.IncorrectConstName, "Incorrect constant name" },
         { ParserMessageType.ConstNameExist, "Constant name is already exist" },

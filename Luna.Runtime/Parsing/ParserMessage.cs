@@ -9,7 +9,7 @@ public class ParserMessage
     public Token Token { get; }
     public List<Token> Tokens { get; }
 
-    public ParserMessage(ParserMessageType type, in Token token)
+    public ParserMessage(ParserMessageType type, Token token)
     {
         Type = type;
         Token = token;
@@ -35,6 +35,7 @@ public enum ParserMessageType
     ImportFilePathNotString,
     ImportFileNotFound,
     UnexpectedImport,
+    DuplicateImport,
     EmptyConstDeclaration,
     IncorrectConstName,
     ConstNameExist,

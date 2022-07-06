@@ -7,24 +7,20 @@ namespace Luna.Parsing;
 
 public class ParseResult
 {
+    private readonly List<ParserMessage> _errors = new();
     private readonly List<ParserMessage> _warnings = new();
 
-    public ParserMessage? Error { get; private set; }
+    public IReadOnlyCollection<ParserMessage> Errors => _errors;
     public IReadOnlyCollection<ParserMessage> Warnings => _warnings;
 
-    internal void SetError(ParserMessageType type, in Token token)
+    internal void AddError(ParserMessage error)
     {
-        Error = new ParserMessage(type, in token);
+        _errors.Add(error);
     }
 
-    internal void SetError(ParserMessageType type, IEnumerable<Token> tokens)
+    internal void AddWarning(ParserMessage warning)
     {
-        Error = new ParserMessage(type, tokens);
-    }
-
-    internal void AddWarning(ParserMessageType type, in Token token)
-    {
-        _warnings.Add(new(type, in token));
+        _warnings.Add(warning);
     }
 }
 
@@ -38,11 +34,14 @@ public abstract class AbstractParser
     protected Token Token => _iter.Token;
     protected bool Eof => _iter.Eof;
 
+    protected int BracketCorrespondence { get; private set; }
+
     protected AbstractParser(TokenIterator iter, CodeModel codeModel)
     {
         _iter = iter;
         _codeModel = codeModel;
         _result = new();
+        SetBracketCorrespondence();
     }
 
     public ParseResult Parse()
@@ -67,7 +66,15 @@ public abstract class AbstractParser
 
     protected string GetTokenName()
     {
-        return Token.Kind == TokenKind.String ? Token.Name.Substring(1, Token.Length - 2) : Token.Name;
+        if (Token.Kind == TokenKind.String)
+        {
+            if (Token.Name.Length > 1 && Token.Name.EndsWith("'")) return Token.Name.Substring(1, Token.Length - 2);
+            else return Token.Name.Substring(1, Token.Length - 1);
+        }
+        else
+        {
+            return Token.Name;
+        }
     }
 
     protected bool TryParseLongValue(out long result)
@@ -85,5 +92,26 @@ public abstract class AbstractParser
     protected void MoveNext()
     {
         _iter.MoveNext();
+        SetBracketCorrespondence();
+    }
+
+    protected void SkipLine(int lineIndex)
+    {
+        while (!_iter.Eof && lineIndex == Token.LineIndex)
+        {
+            MoveNext();
+        }
+    }
+
+    protected void SkipFunctionDeclaration()
+    {
+        while (!Eof && BracketCorrespondence != 0) MoveNext();
+        MoveNext();
+    }
+
+    private void SetBracketCorrespondence()
+    {
+        if (Token.Kind == TokenKind.OpenBracket) BracketCorrespondence++;
+        else if (Token.Kind == TokenKind.CloseBracket) BracketCorrespondence--;
     }
 }

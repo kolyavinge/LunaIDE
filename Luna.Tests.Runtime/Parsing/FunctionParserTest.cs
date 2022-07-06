@@ -450,7 +450,7 @@ internal class FunctionParserTest
             new(")", 0, 7, 1, TokenKind.CloseBracket),
             new("1", 0, 9, 1, TokenKind.IntegerNumber)
         });
-        Assert.AreEqual(0, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
         Assert.NotNull(_result.Error);
         Assert.AreEqual(ParserMessageType.UnexpectedFunctionEnd, _result.Error.Type);
         Assert.AreEqual(new Token("1", 0, 9, 1, TokenKind.IntegerNumber), _result.Error.Token);
@@ -554,7 +554,7 @@ internal class FunctionParserTest
         Assert.AreEqual(ParserMessageType.IntegerValueOverflow, _result.Error.Type);
         Assert.AreEqual(new Token("11111111111111111111111111111111111111111111111111", 0, 9, 50, TokenKind.IntegerNumber), _result.Error.Token);
         Assert.AreEqual(0, _result.Warnings.Count);
-        Assert.AreEqual(0, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
     }
 
     [Test]
@@ -599,7 +599,7 @@ internal class FunctionParserTest
         Assert.AreEqual(ParserMessageType.FloatValueOverflow, _result.Error.Type);
         Assert.AreEqual(new Token(doubleOverflowValue, 0, 9, doubleOverflowValue.Length, TokenKind.FloatNumber), _result.Error.Token);
         Assert.AreEqual(0, _result.Warnings.Count);
-        Assert.AreEqual(0, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
     }
 
     [Test]

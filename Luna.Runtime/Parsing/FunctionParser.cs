@@ -154,6 +154,10 @@ public class FunctionParser : AbstractParser
         {
             _codeModel.AddFunctionDeclaration(new FunctionDeclaration(funcName, arguments, body, funcToken.LineIndex, funcToken.StartColumnIndex));
         }
+        else if (arguments != null)
+        {
+            _codeModel.AddFunctionDeclaration(new FunctionDeclaration(funcName, arguments, new(), funcToken.LineIndex, funcToken.StartColumnIndex));
+        }
     }
 
     private (List<FunctionArgument>?, FunctionBody?) ParseFunctionArgumentsAndBody()
@@ -162,7 +166,7 @@ public class FunctionParser : AbstractParser
         if (arguments == null) return (null, null);
 
         var body = ParseFunctionBody();
-        if (body == null) return (null, null);
+        if (body == null) return (arguments, null);
 
         return (arguments, body);
     }

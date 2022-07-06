@@ -39,5 +39,6 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ICodeElementNavigateCommand, CodeElementNavigateCommand>().ToSingleton();
         provider.Bind<IProjectExplorerItemOpenCommand, ProjectExplorerItemOpenCommand>().ToSingleton();
         provider.Bind<IRunProgramCommand, RunProgramCommand>().ToSingleton();
+        provider.Bind<IMainWindowClosedCommand, MainWindowClosedCommand>().ToSingleton();
     }
 }

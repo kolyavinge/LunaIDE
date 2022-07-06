@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
-using Luna.IDE.View;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Commands;

@@ -4,11 +4,11 @@ namespace Luna.Runtime;
 
 internal abstract class NumericRuntimeValue : RuntimeValue
 {
-    public int IntegerValue { get; protected set; }
+    public long IntegerValue { get; }
 
-    public double FloatValue { get; protected set; }
+    public double FloatValue { get; }
 
-    protected NumericRuntimeValue(int value)
+    protected NumericRuntimeValue(long value)
     {
         IntegerValue = value;
         FloatValue = value;

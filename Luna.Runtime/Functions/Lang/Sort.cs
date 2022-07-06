@@ -49,7 +49,7 @@ internal class Sort : EmbeddedFunction
                 throw new RuntimeException("Compare function must return a numeric value.");
             }
 
-            return numeric.IntegerValue;
+            return (int)numeric.IntegerValue;
         }
     }
 }

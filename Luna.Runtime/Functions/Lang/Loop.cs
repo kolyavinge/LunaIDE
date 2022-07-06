@@ -14,7 +14,7 @@ internal class Loop : EmbeddedFunction
         var func = GetFunctionOrError(argumentValues, 2);
 
         var end = start + count;
-        for (int i = start; i < end; i++)
+        for (var i = start; i < end; i++)
         {
             func.GetValue(new(new[] { new IntegerRuntimeValue(i) }));
         }

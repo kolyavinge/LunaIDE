@@ -8,7 +8,7 @@ internal class Item : EmbeddedFunction
 {
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var index = GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
+        var index = (int)GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 1);
 
         if (index < 0 || index >= list.Count)

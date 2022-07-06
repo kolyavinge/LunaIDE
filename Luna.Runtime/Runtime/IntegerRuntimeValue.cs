@@ -3,7 +3,7 @@
 internal class IntegerRuntimeValue : NumericRuntimeValue
 {
 
-    public IntegerRuntimeValue(int value) : base(value)
+    public IntegerRuntimeValue(long value) : base(value)
     {
     }
 

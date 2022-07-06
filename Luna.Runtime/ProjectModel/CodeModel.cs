@@ -120,14 +120,14 @@ public class BooleanValueElement : ValueElement
 
 public class IntegerValueElement : ValueElement
 {
-    public int Value { get; }
+    public long Value { get; }
 
-    public IntegerValueElement(int value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    public IntegerValueElement(long value, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
         Value = value;
     }
 
-    internal IntegerValueElement(int value) : this(value, 0, 0) { }
+    internal IntegerValueElement(long value) : this(value, 0, 0) { }
 }
 
 public class FloatValueElement : ValueElement

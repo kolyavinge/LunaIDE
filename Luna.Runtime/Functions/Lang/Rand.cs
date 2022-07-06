@@ -11,8 +11,8 @@ internal class Rand : EmbeddedFunction
 
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        var from = GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
-        var to = GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;
+        var from = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
+        var to = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;
 
         var result = _rand.Next(from, to + 1);
 

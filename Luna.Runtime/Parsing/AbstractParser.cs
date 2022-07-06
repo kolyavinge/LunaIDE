@@ -70,16 +70,16 @@ public abstract class AbstractParser
         return Token.Kind == TokenKind.String ? Token.Name.Substring(1, Token.Length - 2) : Token.Name;
     }
 
-    protected int GetIntegerValue()
+    protected bool TryParseLongValue(out long result)
     {
         var stringValue = GetTokenName();
-        return Int32.Parse(stringValue);
+        return Int64.TryParse(stringValue, out result);
     }
 
-    protected double GetDoubleValue()
+    protected bool TryParseDoubleValue(out double result)
     {
         var stringValue = GetTokenName();
-        return Double.Parse(stringValue, new NumberFormatInfo { NumberDecimalSeparator = "." });
+        return Double.TryParse(stringValue, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." }, out result);
     }
 
     protected void MoveNext()

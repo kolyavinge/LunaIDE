@@ -99,6 +99,8 @@ internal class OutputWriter : IOutputWriter
         { ParserMessageType.UnexpectedFunctionEnd, "Unexpected function end" },
         { ParserMessageType.IncorrectFunctionAgrumentsDeclaration, "Incorrect function agruments declaration" },
         { ParserMessageType.IncorrectFunctionAgrument, "Incorrect function agrument" },
-        { ParserMessageType.IncorrectFunctionBody, "Incorrect function body" }
+        { ParserMessageType.IncorrectFunctionBody, "Incorrect function body" },
+        { ParserMessageType.IntegerValueOverflow, "Integer value is too big" },
+        { ParserMessageType.FloatValueOverflow, "Float value is too big" }
     };
 }

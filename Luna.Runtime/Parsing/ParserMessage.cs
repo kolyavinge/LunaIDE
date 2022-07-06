@@ -48,4 +48,6 @@ public enum ParserMessageType
     IncorrectFunctionAgrumentsDeclaration,
     IncorrectFunctionAgrument,
     IncorrectFunctionBody,
+    IntegerValueOverflow,
+    FloatValueOverflow
 }

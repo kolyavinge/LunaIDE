@@ -44,6 +44,22 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void ConstDeclaration_IntegerValueOverflow()
+    {
+        Parse(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("11111111111111111111111111111111111111111111111111", 0, 12, 50, TokenKind.IntegerNumber)
+        });
+        Assert.AreEqual(0, _codeModel.Constants.Count);
+        Assert.NotNull(_result.Error);
+        Assert.AreEqual(ParserMessageType.IntegerValueOverflow, _result.Error.Type);
+        Assert.AreEqual(new Token("11111111111111111111111111111111111111111111111111", 0, 12, 50, TokenKind.IntegerNumber), _result.Error.Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
     public void ConstDeclaration_Correct_Float()
     {
         // const WIDTH 1.23 // comment
@@ -62,6 +78,23 @@ internal class FunctionParserTest
         Assert.AreEqual(1.23, ((FloatValueElement)_codeModel.Constants.First().Value).Value);
         Assert.AreEqual(0, _codeModel.Constants.First().LineIndex);
         Assert.AreEqual(6, _codeModel.Constants.First().ColumnIndex);
+    }
+
+    [Test]
+    public void ConstDeclaration_FloatValueOverflow()
+    {
+        var doubleOverflowValue = $"{double.MaxValue}{double.MaxValue}";
+        Parse(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new(doubleOverflowValue, 0, 12, doubleOverflowValue.Length, TokenKind.FloatNumber)
+        });
+        Assert.AreEqual(0, _codeModel.Constants.Count);
+        Assert.NotNull(_result.Error);
+        Assert.AreEqual(ParserMessageType.FloatValueOverflow, _result.Error.Type);
+        Assert.AreEqual(new Token(doubleOverflowValue, 0, 12, doubleOverflowValue.Length, TokenKind.FloatNumber), _result.Error.Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
     }
 
     [Test]
@@ -505,6 +538,26 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_IntegerValueOverflow()
+    {
+        // (func () 11111111111111111111111111111111111111111111111111)
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("func", 0, 1, 4, TokenKind.Identificator),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new(")", 0, 7, 1, TokenKind.CloseBracket),
+            new("11111111111111111111111111111111111111111111111111", 0, 9, 50, TokenKind.IntegerNumber),
+            new(")", 0, 51, 1, TokenKind.CloseBracket)
+        });
+        Assert.NotNull(_result.Error);
+        Assert.AreEqual(ParserMessageType.IntegerValueOverflow, _result.Error.Type);
+        Assert.AreEqual(new Token("11111111111111111111111111111111111111111111111111", 0, 9, 50, TokenKind.IntegerNumber), _result.Error.Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(0, _codeModel.Functions.Count);
+    }
+
+    [Test]
     public void FunctionDeclaration_OneFloatConstant()
     {
         // (func () 1.2)
@@ -527,6 +580,26 @@ internal class FunctionParserTest
         Assert.True(func.Body.First() is FloatValueElement);
         var body = (FloatValueElement)func.Body.First();
         Assert.AreEqual(1.2, body.Value);
+    }
+
+    [Test]
+    public void FunctionDeclaration_FloatValueOverflow()
+    {
+        var doubleOverflowValue = $"{double.MaxValue}{double.MaxValue}";
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("func", 0, 1, 4, TokenKind.Identificator),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new(")", 0, 7, 1, TokenKind.CloseBracket),
+            new(doubleOverflowValue, 0, 9, doubleOverflowValue.Length, TokenKind.FloatNumber),
+            new(")", 0, 51, 1, TokenKind.CloseBracket)
+        });
+        Assert.NotNull(_result.Error);
+        Assert.AreEqual(ParserMessageType.FloatValueOverflow, _result.Error.Type);
+        Assert.AreEqual(new Token(doubleOverflowValue, 0, 9, doubleOverflowValue.Length, TokenKind.FloatNumber), _result.Error.Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(0, _codeModel.Functions.Count);
     }
 
     [Test]

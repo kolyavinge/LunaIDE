@@ -79,11 +79,25 @@ public class FunctionParser : AbstractParser
         }
         else if (Token.Kind == TokenKind.IntegerNumber)
         {
-            constValue = new IntegerValueElement(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
+            if (TryParseLongValue(out long value))
+            {
+                constValue = new IntegerValueElement(value, Token.LineIndex, Token.StartColumnIndex);
+            }
+            else
+            {
+                _result.SetError(ParserMessageType.IntegerValueOverflow, Token);
+            }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
         {
-            constValue = new FloatValueElement(GetDoubleValue(), Token.LineIndex, Token.StartColumnIndex);
+            if (TryParseDoubleValue(out double value))
+            {
+                constValue = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
+            }
+            else
+            {
+                _result.SetError(ParserMessageType.FloatValueOverflow, Token);
+            }
         }
         else if (Token.Kind == TokenKind.String)
         {
@@ -189,11 +203,7 @@ public class FunctionParser : AbstractParser
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var item = ParseFunctionBodyItem();
-            if (item == null)
-            {
-                _result.SetError(ParserMessageType.IncorrectFunctionBody, Token);
-                return null;
-            }
+            if (item == null) return null;
             body.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)
@@ -211,13 +221,27 @@ public class FunctionParser : AbstractParser
         ValueElement? body = null;
         if (Token.Kind == TokenKind.IntegerNumber)
         {
-            body = new IntegerValueElement(GetIntegerValue(), Token.LineIndex, Token.StartColumnIndex);
-            MoveNext();
+            if (TryParseLongValue(out long value))
+            {
+                body = new IntegerValueElement(value, Token.LineIndex, Token.StartColumnIndex);
+                MoveNext();
+            }
+            else
+            {
+                _result.SetError(ParserMessageType.IntegerValueOverflow, Token);
+            }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
         {
-            body = new FloatValueElement(GetDoubleValue(), Token.LineIndex, Token.StartColumnIndex);
-            MoveNext();
+            if (TryParseDoubleValue(out double value))
+            {
+                body = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
+                MoveNext();
+            }
+            else
+            {
+                _result.SetError(ParserMessageType.FloatValueOverflow, Token);
+            }
         }
         else if (Token.Kind == TokenKind.String)
         {
@@ -298,11 +322,7 @@ public class FunctionParser : AbstractParser
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var value = ParseFunctionBodyItem();
-            if (value == null)
-            {
-                _result.SetError(ParserMessageType.UnexpectedToken, Token);
-                return null;
-            }
+            if (value == null) return null;
             argumentValues.Add(value);
         }
         if (Token.Kind != TokenKind.CloseBracket)

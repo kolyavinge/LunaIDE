@@ -1,0 +1,15 @@
+// square roots calculating
+
+(get_discriminant (a b c)
+    (- (* b b) (* 4 (* a c)))
+)
+
+(get_roots (a b c)
+    (set @discriminant (get_discriminant a b c))
+    (if (gte @discriminant 0)
+        ((/ (- (* -1 b) (sqrt @discriminant)) (* 2 a))
+         (/ (+ (* -1 b) (sqrt @discriminant)) (* 2 a)))
+        'no roots')
+)
+
+(run (get_roots 2 5 -3))

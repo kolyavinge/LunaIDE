@@ -74,15 +74,7 @@ public class Scanner
                     textIterator.MoveNext();
                     goto case State.Identificator;
                 }
-                else if (textIterator.Char == '+' && IsNextDigit())
-                {
-                    _lineIndex = textIterator.LineIndex;
-                    _columnIndex = textIterator.ColumnIndex;
-                    _nameLength = 0;
-                    textIterator.MoveNext();
-                    goto case State.Number;
-                }
-                else if (textIterator.Char == '-' && IsNextDigit())
+                else if ((textIterator.Char == '+' || textIterator.Char == '-') && IsNextDigit())
                 {
                     _lineIndex = textIterator.LineIndex;
                     _columnIndex = textIterator.ColumnIndex;

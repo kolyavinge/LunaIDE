@@ -50,7 +50,7 @@ internal class ScannerTest
         Assert.AreEqual(3, tokens.Count);
         Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
         Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
-        Assert.AreEqual(new Token("123", 0, 12, 3, TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token("+123", 0, 12, 4, TokenKind.IntegerNumber), tokens[2]);
     }
 
     [Test]
@@ -80,7 +80,7 @@ internal class ScannerTest
         Assert.AreEqual(3, tokens.Count);
         Assert.AreEqual(new Token("const", 0, 0, 5, TokenKind.ConstDeclaration), tokens[0]);
         Assert.AreEqual(new Token("VALUE", 0, 6, 5, TokenKind.Identificator), tokens[1]);
-        Assert.AreEqual(new Token("1.23", 0, 12, 4, TokenKind.FloatNumber), tokens[2]);
+        Assert.AreEqual(new Token("+1.23", 0, 12, 5, TokenKind.FloatNumber), tokens[2]);
     }
 
     [Test]

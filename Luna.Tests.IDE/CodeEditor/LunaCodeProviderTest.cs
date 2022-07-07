@@ -55,7 +55,7 @@ public class LunaCodeProviderTest
         Assert.AreEqual(3, tokens.Count);
         Assert.AreEqual(new Token("const", 0, 0, 5, (byte)TokenKind.ConstDeclaration), tokens[0]);
         Assert.AreEqual(new Token("VALUE", 0, 6, 5, (byte)TokenKind.Identificator), tokens[1]);
-        Assert.AreEqual(new Token("123", 0, 12, 3, (byte)TokenKind.IntegerNumber), tokens[2]);
+        Assert.AreEqual(new Token("+123", 0, 12, 4, (byte)TokenKind.IntegerNumber), tokens[2]);
     }
 
     [Test]
@@ -85,7 +85,7 @@ public class LunaCodeProviderTest
         Assert.AreEqual(3, tokens.Count);
         Assert.AreEqual(new Token("const", 0, 0, 5, (byte)TokenKind.ConstDeclaration), tokens[0]);
         Assert.AreEqual(new Token("VALUE", 0, 6, 5, (byte)TokenKind.Identificator), tokens[1]);
-        Assert.AreEqual(new Token("1.23", 0, 12, 4, (byte)TokenKind.FloatNumber), tokens[2]);
+        Assert.AreEqual(new Token("+1.23", 0, 12, 5, (byte)TokenKind.FloatNumber), tokens[2]);
     }
 
     [Test]

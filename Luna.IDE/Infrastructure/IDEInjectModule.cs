@@ -25,6 +25,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
         provider.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();
+        provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();
 
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();
         provider.Bind<OutputAreaViewModel, OutputAreaViewModel>().ToSingleton();

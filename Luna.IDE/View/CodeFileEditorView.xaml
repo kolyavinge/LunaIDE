@@ -5,15 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:view="clr-namespace:Luna.IDE.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <view:PointToThicknessConverter x:Key="PointToThicknessConverter" />
+            <view:ControlConverter x:Key="ControlConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding HideAutoCompleteCommand}" />
+        <MouseBinding MouseAction="LeftClick" Command="{Binding HideAutoCompleteCommand}" />
+        <MouseBinding MouseAction="RightClick" Command="{Binding HideAutoCompleteCommand}" />
+    </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -31,26 +40,42 @@
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
                 TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
-                TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
-                />
+                TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}" />
 
-            <highlighter:CodeTextBox
+            <Grid
                 Grid.Column="1"
-                x:Name="codeTextBox"
-                Style="{StaticResource CodeEditorStyle}"
-                CodeProvider="{Binding Model.CodeProvider}"
-                Commands="{Binding Model.TextBoxCommands}"
-                TextHolder="{Binding Model.TextHolder}"
-                HighlighteredBrackets="()"
-                MouseWheel="VerticalScrollBarOnMouseWheel"
-                Margin="12,0,0,0"
-                >
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="TextChanged">
-                        <i:InvokeCommandAction Command="{Binding Model.TextChangedCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </highlighter:CodeTextBox>
+                Margin="12,0,0,0">
+                <highlighter:CodeTextBox
+                    x:Name="codeTextBox"
+                    Style="{StaticResource CodeEditorStyle}"
+                    CodeProvider="{Binding Model.CodeProvider}"
+                    Commands="{Binding Model.TextBoxCommands}"
+                    VerticalScrollBarValue="{Binding VerticalScrollBarValue, Mode=TwoWay}"
+                    HorizontalScrollBarValue="{Binding HorizontalScrollBarValue, Mode=TwoWay}"
+                    HighlighteredBrackets="()"
+                    MouseWheel="VerticalScrollBarOnMouseWheel">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding CodeTextBoxModelLoadedCommand}" CommandParameter="{Binding Model, ElementName=codeTextBox}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding Model.TextChangedCommand}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <i:InvokeCommandAction Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </highlighter:CodeTextBox>
+
+                <view:AutoCompleteView
+                    DataContext="{Binding AutoCompleteViewModel}"
+                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Margin="{Binding ScreenPosition, Converter={StaticResource PointToThicknessConverter}}"
+                    Style="{StaticResource AutoCompleteStyle}" />
+            </Grid>
         </Grid>
 
         <ScrollBar
@@ -66,8 +91,7 @@
             HorizontalAlignment="Right"
             Cursor="Arrow"
             Scroll="ScrollBarOnScroll"
-            MouseWheel="VerticalScrollBarOnMouseWheel"
-            />
+            MouseWheel="VerticalScrollBarOnMouseWheel" />
 
         <ScrollBar
             Grid.Row="1"
@@ -78,7 +102,6 @@
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
             ViewportSize="{Binding HorizontalScrollBarViewportSize, ElementName=codeTextBox, Mode=TwoWay}"
             Cursor="Arrow"
-            Scroll="ScrollBarOnScroll"
-            />
+            Scroll="ScrollBarOnScroll" />
     </Grid>
 </UserControl>

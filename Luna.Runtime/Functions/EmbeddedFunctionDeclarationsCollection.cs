@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Luna.Functions;
 
-public class EmbeddedFunctionDeclarationsCollection
+public class EmbeddedFunctionDeclarationsCollection : IEnumerable<EmbeddedFunctionDeclaration>
 {
     private readonly Dictionary<string, EmbeddedFunctionDeclaration> _functions;
 
@@ -23,5 +24,15 @@ public class EmbeddedFunctionDeclarationsCollection
     public bool Contains(string functionName)
     {
         return _functions.ContainsKey(functionName);
+    }
+
+    public IEnumerator<EmbeddedFunctionDeclaration> GetEnumerator()
+    {
+        return _functions.Values.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _functions.Values.GetEnumerator();
     }
 }

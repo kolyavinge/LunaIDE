@@ -4,22 +4,30 @@ namespace Luna.IDE.Mvvm;
 
 public class ActionCommand : Command
 {
-    private readonly Action? _action;
-    private readonly Action<object>? _actionWithObject;
+    private readonly Action _action;
 
     public ActionCommand(Action action)
     {
         _action = action;
     }
 
-    public ActionCommand(Action<object> action)
+    public override void Execute(object parameter)
     {
-        _actionWithObject = action;
+        _action();
+    }
+}
+
+public class ActionCommand<TParameter> : Command
+{
+    private readonly Action<TParameter> _action;
+
+    public ActionCommand(Action<TParameter> action)
+    {
+        _action = action;
     }
 
     public override void Execute(object parameter)
     {
-        if (_action != null) _action();
-        else _actionWithObject?.Invoke(parameter);
+        _action((TParameter)parameter);
     }
 }

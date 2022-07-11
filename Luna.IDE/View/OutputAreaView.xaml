@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -25,11 +26,15 @@
             Style="{StaticResource OutputAreaStyle}"
             CodeProvider="{Binding OutputArea}"
             Commands="{Binding OutputArea.TextCommands}"
-            TextHolder="{Binding OutputArea.TextHolder}"
             IsReadOnly="True"
             Margin="0,0,8,0"
-            MouseWheel="VerticalScrollBarOnMouseWheel"
-            />
+            MouseWheel="VerticalScrollBarOnMouseWheel">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding CodeTextBoxModelLoadedCommand}" CommandParameter="{Binding Model, ElementName=codeTextBox}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </highlighter:CodeTextBox>
 
         <ScrollBar
             Grid.Row="0"
@@ -44,8 +49,7 @@
             HorizontalAlignment="Right"
             Cursor="Arrow"
             Scroll="ScrollBarOnScroll"
-            MouseWheel="VerticalScrollBarOnMouseWheel"
-            />
+            MouseWheel="VerticalScrollBarOnMouseWheel" />
 
         <ScrollBar
             Grid.Row="1"
@@ -56,7 +60,6 @@
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
             ViewportSize="{Binding HorizontalScrollBarViewportSize, ElementName=codeTextBox, Mode=TwoWay}"
             Cursor="Arrow"
-            Scroll="ScrollBarOnScroll"
-            />
+            Scroll="ScrollBarOnScroll" />
     </Grid>
 </UserControl>

@@ -59,7 +59,7 @@ internal abstract class EmbeddedFunction
 }
 
 [AttributeUsage(AttributeTargets.Class)]
-internal class EmbeddedFunctionDeclaration : Attribute
+public class EmbeddedFunctionDeclaration : Attribute
 {
     public string Name { get; }
 

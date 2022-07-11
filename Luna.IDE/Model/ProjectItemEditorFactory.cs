@@ -43,7 +43,7 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
         }
 
         var model = Activator.CreateInstance(modelType, modelTypeConstructorParams.ToArray()) as IEnvironmentWindowModel ?? throw new ProjectItemEditorFactoryException();
-        //DependencyContainer.ResolveInjectedProperties(model);
+        DependencyContainer.ResolveInjectedProperties(model);
 
         var viewModelType = types
             .FirstOrDefault(type =>
@@ -51,7 +51,7 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
                 type.GetConstructor(new[] { model.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
 
         var viewModel = Activator.CreateInstance(viewModelType, model) ?? throw new ProjectItemEditorFactoryException();
-        //DependencyContainer.ResolveInjectedProperties(viewModel);
+        DependencyContainer.ResolveInjectedProperties(viewModel);
 
         var viewType = types
             .FirstOrDefault(type =>

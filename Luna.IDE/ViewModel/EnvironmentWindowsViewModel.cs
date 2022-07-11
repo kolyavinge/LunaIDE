@@ -13,12 +13,11 @@ public class EnvironmentWindowsViewModel : NotificationObject
     public EnvironmentWindowsViewModel(IEnvironmentWindowsManager windowsManager)
     {
         WindowsManager = windowsManager;
-        CloseWindowCommand = new ActionCommand(CloseWindow);
+        CloseWindowCommand = new ActionCommand<EnvironmentWindow>(CloseWindow);
     }
 
-    private void CloseWindow(object parameter)
+    private void CloseWindow(EnvironmentWindow window)
     {
-        var window = (EnvironmentWindow)parameter;
         WindowsManager.CloseWindow(window);
     }
 }

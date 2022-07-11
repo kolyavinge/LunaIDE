@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter;
+using CodeHighlighter.Contracts;
 using CodeHighlighter.Commands;
 using Luna.IDE.Utils;
 using Luna.Output;
@@ -10,21 +11,28 @@ namespace Luna.IDE.Model;
 
 public interface IOutputArea : IRuntimeOutput, ICodeProvider
 {
+    CodeTextBoxModel CodeTextBoxModel { get; set; }
     void Clear();
 }
 
 public class OutputArea : IOutputArea
 {
     private int _currentLine;
+    private CodeTextBoxModel? _codeTextBoxModel;
     private readonly List<Token> _tokens = new();
 
+    public CodeTextBoxModel CodeTextBoxModel
+    {
+        get => _codeTextBoxModel ?? throw new HasNotInitializedYetException(nameof(CodeTextBoxModel));
+        set => _codeTextBoxModel = value;
+    }
+
     public CodeTextBoxCommands TextCommands { get; } = new();
-    public TextHolder TextHolder { get; } = new();
 
     public void Clear()
     {
         _currentLine = 0;
-        TextHolder.TextValue = "";
+        CodeTextBoxModel.Text.TextContent = "";
         _tokens.Clear();
     }
 

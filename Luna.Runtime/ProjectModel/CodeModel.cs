@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Luna.Collections;
 
 namespace Luna.ProjectModel;
@@ -121,6 +123,11 @@ public class BooleanValueElement : ValueElement
     }
 
     internal BooleanValueElement(bool value) : this(value, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Value.ToString().ToLower();
+    }
 }
 
 public class IntegerValueElement : ValueElement
@@ -133,6 +140,11 @@ public class IntegerValueElement : ValueElement
     }
 
     internal IntegerValueElement(long value) : this(value, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }
 
 public class FloatValueElement : ValueElement
@@ -145,6 +157,11 @@ public class FloatValueElement : ValueElement
     }
 
     internal FloatValueElement(double value) : this(value, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Value.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
+    }
 }
 
 public class StringValueElement : ValueElement
@@ -157,6 +174,11 @@ public class StringValueElement : ValueElement
     }
 
     internal StringValueElement(string value) : this(value, 0, 0) { }
+
+    public override string ToString()
+    {
+        return $"'{Value}'";
+    }
 }
 
 public class ListValueElement : ValueElement
@@ -169,6 +191,11 @@ public class ListValueElement : ValueElement
     }
 
     internal ListValueElement(IEnumerable<ValueElement> items) : this(items, 0, 0) { }
+
+    public override string ToString()
+    {
+        return $"({String.Join(" ", Items)})";
+    }
 }
 
 public class NamedConstantValueElement : ValueElement
@@ -181,6 +208,11 @@ public class NamedConstantValueElement : ValueElement
     }
 
     internal NamedConstantValueElement(string name) : this(name, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
 
 public class VariableValueElement : ValueElement
@@ -193,6 +225,11 @@ public class VariableValueElement : ValueElement
     }
 
     internal VariableValueElement(string name) : this(name, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
 
 public class FunctionArgumentValueElement : ValueElement
@@ -205,6 +242,11 @@ public class FunctionArgumentValueElement : ValueElement
     }
 
     internal FunctionArgumentValueElement(string name) : this(name, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
 
 public class LambdaValueElement : ValueElement
@@ -235,4 +277,9 @@ public class FunctionValueElement : ValueElement
     }
 
     internal FunctionValueElement(CodeModel codeModel, string name, IEnumerable<ValueElement> argumentValues) : this(codeModel, name, argumentValues, 0, 0) { }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }

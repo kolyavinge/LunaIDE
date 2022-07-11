@@ -234,6 +234,7 @@ public class Scanner
 
     private TokenKind GetTokenKind()
     {
+        // add new keywords in KeywordsCollection
         if (StringUtils.StringEquals("import", _nameArray, _nameLength)) return TokenKind.ImportDirective;
         if (StringUtils.StringEquals("const", _nameArray, _nameLength)) return TokenKind.ConstDeclaration;
         if (StringUtils.StringEquals("lambda", _nameArray, _nameLength)) return TokenKind.Lambda;

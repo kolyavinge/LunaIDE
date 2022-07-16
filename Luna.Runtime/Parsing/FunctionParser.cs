@@ -27,7 +27,11 @@ public class FunctionParser : AbstractParser
                     if (error != null) _result.AddError(error);
                     goto case State.Begin;
                 }
-                else if (Token.Kind == TokenKind.ImportDirective) { _result.AddError(new(ParserMessageType.UnexpectedImport, Token)); break; }
+                else if (Token.Kind == TokenKind.ImportDirective)
+                {
+                    _result.AddError(new(ParserMessageType.UnexpectedImport, Token));
+                    break;
+                }
                 else if (Token.Kind == TokenKind.OpenBracket)
                 {
                     ParserMessage? error = null;
@@ -39,10 +43,12 @@ public class FunctionParser : AbstractParser
                     }
                     goto case State.Begin;
                 }
-                else goto case State.Error;
-            case State.Error:
-                if (!_result.Errors.Any()) _result.AddError(new(ParserMessageType.UnexpectedToken, Token));
-                break;
+                else
+                {
+                    if (!_result.Errors.Any()) _result.AddError(new(ParserMessageType.UnexpectedToken, Token));
+                    MoveNext();
+                    goto case State.Begin;
+                }
         }
     }
 
@@ -424,7 +430,6 @@ public class FunctionParser : AbstractParser
 
     enum State
     {
-        Begin,
-        Error
+        Begin
     }
 }

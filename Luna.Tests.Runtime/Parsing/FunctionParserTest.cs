@@ -398,6 +398,26 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void ConstDeclaration_UnexpectedFirstConst()
+    {
+        // 123
+        // const HEIGHT 2
+        Parse(new Token[]
+        {
+            new("123", 0, 0, 3, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 6, 6, TokenKind.Identificator),
+            new("2", 1, 13, 1, TokenKind.IntegerNumber)
+        });
+        Assert.AreEqual(0, _codeModel.Imports.Count);
+        Assert.AreEqual(1, _codeModel.Constants.Count);
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("123", 0, 0, 3, TokenKind.IntegerNumber), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
     public void FunctionDeclaration_LineAndColumn()
     {
         // \r\n  (func () 1)
@@ -1175,6 +1195,29 @@ internal class FunctionParserTest
         Assert.True(variable is VariableValueElement);
         Assert.True(value is IntegerValueElement);
         Assert.AreEqual("@var", ((VariableValueElement)variable).Name);
+    }
+
+    [Test]
+    public void FunctionDeclaration_UnexpectedFirstConst()
+    {
+        // 123
+        // (func (x) x)
+        Parse(new Token[]
+        {
+            new("123", 0, 0, 3, TokenKind.IntegerNumber),
+            new("(", 1, 0, 1, TokenKind.OpenBracket),
+            new("func", 1, 1, 4, TokenKind.Identificator),
+            new("(", 1, 6, 1, TokenKind.OpenBracket),
+            new("x", 1, 7, 1, TokenKind.Identificator),
+            new(")", 1, 8, 1, TokenKind.CloseBracket),
+            new("x", 1, 10, 1, TokenKind.Identificator),
+            new(")", 1, 11, 1, TokenKind.CloseBracket)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("123", 0, 0, 3, TokenKind.IntegerNumber), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
     }
 
     [Test]

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodeHighlighter;
+using CodeHighlighter.CodeProvidering;
 using Luna.IDE.CodeEditor;
 using Luna.IDE.Model;
 using Luna.Infrastructure;
@@ -24,6 +24,7 @@ internal class CodeFileEditorTest
     public void Setup()
     {
         _fileSystem = new Mock<IFileSystem>();
+        _fileSystem.Setup(x => x.ReadFileText("file")).Returns("");
         _codeFileProjectItem = new CodeFileProjectItem("file", null, _fileSystem.Object);
         _codeProviderFactory = new Mock<ICodeProviderFactory>();
         _codeProvider = new Mock<ILunaCodeProvider>();

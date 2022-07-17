@@ -23,17 +23,11 @@
         <highlighter:CodeTextBox
             Grid.Row="0"
             x:Name="codeTextBox"
+            Model="{Binding OutputArea.CodeTextBoxModel}"
             Style="{StaticResource OutputAreaStyle}"
-            CodeProvider="{Binding OutputArea}"
-            Commands="{Binding OutputArea.TextCommands}"
             IsReadOnly="True"
             Margin="0,0,8,0"
             MouseWheel="VerticalScrollBarOnMouseWheel">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Loaded">
-                    <i:InvokeCommandAction Command="{Binding CodeTextBoxModelLoadedCommand}" CommandParameter="{Binding Model, ElementName=codeTextBox}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </highlighter:CodeTextBox>
 
         <ScrollBar

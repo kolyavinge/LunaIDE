@@ -8,24 +8,15 @@ namespace Luna.IDE.ViewModel;
 
 public class AutoCompleteViewModel : NotificationObject
 {
-    private bool _isVisible;
     private Point _screenPosition;
-    private IControl? _measures;
+    private IControl? _listBox;
     private double _parentWidth, _parentHeight;
 
-    public AutoComplete Model { get; } = new();
-
-    public ICommand? CompleteCommand { get; set; }
+    public AutoComplete Model { get; }
 
     public ICommand MouseClickCommand { get; set; }
 
     public ICommand LoadedCommand { get; set; }
-
-    public bool IsVisible
-    {
-        get => _isVisible;
-        set { _isVisible = value; RaisePropertyChanged(() => IsVisible); }
-    }
 
     public Point AbsolutePosition { get; set; }
 
@@ -35,10 +26,11 @@ public class AutoCompleteViewModel : NotificationObject
         set { _screenPosition = value; RaisePropertyChanged(() => ScreenPosition); }
     }
 
-    public AutoCompleteViewModel()
+    public AutoCompleteViewModel(AutoComplete model)
     {
-        LoadedCommand = new ActionCommand<IControl>(measures => _measures = measures);
-        MouseClickCommand = new ActionCommand(Complete);
+        Model = model;
+        LoadedCommand = new ActionCommand<IControl>(lb => _listBox = lb);
+        MouseClickCommand = new ActionCommand(Model.Complete);
     }
 
     public void Show(
@@ -48,44 +40,39 @@ public class AutoCompleteViewModel : NotificationObject
         double parentWidth,
         double parentHeight)
     {
-        Model.UpdateItems();
         AbsolutePosition = absolutePosition;
         ScreenPosition = new(AbsolutePosition.X - horizontalScrollBarValue, AbsolutePosition.Y - verticalScrollBarValue);
         _parentWidth = parentWidth;
         _parentHeight = parentHeight;
-        IsVisible = true;
-    }
-
-    public void Complete()
-    {
-        IsVisible = false;
-        CompleteCommand?.Execute(Model.SelectedItem);
+        Model.Show();
     }
 
     public void CorrectByVerticalScrollBarValue(double verticalScrollBarValue)
     {
+        if (!Model.IsVisible) return;
         var y = AbsolutePosition.Y - verticalScrollBarValue;
         if (y < 0)
         {
             y = 0;
         }
-        else if (y + _measures!.ActualHeight > _parentHeight)
+        else if (y + _listBox!.ActualHeight > _parentHeight)
         {
-            y = _parentHeight - _measures.ActualHeight;
+            y = _parentHeight - _listBox.ActualHeight;
         }
         ScreenPosition = new(ScreenPosition.X, y);
     }
 
     public void CorrectByHorizontalScrollBarValue(double horizontalScrollBarValue)
     {
+        if (!Model.IsVisible) return;
         var x = AbsolutePosition.X - horizontalScrollBarValue;
         if (x < 0)
         {
             x = 0;
         }
-        else if (x + _measures!.ActualWidth > _parentWidth)
+        else if (x + _listBox!.ActualWidth > _parentWidth)
         {
-            x = _parentWidth - _measures.ActualWidth;
+            x = _parentWidth - _listBox.ActualWidth;
         }
         ScreenPosition = new(x, ScreenPosition.Y);
     }

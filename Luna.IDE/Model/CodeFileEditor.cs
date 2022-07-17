@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Windows.Input;
-using CodeHighlighter;
-using CodeHighlighter.Contracts;
+﻿using System;
+using System.Linq;
+using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Model;
 using Luna.IDE.CodeEditor;
-using Luna.IDE.Mvvm;
-using Luna.IDE.Utils;
 using Luna.Parsing;
 using Luna.ProjectModel;
 
@@ -13,35 +11,20 @@ namespace Luna.IDE.Model;
 public interface ICodeFileEditor
 {
     CodeFileProjectItem ProjectItem { get; }
-    CodeTextBoxModel CodeTextBoxModel { get; set; }
+    CodeTextBoxModel CodeTextBoxModel { get; }
     void NavigateTo(CodeElement codeElement);
-    void InsertText(string text);
+    void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text);
 }
 
 [EditorFor(typeof(CodeFileProjectItem))]
 public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
-    private CodeTextBoxModel? _codeTextBoxModel;
+    private readonly ILunaCodeProvider _codeProvider;
 
     public CodeFileProjectItem ProjectItem { get; }
 
-    public CodeTextBoxCommands TextBoxCommands { get; }
-
-    public CodeTextBoxModel CodeTextBoxModel
-    {
-        get => _codeTextBoxModel ?? throw new HasNotInitializedYetException(nameof(CodeTextBoxModel));
-        set
-        {
-            _codeTextBoxModel = value;
-            _codeTextBoxModel.Text.TextContent = ProjectItem.GetText();
-            ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(_codeTextBoxModel));
-        }
-    }
-
-    public ICommand TextChangedCommand { get; set; }
-
-    public ILunaCodeProvider CodeProvider { get; set; }
+    public CodeTextBoxModel CodeTextBoxModel { get; }
 
     public string Header => ProjectItem.Name;
 
@@ -49,10 +32,12 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     {
         ProjectItem = projectItem;
         _codeModelUpdater = codeModelUpdater;
-        TextBoxCommands = new CodeTextBoxCommands();
-        TextChangedCommand = new ActionCommand(OnTextChanged);
-        CodeProvider = codeProviderFactory.Make(projectItem);
         _codeModelUpdater.Attach(ProjectItem, OnCodeModelUpdated);
+        _codeProvider = codeProviderFactory.Make(projectItem);
+        CodeTextBoxModel = new CodeTextBoxModel(_codeProvider, new() { HighlighteredBrackets = "()" });
+        CodeTextBoxModel.TextChanged += OnTextChanged;
+        CodeTextBoxModel.SetText(ProjectItem.GetText());
+        ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
     }
 
     public void OnCodeModelUpdated(CodeModelUpdatedEventArgs e)
@@ -68,18 +53,18 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
         if (updatedTokens.Any())
         {
-            CodeProvider.UpdateTokenKinds(updatedTokens);
+            _codeProvider.UpdateTokenKinds(updatedTokens);
         }
     }
 
-    private void OnTextChanged()
+    private void OnTextChanged(object? sender, EventArgs e)
     {
         _codeModelUpdater.UpdateRequest();
     }
 
     public void Save()
     {
-        ProjectItem.SaveText(CodeTextBoxModel.Text.TextContent);
+        ProjectItem.SaveText(CodeTextBoxModel.Text.ToString());
     }
 
     public void Close()
@@ -90,12 +75,12 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
     public void NavigateTo(CodeElement codeElement)
     {
-        TextBoxCommands.GotoLineCommand.Execute(new CodeHighlighter.Commands.GotoLineCommandParameter(codeElement.LineIndex));
+        CodeTextBoxModel.GotoLine(codeElement.LineIndex);
     }
 
-    public void InsertText(string text)
+    public void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text)
     {
-        TextBoxCommands.InsertTextCommand.Execute(new CodeHighlighter.Commands.InsertTextCommandParameter(text));
+        CodeTextBoxModel.ReplaceText(cursorStartLineIndex, cursorStartColumnIndex, cursorEndLineIndex, cursorEndColumnIndex, text);
     }
 }
 
@@ -110,6 +95,6 @@ class EditorTextGettingStrategy : TextFileProjectItem.ITextGettingStrategy
 
     public string GetText()
     {
-        return _model.Text.TextContent;
+        return _model.Text.ToString();
     }
 }

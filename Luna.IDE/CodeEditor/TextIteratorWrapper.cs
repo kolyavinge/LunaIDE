@@ -2,7 +2,7 @@
 
 class TextIteratorWrapper : Parsing.ITextIterator
 {
-    private readonly CodeHighlighter.ITextIterator _textIterator;
+    private readonly CodeHighlighter.CodeProvidering.ITextIterator _textIterator;
 
     public char Char => _textIterator.Char;
     public char NextChar => _textIterator.NextChar;
@@ -11,7 +11,7 @@ class TextIteratorWrapper : Parsing.ITextIterator
     public bool Eof => _textIterator.Eof;
     public void MoveNext() => _textIterator.MoveNext();
 
-    public TextIteratorWrapper(CodeHighlighter.ITextIterator textIterator)
+    public TextIteratorWrapper(CodeHighlighter.CodeProvidering.ITextIterator textIterator)
     {
         _textIterator = textIterator;
     }

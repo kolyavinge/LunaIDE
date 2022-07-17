@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using CodeHighlighter;
+using CodeHighlighter.CodeProvidering;
 using Luna.IDE.CodeEditor;
 using Moq;
 using NUnit.Framework;
+using static CodeHighlighter.CodeProvidering.ICodeProvider;
 using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.Tests.IDE.CodeEditor;

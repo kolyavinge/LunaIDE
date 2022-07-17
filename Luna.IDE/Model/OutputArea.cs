@@ -1,38 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeHighlighter;
-using CodeHighlighter.Contracts;
-using CodeHighlighter.Commands;
+using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Model;
 using Luna.IDE.Utils;
 using Luna.Output;
+using Token = CodeHighlighter.CodeProvidering.Token;
 
 namespace Luna.IDE.Model;
 
 public interface IOutputArea : IRuntimeOutput, ICodeProvider
 {
-    CodeTextBoxModel CodeTextBoxModel { get; set; }
+    CodeTextBoxModel CodeTextBoxModel { get; }
     void Clear();
 }
 
 public class OutputArea : IOutputArea
 {
     private int _currentLine;
-    private CodeTextBoxModel? _codeTextBoxModel;
     private readonly List<Token> _tokens = new();
 
-    public CodeTextBoxModel CodeTextBoxModel
-    {
-        get => _codeTextBoxModel ?? throw new HasNotInitializedYetException(nameof(CodeTextBoxModel));
-        set => _codeTextBoxModel = value;
-    }
+    public CodeTextBoxModel CodeTextBoxModel { get; }
 
-    public CodeTextBoxCommands TextCommands { get; } = new();
+    public OutputArea()
+    {
+        CodeTextBoxModel = new CodeTextBoxModel(this);
+    }
 
     public void Clear()
     {
         _currentLine = 0;
-        CodeTextBoxModel.Text.TextContent = "";
+        CodeTextBoxModel.SetText("");
         _tokens.Clear();
     }
 
@@ -40,8 +38,8 @@ public class OutputArea : IOutputArea
     {
         _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
         _currentLine++;
-        TextCommands.MoveCursorTextEndCommand.Execute();
-        TextCommands.InsertTextCommand.Execute(new InsertTextCommandParameter(message.Text + Environment.NewLine));
+        CodeTextBoxModel.MoveCursorTextEnd();
+        CodeTextBoxModel.InsertText(message.Text + Environment.NewLine);
     }
 
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)

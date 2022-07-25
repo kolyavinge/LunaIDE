@@ -11,7 +11,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <view:PointToThicknessConverter x:Key="PointToThicknessConverter" />
             <view:ControlConverter x:Key="ControlConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/MainStyles.xaml" />
@@ -56,9 +55,6 @@
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
                         </i:EventTrigger>
-                        <i:EventTrigger EventName="Loaded">
-                            <i:InvokeCommandAction Command="{Binding AutoCompleteViewModel.Model.CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
-                        </i:EventTrigger>
                         <i:EventTrigger EventName="PreviewKeyDown">
                             <i:InvokeCommandAction Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
                         </i:EventTrigger>
@@ -68,7 +64,8 @@
                 <view:AutoCompleteView
                     DataContext="{Binding AutoCompleteViewModel}"
                     Visibility="{Binding Model.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Margin="{Binding ScreenPosition, Converter={StaticResource PointToThicknessConverter}}"
+                    Margin="{Binding ScreenPosition}"
+                    VerticalAlignment="{Binding VerticalAlignment}"
                     Style="{StaticResource AutoCompleteStyle}" />
             </Grid>
         </Grid>

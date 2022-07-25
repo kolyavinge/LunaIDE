@@ -9,7 +9,7 @@ public static class ImageCollection
 {
     private static readonly Dictionary<string, ImageSource> _images = new();
 
-    public static ImageSource GetImage(string imageName)
+    public static ImageSource? GetImage(string imageName)
     {
         if (_images.ContainsKey(imageName))
         {
@@ -17,9 +17,16 @@ public static class ImageCollection
         }
         else
         {
-            var image = new BitmapImage(new Uri($"pack://application:,,,/Images/{imageName}"));
-            _images.Add(imageName, image);
-            return image;
+            try
+            {
+                var image = new BitmapImage(new Uri($"pack://application:,,,/Images/{imageName}"));
+                _images.Add(imageName, image);
+                return image;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

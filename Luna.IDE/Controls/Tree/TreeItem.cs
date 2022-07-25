@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using Luna.IDE.Media;
 using Luna.IDE.Mvvm;
 using Luna.Utils;
 
@@ -9,14 +8,13 @@ namespace Luna.IDE.Controls.Tree;
 
 public abstract class TreeItem : NotificationObject
 {
-    private readonly string _imageFileName;
     private IReadOnlyCollection<TreeItem>? _children;
     private bool _isExpanded;
     private bool _isSelected;
 
     public TreeItem? Parent { get; }
 
-    public ImageSource Image => ImageCollection.GetImage(_imageFileName);
+    public ImageSource? Image { get; }
 
     public string Name { get; }
 
@@ -49,12 +47,12 @@ public abstract class TreeItem : NotificationObject
         }
     }
 
-    protected TreeItem(TreeItem? parent, string name, string imageFileName)
+    protected TreeItem(TreeItem? parent, string name, ImageSource? image)
     {
         Parent = parent;
         Name = name;
         Depth = GetDepth();
-        _imageFileName = imageFileName;
+        Image = image;
         _isExpanded = Parent == null;
     }
 

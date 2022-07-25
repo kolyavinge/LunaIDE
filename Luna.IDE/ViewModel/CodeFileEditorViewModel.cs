@@ -25,8 +25,8 @@ public class CodeFileEditorViewModel : NotificationObject
         set
         {
             _autoCompleteViewModel = value;
-            _autoCompleteViewModel.Model.CodeFileEditor = Model;
-            _autoCompleteViewModel.Model.CodeTextBoxModel = Model.CodeTextBoxModel;
+            _autoCompleteViewModel.Model.Completed += (s, e) => _codeTextBox?.Focus();
+            _autoCompleteViewModel.Model.Init(new AutoCompleteDataContext(Model));
         }
     }
 
@@ -72,11 +72,7 @@ public class CodeFileEditorViewModel : NotificationObject
     private void ShowAutoComplete()
     {
         if (_codeTextBox == null) throw new NotInitializedException(nameof(_codeTextBox));
-        var cursorPosition = Model.CodeTextBoxModel.TextCursor;
-        var textMeasures = Model.CodeTextBoxModel.TextMeasures;
-        var x = (cursorPosition.ColumnIndex + 1) * textMeasures.LetterWidth;
-        var y = (cursorPosition.LineIndex + 1) * textMeasures.LineHeight;
-        AutoCompleteViewModel.Show(new(x, y), VerticalScrollBarValue, HorizontalScrollBarValue, _codeTextBox.ActualWidth, _codeTextBox.ActualHeight);
+        AutoCompleteViewModel.Show(VerticalScrollBarValue, HorizontalScrollBarValue, _codeTextBox.ActualWidth, _codeTextBox.ActualHeight);
     }
 
     private void KeyDown(KeyEventArgs e)

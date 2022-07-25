@@ -11,7 +11,7 @@ public class TreeItemTest
     {
         private readonly List<TestTreeItem> _children = new();
 
-        public TestTreeItem(TreeItem parent) : base(parent, "", "") { }
+        public TestTreeItem(TreeItem parent) : base(parent, "", null) { }
 
         protected override IEnumerable<TreeItem> GetChildren() => _children;
 

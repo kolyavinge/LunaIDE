@@ -41,7 +41,7 @@ public class AutoCompleteItem : IAutoCompleteItem
 public class KeywordAutoCompleteItem : AutoCompleteItem
 {
     public KeywordAutoCompleteItem(string keyword)
-      : base(null, keyword, "keyword")
+      : base(ImageCollection.GetImage("keyword.png"), keyword, "keyword")
     {
     }
 }

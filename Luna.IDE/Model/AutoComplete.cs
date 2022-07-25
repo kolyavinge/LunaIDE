@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
-using CodeHighlighter.Model;
 using Luna.Functions;
+using Luna.IDE.CodeEditor;
 using Luna.IDE.Mvvm;
 using Luna.IDE.Utils;
-using Luna.IDE.View;
 using Luna.Parsing;
 using Luna.ProjectModel;
 
@@ -14,35 +12,17 @@ namespace Luna.IDE.Model;
 
 public class AutoComplete : NotificationObject
 {
-    private readonly KeywordsCollection _keywords;
-    private readonly EmbeddedFunctionDeclarationsCollection _embeddedFunctions;
-    private readonly CodeModelScope _scope;
-    private ICodeFileEditor? _codeFileEditor;
-    private IControl? _codeTextBox;
-    private CodeTextBoxModel? _codeTextBoxModel;
+    private readonly KeywordsCollection _keywords = new();
+    private readonly EmbeddedFunctionDeclarationsCollection _embeddedFunctions = new();
+    private readonly CodeModelScope _scope = new();
     private IReadOnlyCollection<IAutoCompleteItem> _originalItems = new IAutoCompleteItem[0];
     private IReadOnlyCollection<IAutoCompleteItem> _items = new IAutoCompleteItem[0];
     private IAutoCompleteItem? _selectedItem;
+    private IAutoCompleteDataContext? _dataContext;
     private int _selectedIndex;
     private bool _isVisible;
 
-    public ICodeFileEditor CodeFileEditor
-    {
-        get => _codeFileEditor ?? throw new NotInitializedException(nameof(CodeFileEditor));
-        set => _codeFileEditor = value;
-    }
-
-    public CodeTextBoxModel CodeTextBoxModel
-    {
-        get => _codeTextBoxModel ?? throw new NotInitializedException(nameof(CodeTextBoxModel));
-        set
-        {
-            _codeTextBoxModel = value;
-            _codeTextBoxModel.TextChanged += OnTextChanged;
-        }
-    }
-
-    public ICommand CodeTextBoxLoadedCommand { get; }
+    public event EventHandler? Completed;
 
     public IReadOnlyCollection<IAutoCompleteItem> Items
     {
@@ -68,17 +48,45 @@ public class AutoComplete : NotificationObject
         set { _isVisible = value; RaisePropertyChanged(() => IsVisible); }
     }
 
-    public AutoComplete()
+    public IAutoCompleteDataContext DataContext
     {
-        _keywords = new KeywordsCollection();
-        _embeddedFunctions = new EmbeddedFunctionDeclarationsCollection();
-        _scope = new CodeModelScope();
-        CodeTextBoxLoadedCommand = new ActionCommand<IControl>(control => _codeTextBox = control);
+        get => _dataContext ?? throw new NotInitializedException(nameof(DataContext));
+        set => _dataContext = value;
+    }
+
+    public void Init(IAutoCompleteDataContext dataContext)
+    {
+        DataContext = dataContext;
+        dataContext.TextChanged += OnTextChanged;
+    }
+
+    public void Show()
+    {
+        UpdateItems();
+        IsVisible = true;
+        ProcessFilterText();
+    }
+
+    public void Complete()
+    {
+        IsVisible = false;
+        if (SelectedItem == null) return;
+        (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
+        var cursorToken = GetCursorToken();
+        if (cursorToken != null)
+        {
+            DataContext.ReplaceText(cursorLineIndex, cursorToken.StartColumnIndex, cursorLineIndex, cursorColumnIndex, SelectedItem.Name);
+        }
+        else
+        {
+            DataContext.ReplaceText(cursorLineIndex, cursorColumnIndex, cursorLineIndex, cursorColumnIndex, SelectedItem.Name);
+        }
+        Completed?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateItems()
     {
-        var scopeIdentificators = _scope.GetScopeIdentificators(CodeFileEditor.ProjectItem.CodeModel);
+        var scopeIdentificators = _scope.GetScopeIdentificators(DataContext.CodeModel);
         var items = new List<IAutoCompleteItem>();
         items.AddRange(_keywords.Select(x => new KeywordAutoCompleteItem(x)));
         items.AddRange(scopeIdentificators.DeclaredConstants.Select(x => new CodeElementAutoCompleteItem(x)));
@@ -94,12 +102,12 @@ public class AutoComplete : NotificationObject
 
     private void ProcessFilterText()
     {
-        var cursor = CodeTextBoxModel.TextCursor;
-        var cursorToken = CodeTextBoxModel.Tokens.GetTokenOnPosition(cursor.LineIndex, cursor.ColumnIndex);
+        var cursorToken = GetCursorToken();
         if (cursorToken != null)
         {
-            var filterText = cursorToken.Name.Substring(0, cursor.ColumnIndex - cursorToken.StartColumnIndex);
-            var filteredItems = _originalItems.Where(x => x.Name.Contains(filterText)).ToList();
+            (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
+            var filterText = cursorToken.Name.Substring(0, cursorColumnIndex - cursorToken.StartColumnIndex);
+            var filteredItems = _originalItems.Where(x => x.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
             if (filteredItems.Any()) Items = filteredItems;
             else Items = _originalItems;
             SelectedItem = Items.FirstOrDefault();
@@ -117,31 +125,6 @@ public class AutoComplete : NotificationObject
         {
             ProcessFilterText();
         }
-    }
-
-    public void Show()
-    {
-        UpdateItems();
-        IsVisible = true;
-        ProcessFilterText();
-    }
-
-    public void Complete()
-    {
-        IsVisible = false;
-        if (SelectedItem == null) return;
-        if (_codeTextBox == null) throw new NotInitializedException(nameof(_codeTextBox));
-        var cursor = CodeTextBoxModel.TextCursor;
-        var cursorToken = CodeTextBoxModel.Tokens.GetTokenOnPosition(cursor.LineIndex, cursor.ColumnIndex);
-        if (cursorToken != null)
-        {
-            CodeFileEditor.ReplaceText(cursor.LineIndex, cursorToken.StartColumnIndex, cursor.LineIndex, cursor.ColumnIndex, SelectedItem.Name);
-        }
-        else
-        {
-            CodeFileEditor.ReplaceText(cursor.LineIndex, cursor.ColumnIndex, cursor.LineIndex, cursor.ColumnIndex, SelectedItem.Name);
-        }
-        _codeTextBox.Focus();
     }
 
     public void MoveSelectionUp()
@@ -166,5 +149,12 @@ public class AutoComplete : NotificationObject
     {
         SelectedIndex += pageSize;
         if (SelectedIndex > Items.Count - 1) SelectedIndex = Items.Count - 1;
+    }
+
+    public CodeHighlighter.Model.Token? GetCursorToken()
+    {
+        (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
+        var token = DataContext.GetTokenOnPosition(cursorLineIndex, cursorColumnIndex);
+        return token != null && (token.IsIdentificator() || token.IsKeyword() || token.IsOperator()) ? token : null;
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter.CodeProvidering;
-using static CodeHighlighter.CodeProvidering.ICodeProvider;
 using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.IDE.CodeEditor;

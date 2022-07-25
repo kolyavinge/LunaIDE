@@ -285,7 +285,6 @@
     <Style x:Key="AutoCompleteStyle" TargetType="{x:Type view:AutoCompleteView}">
         <Setter Property="MinWidth" Value="250" />
         <Setter Property="MaxHeight" Value="209" />
-        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />

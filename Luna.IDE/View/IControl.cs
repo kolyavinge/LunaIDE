@@ -6,5 +6,9 @@ public interface IControl
 
     double ActualHeight { get; }
 
+    double MaxWidth { get; }
+
+    double MaxHeight { get; }
+
     void Focus();
 }

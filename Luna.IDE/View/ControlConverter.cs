@@ -22,6 +22,10 @@ public class ControlConverter : IValueConverter
 
         public double ActualHeight => _control.ActualHeight;
 
+        public double MaxWidth => _control.MaxWidth;
+
+        public double MaxHeight => _control.MaxHeight;
+
         public Control(System.Windows.Controls.Control control)
         {
             _control = control;

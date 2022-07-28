@@ -1,0 +1,18 @@
+// timer demo
+
+(callback ()
+    (if (eq @count 5)
+        ((stop_timer @timer)
+         (print 'timer stopped'))
+        ((set @count (+ @count 1))
+         (printf 'timer tick {0}' (@count)))
+    )
+)
+
+(set_timer ()
+    (set @count 0)
+    (set @timer (init_timer 500 callback))
+    (start_timer @timer)
+)
+
+(run (set_timer))

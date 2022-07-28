@@ -25,7 +25,7 @@ internal class OutputWriter : IOutputWriter
 
     public void SuccessfullyParsed(CodeFileProjectItem codeFile)
     {
-        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("File ", OutputMessageKind.Text),
             new(codeFile.Name, OutputMessageKind.Info),
@@ -37,7 +37,7 @@ internal class OutputWriter : IOutputWriter
     public void WriteWarning(CodeFileProjectItem codeFile, ParserMessage message)
     {
         var token = message.Token;
-        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("Warning in file ", OutputMessageKind.Warning),
             new(codeFile.Name, OutputMessageKind.Info),
@@ -49,7 +49,7 @@ internal class OutputWriter : IOutputWriter
     public void WriteError(CodeFileProjectItem codeFile, ParserMessage message)
     {
         var token = message.Token;
-        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("Error in file ", OutputMessageKind.Error),
             new(codeFile.Name, OutputMessageKind.Info),
@@ -60,7 +60,7 @@ internal class OutputWriter : IOutputWriter
 
     public void ProgramResult(IRuntimeValue runtimeValue)
     {
-        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("Program result: ", OutputMessageKind.Info),
             new(runtimeValue.ToString() ?? "", OutputMessageKind.Text)
@@ -69,7 +69,7 @@ internal class OutputWriter : IOutputWriter
 
     public void ProgramStopped()
     {
-        _output.NewMessage(new OutputMessage(new OutputMessageItem[]
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {
             new("The program cannot be run.", OutputMessageKind.Error)
         }));

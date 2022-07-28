@@ -5,6 +5,7 @@ using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using Luna.IDE.Utils;
 using Luna.Output;
+using Luna.Runtime;
 using Token = CodeHighlighter.CodeProvidering.Token;
 
 namespace Luna.IDE.Model;
@@ -25,6 +26,7 @@ public class OutputArea : IOutputArea
     public OutputArea()
     {
         CodeTextBoxModel = new CodeTextBoxModel(this);
+        RuntimeEnvironment.StandartOutput = this;
     }
 
     public void Clear()
@@ -34,7 +36,7 @@ public class OutputArea : IOutputArea
         _tokens.Clear();
     }
 
-    public void NewMessage(OutputMessage message)
+    public void SendMessage(OutputMessage message)
     {
         _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
         _currentLine++;

@@ -7,7 +7,7 @@ namespace Luna.Output;
 
 public interface IRuntimeOutput
 {
-    void NewMessage(OutputMessage message);
+    void SendMessage(OutputMessage message);
 }
 
 public class OutputMessage

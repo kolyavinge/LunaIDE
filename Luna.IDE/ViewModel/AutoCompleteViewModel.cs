@@ -43,12 +43,12 @@ public class AutoCompleteViewModel : NotificationObject
     {
         _parentWidth = parentWidth;
         _parentHeight = parentHeight;
-        (var cursorLineIndex, var cursorColumnIndex) = Model.DataContext.CursorPosition;
+        var cursor = Model.DataContext.CursorPosition;
         var cursorToken = Model.GetCursorToken();
-        var y = cursorLineIndex * Model.DataContext.TextLineHeight;
+        var y = cursor.LineIndex * Model.DataContext.TextLineHeight;
         var x = cursorToken != null
             ? cursorToken.StartColumnIndex * Model.DataContext.TextLetterWidth
-            : cursorColumnIndex * Model.DataContext.TextLetterWidth;
+            : cursor.ColumnIndex * Model.DataContext.TextLetterWidth;
         _absolutePosition = new(x, y);
         var screenX = x - horizontalScrollBarValue;
         var screenY = y - verticalScrollBarValue;

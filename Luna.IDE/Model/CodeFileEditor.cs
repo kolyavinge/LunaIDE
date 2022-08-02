@@ -13,7 +13,7 @@ public interface ICodeFileEditor
     CodeFileProjectItem ProjectItem { get; }
     CodeTextBoxModel CodeTextBoxModel { get; }
     void NavigateTo(CodeElement codeElement);
-    void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text);
+    void ReplaceText(CursorPosition start, CursorPosition end, string text);
 }
 
 [EditorFor(typeof(CodeFileProjectItem))]
@@ -78,9 +78,9 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         CodeTextBoxModel.GotoLine(codeElement.LineIndex);
     }
 
-    public void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text)
+    public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        CodeTextBoxModel.ReplaceText(cursorStartLineIndex, cursorStartColumnIndex, cursorEndLineIndex, cursorEndColumnIndex, text);
+        CodeTextBoxModel.ReplaceText(start, end, text);
     }
 }
 

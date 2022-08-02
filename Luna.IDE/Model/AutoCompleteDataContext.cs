@@ -8,11 +8,11 @@ public interface IAutoCompleteDataContext
 {
     event EventHandler TextChanged;
     CodeModel CodeModel { get; }
-    (int, int) CursorPosition { get; }
+    CursorPosition CursorPosition { get; }
     double TextLetterWidth { get; }
     double TextLineHeight { get; }
-    Token? GetTokenOnPosition(int lineIndex, int columnIndex);
-    void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text);
+    Token? GetTokenOnCursorPosition();
+    void ReplaceText(CursorPosition start, CursorPosition end, string text);
 }
 
 public class AutoCompleteDataContext : IAutoCompleteDataContext
@@ -21,7 +21,7 @@ public class AutoCompleteDataContext : IAutoCompleteDataContext
 
     public event EventHandler? TextChanged;
     public CodeModel CodeModel => _model.ProjectItem.CodeModel;
-    public (int, int) CursorPosition => (_model.CodeTextBoxModel.TextCursor.LineIndex, _model.CodeTextBoxModel.TextCursor.ColumnIndex);
+    public CursorPosition CursorPosition => _model.CodeTextBoxModel.TextCursor.Position;
     public double TextLetterWidth => _model.CodeTextBoxModel.TextMeasures.LetterWidth;
     public double TextLineHeight => _model.CodeTextBoxModel.TextMeasures.LineHeight;
 
@@ -31,13 +31,13 @@ public class AutoCompleteDataContext : IAutoCompleteDataContext
         _model.CodeTextBoxModel.TextChanged += (s, e) => TextChanged?.Invoke(s, e);
     }
 
-    public Token? GetTokenOnPosition(int lineIndex, int columnIndex)
+    public Token? GetTokenOnCursorPosition()
     {
-        return _model.CodeTextBoxModel.Tokens.GetTokenOnPosition(lineIndex, columnIndex);
+        return _model.CodeTextBoxModel.Tokens.GetTokenOnPosition(CursorPosition);
     }
 
-    public void ReplaceText(int cursorStartLineIndex, int cursorStartColumnIndex, int cursorEndLineIndex, int cursorEndColumnIndex, string text)
+    public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        _model.CodeTextBoxModel.ReplaceText(cursorStartLineIndex, cursorStartColumnIndex, cursorEndLineIndex, cursorEndColumnIndex, text);
+        _model.CodeTextBoxModel.ReplaceText(start, end, text);
     }
 }

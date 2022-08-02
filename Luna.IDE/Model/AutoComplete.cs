@@ -71,15 +71,15 @@ public class AutoComplete : NotificationObject
     {
         IsVisible = false;
         if (SelectedItem == null) return;
-        (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
+        var cursor = DataContext.CursorPosition;
         var cursorToken = GetCursorToken();
         if (cursorToken != null)
         {
-            DataContext.ReplaceText(cursorLineIndex, cursorToken.StartColumnIndex, cursorLineIndex, cursorColumnIndex, SelectedItem.Name);
+            DataContext.ReplaceText(new(cursor.LineIndex, cursorToken.StartColumnIndex), cursor, SelectedItem.Name);
         }
         else
         {
-            DataContext.ReplaceText(cursorLineIndex, cursorColumnIndex, cursorLineIndex, cursorColumnIndex, SelectedItem.Name);
+            DataContext.ReplaceText(cursor, cursor, SelectedItem.Name);
         }
         Completed?.Invoke(this, EventArgs.Empty);
     }
@@ -105,8 +105,8 @@ public class AutoComplete : NotificationObject
         var cursorToken = GetCursorToken();
         if (cursorToken != null)
         {
-            (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
-            var filterText = cursorToken.Name.Substring(0, cursorColumnIndex - cursorToken.StartColumnIndex);
+            var cursor = DataContext.CursorPosition;
+            var filterText = cursorToken.Name.Substring(0, cursor.ColumnIndex - cursorToken.StartColumnIndex);
             var filteredItems = _originalItems.Where(x => x.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
             if (filteredItems.Any()) Items = filteredItems;
             else Items = _originalItems;
@@ -153,8 +153,7 @@ public class AutoComplete : NotificationObject
 
     public CodeHighlighter.Model.Token? GetCursorToken()
     {
-        (var cursorLineIndex, var cursorColumnIndex) = DataContext.CursorPosition;
-        var token = DataContext.GetTokenOnPosition(cursorLineIndex, cursorColumnIndex);
+        var token = DataContext.GetTokenOnCursorPosition();
         return token != null && (token.IsIdentificator() || token.IsKeyword() || token.IsOperator()) ? token : null;
     }
 }

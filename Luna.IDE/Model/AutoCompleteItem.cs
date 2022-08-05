@@ -18,15 +18,17 @@ public interface IAutoCompleteItem : IComparable<IAutoCompleteItem>
 
 public class AutoCompleteItem : IAutoCompleteItem
 {
-    public ImageSource? Image { get; }
+    // чтобы в тестах не грузились картинки
+    private readonly Func<ImageSource?>? _imageFunc;
+    public ImageSource? Image => _imageFunc?.Invoke();
 
     public string Name { get; }
 
     public string AdditionalInfo { get; }
 
-    public AutoCompleteItem(ImageSource? image, string name, string additionalInfo)
+    public AutoCompleteItem(Func<ImageSource?>? imageFunc, string name, string additionalInfo)
     {
-        Image = image;
+        _imageFunc = imageFunc;
         Name = name;
         AdditionalInfo = additionalInfo;
     }
@@ -41,7 +43,7 @@ public class AutoCompleteItem : IAutoCompleteItem
 public class KeywordAutoCompleteItem : AutoCompleteItem
 {
     public KeywordAutoCompleteItem(string keyword)
-      : base(ImageCollection.GetImage("keyword.png"), keyword, "keyword")
+      : base(() => ImageCollection.GetImage("keyword.png"), keyword, "keyword")
     {
     }
 }
@@ -51,13 +53,13 @@ public class CodeElementAutoCompleteItem : AutoCompleteItem
     public CodeElement CodeElement { get; }
 
     public CodeElementAutoCompleteItem(ConstantDeclaration constant)
-       : base(ImageCollection.GetImage("const.png"), constant.Name, constant.Value.ToString() ?? "")
+       : base(() => ImageCollection.GetImage("const.png"), constant.Name, constant.Value.ToString() ?? "")
     {
         CodeElement = constant;
     }
 
     public CodeElementAutoCompleteItem(FunctionDeclaration func)
-        : base(ImageCollection.GetImage("func.png"), func.Name, $"({String.Join(" ", func.Arguments.Select(x => x.Name))})")
+        : base(() => ImageCollection.GetImage("func.png"), func.Name, $"({String.Join(" ", func.Arguments.Select(x => x.Name))})")
     {
         CodeElement = func;
     }
@@ -66,7 +68,7 @@ public class CodeElementAutoCompleteItem : AutoCompleteItem
 public class EmbeddedFunctionAutoCompleteItem : AutoCompleteItem
 {
     public EmbeddedFunctionAutoCompleteItem(EmbeddedFunctionDeclaration func)
-      : base(ImageCollection.GetImage("func.png"), func.Name, $"({String.Join(" ", func.Arguments)})")
+      : base(() => ImageCollection.GetImage("func.png"), func.Name, $"({String.Join(" ", func.Arguments)})")
     {
     }
 }

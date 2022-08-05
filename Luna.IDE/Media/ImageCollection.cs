@@ -17,16 +17,9 @@ public static class ImageCollection
         }
         else
         {
-            try
-            {
-                var image = new BitmapImage(new Uri($"pack://application:,,,/Images/{imageName}"));
-                _images.Add(imageName, image);
-                return image;
-            }
-            catch
-            {
-                return null;
-            }
+            var image = new BitmapImage(new Uri($"pack://application:,,,/Images/{imageName}"));
+            _images.Add(imageName, image);
+            return image;
         }
     }
 }

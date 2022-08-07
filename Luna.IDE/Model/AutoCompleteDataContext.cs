@@ -38,6 +38,6 @@ public class AutoCompleteDataContext : IAutoCompleteDataContext
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        _model.CodeTextBoxModel.ReplaceText(start, end, text);
+        _model.ReplaceText(start, end, text);
     }
 }

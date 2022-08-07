@@ -80,7 +80,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        CodeTextBoxModel.ReplaceText(start, end, text);
+        CodeTextBoxModel.TextSelection.Set(start, end);
+        CodeTextBoxModel.InsertText(text);
     }
 }
 

@@ -18,7 +18,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
-        <KeyBinding Key="Esc" Command="{Binding HideAutoCompleteCommand}" />
         <MouseBinding MouseAction="LeftClick" Command="{Binding HideAutoCompleteCommand}" />
         <MouseBinding MouseAction="RightClick" Command="{Binding HideAutoCompleteCommand}" />
     </UserControl.InputBindings>

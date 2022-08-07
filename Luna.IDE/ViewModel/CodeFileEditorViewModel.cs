@@ -77,43 +77,87 @@ public class CodeFileEditorViewModel : NotificationObject
 
     private void KeyDown(KeyEventArgs e)
     {
+        var key = e.Key == Key.System ? e.SystemKey : e.Key;
         var controlPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+        var altPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt;
+        var shiftPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
         var isAutoCompleteVisible = AutoCompleteViewModel.Model.IsVisible;
-        if (!isAutoCompleteVisible && controlPressed && e.Key == Key.Space)
+        // with modifiers
+        if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.Space)
         {
             ShowAutoComplete();
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.Up)
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.L)
+        {
+            Model.DeleteSelectedLines();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.Z)
+        {
+            Model.Undo();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.Y)
+        {
+            Model.Redo();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && shiftPressed && key == Key.U)
+        {
+            Model.ToUpperCase();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.U)
+        {
+            Model.ToLowerCase();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && !controlPressed && altPressed && !shiftPressed && key == Key.Up)
+        {
+            Model.MoveSelectedLinesUp();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && !controlPressed && altPressed && !shiftPressed && key == Key.Down)
+        {
+            Model.MoveSelectedLinesDown();
+            e.Handled = true;
+        }
+        // without any modifiers
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Escape)
+        {
+            AutoCompleteViewModel.Model.IsVisible = false;
+        }
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Up)
         {
             AutoCompleteViewModel.Model.MoveSelectionUp();
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.Down)
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Down)
         {
             AutoCompleteViewModel.Model.MoveSelectionDown();
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.PageUp)
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.PageUp)
         {
             AutoCompleteViewModel.Model.MoveSelectionPageUp(10);
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.PageDown)
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.PageDown)
         {
             AutoCompleteViewModel.Model.MoveSelectionPageDown(10);
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.Return)
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Return)
         {
             AutoCompleteViewModel.Model.Complete();
             e.Handled = true;
         }
-        else if (isAutoCompleteVisible && e.Key == Key.Space)
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Space)
         {
             AutoCompleteViewModel.Model.Complete();
         }
-        else if (isAutoCompleteVisible && (e.Key == Key.Left || e.Key == Key.Right))
+        else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && (key == Key.Left || key == Key.Right))
         {
             AutoCompleteViewModel.Model.IsVisible = false;
         }

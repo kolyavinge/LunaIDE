@@ -25,7 +25,6 @@
             x:Name="codeTextBox"
             Model="{Binding OutputArea.CodeTextBoxModel}"
             Style="{StaticResource OutputAreaStyle}"
-            IsReadOnly="True"
             Margin="0,0,8,0"
             MouseWheel="VerticalScrollBarOnMouseWheel">
         </highlighter:CodeTextBox>

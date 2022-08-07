@@ -25,7 +25,7 @@ public class OutputArea : IOutputArea
 
     public OutputArea()
     {
-        CodeTextBoxModel = new CodeTextBoxModel(this);
+        CodeTextBoxModel = new CodeTextBoxModel(this, new() { IsReadOnly = true });
         RuntimeEnvironment.StandartOutput = this;
     }
 

@@ -14,6 +14,13 @@ public interface ICodeFileEditor
     CodeTextBoxModel CodeTextBoxModel { get; }
     void NavigateTo(CodeElement codeElement);
     void ReplaceText(CursorPosition start, CursorPosition end, string text);
+    void DeleteSelectedLines();
+    void ToLowerCase();
+    void ToUpperCase();
+    void MoveSelectedLinesUp();
+    void MoveSelectedLinesDown();
+    void Undo();
+    void Redo();
 }
 
 [EditorFor(typeof(CodeFileProjectItem))]
@@ -83,6 +90,20 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         CodeTextBoxModel.TextSelection.Set(start, end);
         CodeTextBoxModel.InsertText(text);
     }
+
+    public void DeleteSelectedLines() => CodeTextBoxModel.DeleteSelectedLines();
+
+    public void ToLowerCase() => CodeTextBoxModel.ToLowerCase();
+
+    public void ToUpperCase() => CodeTextBoxModel.ToUpperCase();
+
+    public void MoveSelectedLinesUp() => CodeTextBoxModel.MoveSelectedLinesUp();
+
+    public void MoveSelectedLinesDown() => CodeTextBoxModel.MoveSelectedLinesDown();
+
+    public void Undo() => CodeTextBoxModel.History.Undo();
+
+    public void Redo() => CodeTextBoxModel.History.Redo();
 }
 
 class EditorTextGettingStrategy : TextFileProjectItem.ITextGettingStrategy

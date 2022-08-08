@@ -74,6 +74,27 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+    </Style>
+
+    <Style x:Key="PanelSeparatorStyle" TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Type Separator}}">
+        <Setter Property="Margin" Value="2,2,2,2"/>
+        <Setter Property="Background" Value="{StaticResource InnactiveSelectedItemBrush}"/>
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <TransformGroup>
+                    <TransformGroup.Children>
+                        <TransformCollection>
+                            <RotateTransform Angle="90" />
+                        </TransformCollection>
+                    </TransformGroup.Children>
+                </TransformGroup>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="TitleButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
         <Setter Property="Foreground" Value="{StaticResource InnactiveForegroundBrush}" />
     </Style>
@@ -262,6 +283,14 @@
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="CodeFileEditorMainPanelStyle" TargetType="{x:Type view:CodeFileEditorMainPanelView}">
+        <Setter Property="Height" Value="24" />
+        <Style.Resources>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource PanelButtonStyle}" />
+            <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource PanelSeparatorStyle}" />
+        </Style.Resources>
     </Style>
 
     <Style x:Key="LineNumberPanelStyle" TargetType="{x:Type highlighter:LineNumberPanel}">

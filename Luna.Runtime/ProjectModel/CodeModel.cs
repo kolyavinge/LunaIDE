@@ -59,7 +59,12 @@ public class ImportDirective : CodeElement
     internal ImportDirective(string filePath, CodeFileProjectItem codeFile) : this(filePath, codeFile, 0, 0) { }
 }
 
-public class ConstantDeclaration : CodeElement
+public abstract class DeclarationCodeElement : CodeElement
+{
+    protected DeclarationCodeElement(int lineIndex, int columnIndex) : base(lineIndex, columnIndex) { }
+}
+
+public class ConstantDeclaration : DeclarationCodeElement
 {
     public string Name { get; }
     public ValueElement Value { get; }
@@ -87,7 +92,7 @@ public class FunctionArgument : CodeElement
 
 public class FunctionBody : List<ValueElement> { }
 
-public class FunctionDeclaration : CodeElement
+public class FunctionDeclaration : DeclarationCodeElement
 {
     public string Name { get; }
     public ReadonlyArray<FunctionArgument> Arguments { get; }

@@ -11,14 +11,14 @@ public interface ICodeElementNavigateCommand : ICommand { }
 
 public class CodeElementNavigateCommandParameter
 {
+    public readonly CodeFileProjectItem CodeFile;
+    public readonly CodeElement CodeElement;
+
     public CodeElementNavigateCommandParameter(CodeFileProjectItem codeFile, CodeElement codeElement)
     {
         CodeFile = codeFile;
         CodeElement = codeElement;
     }
-
-    public CodeFileProjectItem CodeFile { get; }
-    public CodeElement CodeElement { get; }
 
     public override bool Equals(object? obj)
     {
@@ -33,7 +33,7 @@ public class CodeElementNavigateCommandParameter
     }
 }
 
-public class CodeElementNavigateCommand : Command, ICodeElementNavigateCommand
+public class CodeElementNavigateCommand : Command<CodeElementNavigateCommandParameter>, ICodeElementNavigateCommand
 {
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly IProjectItemOpenCommand _projectItemOpenCommand;
@@ -46,9 +46,8 @@ public class CodeElementNavigateCommand : Command, ICodeElementNavigateCommand
         _projectItemOpenCommand = projectItemOpenCommand;
     }
 
-    public override void Execute(object parameter)
+    protected override void Execute(CodeElementNavigateCommandParameter param)
     {
-        var param = (CodeElementNavigateCommandParameter)parameter;
         _projectItemOpenCommand.Execute(new[] { param.CodeFile });
         var window = _windowsManager.FindWindowById(param.CodeFile) ?? throw new NullReferenceException();
         if (window.IsLoaded)

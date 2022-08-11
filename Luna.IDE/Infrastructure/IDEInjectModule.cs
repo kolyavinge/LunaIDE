@@ -42,6 +42,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
         provider.Bind<ICodeElementNavigateCommand, CodeElementNavigateCommand>().ToSingleton();
         provider.Bind<IProjectExplorerItemOpenCommand, ProjectExplorerItemOpenCommand>().ToSingleton();
+        provider.Bind<IGotoDeclarationCommand, GotoDeclarationCommand>().ToSingleton();
         provider.Bind<IRunProgramCommand, RunProgramCommand>().ToSingleton();
         provider.Bind<IUndoCommand, UndoCommand>().ToSingleton();
         provider.Bind<IRedoCommand, RedoCommand>().ToSingleton();

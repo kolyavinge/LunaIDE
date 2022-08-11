@@ -81,23 +81,6 @@ internal class FunctionParserTest
     }
 
     [Test]
-    public void ConstDeclaration_FloatValueOverflow()
-    {
-        var doubleOverflowValue = $"{double.MaxValue}{double.MaxValue}";
-        Parse(new Token[]
-        {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new(doubleOverflowValue, 0, 12, doubleOverflowValue.Length, TokenKind.FloatNumber)
-        });
-        Assert.AreEqual(1, _codeModel.Constants.Count);
-        Assert.AreEqual(1, _result.Errors.Count);
-        Assert.AreEqual(ParserMessageType.FloatValueOverflow, _result.Errors.First().Type);
-        Assert.AreEqual(new Token(doubleOverflowValue, 0, 12, doubleOverflowValue.Length, TokenKind.FloatNumber), _result.Errors.First().Token);
-        Assert.AreEqual(0, _result.Warnings.Count);
-    }
-
-    [Test]
     public void ConstDeclaration_Correct_BooleanTrue()
     {
         // const TRUE true // comment
@@ -647,26 +630,6 @@ internal class FunctionParserTest
     }
 
     [Test]
-    public void FunctionDeclaration_FloatValueOverflow()
-    {
-        var doubleOverflowValue = $"{double.MaxValue}{double.MaxValue}";
-        Parse(new Token[]
-        {
-            new("(", 0, 0, 1, TokenKind.OpenBracket),
-            new("func", 0, 1, 4, TokenKind.Identificator),
-            new("(", 0, 6, 1, TokenKind.OpenBracket),
-            new(")", 0, 7, 1, TokenKind.CloseBracket),
-            new(doubleOverflowValue, 0, 9, doubleOverflowValue.Length, TokenKind.FloatNumber),
-            new(")", 0, 51, 1, TokenKind.CloseBracket)
-        });
-        Assert.AreEqual(1, _result.Errors.Count);
-        Assert.AreEqual(ParserMessageType.FloatValueOverflow, _result.Errors.First().Type);
-        Assert.AreEqual(new Token(doubleOverflowValue, 0, 9, doubleOverflowValue.Length, TokenKind.FloatNumber), _result.Errors.First().Token);
-        Assert.AreEqual(0, _result.Warnings.Count);
-        Assert.AreEqual(1, _codeModel.Functions.Count);
-    }
-
-    [Test]
     public void FunctionDeclaration_OneStringConstant()
     {
         // (func () 'str')
@@ -689,6 +652,8 @@ internal class FunctionParserTest
         Assert.True(func.Body.First() is StringValueElement);
         var body = (StringValueElement)func.Body.First();
         Assert.AreEqual("str", body.Value);
+        Assert.AreEqual(0, body.LineIndex);
+        Assert.AreEqual(9, body.ColumnIndex);
     }
 
     [Test]
@@ -837,6 +802,8 @@ internal class FunctionParserTest
         Assert.True(func.Body.First() is FunctionValueElement);
         var body = (FunctionValueElement)func.Body.First();
         Assert.AreEqual("print", body.Name);
+        Assert.AreEqual(0, body.LineIndex);
+        Assert.AreEqual(9, body.ColumnIndex);
         Assert.AreEqual(0, body.ArgumentValues.Count);
     }
 
@@ -971,6 +938,8 @@ internal class FunctionParserTest
         var body = (FunctionValueElement)func.Body.First();
         var innerbody = (FunctionValueElement)body.ArgumentValues[1];
         Assert.AreEqual("k", innerbody.Name);
+        Assert.AreEqual(0, innerbody.LineIndex);
+        Assert.AreEqual(12, innerbody.ColumnIndex);
         Assert.AreEqual(2, innerbody.ArgumentValues.Count);
         Assert.AreEqual(1, ((IntegerValueElement)innerbody.ArgumentValues[0]).Value);
         Assert.AreEqual(2, ((IntegerValueElement)innerbody.ArgumentValues[1]).Value);

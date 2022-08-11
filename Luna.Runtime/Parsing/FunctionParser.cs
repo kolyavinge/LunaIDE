@@ -353,6 +353,7 @@ public class FunctionParser : AbstractParser
 
     private FunctionValueElement? ParseFunctionCall(string funcName, ref ParserMessage? error)
     {
+        var funcToken = Token;
         MoveNext();
         var argumentValues = new List<ValueElement>();
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
@@ -368,7 +369,7 @@ public class FunctionParser : AbstractParser
         }
         MoveNext();
 
-        return new FunctionValueElement(_codeModel, funcName, argumentValues, Token.LineIndex, Token.StartColumnIndex);
+        return new FunctionValueElement(_codeModel, funcName, argumentValues, funcToken.LineIndex, funcToken.StartColumnIndex);
     }
 
     private void ParseRunFunctionCall(ref ParserMessage? error)

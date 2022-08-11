@@ -14,3 +14,20 @@ public abstract class Command : ICommand
 
     public abstract void Execute(object parameter);
 }
+
+public abstract class Command<TParameter> : ICommand
+{
+    public event EventHandler? CanExecuteChanged;
+
+    public virtual bool CanExecute(object parameter)
+    {
+        return true;
+    }
+
+    public void Execute(object parameter)
+    {
+        Execute((TParameter)parameter);
+    }
+
+    protected abstract void Execute(TParameter parameter);
+}

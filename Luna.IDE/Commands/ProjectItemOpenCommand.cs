@@ -9,7 +9,7 @@ namespace Luna.IDE.Commands;
 
 public interface IProjectItemOpenCommand : ICommand { }
 
-public class ProjectItemOpenCommand : Command, IProjectItemOpenCommand
+public class ProjectItemOpenCommand : Command<IEnumerable<ProjectItem>>, IProjectItemOpenCommand
 {
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly IProjectItemEditorFactory _editorFactory;
@@ -20,16 +20,16 @@ public class ProjectItemOpenCommand : Command, IProjectItemOpenCommand
         _editorFactory = editorFactory;
     }
 
-    public override void Execute(object parameter)
+    protected override void Execute(IEnumerable<ProjectItem> projectItems)
     {
-        var projectItems = ((IEnumerable<ProjectItem>)parameter).ToList();
-        if (!projectItems.Any()) return;
+        var projectItemsList = projectItems.ToList();
+        if (!projectItemsList.Any()) return;
 
-        var firstItem = projectItems.First();
+        var firstItem = projectItemsList.First();
         var firstWindow = OpenWindowFor(firstItem);
         _windowsManager.ActivateWindow(firstWindow);
 
-        foreach (var item in projectItems.Skip(1))
+        foreach (var item in projectItemsList.Skip(1))
         {
             OpenWindowFor(item);
         }

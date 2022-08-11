@@ -1,4 +1,6 @@
 ﻿using System.Windows.Input;
+using Luna.IDE.Commands;
+using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
 using Luna.IDE.View;
@@ -22,6 +24,9 @@ public class CodeFileEditorViewModel : NotificationObject
     public ICommand HideAutoCompleteCommand { get; }
 
     public ICommand KeyDownCommand { get; }
+
+    [Inject]
+    public IGotoDeclarationCommand? GotoDeclarationCommand { get; set; }
 
     public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor, AutoComplete autoComplete)
     {

@@ -33,7 +33,8 @@ public class AutoCompleteDataContext : IAutoCompleteDataContext
 
     public Token? GetTokenOnCursorPosition()
     {
-        return _model.CodeTextBoxModel.Tokens.GetTokenOnPosition(CursorPosition);
+        var position = _model.CodeTextBoxModel.Tokens.GetTokenOnPosition(CursorPosition);
+        return position?.TokenOnPosition;
     }
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)

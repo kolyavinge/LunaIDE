@@ -1,5 +1,6 @@
 ﻿using DependencyInjection;
 using Luna.Infrastructure;
+using Luna.Navigation;
 using Luna.ProjectModel;
 using Luna.Runtime;
 
@@ -12,6 +13,8 @@ public class RuntimeInjectModule : InjectModule
         provider.Bind<IFileSystem, FileSystem>().ToSingleton();
         provider.Bind<ITimerManager, TimerManager>().ToSingleton();
         provider.Bind<ICodeModelUpdater, CodeModelUpdater>().ToSingleton();
+        provider.Bind<ICodeModelNavigator, CodeModelNavigator>().ToSingleton();
+        provider.Bind<IDeclarationNavigator, DeclarationNavigator>().ToSingleton();
         provider.Bind<IInterpreter, Interpreter>().ToSingleton();
     }
 }

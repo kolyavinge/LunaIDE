@@ -12,6 +12,8 @@ public interface ICodeFileEditor
 {
     CodeFileProjectItem ProjectItem { get; }
     CodeTextBoxModel CodeTextBoxModel { get; }
+    CursorPosition CursorPosition { get; }
+    TokenCursorPosition? GetTokenCursorPosition();
     void NavigateTo(CodeElement codeElement);
     void ReplaceText(CursorPosition start, CursorPosition end, string text);
     void DeleteSelectedLines();
@@ -32,6 +34,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     public CodeFileProjectItem ProjectItem { get; }
 
     public CodeTextBoxModel CodeTextBoxModel { get; }
+
+    public CursorPosition CursorPosition => CodeTextBoxModel.TextCursor.Position;
 
     public string Header => ProjectItem.Name;
 
@@ -69,10 +73,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         _codeModelUpdater.UpdateRequest();
     }
 
-    public void Save()
-    {
-        ProjectItem.SaveText(CodeTextBoxModel.Text.ToString());
-    }
+    public void Save() => ProjectItem.SaveText(CodeTextBoxModel.Text.ToString());
 
     public void Close()
     {
@@ -80,10 +81,9 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         _codeModelUpdater.Detach(ProjectItem);
     }
 
-    public void NavigateTo(CodeElement codeElement)
-    {
-        CodeTextBoxModel.GotoLine(codeElement.LineIndex);
-    }
+    public TokenCursorPosition? GetTokenCursorPosition() => CodeTextBoxModel.Tokens.GetTokenOnPosition(CodeTextBoxModel.TextCursor.Position);
+
+    public void NavigateTo(CodeElement codeElement) => CodeTextBoxModel.GotoLine(codeElement.LineIndex);
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {

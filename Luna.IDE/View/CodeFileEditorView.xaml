@@ -18,6 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
+        <KeyBinding Key="F12" Command="{Binding GotoDeclarationCommand}" CommandParameter="{Binding Model}" />
         <MouseBinding MouseAction="LeftClick" Command="{Binding HideAutoCompleteCommand}" />
         <MouseBinding MouseAction="RightClick" Command="{Binding HideAutoCompleteCommand}" />
     </UserControl.InputBindings>

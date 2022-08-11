@@ -69,7 +69,7 @@ public abstract class AbstractParser
         if (Token.Kind == TokenKind.String)
         {
             if (Token.Name.Length > 1 && Token.Name.EndsWith("'")) return Token.Name.Substring(1, Token.Length - 2);
-            else return Token.Name.Substring(1, Token.Length - 1);
+            else return Token.Name[1..Token.Length];
         }
         else
         {

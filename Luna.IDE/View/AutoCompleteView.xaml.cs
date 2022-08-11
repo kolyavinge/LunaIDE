@@ -19,10 +19,46 @@ public partial class AutoCompleteView : UserControl
         DependencyProperty.Register("AdditionalInfoForeground", typeof(Brush), typeof(AutoCompleteView));
     #endregion
 
+    #region VerticalScrollBarValue
+    public double VerticalScrollBarValue
+    {
+        get { return (double)GetValue(VerticalScrollBarValueProperty); }
+        set { SetValue(VerticalScrollBarValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty VerticalScrollBarValueProperty =
+        DependencyProperty.Register("VerticalScrollBarValue", typeof(double), typeof(AutoCompleteView), new PropertyMetadata(VerticalScrollBarValueChangedCallback));
+
+    private static void VerticalScrollBarValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var view = (AutoCompleteView)d;
+        var vm = (AutoCompleteViewModel)view.DataContext;
+        vm.CorrectByVerticalScrollBarValue((double)e.NewValue);
+    }
+    #endregion
+
+    #region HorizontalScrollBarValue
+    public double HorizontalScrollBarValue
+    {
+        get { return (double)GetValue(HorizontalScrollBarValueProperty); }
+        set { SetValue(HorizontalScrollBarValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty HorizontalScrollBarValueProperty =
+        DependencyProperty.Register("HorizontalScrollBarValue", typeof(double), typeof(AutoCompleteView), new PropertyMetadata(HorizontalScrollBarValueChangedCallback));
+
+    private static void HorizontalScrollBarValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var view = (AutoCompleteView)d;
+        var vm = (AutoCompleteViewModel)view.DataContext;
+        vm.CorrectByHorizontalScrollBarValue((double)e.NewValue);
+    }
+    #endregion
+
     public AutoCompleteView()
     {
         InitializeComponent();
-        DataContext = DependencyContainer.Resolve<AutoCompleteViewModel>();
+        //DataContext = DependencyContainer.Resolve<AutoCompleteViewModel>();
     }
 
     private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)

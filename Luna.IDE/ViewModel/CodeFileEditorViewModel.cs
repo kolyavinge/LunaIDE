@@ -45,7 +45,6 @@ public class CodeFileEditorViewModel : NotificationObject
         {
             _verticalScrollBarValue = value;
             RaisePropertyChanged(() => VerticalScrollBarValue);
-            AutoCompleteViewModel.CorrectByVerticalScrollBarValue(value);
         }
     }
 
@@ -56,7 +55,6 @@ public class CodeFileEditorViewModel : NotificationObject
         {
             _horizontalScrollBarValue = value;
             RaisePropertyChanged(() => HorizontalScrollBarValue);
-            AutoCompleteViewModel.CorrectByHorizontalScrollBarValue(value);
         }
     }
 

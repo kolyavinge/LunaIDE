@@ -75,6 +75,8 @@
 
                 <view:AutoCompleteView
                     DataContext="{Binding AutoCompleteViewModel}"
+                    VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox}"
+                    HorizontalScrollBarValue="{Binding HorizontalScrollBarValue, ElementName=codeTextBox}"
                     Visibility="{Binding Model.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="{Binding ScreenPosition}"
                     VerticalAlignment="{Binding VerticalAlignment}"

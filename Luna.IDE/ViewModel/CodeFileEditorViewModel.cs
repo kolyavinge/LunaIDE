@@ -1,8 +1,6 @@
 ﻿using System.Windows.Input;
-using Luna.IDE.Infrastructure;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
-using Luna.IDE.Utils;
 using Luna.IDE.View;
 using Luna.ProjectModel;
 
@@ -11,24 +9,11 @@ namespace Luna.IDE.ViewModel;
 [EditorFor(typeof(CodeFileProjectItem))]
 public class CodeFileEditorViewModel : NotificationObject
 {
-    private double _verticalScrollBarValue;
-    private double _horizontalScrollBarValue;
     private IControl? _codeTextBox;
-    private AutoCompleteViewModel? _autoCompleteViewModel;
 
     public ICodeFileEditor Model { get; set; }
 
-    [Inject]
-    public AutoCompleteViewModel AutoCompleteViewModel
-    {
-        get => _autoCompleteViewModel ?? throw new NotInitializedException(nameof(AutoCompleteViewModel));
-        set
-        {
-            _autoCompleteViewModel = value;
-            _autoCompleteViewModel.Model.Completed += (s, e) => _codeTextBox?.Focus();
-            _autoCompleteViewModel.Model.Init(new AutoCompleteDataContext(Model));
-        }
-    }
+    public AutoComplete AutoComplete { get; }
 
     public ICommand CodeTextBoxLoadedCommand { get; }
 
@@ -38,39 +23,16 @@ public class CodeFileEditorViewModel : NotificationObject
 
     public ICommand KeyDownCommand { get; }
 
-    public double VerticalScrollBarValue
-    {
-        get => _verticalScrollBarValue;
-        set
-        {
-            _verticalScrollBarValue = value;
-            RaisePropertyChanged(() => VerticalScrollBarValue);
-        }
-    }
-
-    public double HorizontalScrollBarValue
-    {
-        get => _horizontalScrollBarValue;
-        set
-        {
-            _horizontalScrollBarValue = value;
-            RaisePropertyChanged(() => HorizontalScrollBarValue);
-        }
-    }
-
-    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor)
+    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor, AutoComplete autoComplete)
     {
         Model = codeFileEditor;
+        AutoComplete = autoComplete;
+        AutoComplete.Completed += (s, e) => _codeTextBox?.Focus();
+        AutoComplete.Init(new AutoCompleteDataContext(Model));
         CodeTextBoxLoadedCommand = new ActionCommand<IControl>(control => _codeTextBox = control);
-        ShowAutoCompleteCommand = new ActionCommand(ShowAutoComplete);
-        HideAutoCompleteCommand = new ActionCommand(() => AutoCompleteViewModel.Model.IsVisible = false);
+        ShowAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = true);
+        HideAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = false);
         KeyDownCommand = new ActionCommand<KeyEventArgs>(KeyDown);
-    }
-
-    private void ShowAutoComplete()
-    {
-        if (_codeTextBox == null) throw new NotInitializedException(nameof(_codeTextBox));
-        AutoCompleteViewModel.Model.IsVisible = true;
     }
 
     private void KeyDown(KeyEventArgs e)
@@ -79,11 +41,11 @@ public class CodeFileEditorViewModel : NotificationObject
         var controlPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
         var altPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt;
         var shiftPressed = (e.KeyboardDevice.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
-        var isAutoCompleteVisible = AutoCompleteViewModel.Model.IsVisible;
+        var isAutoCompleteVisible = AutoComplete.IsVisible;
         // with modifiers
         if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.Space)
         {
-            ShowAutoComplete();
+            AutoComplete.IsVisible = true;
             e.Handled = true;
         }
         else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.L)
@@ -124,40 +86,40 @@ public class CodeFileEditorViewModel : NotificationObject
         // without any modifiers
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Escape)
         {
-            AutoCompleteViewModel.Model.IsVisible = false;
+            AutoComplete.IsVisible = false;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Up)
         {
-            AutoCompleteViewModel.Model.MoveSelectionUp();
+            AutoComplete.MoveSelectionUp();
             e.Handled = true;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Down)
         {
-            AutoCompleteViewModel.Model.MoveSelectionDown();
+            AutoComplete.MoveSelectionDown();
             e.Handled = true;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.PageUp)
         {
-            AutoCompleteViewModel.Model.MoveSelectionPageUp(10);
+            AutoComplete.MoveSelectionPageUp(10);
             e.Handled = true;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.PageDown)
         {
-            AutoCompleteViewModel.Model.MoveSelectionPageDown(10);
+            AutoComplete.MoveSelectionPageDown(10);
             e.Handled = true;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Return)
         {
-            AutoCompleteViewModel.Model.Complete();
+            AutoComplete.Complete();
             e.Handled = true;
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && key == Key.Space)
         {
-            AutoCompleteViewModel.Model.Complete();
+            AutoComplete.Complete();
         }
         else if (isAutoCompleteVisible && !controlPressed && !altPressed && !shiftPressed && (key == Key.Left || key == Key.Right))
         {
-            AutoCompleteViewModel.Model.IsVisible = false;
+            AutoComplete.IsVisible = false;
         }
     }
 }

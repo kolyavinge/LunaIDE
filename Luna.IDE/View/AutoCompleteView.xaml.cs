@@ -1,12 +1,32 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Luna.IDE.Infrastructure;
+using Luna.IDE.Model;
 using Luna.IDE.ViewModel;
 
 namespace Luna.IDE.View;
 
 public partial class AutoCompleteView : UserControl
 {
+    #region Model
+    public AutoComplete Model
+    {
+        get { return (AutoComplete)GetValue(ModelProperty); }
+        set { SetValue(ModelProperty, value); }
+    }
+
+    public static readonly DependencyProperty ModelProperty =
+        DependencyProperty.Register("Model", typeof(AutoComplete), typeof(AutoCompleteView), new PropertyMetadata(ModelChangedCallback));
+
+    private static void ModelChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var view = (AutoCompleteView)d;
+        var vm = (AutoCompleteViewModel)view.DataContext;
+        vm.Model = (AutoComplete)e.NewValue;
+    }
+    #endregion
+
     #region AdditionalInfoForeground
     public Brush AdditionalInfoForeground
     {
@@ -94,7 +114,7 @@ public partial class AutoCompleteView : UserControl
     public AutoCompleteView()
     {
         InitializeComponent();
-        //DataContext = DependencyContainer.Resolve<AutoCompleteViewModel>();
+        DataContext = DependencyContainer.Resolve<AutoCompleteViewModel>();
     }
 
     private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)

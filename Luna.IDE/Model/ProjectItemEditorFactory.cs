@@ -48,9 +48,17 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
         var viewModelType = types
             .FirstOrDefault(type =>
                 type.GetCustomAttribute<EditorForAttribute>()?.ProjectItemType == projectItem.GetType() &&
-                type.GetConstructor(new[] { model.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
+                type.GetConstructors().Length == 1 &&
+                type.GetConstructors().First().GetParameters().Length > 0 &&
+                type.GetConstructors().First().GetParameters().First().ParameterType.IsInstanceOfType(model)) ?? throw new ProjectItemEditorFactoryException();
 
-        var viewModel = Activator.CreateInstance(viewModelType, model) ?? throw new ProjectItemEditorFactoryException();
+        var viewModelTypeConstructorParams = new List<object> { model };
+        foreach (var parameter in viewModelType.GetConstructors().First().GetParameters().Skip(1))
+        {
+            viewModelTypeConstructorParams.Add(DependencyContainer.Resolve(parameter.ParameterType));
+        }
+
+        var viewModel = Activator.CreateInstance(viewModelType, viewModelTypeConstructorParams.ToArray()) ?? throw new ProjectItemEditorFactoryException();
         DependencyContainer.ResolveInjectedProperties(viewModel);
 
         var viewType = types

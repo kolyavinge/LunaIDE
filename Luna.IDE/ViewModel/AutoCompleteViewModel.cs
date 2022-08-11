@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using Luna.IDE.Model;
 using Luna.IDE.Mvvm;
@@ -13,12 +14,22 @@ public class AutoCompleteViewModel : NotificationObject
     private IControl? _control;
     private double _parentWidth, _parentHeight;
     private VerticalAlignment _verticalAlignment;
+    private AutoComplete? _model;
 
-    public AutoComplete Model { get; }
+    public AutoComplete? Model
+    {
+        get => _model;
+        set
+        {
+            _model = value ?? throw new ArgumentNullException();
+            MouseClickCommand = new ActionCommand(_model.Complete);
+            RaisePropertyChanged(() => Model!);
+        }
+    }
 
     public ICommand LoadedCommand { get; set; }
 
-    public ICommand MouseClickCommand { get; set; }
+    public ICommand? MouseClickCommand { get; set; }
 
     public VerticalAlignment VerticalAlignment
     {
@@ -32,15 +43,14 @@ public class AutoCompleteViewModel : NotificationObject
         set { _screenPosition = value; RaisePropertyChanged(() => ScreenPosition); }
     }
 
-    public AutoCompleteViewModel(AutoComplete model)
+    public AutoCompleteViewModel()
     {
-        Model = model;
         LoadedCommand = new ActionCommand<IControl>(x => _control = x);
-        MouseClickCommand = new ActionCommand(Model.Complete);
     }
 
     public void Show(double verticalScrollBarValue, double horizontalScrollBarValue, double parentWidth, double parentHeight)
     {
+        if (Model == null) return;
         _parentWidth = parentWidth;
         _parentHeight = parentHeight;
         var cursor = Model.DataContext.CursorPosition;
@@ -69,6 +79,7 @@ public class AutoCompleteViewModel : NotificationObject
 
     public void CorrectByVerticalScrollBarValue(double verticalScrollBarValue)
     {
+        if (Model == null) return;
         if (!Model.IsVisible) return;
         var screenY = _absolutePosition.Y - verticalScrollBarValue;
         if (VerticalAlignment == VerticalAlignment.Top)
@@ -89,6 +100,7 @@ public class AutoCompleteViewModel : NotificationObject
 
     public void CorrectByHorizontalScrollBarValue(double horizontalScrollBarValue)
     {
+        if (Model == null) return;
         if (!Model.IsVisible) return;
         var x = _absolutePosition.X - horizontalScrollBarValue;
         if (x < 0) x = 0;

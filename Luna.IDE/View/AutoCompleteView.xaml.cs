@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Luna.IDE.Infrastructure;
 using Luna.IDE.ViewModel;
 
 namespace Luna.IDE.View;
@@ -54,6 +53,43 @@ public partial class AutoCompleteView : UserControl
         vm.CorrectByHorizontalScrollBarValue((double)e.NewValue);
     }
     #endregion
+
+    #region ParentWidth
+    public double ParentWidth
+    {
+        get { return (double)GetValue(ParentWidthProperty); }
+        set { SetValue(ParentWidthProperty, value); }
+    }
+
+    public static readonly DependencyProperty ParentWidthProperty =
+        DependencyProperty.Register("ParentWidth", typeof(double), typeof(AutoCompleteView));
+    #endregion
+
+    #region ParentHeight
+    public double ParentHeight
+    {
+        get { return (double)GetValue(ParentHeightProperty); }
+        set { SetValue(ParentHeightProperty, value); }
+    }
+
+    public static readonly DependencyProperty ParentHeightProperty =
+        DependencyProperty.Register("ParentHeight", typeof(double), typeof(AutoCompleteView));
+    #endregion
+
+    static AutoCompleteView()
+    {
+        VisibilityProperty.OverrideMetadata(typeof(AutoCompleteView), new FrameworkPropertyMetadata(VisibilityChanged));
+    }
+
+    private static void VisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var view = (AutoCompleteView)d;
+        var vm = (AutoCompleteViewModel)view.DataContext;
+        if ((Visibility)e.NewValue == Visibility.Visible)
+        {
+            vm.Show(view.VerticalScrollBarValue, view.HorizontalScrollBarValue, view.ParentWidth, view.ParentHeight);
+        }
+    }
 
     public AutoCompleteView()
     {

@@ -75,6 +75,8 @@
 
                 <view:AutoCompleteView
                     DataContext="{Binding AutoCompleteViewModel}"
+                    ParentWidth="{Binding ViewportWidth, ElementName=codeTextBox}"
+                    ParentHeight="{Binding ViewportHeight, ElementName=codeTextBox}"
                     VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox}"
                     HorizontalScrollBarValue="{Binding HorizontalScrollBarValue, ElementName=codeTextBox}"
                     Visibility="{Binding Model.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -91,7 +93,7 @@
             Orientation="Vertical"
             Maximum="{Binding VerticalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
-            ViewportSize="{Binding VerticalScrollBarViewportSize, ElementName=codeTextBox, Mode=TwoWay}"
+            ViewportSize="{Binding ViewportHeight, ElementName=codeTextBox, Mode=TwoWay}"
             Width="22"
             Margin="0,0,-2,0"
             HorizontalAlignment="Right"
@@ -106,7 +108,7 @@
             Orientation="Horizontal"
             Maximum="{Binding HorizontalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
-            ViewportSize="{Binding HorizontalScrollBarViewportSize, ElementName=codeTextBox, Mode=TwoWay}"
+            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}"
             Cursor="Arrow"
             Scroll="ScrollBarOnScroll" />
     </Grid>

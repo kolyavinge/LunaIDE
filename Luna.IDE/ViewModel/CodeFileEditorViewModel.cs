@@ -70,7 +70,7 @@ public class CodeFileEditorViewModel : NotificationObject
     private void ShowAutoComplete()
     {
         if (_codeTextBox == null) throw new NotInitializedException(nameof(_codeTextBox));
-        AutoCompleteViewModel.Show(VerticalScrollBarValue, HorizontalScrollBarValue, _codeTextBox.ActualWidth, _codeTextBox.ActualHeight);
+        AutoCompleteViewModel.Model.IsVisible = true;
     }
 
     private void KeyDown(KeyEventArgs e)

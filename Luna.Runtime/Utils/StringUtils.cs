@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.Utils;
+﻿namespace Luna.Utils;
 
 static class StringUtils
 {

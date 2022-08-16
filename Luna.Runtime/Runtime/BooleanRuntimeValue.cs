@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.Runtime;
+﻿namespace Luna.Runtime;
 
 internal class BooleanRuntimeValue : RuntimeValue
 {

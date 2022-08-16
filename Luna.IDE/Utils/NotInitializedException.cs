@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.IDE.Utils;
+﻿namespace Luna.IDE.Utils;
 
 public class NotInitializedException : Exception
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using Luna.Collections;
+﻿using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;

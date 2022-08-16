@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Threading;
 using Luna.Collections;
 using Luna.Runtime;

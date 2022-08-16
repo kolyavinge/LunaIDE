@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using Luna.IDE.CodeEditor;

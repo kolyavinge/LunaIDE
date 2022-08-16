@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.Parsing;
+﻿namespace Luna.Parsing;
 
 public class Token
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.IDE.Mvvm;
+﻿namespace Luna.IDE.Mvvm;
 
 public class ActionCommand : Command
 {

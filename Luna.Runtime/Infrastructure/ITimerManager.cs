@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Luna.Infrastructure;
+﻿namespace Luna.Infrastructure;
 
 public interface ITimerManager
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using CodeHighlighter.Model;
+﻿using CodeHighlighter.Model;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.Model;

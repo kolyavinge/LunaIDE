@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Math;
 
-internal class Subest : BaseFunctionTest<Sub>
+internal class SubTest : BaseFunctionTest<Sub>
 {
     [Test]
     public void GetValue_IntegerInteger_Integer()

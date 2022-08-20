@@ -30,17 +30,21 @@ public class OutputArea : IOutputArea
 
     public void Clear()
     {
+        CodeTextBoxModel.IsReadOnly = false;
         _currentLine = 0;
         CodeTextBoxModel.SetText("");
         _tokens.Clear();
+        CodeTextBoxModel.IsReadOnly = true;
     }
 
     public void SendMessage(OutputMessage message)
     {
+        CodeTextBoxModel.IsReadOnly = false;
         _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
         _currentLine++;
         CodeTextBoxModel.MoveCursorTextEnd();
         CodeTextBoxModel.InsertText(message.Text + Environment.NewLine);
+        CodeTextBoxModel.IsReadOnly = true;
     }
 
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)

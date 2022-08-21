@@ -60,10 +60,10 @@ import 'const.luna'
 
 // ----- input -----
 
-(mouse_handler (window event x y)
+(mouse_handler (event x y)
     (if (eq event 'click')
         ((step (int (/ y CELL_SIZE)) (int (/ x CELL_SIZE)))
-         (update_window window))
+         (update_window @window))
         (ignore))
 )
 
@@ -90,7 +90,9 @@ import 'const.luna'
     (render_chips context)
 )
 
-(main_window () (show_window 'Luna 15 application' render_handler mouse_handler))
+(main_window ()
+    (set @window (create_window 'Luna 15 application' render_handler mouse_handler))
+)
 
 (start_app ()
     (init_game)

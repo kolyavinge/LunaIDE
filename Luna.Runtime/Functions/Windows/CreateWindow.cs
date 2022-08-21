@@ -7,8 +7,8 @@ using Luna.Runtime;
 
 namespace Luna.Functions.Windows;
 
-[EmbeddedFunctionDeclaration("show_window", "title render_func mouse_handler_func")]
-internal class ShowWindow : EmbeddedFunction
+[EmbeddedFunctionDeclaration("create_window", "title render_func mouse_handler_func")]
+internal class CreateWindow : EmbeddedFunction
 {
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
@@ -56,6 +56,6 @@ class AppWindow : System.Windows.Window
         var eventName = new StringRuntimeValue("click");
         var x = new FloatRuntimeValue(pos.X);
         var y = new FloatRuntimeValue(pos.Y);
-        _mouseHandlerFunc.GetValue(new IRuntimeValue[] { window, eventName, x, y }.ToReadonlyArray());
+        _mouseHandlerFunc.GetValue(new IRuntimeValue[] { eventName, x, y }.ToReadonlyArray());
     }
 }

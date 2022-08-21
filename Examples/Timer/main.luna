@@ -11,7 +11,7 @@
 
 (set_timer ()
     (set @count 0)
-    (set @timer (init_timer 500 callback))
+    (set @timer (create_timer 500 callback))
     (start_timer @timer)
 )
 

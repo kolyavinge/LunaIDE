@@ -10,8 +10,8 @@ static class TimersCollection
     public static readonly Dictionary<long, DispatcherTimer> Timers = new();
 }
 
-[EmbeddedFunctionDeclaration("init_timer", "interval callback")]
-internal class InitTimer : EmbeddedFunction
+[EmbeddedFunctionDeclaration("create_timer", "interval callback")]
+internal class CreateTimer : EmbeddedFunction
 {
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {

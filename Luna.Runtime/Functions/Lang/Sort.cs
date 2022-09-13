@@ -45,7 +45,7 @@ internal class Sort : EmbeddedFunction
             var result = _compareFunc.GetValue(new[] { x!, y! }.ToReadonlyArray());
             if (result is not NumericRuntimeValue numeric)
             {
-                throw new RuntimeException("Compare function must return a numeric value.");
+                throw new RuntimeException("The compare function must return a numeric value.");
             }
 
             return (int)numeric.IntegerValue;

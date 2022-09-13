@@ -90,7 +90,7 @@ internal class SortTest : BaseFunctionTest<Sort>
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Compare function must return a numeric value.", exp.Message);
+            Assert.AreEqual("The compare function must return a numeric value.", exp.Message);
         }
     }
 }

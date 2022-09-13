@@ -302,6 +302,13 @@ internal class CodeModelNavigatorTest
         Assert.Null(_result);
     }
 
+    [Test]
+    public void ConstantDeclaration_NoElementInParent()
+    {
+        GetCodeElementByPosition(0, 7);
+        Assert.Null(_result);
+    }
+
     private void GetCodeElementByPosition(int lineIndex, int columnIndex)
     {
         _result = _navigator.GetCodeElementByPosition(_codeModel, lineIndex, columnIndex);

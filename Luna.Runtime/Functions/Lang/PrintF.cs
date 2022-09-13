@@ -12,7 +12,7 @@ internal class PrintF : EmbeddedFunction
     {
         if (RuntimeEnvironment.StandartOutput != null)
         {
-            var format = GetValueOrError<StringRuntimeValue>(argumentValues, 0).ToString() ?? "";
+            var format = GetValueOrError<StringRuntimeValue>(argumentValues, 0).ToString();
             var param = GetValueOrError<ListRuntimeValue>(argumentValues, 1).Select(x => x.ToString()).ToArray();
             var text = String.Format(format, param);
             text = text.Substring(1, text.Length - 2);

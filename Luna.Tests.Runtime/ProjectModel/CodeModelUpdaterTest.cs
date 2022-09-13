@@ -64,4 +64,12 @@ internal class CodeModelUpdaterTest
         Assert.AreEqual(newModel, callbackModel);
         Assert.AreEqual(1, callbackDiff.AddedDeclaredFunctions.Count);
     }
+
+    [Test]
+    public void AttachDetach()
+    {
+        _updater.Attach(_projectItems.First(), _ => { });
+        _updater.Detach(_projectItems.First());
+        _updater.Attach(_projectItems.First(), _ => { });
+    }
 }

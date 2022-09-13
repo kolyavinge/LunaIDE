@@ -6,8 +6,8 @@ namespace Luna.Tests.Navigation;
 
 internal class DeclarationNavigatorTest
 {
-    private ConstantDeclaration _constant, _importedConstant;
-    private FunctionDeclaration _func, _importedFunc;
+    private ConstantDeclaration _constant, _importedConstant, _wrongConstant;
+    private FunctionDeclaration _func, _importedFunc, _wrongFunc;
     private CodeFileProjectItem _codeFile, _importedCodeFile;
     private DeclarationNavigator _navigator;
 
@@ -26,6 +26,9 @@ internal class DeclarationNavigatorTest
         _codeFile.CodeModel.AddImportDirective(new("", _importedCodeFile));
         _codeFile.CodeModel.AddConstantDeclaration(_constant);
         _codeFile.CodeModel.AddFunctionDeclaration(_func);
+
+        _wrongConstant = new ConstantDeclaration("WRONG_CONST", new IntegerValueElement(1));
+        _wrongFunc = new FunctionDeclaration("WRONG_FUNC", new FunctionArgument[0], new());
 
         _navigator = new();
     }
@@ -49,6 +52,13 @@ internal class DeclarationNavigatorTest
     }
 
     [Test]
+    public void ConstantDeclaration_Wrong()
+    {
+        var result = _navigator.GetDeclarationFor(_codeFile, _wrongConstant);
+        Assert.Null(result);
+    }
+
+    [Test]
     public void FunctionDeclaration()
     {
         var result = _navigator.GetDeclarationFor(_codeFile, _func);
@@ -64,6 +74,13 @@ internal class DeclarationNavigatorTest
         Assert.NotNull(result);
         Assert.AreEqual(_importedFunc, result.Declaration);
         Assert.AreEqual(_importedCodeFile, result.CodeFile);
+    }
+
+    [Test]
+    public void FunctionDeclaration_Wrong()
+    {
+        var result = _navigator.GetDeclarationFor(_codeFile, _wrongFunc);
+        Assert.Null(result);
     }
 
     [Test]
@@ -100,5 +117,12 @@ internal class DeclarationNavigatorTest
         Assert.NotNull(result);
         Assert.AreEqual(_importedFunc, result.Declaration);
         Assert.AreEqual(_importedCodeFile, result.CodeFile);
+    }
+
+    [Test]
+    public void Function_WrongCodeElement()
+    {
+        var result = _navigator.GetDeclarationFor(_codeFile, new IntegerValueElement(1));
+        Assert.Null(result);
     }
 }

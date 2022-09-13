@@ -12,7 +12,7 @@ internal class Print : EmbeddedFunction
         if (RuntimeEnvironment.StandartOutput != null)
         {
             var value = GetValueOrError<IRuntimeValue>(argumentValues, 0);
-            var text = value.ToString() ?? "";
+            var text = value.ToString();
             if (value is StringRuntimeValue)
             {
                 text = text.Substring(1, text.Length - 2);

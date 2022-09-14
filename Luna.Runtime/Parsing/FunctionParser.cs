@@ -86,7 +86,7 @@ public class FunctionParser : AbstractParser
             return;
         }
         ValueElement? constValue = null;
-        ParseConstValue(constToken, ref constValue, ref error);
+        ParseConstValue(ref constValue, ref error);
         MoveNext();
         var unexpectedTokens = GetRemainingTokens(constToken.LineIndex);
         if (unexpectedTokens.Any())
@@ -103,33 +103,24 @@ public class FunctionParser : AbstractParser
         }
     }
 
-    private void ParseConstValue(Token constToken, ref ValueElement? constValue, ref ParserMessage? error)
+    private void ParseConstValue(ref ValueElement? constValue, ref ParserMessage? error)
     {
-        if (Eof || constToken.LineIndex != Token.LineIndex)
+        if (Token.Kind == TokenKind.IntegerNumber)
         {
-            error = new(ParserMessageType.ConstNoValue, constToken);
-        }
-        else if (Token.Kind == TokenKind.IntegerNumber)
-        {
-            if (TryParseLongValue(out long value))
+            try
             {
+                long value = ParseLongValue();
                 constValue = new IntegerValueElement(value, Token.LineIndex, Token.StartColumnIndex);
             }
-            else
+            catch (OverflowException)
             {
                 error = new(ParserMessageType.IntegerValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
         {
-            if (TryParseDoubleValue(out double value))
-            {
-                constValue = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
-            }
-            else
-            {
-                error = new(ParserMessageType.FloatValueOverflow, Token);
-            }
+            double value = ParseDoubleValue();
+            constValue = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
         }
         else if (Token.Kind == TokenKind.String)
         {
@@ -257,27 +248,22 @@ public class FunctionParser : AbstractParser
         ValueElement? body = null;
         if (Token.Kind == TokenKind.IntegerNumber)
         {
-            if (TryParseLongValue(out long value))
+            try
             {
+                long value = ParseLongValue();
                 body = new IntegerValueElement(value, Token.LineIndex, Token.StartColumnIndex);
                 MoveNext();
             }
-            else
+            catch (OverflowException)
             {
                 error = new(ParserMessageType.IntegerValueOverflow, Token);
             }
         }
         else if (Token.Kind == TokenKind.FloatNumber)
         {
-            if (TryParseDoubleValue(out double value))
-            {
-                body = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
-                MoveNext();
-            }
-            else
-            {
-                error = new(ParserMessageType.FloatValueOverflow, Token);
-            }
+            double value = ParseDoubleValue();
+            body = new FloatValueElement(value, Token.LineIndex, Token.StartColumnIndex);
+            MoveNext();
         }
         else if (Token.Kind == TokenKind.String)
         {
@@ -297,11 +283,7 @@ public class FunctionParser : AbstractParser
         else if (Token.Kind == TokenKind.Identificator)
         {
             var name = GetTokenName();
-            if (!_scope.IsConstantExist(name) && !_scope.IsFunctionExist(name))
-            {
-                body = new FunctionArgumentValueElement(name, Token.LineIndex, Token.StartColumnIndex);
-            }
-            else if (_scope.IsConstantExist(name))
+            if (_scope.IsConstantExist(name))
             {
                 body = new NamedConstantValueElement(name, Token.LineIndex, Token.StartColumnIndex);
             }
@@ -311,7 +293,7 @@ public class FunctionParser : AbstractParser
             }
             else
             {
-                error = new(ParserMessageType.UnknownIdentificator, Token);
+                body = new FunctionArgumentValueElement(name, Token.LineIndex, Token.StartColumnIndex);
             }
             MoveNext();
         }

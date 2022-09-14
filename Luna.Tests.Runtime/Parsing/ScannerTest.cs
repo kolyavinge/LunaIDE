@@ -132,6 +132,22 @@ internal class ScannerTest
     }
 
     [Test]
+    public void Const_IncorrectString()
+    {
+        var tokens = GetTokens("'");
+        Assert.AreEqual(1, tokens.Count);
+        Assert.AreEqual(new Token("'", 0, 0, 1, TokenKind.Unknown), tokens[0]);
+    }
+
+    [Test]
+    public void Const_UncompleteString()
+    {
+        var tokens = GetTokens("'string\r\n");
+        Assert.AreEqual(1, tokens.Count);
+        Assert.AreEqual(new Token("'string", 0, 0, 7, TokenKind.Unknown), tokens[0]);
+    }
+
+    [Test]
     public void Const_BooleanTrue()
     {
         var tokens = GetTokens("true");
@@ -277,11 +293,13 @@ internal class ScannerTest
     [Test]
     public void Unknown()
     {
-        var tokens = GetTokens("@123 1x 2.3!");
-        Assert.AreEqual(3, tokens.Count);
-        Assert.AreEqual(new Token("@123", 0, 0, 4, TokenKind.Unknown), tokens[0]);
-        Assert.AreEqual(new Token("1x", 0, 5, 2, TokenKind.Unknown), tokens[1]);
-        Assert.AreEqual(new Token("2.3!", 0, 8, 4, TokenKind.Unknown), tokens[2]);
+        var tokens = GetTokens("^ @123 1x 2.3! a^");
+        Assert.AreEqual(5, tokens.Count);
+        Assert.AreEqual(new Token("^", 0, 0, 1, TokenKind.Unknown), tokens[0]);
+        Assert.AreEqual(new Token("@123", 0, 2, 4, TokenKind.Unknown), tokens[1]);
+        Assert.AreEqual(new Token("1x", 0, 7, 2, TokenKind.Unknown), tokens[2]);
+        Assert.AreEqual(new Token("2.3!", 0, 10, 4, TokenKind.Unknown), tokens[3]);
+        Assert.AreEqual(new Token("a^", 0, 15, 2, TokenKind.Unknown), tokens[4]);
     }
 
     private List<Token> GetTokens(string text)

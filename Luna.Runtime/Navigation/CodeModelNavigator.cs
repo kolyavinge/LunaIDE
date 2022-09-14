@@ -39,7 +39,7 @@ public class CodeModelNavigator : ICodeModelNavigator
         allElements.AddRange(codeModel.Constants);
         allElements.AddRange(codeModel.Functions);
         if (codeModel.RunFunction != null) allElements.Add(codeModel.RunFunction);
-        allElements.Sort(new ReverseCodeElementComparer());
+        allElements.Sort(new ReverseCodeElementComparer(new CodeElementComparer()));
 
         return allElements.FirstOrDefault(e => IsParent(e, lineIndex, columnIndex));
     }
@@ -47,22 +47,5 @@ public class CodeModelNavigator : ICodeModelNavigator
     private bool IsParent(CodeElement element, int lineIndex, int columnIndex)
     {
         return element.LineIndex <= lineIndex && element.ColumnIndex <= columnIndex;
-    }
-
-    class ReverseCodeElementComparer : IComparer<CodeElement>
-    {
-        public int Compare(CodeElement? x, CodeElement? y)
-        {
-            if (x == null && y == null) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
-            var result = x.LineIndex.CompareTo(y.LineIndex);
-            if (result == 0)
-            {
-                result = x.ColumnIndex.CompareTo(y.ColumnIndex);
-            }
-
-            return -result;
-        }
     }
 }

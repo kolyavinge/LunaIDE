@@ -162,6 +162,17 @@ internal class DepthSearchLogicTest
     }
 
     [Test]
+    public void FunctionDeclaration_Body_Empty()
+    {
+        var root = new FunctionDeclaration("func", new FunctionArgument[0], new());
+        static bool crit(CodeElement e) => false;
+
+        var result = _logic.Seach(root, crit);
+
+        Assert.Null(result);
+    }
+
+    [Test]
     public void FunctionDeclaration_Body_1()
     {
         var body = new FloatValueElement(1.2);
@@ -203,6 +214,17 @@ internal class DepthSearchLogicTest
         Assert.NotNull(result);
         Assert.AreEqual(root, result.CodeElement);
         Assert.AreEqual(0, result.Chain.Length);
+    }
+
+    [Test]
+    public void ListValueElement_Empty()
+    {
+        var root = new ListValueElement(new[] { new ListValueElement(new ValueElement[0]) });
+        static bool crit(CodeElement e) => false;
+
+        var result = _logic.Seach(root, crit);
+
+        Assert.Null(result);
     }
 
     [Test]
@@ -249,6 +271,17 @@ internal class DepthSearchLogicTest
     }
 
     [Test]
+    public void LambdaValueElement_Body_Empty()
+    {
+        var root = new LambdaValueElement(new FunctionArgument[0], new());
+        static bool crit(CodeElement e) => false;
+
+        var result = _logic.Seach(root, crit);
+
+        Assert.Null(result);
+    }
+
+    [Test]
     public void LambdaValueElement_Body_1()
     {
         var body = new FloatValueElement(1.2);
@@ -290,6 +323,17 @@ internal class DepthSearchLogicTest
         Assert.NotNull(result);
         Assert.AreEqual(root, result.CodeElement);
         Assert.AreEqual(0, result.Chain.Length);
+    }
+
+    [Test]
+    public void FunctionValueElement_NoResult()
+    {
+        var root = new FunctionValueElement(null, "func_call", new FunctionValueElement[0]);
+        static bool crit(CodeElement e) => false;
+
+        var result = _logic.Seach(root, crit);
+
+        Assert.Null(result);
     }
 
     [Test]

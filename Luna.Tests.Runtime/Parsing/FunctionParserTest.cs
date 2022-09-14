@@ -537,6 +537,25 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_Body_IncorrectToken()
+    {
+        // (func () ^)
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("func", 0, 1, 4, TokenKind.Identificator),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new(")", 0, 7, 1, TokenKind.CloseBracket),
+            new("^", 0, 9, 1, TokenKind.Unknown)
+        });
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("^", 0, 9, 1, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
     public void FunctionDeclaration_Arguments_LastIncorrect()
     {
         // (func (xxx yyy 111) 1)
@@ -556,6 +575,24 @@ internal class FunctionParserTest
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.IncorrectFunctionAgrument, _result.Errors.First().Type);
         Assert.AreEqual(new Token("111", 0, 15, 3, TokenKind.IntegerNumber), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
+    public void FunctionDeclaration_Arguments_NoCloseBracket()
+    {
+        // (func (xxx
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("func", 0, 1, 4, TokenKind.Identificator),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("xxx", 0, 7, 3, TokenKind.Identificator)
+        });
+        Assert.AreEqual(0, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectFunctionAgrumentsDeclaration, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("", 0, 0, 0, TokenKind.Unknown), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -720,6 +757,28 @@ internal class FunctionParserTest
         Assert.AreEqual(typeof(IntegerValueElement), body.Items[0].GetType());
         Assert.AreEqual(typeof(FloatValueElement), body.Items[1].GetType());
         Assert.AreEqual(typeof(StringValueElement), body.Items[2].GetType());
+    }
+
+    [Test]
+    public void FunctionDeclaration_List_NoCloseBracket()
+    {
+        // (func () (1 1.2 'str'
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("func", 0, 1, 4, TokenKind.Identificator),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new(")", 0, 7, 1, TokenKind.CloseBracket),
+            new("(", 0, 9, 1, TokenKind.OpenBracket),
+            new("1", 0, 10, 1, TokenKind.IntegerNumber),
+            new("1.2", 0, 12, 3, TokenKind.FloatNumber),
+            new("'str'", 0, 16, 5, TokenKind.String)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("", 0, 0, 0, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.IsNull(_codeModel.RunFunction);
     }
 
     [Test]
@@ -946,6 +1005,47 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_FunctionCall_IncorrectBody()
+    {
+        // (f () (g ^
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("g", 0, 7, 1, TokenKind.Identificator),
+            new("^", 0, 9, 1, TokenKind.Unknown)
+        });
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("^", 0, 9, 1, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
+    public void FunctionDeclaration_FunctionCall_NoCloseBracket()
+    {
+        // (f () (g
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("g", 0, 7, 1, TokenKind.Identificator)
+        });
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("", 0, 0, 0, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+    }
+
+    [Test]
     public void FunctionDeclaration_Lambda()
     {
         // (f () (lambda (x) (g x)))
@@ -1033,6 +1133,53 @@ internal class FunctionParserTest
         Assert.AreEqual("h", lambdaBody.Name);
         Assert.AreEqual(1, lambdaBody.ArgumentValues.Count);
         Assert.AreEqual("x", ((FunctionArgumentValueElement)lambdaBody.ArgumentValues[0]).Name);
+    }
+
+    [Test]
+    public void FunctionDeclaration_Lambda_IncorrectArguments()
+    {
+        // (f () (lambda (^
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("lambda", 0, 7, 6, TokenKind.Lambda),
+            new("(", 0, 14, 1, TokenKind.OpenBracket),
+            new("^", 0, 15, 1, TokenKind.Unknown)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectFunctionAgrument, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("^", 0, 15, 1, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+    }
+
+    [Test]
+    public void FunctionDeclaration_Lambda_IncorrectBody()
+    {
+        // (f () (lambda (x) (^
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 1, 1, TokenKind.Identificator),
+            new("(", 0, 3, 1, TokenKind.OpenBracket),
+            new(")", 0, 4, 1, TokenKind.CloseBracket),
+            new("(", 0, 6, 1, TokenKind.OpenBracket),
+            new("lambda", 0, 7, 6, TokenKind.Lambda),
+            new("(", 0, 14, 1, TokenKind.OpenBracket),
+            new("x", 0, 15, 1, TokenKind.Identificator),
+            new(")", 0, 16, 1, TokenKind.CloseBracket),
+            new("(", 0, 18, 1, TokenKind.OpenBracket),
+            new("^", 0, 19, 1, TokenKind.Unknown)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("^", 0, 19, 1, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
     }
 
     [Test]
@@ -1231,6 +1378,44 @@ internal class FunctionParserTest
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.RunFunctionExist, _result.Errors.First().Type);
         Assert.AreEqual(new Token("run", 0, 1, 3, TokenKind.RunFunction), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.IsNull(_codeModel.RunFunction);
+    }
+
+    [Test]
+    public void RunFunctionCall_IncorrectFunctionCall()
+    {
+        // (run (f
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("run", 0, 1, 3, TokenKind.RunFunction),
+            new("(", 0, 5, 1, TokenKind.OpenBracket),
+            new("f", 0, 6, 1, TokenKind.Identificator)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.IncorrectFunctionCall, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("", 0, 0, 0, TokenKind.Unknown), _result.Errors.First().Token);
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.IsNull(_codeModel.RunFunction);
+    }
+
+    [Test]
+    public void RunFunctionCall_NoCloseBracket()
+    {
+        // (run (f 1)
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+            new("run", 0, 1, 3, TokenKind.RunFunction),
+            new("(", 0, 5, 1, TokenKind.OpenBracket),
+            new("f", 0, 6, 1, TokenKind.Identificator),
+            new("1", 0, 8, 1, TokenKind.IntegerNumber),
+            new(")", 0, 9, 1, TokenKind.CloseBracket)
+        });
+        Assert.AreEqual(1, _result.Errors.Count);
+        Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
+        Assert.AreEqual(new Token("", 0, 0, 0, TokenKind.Unknown), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
         Assert.IsNull(_codeModel.RunFunction);
     }

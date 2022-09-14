@@ -114,4 +114,17 @@ internal class ValueElementEvaluatorTest
         Assert.AreEqual(variableRuntimeValue, result);
         _scope.Verify(x => x.GetVariableOrCreateNew("@var"), Times.Once());
     }
+
+    [Test]
+    public void FakeValueElement()
+    {
+        try
+        {
+            _evaluator.Eval(_scope.Object, new FakeValueElement());
+        }
+        catch (RuntimeException e)
+        {
+            Assert.AreEqual("Type Luna.ProjectModel.FakeValueElement cannot be converted to RuntimeValue.", e.Message);
+        }
+    }
 }

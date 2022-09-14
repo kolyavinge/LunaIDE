@@ -76,16 +76,16 @@ public abstract class AbstractParser
         }
     }
 
-    protected bool TryParseLongValue(out long result)
+    protected long ParseLongValue()
     {
         var stringValue = GetTokenName();
-        return Int64.TryParse(stringValue, out result);
+        return Int64.Parse(stringValue);
     }
 
-    protected bool TryParseDoubleValue(out double result)
+    protected double ParseDoubleValue()
     {
         var stringValue = GetTokenName();
-        return Double.TryParse(stringValue, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." }, out result);
+        return Double.Parse(stringValue, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." });
     }
 
     protected void MoveNext()

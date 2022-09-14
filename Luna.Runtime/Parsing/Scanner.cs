@@ -150,8 +150,8 @@ public class Scanner
                 else if (IsIdentificatorNameChar()) { AddTokenChar(); textIterator.MoveNext(); goto case State.Identificator; }
                 else goto case State.Error;
             case State.String:
-                if (textIterator.Eof) { MakeToken(); goto case State.End; }
-                else if (IsReturn()) { MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
+                if (textIterator.Eof) { goto case State.Error; }
+                else if (IsReturn()) { goto case State.Error; }
                 else if (textIterator.Char == '\'') { AddTokenChar(); MakeToken(); textIterator.MoveNext(); goto case State.Begin; }
                 else { AddTokenChar(); textIterator.MoveNext(); goto case State.String; }
             case State.Number:

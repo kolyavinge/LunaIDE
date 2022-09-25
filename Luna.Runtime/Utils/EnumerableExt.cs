@@ -21,4 +21,24 @@ public static class EnumerableExt
             i++;
         }
     }
+
+    public static (IEnumerable<T>, IEnumerable<T>) Map<T>(this IEnumerable<T> collection, Predicate<T> predicate)
+    {
+        var resultTrue = new List<T>();
+        var resultFalse = new List<T>();
+
+        foreach (var item in collection)
+        {
+            if (predicate(item))
+            {
+                resultTrue.Add(item);
+            }
+            else
+            {
+                resultFalse.Add(item);
+            }
+        }
+
+        return (resultTrue, resultFalse);
+    }
 }

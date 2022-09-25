@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Luna.Infrastructure;
 
 namespace Luna.ProjectModel;
@@ -8,23 +7,6 @@ public abstract class TextFileProjectItem : ProjectItem
 {
     protected readonly IFileSystem _fileSystem;
     private ITextGettingStrategy _textGettingStrategy;
-
-    public string PathFromRoot
-    {
-        get
-        {
-            ProjectItem? item = this;
-            var path = new Stack<string>();
-            while (item != null)
-            {
-                path.Push(item.Name);
-                item = item.Parent;
-            }
-            path.Pop();
-
-            return String.Join("\\", path);
-        }
-    }
 
     internal TextFileProjectItem(string fullPath, DirectoryProjectItem? parent, IFileSystem fileSystem) : base(Path.GetFileName(fullPath), fullPath, parent)
     {

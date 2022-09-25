@@ -48,4 +48,48 @@ internal class ProjectTest
         Assert.AreEqual(@"c:\path\project\directory\file", directoryChildren[0].FullPath);
         Assert.AreEqual("file", directoryChildren[0].Name);
     }
+
+    [Test]
+    public void FindItemByPath_File()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"c:\path\project\directory\file");
+
+        Assert.NotNull(result);
+        Assert.True(result is CodeFileProjectItem);
+        Assert.AreEqual(@"c:\path\project\directory\file", result.FullPath);
+    }
+
+    [Test]
+    public void FindItemByPath_Directory()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"c:\path\project\directory");
+
+        Assert.NotNull(result);
+        Assert.True(result is DirectoryProjectItem);
+        Assert.AreEqual(@"c:\path\project\directory", result.FullPath);
+    }
+
+    [Test]
+    public void FindItemByPath_Null()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"c:\path\project\directory\fileNotExist");
+
+        Assert.Null(result);
+    }
+
+    [Test]
+    public void FindItemByPath_WrongRoot()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"c:\path\wrongProject\directory\file");
+
+        Assert.Null(result);
+    }
 }

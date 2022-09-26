@@ -19,7 +19,7 @@ public class CodeModelUpdater : ICodeModelUpdater
     internal CodeModelUpdater(ITimerManager timerManager, ICodeModelBuilder codeModelBuilder)
     {
         _codeModelBuilder = codeModelBuilder;
-        timerManager.CreateNew(TimeSpan.FromSeconds(2), OnTimerTick);
+        timerManager.CreateAndStart(TimeSpan.FromSeconds(2), OnTimerTick);
     }
 
     public void SetCodeFiles(IEnumerable<CodeFileProjectItem> projectItems)

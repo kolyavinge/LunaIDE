@@ -22,7 +22,7 @@ public static class EnumerableExt
         }
     }
 
-    public static (IEnumerable<T>, IEnumerable<T>) Map<T>(this IEnumerable<T> collection, Predicate<T> predicate)
+    public static (IReadOnlyCollection<T>, IReadOnlyCollection<T>) Map<T>(this IEnumerable<T> collection, Predicate<T> predicate)
     {
         var resultTrue = new List<T>();
         var resultFalse = new List<T>();

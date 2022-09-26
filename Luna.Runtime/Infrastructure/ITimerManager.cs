@@ -2,5 +2,10 @@
 
 public interface ITimerManager
 {
-    void CreateNew(TimeSpan interval, EventHandler callback);
+    ITimer CreateAndStart(TimeSpan interval, EventHandler callback);
+}
+
+public interface ITimer
+{
+    void Stop();
 }

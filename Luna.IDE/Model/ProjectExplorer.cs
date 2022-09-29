@@ -17,9 +17,7 @@ public class ProjectExplorer : IProjectExplorer
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
     private readonly IOutputArea _outputArea;
-
-    [Inject]
-    public IFileSystem? FileSystem { get; set; }
+    private readonly IFileSystem _fileSystem;
 
     public Project? Project { get; private set; }
 
@@ -27,15 +25,16 @@ public class ProjectExplorer : IProjectExplorer
 
     public event EventHandler? ProjectOpened;
 
-    public ProjectExplorer(ICodeModelUpdater codeModelUpdater, IOutputArea outputArea)
+    public ProjectExplorer(ICodeModelUpdater codeModelUpdater, IOutputArea outputArea, IFileSystem fileSystem)
     {
         _codeModelUpdater = codeModelUpdater;
         _outputArea = outputArea;
+        _fileSystem = fileSystem;
     }
 
     public void OpenProject(string path)
     {
-        Project = Project.Open(path, FileSystem!);
+        Project = Project.Open(path, _fileSystem);
         _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
         _outputArea.Clear();
         ProjectTreeRoot = new DirectoryTreeItem(null, Project.Root);

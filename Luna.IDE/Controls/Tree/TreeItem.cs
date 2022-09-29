@@ -31,9 +31,9 @@ public abstract class TreeItem : NotificationObject
         {
             _isExpanded = value;
             RaisePropertyChanged(() => IsExpanded);
-            if (!_isExpanded && GetAllChildren().Any(x => x.IsSelected))
+            if (!_isExpanded && AllChildren.Any(x => x.IsSelected))
             {
-                GetAllChildren().Each(c => c.IsSelected = false);
+                AllChildren.Each(c => c.IsSelected = false);
                 IsSelected = true;
             }
         }
@@ -49,6 +49,18 @@ public abstract class TreeItem : NotificationObject
         }
     }
 
+    public List<TreeItem> AllChildren
+    {
+        get
+        {
+            var result = new List<TreeItem>();
+            result.Add(this);
+            Children.Each(child => result.AddRange(child.AllChildren));
+
+            return result;
+        }
+    }
+
     protected TreeItem(TreeItem? parent, string name, Func<ImageSource?>? imageFunc)
     {
         Parent = parent;
@@ -58,23 +70,17 @@ public abstract class TreeItem : NotificationObject
         _isExpanded = Parent == null;
     }
 
-    protected abstract IEnumerable<TreeItem> GetChildren();
+    protected virtual IEnumerable<TreeItem> GetChildren()
+    {
+        return Enumerable.Empty<TreeItem>();
+    }
 
-    protected void UpdateChildren()
+    protected void RefreshChildren()
     {
         var lastSelectedNames = Children.Where(x => x.IsSelected).Select(x => x.Name).ToHashSet();
         _children = GetChildren().ToList();
         _children.Each(x => x.IsSelected = lastSelectedNames.Contains(x.Name));
         RaisePropertyChanged(() => Children);
-    }
-
-    private List<TreeItem> GetAllChildren()
-    {
-        var result = new List<TreeItem>();
-        result.Add(this);
-        Children.Each(child => result.AddRange(child.GetAllChildren()));
-
-        return result;
     }
 
     private int GetDepth()

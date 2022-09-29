@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Luna.IDE.Controls.Tree;
 using Luna.IDE.Media;
 using Luna.ProjectModel;
@@ -40,7 +39,7 @@ public class CodeFileTreeItem : TreeItem
         base(parent, codeFile.Name, () => ImageCollection.GetImage("codefile.png"))
     {
         CodeFile = codeFile;
-        CodeFile.CodeModelUpdated += (s, e) => UpdateChildren();
+        CodeFile.CodeModelUpdated += (s, e) => RefreshChildren();
     }
 
     protected override IEnumerable<TreeItem> GetChildren()
@@ -70,14 +69,9 @@ public class CodeElementTreeItem : TreeItem
     }
 
     public CodeElementTreeItem(CodeFileTreeItem parentCodeFile, FunctionDeclaration functionDeclaration) :
-     base(parentCodeFile, functionDeclaration.Name, () => ImageCollection.GetImage("func.png"))
+        base(parentCodeFile, functionDeclaration.Name, () => ImageCollection.GetImage("func.png"))
     {
         ParentCodeFile = parentCodeFile;
         CodeElement = functionDeclaration;
-    }
-
-    protected override IEnumerable<TreeItem> GetChildren()
-    {
-        return Enumerable.Empty<TreeItem>();
     }
 }

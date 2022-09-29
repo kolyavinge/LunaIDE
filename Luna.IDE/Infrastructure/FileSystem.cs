@@ -8,12 +8,12 @@ class FileSystem : IFileSystem
 {
     public IEnumerable<string> GetFiles(string path, string filter)
     {
-        return Directory.GetFiles(path, filter);
+        return Directory.GetFiles(path, filter, new EnumerationOptions { AttributesToSkip = FileAttributes.Hidden });
     }
 
     public IEnumerable<string> GetDirectories(string path)
     {
-        return Directory.GetDirectories(path);
+        return Directory.GetDirectories(path, "*", new EnumerationOptions { AttributesToSkip = FileAttributes.Hidden });
     }
 
     public string ReadFileText(string fullPath)

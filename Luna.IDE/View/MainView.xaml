@@ -7,12 +7,8 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        BorderBrush="Black"
-        BorderThickness="1"
-        Title="Luna IDE"
-        Height="800"
-        Width="1200">
+        Style="{StaticResource MainWindowStyle}"
+        Title="Luna IDE">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding ClosedCommand}" />

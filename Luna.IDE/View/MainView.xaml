@@ -28,7 +28,7 @@
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenProjectCommand}" />
         <KeyBinding Key="F5" Command="{Binding RunProgramCommand}" />
     </Window.InputBindings>
-    <Grid Background="{StaticResource MainBackgroundBrush}" MouseLeftButtonUp="OnWindowMouseLeftButtonUp" MouseMove="OnWindowMouseMove">
+    <Grid MouseLeftButtonUp="OnWindowMouseLeftButtonUp" MouseMove="OnWindowMouseMove" Margin="0,0,0,4">
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />

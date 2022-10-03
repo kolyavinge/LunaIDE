@@ -16,7 +16,7 @@
         <TabControl
             ItemsSource="{Binding WindowsManager.Windows}"
             SelectedItem="{Binding WindowsManager.SelectedWindow, Mode=TwoWay}"
-            Style="{StaticResource EnvironmentWindowsStyle}"
+            Style="{StaticResource TabControlStyle}"
             Margin="-2">
             <TabControl.ItemTemplate>
                 <DataTemplate>

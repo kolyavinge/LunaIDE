@@ -20,6 +20,8 @@ public abstract class TreeItem : NotificationObject
 
     public string Name { get; }
 
+    public string? AdditionalInfo { get; set; }
+
     public IReadOnlyCollection<TreeItem> Children => _children ??= GetChildren().ToList();
 
     public int Depth { get; }

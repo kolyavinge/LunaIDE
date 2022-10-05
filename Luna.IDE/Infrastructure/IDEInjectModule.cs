@@ -29,7 +29,6 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
-        provider.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();
         provider.Bind<AutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();

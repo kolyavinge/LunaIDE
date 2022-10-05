@@ -23,6 +23,10 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IEnvironmentWindowsManager, EnvironmentWindowsManager>().ToSingleton();
         provider.Bind<EnvironmentWindowsViewModel, EnvironmentWindowsViewModel>().ToSingleton();
 
+        provider.Bind<IProjectRepository, ProjectRepository>().ToSingleton();
+
+        provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
+        provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
         provider.Bind<ProjectTreeViewModel, ProjectTreeViewModel>().ToSingleton();

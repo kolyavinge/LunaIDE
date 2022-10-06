@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="Luna.IDE.App.View.CodeFileEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:view="clr-namespace:Luna.IDE.App.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <view:ControlConverter x:Key="ControlConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding Key="F12" Command="{Binding GotoDeclarationCommand}" CommandParameter="{Binding Model}" />
+        <MouseBinding MouseAction="LeftClick" Command="{Binding HideAutoCompleteCommand}" />
+        <MouseBinding MouseAction="RightClick" Command="{Binding HideAutoCompleteCommand}" />
+    </UserControl.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <view:CodeFileEditorMainPanelView
+                Grid.Row="0"
+                Grid.Column="1"
+                CodeFileEditor="{Binding DataContext.Model, ElementName=codeTextBox}"
+                Style="{StaticResource CodeFileEditorMainPanelStyle}" />
+
+            <highlighter:LineNumberPanel
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource LineNumberPanelStyle}"
+                VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
+                TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
+                TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
+                MinWidth="40" />
+
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="12,0,0,0">
+                <highlighter:CodeTextBox
+                    x:Name="codeTextBox"
+                    Model="{Binding Model.CodeTextBoxModel}"
+                    Style="{StaticResource CodeEditorStyle}"
+                    MouseWheel="VerticalScrollBarOnMouseWheel">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <i:InvokeCommandAction Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </highlighter:CodeTextBox>
+
+                <view:AutoCompleteView
+                    x:Name="autoComplete"
+                    Model="{Binding DataContext.AutoComplete, ElementName=codeTextBox}"
+                    ParentWidth="{Binding ViewportWidth, ElementName=codeTextBox}"
+                    ParentHeight="{Binding ViewportHeight, ElementName=codeTextBox}"
+                    VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox}"
+                    HorizontalScrollBarValue="{Binding HorizontalScrollBarValue, ElementName=codeTextBox}"
+                    Visibility="{Binding Model.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Margin="{Binding ScreenPosition}"
+                    VerticalAlignment="{Binding VerticalAlignment}"
+                    Style="{StaticResource AutoCompleteStyle}">
+                </view:AutoCompleteView>
+            </Grid>
+        </Grid>
+
+        <ScrollBar
+            Grid.Row="0"
+            x:Name="verticalScrollBar"
+            Style="{StaticResource VerticalLineScrollBarStyle}"
+            Orientation="Vertical"
+            Maximum="{Binding VerticalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
+            Value="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
+            ViewportSize="{Binding ViewportHeight, ElementName=codeTextBox, Mode=TwoWay}"
+            Width="22"
+            Margin="0,0,-2,0"
+            HorizontalAlignment="Right"
+            Cursor="Arrow"
+            Scroll="ScrollBarOnScroll"
+            MouseWheel="VerticalScrollBarOnMouseWheel" />
+
+        <ScrollBar
+            Grid.Row="1"
+            x:Name="horizontalScrollBar"
+            Style="{StaticResource HorizontalLineScrollBarStyle}"
+            Orientation="Horizontal"
+            Maximum="{Binding HorizontalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
+            Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
+            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}"
+            Cursor="Arrow"
+            Scroll="ScrollBarOnScroll" />
+    </Grid>
+</UserControl>

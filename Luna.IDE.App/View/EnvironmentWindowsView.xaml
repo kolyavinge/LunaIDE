@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="Luna.IDE.App.View.EnvironmentWindowsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <TabControl
+            ItemsSource="{Binding WindowsManager.Windows}"
+            SelectedItem="{Binding WindowsManager.SelectedWindow, Mode=TwoWay}"
+            Style="{StaticResource TabControlStyle}"
+            Margin="-2">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Name="sp" Orientation="Horizontal" Height="32" Background="Transparent">
+                        <StackPanel.InputBindings>
+                            <MouseBinding
+                                MouseAction="MiddleClick"
+                                Command="{Binding DataContext.CloseWindowCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}" />
+                        </StackPanel.InputBindings>
+                        <StackPanel Orientation="Horizontal" Margin="10,2">
+                            <TextBlock Text="{Binding Model.Header}" VerticalAlignment="Center" />
+                            <Button
+                                Style="{StaticResource MiniCloseButtonStyle}"
+                                Command="{Binding DataContext.CloseWindowCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Margin="8,0,0,0">
+                                <TextBlock Text="🗙" VerticalAlignment="Center" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding View}" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,41 @@
+// main window and inputs
+
+import 'constants.luna'
+import 'game.luna'
+
+(render_field (context)
+    ()
+)
+
+(render_current_shape (context)
+    ()
+)
+
+(render_func (context)
+    (render_field context)
+    (render_current_shape context)
+)
+
+(keyboard_handler_func (event key)
+    ()
+    (update_window @main_window)
+)
+
+(mouse_handler_func (event x y)
+    (ignore)
+)
+
+(main_window_update ()
+    (update_game)
+    (update_window @main_window)
+)
+
+(start_app ()
+    (init_game)
+    (set @main_window (create_window 'TETRIS' render_func mouse_handler_func))
+    (app @main_window)
+    (set @timer (create_timer MAIN_TIMER_INTERVAL main_window_update))
+    (start_timer @timer)
+)
+
+(run (start_app))

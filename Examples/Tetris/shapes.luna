@@ -1,0 +1,101 @@
+// shapes logic
+
+import 'constants.luna'
+
+(get_shape_width (shape)
+    (+ (max (map shape (lambda (i) (item 0 i)))) 1)
+)
+
+(get_shape_height (shape)
+    (+ (max (map shape (lambda (i) (item 1 i)))) 1)
+)
+
+// shape I
+
+(make_shape_I ()
+    ()
+)
+
+(make_shape_I_90 ()
+    ()
+)
+
+// shape L
+
+(make_shape_L ()
+    ()
+)
+
+(make_shape_L_90 ()
+    ()
+)
+
+(make_shape_L_180 ()
+    ()
+)
+
+(make_shape_L_270 ()
+    ()
+)
+
+// shape L inverted
+
+(make_shape_L_i ()
+    ()
+)
+
+(make_shape_L_i_90 ()
+    ()
+)
+
+(make_shape_L_i_180 ()
+    ()
+)
+
+(make_shape_L_i_270 ()
+    ()
+)
+
+// shape T
+
+(make_shape_T ()
+    ()
+)
+
+(make_shape_T_90 ()
+    ()
+)
+
+(make_shape_T_180 ()
+    ()
+)
+
+(make_shape_T_270 ()
+    ()
+)
+
+// shape O
+
+(make_shape_O ()
+    ()
+)
+
+// shape S
+
+(make_shape_S ()
+    ()
+)
+
+(make_shape_S_90 ()
+    ()
+)
+
+// shape S inverted
+
+(make_shape_S_i ()
+    ()
+)
+
+(make_shape_S_i_90 ()
+    ()
+)

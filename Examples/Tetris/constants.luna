@@ -1,0 +1,23 @@
+// game constants
+
+const SHAPE_EMPTY_ID       0
+const SHAPE_I_ID           1
+const SHAPE_L_ID           2
+const SHAPE_T_ID           3
+const SHAPE_O_ID           4
+const SHAPE_S_ID           5
+
+const FIELD_ROWS           12
+const FIELD_COLS           8
+
+const MAIN_TIMER_INTERVAL  1000
+
+// render constants
+
+const SHAPE_I_COLOR        ''
+const SHAPE_L_COLOR        ''
+const SHAPE_T_COLOR        ''
+const SHAPE_O_COLOR        ''
+const SHAPE_S_COLOR        ''
+
+const CELL_SIZE            40

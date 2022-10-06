@@ -1,0 +1,47 @@
+// main game logic
+
+import 'constants.luna'
+import 'shapes.luna'
+
+(get_random_shape ()
+    ()
+)
+
+(set_random_shape ()
+    (set @shape (get_random_shape))
+    (set @y_offset 0)
+)
+
+(get_empty_field ()
+    ()
+)
+
+(clear_field ()
+    (set @field (get_empty_field))
+)
+
+(move_current_shape_left ()
+    ()
+)
+
+(move_current_shape_right ()
+    ()
+)
+
+(rotate_current_shape ()
+    ()
+)
+
+(drop_current_shape ()
+    ()
+)
+
+(update_game ()
+    (+ @y_offset 1)
+)
+
+(init_game ()
+    (clear_field)
+    (set_random_shape)
+)
+

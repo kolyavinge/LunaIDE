@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Luna.IDE.Infrastructure;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 

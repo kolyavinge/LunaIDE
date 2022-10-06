@@ -11,6 +11,7 @@ namespace Luna.IDE.Model;
 public interface IProjectChanges
 {
     event EventHandler? RepositoryOpened;
+    event EventHandler? StatusUpdated;
     bool IsRepositoryExist { get; }
     bool IsCommitAllowed { get; }
     string Comment { get; set; }
@@ -36,6 +37,8 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     private bool _isActivated;
 
     public event EventHandler? RepositoryOpened;
+
+    public event EventHandler? StatusUpdated;
 
     public bool IsRepositoryExist
     {
@@ -141,6 +144,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
 
     public void MakeCommit()
     {
+        _windowsManager.Windows.Each(x => x.Model.Save());
         LastCommitResult = _projectRepository.MakeCommit(Comment);
         Comment = "";
         UpdateStatus();
@@ -150,10 +154,11 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     {
         _projectRepository.UpdateStatus();
         UpdateCommitAllowed();
+        StatusUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateCommitAllowed()
     {
-        IsCommitAllowed = !String.IsNullOrWhiteSpace(_comment) && _projectRepository.GetFilesToCommit().Any();
+        IsCommitAllowed = !String.IsNullOrWhiteSpace(_comment) && _projectRepository.Included.AllFiles.Any();
     }
 }

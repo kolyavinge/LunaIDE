@@ -42,7 +42,7 @@
         </Grid>
         <Grid Grid.Row="2" x:Name="mainGrid" Visibility="{Binding Model.IsRepositoryExist, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="42" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition MinHeight="100" />
                 <RowDefinition MinHeight="100" />
             </Grid.RowDefinitions>
@@ -55,15 +55,18 @@
                     IsEnabled="{Binding Model.IsCommitAllowed}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
+                    Margin="0,0,4,4"
                     Width="60"
-                    Height="21" />
+                    Height="23" />
                 <!-- commit comment -->
                 <TextBox
                     Style="{StaticResource TextBoxStyle}"
                     Background="{StaticResource TextBoxBackgroundBrush}"
                     Text="{Binding Model.Comment, UpdateSourceTrigger=PropertyChanged}"
-                    VerticalAlignment="Bottom"
-                    Height="21" />
+                    TextWrapping="Wrap"
+                    VerticalAlignment="Top"
+                    MinHeight="21"
+                    Margin="4,23,4,4" />
             </Grid>
             <Grid Grid.Row="1">
                 <!-- empty message -->

@@ -71,6 +71,7 @@ public class ProjectChangesViewModel : NotificationObject
     {
         Model = projectChanges;
         Model.RepositoryOpened += (s, e) => InitTrees();
+        Model.StatusUpdated += (s, e) => UpdateIsAnyFilesIncludedExcluded();
         _includedTreeViewModel = new TreeViewModel { TreeRoot = Model.Included };
         _excludedTreeViewModel = new TreeViewModel { TreeRoot = Model.Excluded };
         LoadedCommand = new ActionCommand(Model.Activate);

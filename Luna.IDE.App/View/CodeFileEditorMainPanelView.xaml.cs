@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Luna.IDE.App.Infrastructure;
-using Luna.IDE.App.Model;
 using Luna.IDE.App.ViewModel;
+using Luna.IDE.Model;
 
 namespace Luna.IDE.App.View;
 

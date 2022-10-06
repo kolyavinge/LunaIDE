@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Luna.IDE.App.Commands;
-using Luna.IDE.App.Model;
+using Luna.IDE.Model;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Luna.Runtime;

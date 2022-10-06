@@ -1,10 +1,11 @@
 ﻿using DependencyInjection;
-using Luna.IDE.App.CodeEditor;
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Controls.Tree;
 using Luna.IDE.App.Model;
 using Luna.IDE.App.ViewModel;
+using Luna.IDE.CodeEditor;
+using Luna.IDE.Model;
 
 namespace Luna.IDE.App.Infrastructure;
 

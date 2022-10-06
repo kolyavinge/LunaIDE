@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<Nullable>enable</Nullable>
+	<LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter\CodeHighlighter.csproj" />
+    <ProjectReference Include="..\..\VersionControl\VersionControl\VersionControl.csproj" />
+    <ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />
+  </ItemGroup>
+
+</Project>

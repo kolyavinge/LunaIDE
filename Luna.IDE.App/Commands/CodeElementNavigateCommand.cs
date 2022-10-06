@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
-using Luna.IDE.App.Model;
 using Luna.IDE.App.Mvvm;
+using Luna.IDE.Model;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Commands;

@@ -1,6 +1,6 @@
 ﻿using CodeHighlighter.Model;
 using Luna.IDE.App.Commands;
-using Luna.IDE.App.Model;
+using Luna.IDE.Model;
 using Luna.Navigation;
 using Luna.Parsing;
 using Luna.ProjectModel;

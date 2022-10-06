@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using Luna.IDE.App.Infrastructure;
+using Luna.IDE.Common;
+using Luna.IDE.Model;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Model;
@@ -11,22 +13,11 @@ public interface IProjectItemEditorFactory
     EnvironmentWindowComponents MakeEditorFor(ProjectItem projectItem);
 }
 
-[AttributeUsage(AttributeTargets.Class)]
-public class EditorForAttribute : Attribute
-{
-    public Type ProjectItemType { get; }
-
-    public EditorForAttribute(Type projectItemType)
-    {
-        ProjectItemType = projectItemType;
-    }
-}
-
 public class ProjectItemEditorFactory : IProjectItemEditorFactory
 {
     public EnvironmentWindowComponents MakeEditorFor(ProjectItem projectItem)
     {
-        var types = Assembly.GetExecutingAssembly().GetTypes();
+        var types = Assembly.GetExecutingAssembly().GetTypes().Union(Assembly.LoadFrom("Luna.IDE.dll").GetTypes()).ToList();
         var model = MakeModel(types, projectItem);
         var viewModel = MakeViewModel(types, projectItem, model);
         var view = MakeView(types, projectItem, viewModel);

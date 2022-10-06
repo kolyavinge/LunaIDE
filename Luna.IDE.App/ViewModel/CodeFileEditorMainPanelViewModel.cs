@@ -1,6 +1,6 @@
 ﻿using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Infrastructure;
-using Luna.IDE.App.Mvvm;
+using Luna.IDE.Common;
 
 namespace Luna.IDE.App.ViewModel;
 

@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Mvvm;
-using Luna.IDE.CodeEditor;
-using Luna.IDE.Model;
+using Luna.IDE.CodeEditing;
 using Luna.Navigation;
 
 namespace Luna.IDE.App.Commands;

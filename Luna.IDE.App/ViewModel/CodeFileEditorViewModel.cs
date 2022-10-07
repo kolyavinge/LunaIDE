@@ -3,8 +3,10 @@ using Luna.IDE.App.Commands;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.App.View;
+using Luna.IDE.AutoCompletion;
+using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
-using Luna.IDE.Model;
+using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.App.ViewModel;

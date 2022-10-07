@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using Luna.IDE.App.Model;
+using Luna.IDE.App.Factories;
 using Luna.IDE.App.Mvvm;
-using Luna.IDE.Model;
+using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Commands;

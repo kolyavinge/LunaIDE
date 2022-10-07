@@ -1,7 +1,8 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Mvvm;
-using Luna.IDE.Model;
+using Luna.IDE.ProjectExploration;
+using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.Commands;
 

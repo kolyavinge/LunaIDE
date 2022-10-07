@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.ViewModel;
-using Luna.IDE.Model;
+using Luna.IDE.CodeEditing;
 
 namespace Luna.IDE.App.View;
 

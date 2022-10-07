@@ -2,10 +2,15 @@
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Controls.Tree;
-using Luna.IDE.App.Model;
+using Luna.IDE.App.Factories;
 using Luna.IDE.App.ViewModel;
-using Luna.IDE.CodeEditor;
-using Luna.IDE.Model;
+using Luna.IDE.AutoCompletion;
+using Luna.IDE.CodeEditing;
+using Luna.IDE.Outputing;
+using Luna.IDE.ProjectChanging;
+using Luna.IDE.ProjectExploration;
+using Luna.IDE.VersionControl;
+using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.Infrastructure;
 

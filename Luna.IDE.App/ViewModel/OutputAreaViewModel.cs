@@ -1,5 +1,5 @@
 ﻿using Luna.IDE.Common;
-using Luna.IDE.Model;
+using Luna.IDE.Outputing;
 
 namespace Luna.IDE.App.ViewModel;
 

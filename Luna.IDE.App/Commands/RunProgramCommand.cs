@@ -1,6 +1,8 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Mvvm;
-using Luna.IDE.Model;
+using Luna.IDE.Outputing;
+using Luna.IDE.ProjectExploration;
+using Luna.IDE.WindowsManagement;
 using Luna.Runtime;
 using Luna.Utils;
 

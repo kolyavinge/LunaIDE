@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.ViewModel;
-using Luna.IDE.Model;
+using Luna.IDE.AutoCompletion;
 
 namespace Luna.IDE.App.View;
 

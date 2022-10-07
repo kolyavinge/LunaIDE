@@ -1,7 +1,7 @@
 ﻿using Luna.IDE.App.Commands;
 using Luna.IDE.App.Controls.Tree;
 using Luna.IDE.Common;
-using Luna.IDE.Model;
+using Luna.IDE.ProjectExploration;
 
 namespace Luna.IDE.App.ViewModel;
 

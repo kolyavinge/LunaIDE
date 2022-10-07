@@ -10,13 +10,13 @@ public interface IOpenProjectCommand : ICommand { }
 
 public class OpenProjectCommand : Command, IOpenProjectCommand
 {
-    private readonly IProjectExplorer _projectExplorer;
+    private readonly IProjectLoader _projectLoader;
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly IOpenFileDialog _openFileDialog;
 
-    public OpenProjectCommand(IProjectExplorer projectExplorer, IEnvironmentWindowsManager windowsManager, IOpenFileDialog openFileDialog)
+    public OpenProjectCommand(IProjectLoader projectLoader, IEnvironmentWindowsManager windowsManager, IOpenFileDialog openFileDialog)
     {
-        _projectExplorer = projectExplorer;
+        _projectLoader = projectLoader;
         _windowsManager = windowsManager;
         _openFileDialog = openFileDialog;
     }
@@ -27,7 +27,7 @@ public class OpenProjectCommand : Command, IOpenProjectCommand
         if (_openFileDialog.ShowDialog() == DialogResult.Ok)
         {
             _windowsManager.CloseAllWindows();
-            _projectExplorer.OpenProject(_openFileDialog.SelectedPath!);
+            _projectLoader.OpenProject(_openFileDialog.SelectedPath!);
         }
     }
 }

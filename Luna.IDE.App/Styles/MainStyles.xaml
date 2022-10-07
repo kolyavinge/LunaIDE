@@ -226,7 +226,6 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">

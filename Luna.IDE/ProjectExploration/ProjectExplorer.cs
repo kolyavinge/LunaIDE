@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Luna.IDE.Outputing;
-using Luna.Infrastructure;
-using Luna.ProjectModel;
+﻿using Luna.ProjectModel;
 
 namespace Luna.IDE.ProjectExploration;
 
@@ -9,35 +6,24 @@ public interface IProjectExplorer
 {
     Project? Project { get; }
     DirectoryTreeItem? ProjectTreeRoot { get; }
-    void OpenProject(string path);
-    event EventHandler ProjectOpened;
 }
 
 public class ProjectExplorer : IProjectExplorer
 {
-    private readonly ICodeModelUpdater _codeModelUpdater;
-    private readonly IOutputArea _outputArea;
-    private readonly IFileSystem _fileSystem;
+    private readonly IProjectLoader _projectLoader;
 
-    public Project? Project { get; private set; }
+    public Project? Project => _projectLoader.Project;
 
     public DirectoryTreeItem? ProjectTreeRoot { get; private set; }
 
-    public event EventHandler? ProjectOpened;
-
-    public ProjectExplorer(ICodeModelUpdater codeModelUpdater, IOutputArea outputArea, IFileSystem fileSystem)
+    public ProjectExplorer(IProjectLoader projectLoader)
     {
-        _codeModelUpdater = codeModelUpdater;
-        _outputArea = outputArea;
-        _fileSystem = fileSystem;
+        _projectLoader = projectLoader;
+        _projectLoader.ProjectOpened += OnProjectOpened;
     }
 
-    public void OpenProject(string path)
+    private void OnProjectOpened(object? sender, EventArgs e)
     {
-        Project = Project.Open(path, _fileSystem);
-        _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
-        _outputArea.Clear();
-        ProjectTreeRoot = new DirectoryTreeItem(null, Project.Root);
-        ProjectOpened?.Invoke(this, EventArgs.Empty);
+        ProjectTreeRoot = new DirectoryTreeItem(null, _projectLoader.Project!.Root);
     }
 }

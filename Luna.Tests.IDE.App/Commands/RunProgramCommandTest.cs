@@ -16,7 +16,7 @@ internal class RunProgramCommandTest
     private Mock<IFileSystem> _fileSystem;
     private Mock<IInterpreter> _interpreter;
     private Project _project;
-    private Mock<IProjectExplorer> _projectExplorer;
+    private Mock<ISelectedProject> _selectedProject;
     private Mock<IEnvironmentWindowsManager> _windowsManager;
     private Mock<IOutputArea> _outputArea;
     private RunProgramCommand _command;
@@ -26,19 +26,19 @@ internal class RunProgramCommandTest
     {
         _fileSystem = new Mock<IFileSystem>();
         _interpreter = new Mock<IInterpreter>();
-        _projectExplorer = new Mock<IProjectExplorer>();
+        _selectedProject = new Mock<ISelectedProject>();
         _project = new Project("", _fileSystem.Object);
-        _projectExplorer.SetupGet(x => x.Project).Returns(_project);
+        _selectedProject.SetupGet(x => x.Project).Returns(_project);
         _windowsManager = new Mock<IEnvironmentWindowsManager>();
         _windowsManager.SetupGet(x => x.Windows).Returns(new List<EnvironmentWindow>());
         _outputArea = new Mock<IOutputArea>();
-        _command = new RunProgramCommand(_interpreter.Object, _projectExplorer.Object, _windowsManager.Object, _outputArea.Object);
+        _command = new RunProgramCommand(_interpreter.Object, _selectedProject.Object, _windowsManager.Object, _outputArea.Object);
     }
 
     [Test]
     public void ProjectNotSelected_NoRun()
     {
-        _projectExplorer.SetupGet(x => x.Project).Returns((Project)null);
+        _selectedProject.SetupGet(x => x.Project).Returns((Project)null);
         _command.Execute(null);
         _interpreter.Verify(x => x.Run(_project, _outputArea.Object), Times.Never());
     }

@@ -20,12 +20,12 @@ public interface IProjectRepository
 
 public class ProjectRepository : IProjectRepository
 {
-    private readonly IProjectExplorer _projectExplorer;
     private IVersionControlRepository _versionControlRepository;
+    private readonly IProjectLoader _projectLoader;
 
     public event EventHandler? RepositoryOpened;
 
-    public bool IsRepositoryExist => _projectExplorer.Project != null && VersionControlRepositoryFactory.IsRepositoryExist(_projectExplorer.Project.Root.FullPath);
+    public bool IsRepositoryExist => _projectLoader.Project != null && VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
     public VersionedStatus Status { get; private set; }
 
@@ -33,10 +33,10 @@ public class ProjectRepository : IProjectRepository
 
     public VersionedDirectory Excluded { get; private set; }
 
-    public ProjectRepository(IProjectExplorer projectExplorer)
+    public ProjectRepository(IProjectLoader projectLoader)
     {
-        _projectExplorer = projectExplorer;
-        _projectExplorer.ProjectOpened += OnProjectOpened;
+        _projectLoader = projectLoader;
+        _projectLoader.ProjectOpened += OnProjectOpened;
         _versionControlRepository = DummyVersionControlRepository.Instance;
         Status = VersionedStatus.Empty;
         Included = new VersionedDirectory("");
@@ -45,7 +45,7 @@ public class ProjectRepository : IProjectRepository
 
     private void OnProjectOpened(object? sender, EventArgs e)
     {
-        if (VersionControlRepositoryFactory.IsRepositoryExist(_projectExplorer.Project!.Root.FullPath))
+        if (VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project!.Root.FullPath))
         {
             OpenOrCreateRepository();
         }
@@ -53,11 +53,11 @@ public class ProjectRepository : IProjectRepository
 
     public void OpenOrCreateRepository()
     {
-        if (_projectExplorer.Project == null) return;
-        _versionControlRepository = VersionControlRepositoryFactory.OpenRepository(_projectExplorer.Project.Root.FullPath);
+        if (_projectLoader.Project == null) return;
+        _versionControlRepository = VersionControlRepositoryFactory.OpenRepository(_projectLoader.Project.Root.FullPath);
         Status = VersionedStatus.Empty;
-        Included = new VersionedDirectory(_projectExplorer.Project.Root.Name);
-        Excluded = new VersionedDirectory(_projectExplorer.Project.Root.Name);
+        Included = new VersionedDirectory(_projectLoader.Project.Root.Name);
+        Excluded = new VersionedDirectory(_projectLoader.Project.Root.Name);
         RepositoryOpened?.Invoke(this, EventArgs.Empty);
     }
 

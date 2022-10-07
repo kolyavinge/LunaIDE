@@ -65,7 +65,7 @@
                     Text="{Binding Model.Comment, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalAlignment="Top"
-                    MinHeight="21"
+                    MinHeight="36"
                     Margin="4,23,4,4" />
             </Grid>
             <Grid Grid.Row="1">

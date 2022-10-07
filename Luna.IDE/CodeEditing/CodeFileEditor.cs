@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
-using Luna.IDE.Common;
 using Luna.IDE.WindowsManagement;
 using Luna.Parsing;
 using Luna.ProjectModel;

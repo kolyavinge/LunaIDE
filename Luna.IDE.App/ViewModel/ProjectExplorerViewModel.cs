@@ -10,12 +10,13 @@ public class ProjectExplorerViewModel : NotificationObject
     public TreeViewModel TreeViewModel { get; }
 
     public ProjectExplorerViewModel(
+        IProjectLoader projectLoader,
         IProjectExplorer projectExplorer,
         IProjectExplorerItemOpenCommand itemOpenCommand,
         TreeViewModel treeViewModel)
     {
         TreeViewModel = treeViewModel;
         TreeViewModel.OpenItemCommand = itemOpenCommand;
-        projectExplorer.ProjectOpened += (s, e) => TreeViewModel.TreeRoot = projectExplorer.ProjectTreeRoot;
+        projectLoader.ProjectOpened += (s, e) => TreeViewModel.TreeRoot = projectExplorer.ProjectTreeRoot;
     }
 }

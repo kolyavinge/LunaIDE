@@ -1,43 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using Luna.IDE.Common;
 using Luna.Utils;
 
 namespace Luna.IDE.WindowsManagement;
-
-public interface IEnvironmentWindowModel
-{
-    string Header { get; }
-    void Save();
-    void Close();
-}
-
-public class EnvironmentWindow
-{
-    public object Id { get; }
-
-    public IEnvironmentWindowModel Model { get; }
-
-    public object View { get; }
-
-    public bool IsLoaded { get; private set; }
-
-    public event EventHandler? Loaded;
-
-    public EnvironmentWindow(object id, IEnvironmentWindowModel model, object view)
-    {
-        Id = id;
-        Model = model;
-        View = view;
-        if (View is FrameworkElement fe)
-        {
-            fe.Loaded += (s, e) => { IsLoaded = true; Loaded?.Invoke(this, EventArgs.Empty); };
-            fe.Unloaded += (s, e) => { IsLoaded = false; };
-        }
-    }
-}
 
 public interface IEnvironmentWindowsManager
 {

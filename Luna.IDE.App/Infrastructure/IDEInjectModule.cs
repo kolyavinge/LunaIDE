@@ -24,6 +24,7 @@ public class IDEInjectModule : InjectModule
 
         provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
 
+        provider.Bind<IEnvironmentWindowsFactory, EnvironmentWindowsFactory>().ToSingleton();
         provider.Bind<IProjectItemEditorFactory, ProjectItemEditorFactory>().ToSingleton();
 
         provider.Bind<IEnvironmentWindowsManager, EnvironmentWindowsManager>().ToSingleton();

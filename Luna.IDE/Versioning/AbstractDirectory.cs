@@ -1,25 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using VersionControl.Core;
 
-namespace Luna.IDE.VersionControl;
+namespace Luna.IDE.Versioning;
 
-public class VersionedDirectory
+public abstract class AbstractDirectory<TDirectory, TFile> where TDirectory : AbstractDirectory<TDirectory, TFile>
 {
-    private readonly List<VersionedDirectory> _innerDirectories;
-    private readonly List<VersionedFile> _innerFiles;
+    private readonly List<TDirectory> _innerDirectories;
+    private readonly List<TFile> _innerFiles;
+    private readonly Func<string, TDirectory> _makeDirectoryFunc;
+    private readonly Func<TFile, string> _relativePathFunc;
 
     public string Name { get; }
 
-    public IReadOnlyCollection<VersionedDirectory> InnerDirectories => _innerDirectories;
+    public IReadOnlyCollection<TDirectory> InnerDirectories => _innerDirectories;
 
-    public IReadOnlyCollection<VersionedFile> InnerFiles => _innerFiles;
+    public IReadOnlyCollection<TFile> InnerFiles => _innerFiles;
 
-    public IReadOnlyCollection<VersionedFile> AllFiles
+    public IReadOnlyCollection<TFile> AllFiles
     {
         get
         {
-            var result = new List<VersionedFile>(_innerFiles);
+            var result = new List<TFile>(_innerFiles);
             foreach (var dir in _innerDirectories) result.AddRange(dir.AllFiles);
             return result;
         }
@@ -27,25 +28,27 @@ public class VersionedDirectory
 
     public event EventHandler? ChildrenRefreshed;
 
-    public VersionedDirectory(string name)
+    protected AbstractDirectory(string name, Func<string, TDirectory> makeDirectoryFunc, Func<TFile, string> relativePathFunc)
     {
-        _innerDirectories = new List<VersionedDirectory>();
-        _innerFiles = new List<VersionedFile>();
         Name = name;
+        _makeDirectoryFunc = makeDirectoryFunc;
+        _relativePathFunc = relativePathFunc;
+        _innerDirectories = new List<TDirectory>();
+        _innerFiles = new List<TFile>();
     }
 
-    public void AddFiles(IEnumerable<VersionedFile> versionedFiles)
+    public virtual void AddFiles(IEnumerable<TFile> versionedFiles)
     {
         foreach (var versionedFile in versionedFiles)
         {
             var parent = this;
-            var directories = versionedFile.RelativePath.Split('\\').SkipLast(1).ToList();
-            foreach (var directiory in directories)
+            var directories = _relativePathFunc(versionedFile).Split('\\').SkipLast(1).ToList();
+            foreach (var directory in directories)
             {
-                var child = parent.InnerDirectories.FirstOrDefault(x => x.Name == directiory);
+                var child = parent.InnerDirectories.FirstOrDefault(x => x.Name == directory);
                 if (child == null)
                 {
-                    child = new VersionedDirectory(directiory);
+                    child = _makeDirectoryFunc(directory);
                     parent._innerDirectories.Add(child);
                 }
                 parent = child;
@@ -56,12 +59,12 @@ public class VersionedDirectory
         ChildrenRefreshed?.Invoke(this, EventArgs.Empty);
     }
 
-    public void DeleteFiles(IEnumerable<VersionedFile> versionedFiles)
+    public virtual void DeleteFiles(IEnumerable<TFile> versionedFiles)
     {
         foreach (var versionedFile in versionedFiles)
         {
             var parent = this;
-            var directories = versionedFile.RelativePath.Split('\\').SkipLast(1).ToList();
+            var directories = _relativePathFunc(versionedFile).Split('\\').SkipLast(1).ToList();
             var fileFinded = true;
             foreach (var directiory in directories)
             {
@@ -84,7 +87,7 @@ public class VersionedDirectory
         ChildrenRefreshed?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool DeleteEmptyDirectories(VersionedDirectory parent)
+    private bool DeleteEmptyDirectories(AbstractDirectory<TDirectory, TFile> parent)
     {
         for (int index = 0; index < parent._innerDirectories.Count;)
         {

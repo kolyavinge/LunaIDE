@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Luna.IDE.Common;
 using Luna.IDE.Media;
-using Luna.IDE.VersionControl;
-using VersionControl.Core;
+using Luna.IDE.Versioning;
 
 namespace Luna.IDE.ProjectChanging;
 
@@ -24,30 +22,5 @@ public class VersionedDirectoryTreeItem : TreeItem
     {
         foreach (var directory in _versionedDirectory.InnerDirectories.OrderBy(x => x.Name)) yield return new VersionedDirectoryTreeItem(this, directory);
         foreach (var file in _versionedDirectory.InnerFiles.OrderBy(x => x.RelativePath)) yield return new VersionedFileTreeItem(this, file);
-    }
-}
-
-public class VersionedFileTreeItem : TreeItem
-{
-    public VersionedFile VersionedFile { get; }
-
-    public VersionedFileTreeItem(VersionedDirectoryTreeItem parent, VersionedFile versionedFile) :
-        base(parent, Path.GetFileName(versionedFile.FullPath), () => ImageCollection.GetImage("codefile.png"))
-    {
-        VersionedFile = versionedFile;
-        AdditionalInfo = GetAdditionalInfo();
-    }
-
-    private string GetAdditionalInfo()
-    {
-        return VersionedFile.ActionKind switch
-        {
-            FileActionKind.Add => "[add]",
-            FileActionKind.Modify => "[edit]",
-            FileActionKind.Replace => "[rename]",
-            FileActionKind.ModifyAndReplace => "[edit]",
-            FileActionKind.Delete => "[del]",
-            _ => throw new NotImplementedException()
-        };
     }
 }

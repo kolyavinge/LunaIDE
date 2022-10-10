@@ -2,7 +2,6 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Luna.IDE.App.ViewModel;
-using Luna.IDE.Common;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
 

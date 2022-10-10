@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Luna.IDE.ProjectExploration;
 using VersionControl.Core;
 
-namespace Luna.IDE.VersionControl;
+namespace Luna.IDE.Versioning;
 
 public interface IProjectRepository
 {
@@ -16,6 +17,7 @@ public interface IProjectRepository
     void IncludeToCommit(IReadOnlyCollection<VersionedFile> files);
     void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> files);
     CommitResult MakeCommit(string comment);
+    IReadOnlyCollection<Commit> FindCommits(FindCommitsFilter filter);
 }
 
 public class ProjectRepository : IProjectRepository
@@ -87,5 +89,15 @@ public class ProjectRepository : IProjectRepository
     public CommitResult MakeCommit(string comment)
     {
         return _versionControlRepository.MakeCommit(comment, Included.AllFiles);
+    }
+
+    public IReadOnlyCollection<Commit> FindCommits(FindCommitsFilter filter)
+    {
+        var commits = _versionControlRepository
+            .FindCommits(filter)
+            .Select(commit => new Commit(_projectLoader.Project!.Root.Name, _versionControlRepository, commit))
+            .ToList();
+
+        return commits;
     }
 }

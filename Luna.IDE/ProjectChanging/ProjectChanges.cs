@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Common;
-using Luna.IDE.VersionControl;
+using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
 using Luna.Infrastructure;
 using Luna.Utils;

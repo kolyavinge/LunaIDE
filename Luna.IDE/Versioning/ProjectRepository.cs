@@ -8,6 +8,7 @@ namespace Luna.IDE.Versioning;
 public interface IProjectRepository
 {
     event EventHandler? RepositoryOpened;
+    event EventHandler? CommitMade;
     bool IsRepositoryExist { get; }
     VersionedStatus Status { get; }
     public VersionedDirectory Included { get; }
@@ -26,6 +27,8 @@ public class ProjectRepository : IProjectRepository
     private readonly IProjectLoader _projectLoader;
 
     public event EventHandler? RepositoryOpened;
+
+    public event EventHandler? CommitMade;
 
     public bool IsRepositoryExist => _projectLoader.Project != null && VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
@@ -47,6 +50,8 @@ public class ProjectRepository : IProjectRepository
 
     private void OnProjectOpened(object? sender, EventArgs e)
     {
+        _versionControlRepository = DummyVersionControlRepository.Instance;
+        Status = VersionedStatus.Empty;
         if (VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project!.Root.FullPath))
         {
             OpenOrCreateRepository();
@@ -88,7 +93,10 @@ public class ProjectRepository : IProjectRepository
 
     public CommitResult MakeCommit(string comment)
     {
-        return _versionControlRepository.MakeCommit(comment, Included.AllFiles);
+        var result = _versionControlRepository.MakeCommit(comment, Included.AllFiles);
+        CommitMade?.Invoke(this, EventArgs.Empty);
+
+        return result;
     }
 
     public IReadOnlyCollection<Commit> FindCommits(FindCommitsFilter filter)

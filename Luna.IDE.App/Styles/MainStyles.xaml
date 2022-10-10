@@ -6,6 +6,8 @@
 
     <Color x:Key="MainBackgroundColor" R="30" G="30" B="30" A="255" />
     <Color x:Key="MainSelectionColor" R="90" G="40" B="70" A="255" />
+    <Color x:Key="InnactiveForegroundColor" R="150" G="150" B="150" A="255" />
+    <Color x:Key="InnactiveSelectedItemColor" R="80" G="80" B="80" A="255" />
     <Color x:Key="AlertColor" R="175" G="45" B="45" A="255" />
 
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{StaticResource MainBackgroundColor}" />
@@ -18,10 +20,10 @@
     <SolidColorBrush x:Key="WindowHeaderBackgroundBrush" Color="#171717" />
 
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#e0e0e0" />
-    <SolidColorBrush x:Key="InnactiveForegroundBrush" Color="#969696" />
+    <SolidColorBrush x:Key="InnactiveForegroundBrush" Color="{StaticResource InnactiveForegroundColor}" />
     <SolidColorBrush x:Key="HyperlinkForegroundBrush" Color="#5CA4DB" />
 
-    <SolidColorBrush x:Key="InnactiveSelectedItemBrush" Color="#505050" />
+    <SolidColorBrush x:Key="InnactiveSelectedItemBrush" Color="{StaticResource InnactiveSelectedItemColor}" />
 
     <SolidColorBrush x:Key="HoveredItemBrush" Color="#323232" />
 
@@ -490,6 +492,50 @@
         </Setter>
         <Style.Resources>
             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemStyle}" />
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="DataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+        <Setter Property="Height" Value="28"/>
+    </Style>
+
+    <Style x:Key="DataGridCellStyle" TargetType="{x:Type DataGridCell}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataGridStyle" TargetType="{x:Type DataGrid}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
+        <Setter Property="RowBackground" Value="{StaticResource MainBackgroundBrush}" />
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource SecondaryBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+        <Setter Property="RowHeight" Value="22" />
+        <Setter Property="RowHeaderWidth" Value="0" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="SelectionUnit" Value="FullRow" />
+        <Setter Property="CanUserSortColumns" Value="False" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Style.Resources>
+            <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource VerticalLineScrollBarStyle}" />
+            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle}" />
+            <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource MainSelectionColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource InnactiveSelectedItemColor}" />
         </Style.Resources>
     </Style>
 

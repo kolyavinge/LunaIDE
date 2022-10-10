@@ -17,6 +17,7 @@
       <None Remove="Images\const.png" />
       <None Remove="Images\directory.png" />
       <None Remove="Images\func.png" />
+      <None Remove="Images\history.png" />
       <None Remove="Images\keyword.png" />
       <None Remove="Images\project.png" />
       <None Remove="Images\runarrow.png" />
@@ -58,6 +59,9 @@
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Resource>
       <Resource Include="Images\func.png">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Resource>
+      <Resource Include="Images\history.png">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Resource>
       <Resource Include="Images\keyword.png">

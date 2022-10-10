@@ -16,11 +16,22 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="24" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
             <TextBlock Text="⮞ Project Explorer" Style="{StaticResource WindowHeaderTextStyle}" Margin="4,0" />
         </Grid>
-        <controls:TreeView Grid.Row="1" DataContext="{Binding TreeViewModel}" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <!-- Open Project History -->
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding OpenProjectHistoryCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/history.png" Width="16" Height="16" Margin="4,0,0,0" />
+                    <TextBlock Text="History" Margin="2,0,4,0" />
+                </StackPanel>
+                <Button.ToolTip>Open project history</Button.ToolTip>
+            </Button>
+        </StackPanel>
+        <controls:TreeView Grid.Row="2" DataContext="{Binding TreeViewModel}" />
     </Grid>
 </UserControl>

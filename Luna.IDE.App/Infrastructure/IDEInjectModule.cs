@@ -9,7 +9,7 @@ using Luna.IDE.CodeEditing;
 using Luna.IDE.Outputing;
 using Luna.IDE.ProjectChanging;
 using Luna.IDE.ProjectExploration;
-using Luna.IDE.VersionControl;
+using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.Infrastructure;
@@ -32,8 +32,6 @@ public class IDEInjectModule : InjectModule
 
         provider.Bind<IProjectRepository, ProjectRepository>().ToSingleton();
 
-        provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
-        provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
@@ -41,6 +39,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<AutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();
+        provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
+        provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
 
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();
         provider.Bind<OutputAreaViewModel, OutputAreaViewModel>().ToSingleton();
@@ -52,6 +52,7 @@ public class IDEInjectModule : InjectModule
 
         provider.Bind<IOpenProjectCommand, OpenProjectCommand>().ToSingleton();
         provider.Bind<IProjectItemOpenCommand, ProjectItemOpenCommand>().ToSingleton();
+        provider.Bind<IOpenProjectHistoryCommand, OpenProjectHistoryCommand>().ToSingleton();
         provider.Bind<ICodeElementNavigateCommand, CodeElementNavigateCommand>().ToSingleton();
         provider.Bind<IProjectExplorerItemOpenCommand, ProjectExplorerItemOpenCommand>().ToSingleton();
         provider.Bind<IGotoDeclarationCommand, GotoDeclarationCommand>().ToSingleton();

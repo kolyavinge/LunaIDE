@@ -1,7 +1,6 @@
 ﻿using DependencyInjection;
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;
-using Luna.IDE.App.Controls.Tree;
 using Luna.IDE.App.Factories;
 using Luna.IDE.App.ViewModel;
 using Luna.IDE.AutoCompletion;
@@ -19,8 +18,6 @@ public class IDEInjectModule : InjectModule
     public override void Init(IBindingProvider provider)
     {
         provider.Bind<IOpenFileDialog, OpenFileDialog>();
-
-        provider.Bind<TreeViewModel, TreeViewModel>();
 
         provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
 

@@ -41,7 +41,7 @@ public class TreeViewModel : NotificationObject
 
     private void OnTreeItemPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == "IsExpanded" || e.PropertyName == "Children")
+        if (e.PropertyName is "IsExpanded" or "Children")
         {
             UpdateTreeItems();
         }
@@ -57,7 +57,7 @@ public class TreeViewModel : NotificationObject
     private List<TreeItem> MakeFlatList(TreeItem item)
     {
         var result = new List<TreeItem> { item };
-        if (item.IsExpanded && item.Children != null)
+        if (item.IsExpanded)
         {
             item.Children.Each(child => result.AddRange(MakeFlatList(child)));
         }

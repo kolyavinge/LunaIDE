@@ -87,6 +87,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
     private void RaiseCommitsChanged()
     {
         RaisePropertyChanged(() => Commits);
+        RaisePropertyChanged(() => AnyCommits);
     }
 
     public void Save() { }

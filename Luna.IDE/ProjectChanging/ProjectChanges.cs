@@ -37,6 +37,8 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     private bool _isCommitAllowed;
     private string _comment;
     private bool _isActivated;
+    private VersionedDirectoryTreeItem _excluded;
+    private VersionedDirectoryTreeItem _included;
 
     public event EventHandler? RepositoryOpened;
 
@@ -73,9 +75,25 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         }
     }
 
-    public VersionedDirectoryTreeItem Included { get; private set; }
+    public VersionedDirectoryTreeItem Included
+    {
+        get => _included;
+        private set
+        {
+            _included = value;
+            RaisePropertyChanged(() => Included);
+        }
+    }
 
-    public VersionedDirectoryTreeItem Excluded { get; private set; }
+    public VersionedDirectoryTreeItem Excluded
+    {
+        get => _excluded;
+        private set
+        {
+            _excluded = value;
+            RaisePropertyChanged(() => Excluded);
+        }
+    }
 
     public CommitResult? LastCommitResult { get; private set; }
 

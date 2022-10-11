@@ -1,4 +1,5 @@
-﻿using Luna.ProjectModel;
+﻿using Luna.IDE.Common;
+using Luna.ProjectModel;
 
 namespace Luna.IDE.ProjectExploration;
 
@@ -8,13 +9,22 @@ public interface IProjectExplorer
     DirectoryTreeItem? ProjectTreeRoot { get; }
 }
 
-public class ProjectExplorer : IProjectExplorer
+public class ProjectExplorer : NotificationObject, IProjectExplorer
 {
     private readonly IProjectLoader _projectLoader;
+    private DirectoryTreeItem? _projectTreeRoot;
 
     public Project? Project => _projectLoader.Project;
 
-    public DirectoryTreeItem? ProjectTreeRoot { get; private set; }
+    public DirectoryTreeItem? ProjectTreeRoot
+    {
+        get => _projectTreeRoot;
+        private set
+        {
+            _projectTreeRoot = value;
+            RaisePropertyChanged(() => ProjectTreeRoot!);
+        }
+    }
 
     public ProjectExplorer(IProjectLoader projectLoader)
     {

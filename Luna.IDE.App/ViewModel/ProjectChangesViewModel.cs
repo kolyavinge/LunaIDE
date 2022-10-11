@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows.Input;
-using Luna.IDE.App.Controls.Tree;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectChanging;
@@ -9,32 +8,10 @@ namespace Luna.IDE.App.ViewModel;
 
 public class ProjectChangesViewModel : NotificationObject
 {
-    private TreeViewModel _includedTreeViewModel;
-    private TreeViewModel _excludedTreeViewModel;
     private bool _isAnyFilesIncluded;
     private bool _isAnyFilesExcluded;
 
     public IProjectChanges Model { get; }
-
-    public TreeViewModel IncludedTreeViewModel
-    {
-        get => _includedTreeViewModel;
-        set
-        {
-            _includedTreeViewModel = value;
-            RaisePropertyChanged(() => IncludedTreeViewModel);
-        }
-    }
-
-    public TreeViewModel ExcludedTreeViewModel
-    {
-        get => _excludedTreeViewModel;
-        set
-        {
-            _excludedTreeViewModel = value;
-            RaisePropertyChanged(() => ExcludedTreeViewModel);
-        }
-    }
 
     public bool IsAnyFilesIncluded
     {
@@ -73,8 +50,6 @@ public class ProjectChangesViewModel : NotificationObject
         Model = projectChanges;
         Model.RepositoryOpened += (s, e) => InitTrees();
         Model.StatusUpdated += (s, e) => UpdateIsAnyFilesIncludedExcluded();
-        _includedTreeViewModel = new TreeViewModel { TreeRoot = Model.Included };
-        _excludedTreeViewModel = new TreeViewModel { TreeRoot = Model.Excluded };
         LoadedCommand = new ActionCommand(Model.Activate);
         UnloadedCommand = new ActionCommand(Model.Deactivate);
         CreateRepositoryCommand = new ActionCommand(Model.CreateRepository);
@@ -85,14 +60,14 @@ public class ProjectChangesViewModel : NotificationObject
 
     private void IncludeToCommit()
     {
-        var selected = ExcludedTreeViewModel.TreeRoot!.AllChildren.Where(x => x.IsSelected);
+        var selected = Model.Excluded.AllChildren.Where(x => x.IsSelected);
         Model.IncludeToCommit(selected);
         UpdateIsAnyFilesIncludedExcluded();
     }
 
     private void ExcludeFromCommit()
     {
-        var selected = IncludedTreeViewModel.TreeRoot!.AllChildren.Where(x => x.IsSelected);
+        var selected = Model.Included.AllChildren.Where(x => x.IsSelected);
         Model.ExcludeFromCommit(selected);
         UpdateIsAnyFilesIncludedExcluded();
     }
@@ -105,8 +80,6 @@ public class ProjectChangesViewModel : NotificationObject
 
     private void InitTrees()
     {
-        IncludedTreeViewModel = new TreeViewModel { TreeRoot = Model.Included };
-        ExcludedTreeViewModel = new TreeViewModel { TreeRoot = Model.Excluded };
         UpdateIsAnyFilesIncludedExcluded();
     }
 

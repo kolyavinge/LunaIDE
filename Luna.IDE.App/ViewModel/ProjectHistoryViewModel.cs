@@ -1,5 +1,4 @@
-﻿using Luna.IDE.App.Controls.Tree;
-using Luna.IDE.Common;
+﻿using Luna.IDE.Common;
 using Luna.IDE.HistoryExploration;
 using Luna.IDE.WindowsManagement;
 
@@ -10,18 +9,8 @@ public class ProjectHistoryViewModel : NotificationObject
 {
     public IProjectHistory Model { get; }
 
-    public TreeViewModel DetailsTreeViewModel { get; set; }
-
-    public ProjectHistoryViewModel(IProjectHistory projectHistory, TreeViewModel detailsTreeViewModel)
+    public ProjectHistoryViewModel(IProjectHistory projectHistory)
     {
         Model = projectHistory;
-        DetailsTreeViewModel = detailsTreeViewModel;
-        Model.PropertyChanged += (s, e) =>
-        {
-            if (e.PropertyName == "DetailsRoot")
-            {
-                DetailsTreeViewModel.TreeRoot = Model.DetailsRoot;
-            }
-        };
     }
 }

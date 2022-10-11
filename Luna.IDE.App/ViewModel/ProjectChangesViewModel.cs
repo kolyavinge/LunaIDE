@@ -48,44 +48,23 @@ public class ProjectChangesViewModel : NotificationObject
     public ProjectChangesViewModel(IProjectChanges projectChanges)
     {
         Model = projectChanges;
-        Model.RepositoryOpened += (s, e) => InitTrees();
-        Model.StatusUpdated += (s, e) => UpdateIsAnyFilesIncludedExcluded();
         LoadedCommand = new ActionCommand(Model.Activate);
         UnloadedCommand = new ActionCommand(Model.Deactivate);
         CreateRepositoryCommand = new ActionCommand(Model.CreateRepository);
         IncludeToCommitCommand = new ActionCommand(IncludeToCommit);
         ExcludeFromCommitCommand = new ActionCommand(ExcludeFromCommit);
-        MakeCommitCommand = new ActionCommand(MakeCommit);
+        MakeCommitCommand = new ActionCommand(Model.MakeCommit);
     }
 
     private void IncludeToCommit()
     {
         var selected = Model.Excluded.AllChildren.Where(x => x.IsSelected);
         Model.IncludeToCommit(selected);
-        UpdateIsAnyFilesIncludedExcluded();
     }
 
     private void ExcludeFromCommit()
     {
         var selected = Model.Included.AllChildren.Where(x => x.IsSelected);
         Model.ExcludeFromCommit(selected);
-        UpdateIsAnyFilesIncludedExcluded();
-    }
-
-    private void MakeCommit()
-    {
-        Model.MakeCommit();
-        UpdateIsAnyFilesIncludedExcluded();
-    }
-
-    private void InitTrees()
-    {
-        UpdateIsAnyFilesIncludedExcluded();
-    }
-
-    private void UpdateIsAnyFilesIncludedExcluded()
-    {
-        IsAnyFilesIncluded = Model.Included.Children.Any();
-        IsAnyFilesExcluded = Model.Excluded.Children.Any();
     }
 }

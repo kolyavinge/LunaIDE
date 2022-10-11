@@ -23,6 +23,8 @@ public abstract class TreeItem : NotificationObject
 
     public IReadOnlyCollection<TreeItem> Children => _children ??= GetChildren().ToList();
 
+    public bool HasChildren => Children.Any();
+
     public int Depth { get; }
 
     public bool IsExpanded
@@ -82,6 +84,7 @@ public abstract class TreeItem : NotificationObject
         _children = GetChildren().ToList();
         _children.Each(x => x.IsSelected = lastSelectedNames.Contains(x.Name));
         RaisePropertyChanged(() => Children);
+        RaisePropertyChanged(() => HasChildren);
     }
 
     private int GetDepth()

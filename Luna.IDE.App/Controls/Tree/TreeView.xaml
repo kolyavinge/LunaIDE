@@ -9,11 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <local:DepthConverter x:Key="DepthConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>

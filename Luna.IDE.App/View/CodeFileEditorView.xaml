@@ -12,9 +12,6 @@
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <view:ControlConverter x:Key="ControlConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>

@@ -12,9 +12,6 @@
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <view:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/MainStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>

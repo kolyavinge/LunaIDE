@@ -7,7 +7,7 @@ namespace Luna.IDE.Versioning;
 
 public interface IProjectRepository
 {
-    event EventHandler? RepositoryOpened;
+    event EventHandler? RepositoryInitialized;
     event EventHandler? CommitMade;
     bool IsRepositoryExist { get; }
     VersionedStatus Status { get; }
@@ -26,7 +26,7 @@ public class ProjectRepository : IProjectRepository
     private IVersionControlRepository _versionControlRepository;
     private readonly IProjectLoader _projectLoader;
 
-    public event EventHandler? RepositoryOpened;
+    public event EventHandler? RepositoryInitialized;
 
     public event EventHandler? CommitMade;
 
@@ -56,6 +56,10 @@ public class ProjectRepository : IProjectRepository
         {
             OpenOrCreateRepository();
         }
+        else
+        {
+            RepositoryInitialized?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void OpenOrCreateRepository()
@@ -65,7 +69,7 @@ public class ProjectRepository : IProjectRepository
         Status = VersionedStatus.Empty;
         Included = new VersionedDirectory(_projectLoader.Project.Root.Name);
         Excluded = new VersionedDirectory(_projectLoader.Project.Root.Name);
-        RepositoryOpened?.Invoke(this, EventArgs.Empty);
+        RepositoryInitialized?.Invoke(this, EventArgs.Empty);
     }
 
     public void UpdateStatus()

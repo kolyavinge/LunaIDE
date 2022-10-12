@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Common;
-using Luna.IDE.ProjectExploration;
 using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
 using Luna.Infrastructure;
@@ -98,21 +97,20 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     public CommitResult? LastCommitResult { get; private set; }
 
     public ProjectChanges(
-        IProjectLoader projectLoader,
         IProjectRepository projectRepository,
         IEnvironmentWindowsManager windowsManager,
         ITimerManager timerManager)
     {
         _projectRepository = projectRepository;
-        projectLoader.ProjectOpened += OnProjectOpened;
+        _projectRepository.RepositoryInitialized += OnRepositoryInitialized;
         _windowsManager = windowsManager;
         _timerManager = timerManager;
         _comment = "";
-        Included = new VersionedDirectoryTreeItem(null, _projectRepository.Included);
-        Excluded = new VersionedDirectoryTreeItem(null, _projectRepository.Excluded);
+        _included = new VersionedDirectoryTreeItem(null, new VersionedDirectory(""));
+        _excluded = new VersionedDirectoryTreeItem(null, new VersionedDirectory(""));
     }
 
-    private void OnProjectOpened(object? sender, EventArgs e)
+    private void OnRepositoryInitialized(object? sender, EventArgs e)
     {
         _timer?.Stop();
         IsRepositoryExist = _projectRepository.IsRepositoryExist;

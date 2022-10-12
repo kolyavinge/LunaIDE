@@ -10,22 +10,22 @@ namespace Luna.IDE.HistoryExploration;
 
 public interface IProjectHistory : INotifyPropertyChanged
 {
-    IReadOnlyCollection<Commit> Commits { get; }
+    IReadOnlyCollection<ICommit> Commits { get; }
     bool AnyCommits { get; }
-    Commit? SelectedCommit { get; set; }
+    ICommit? SelectedCommit { get; set; }
     CommitedDirectoryTreeItem? DetailsRoot { get; }
 }
 
 public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentWindowModel
 {
     private readonly IProjectRepository _projectRepository;
-    private IReadOnlyCollection<Commit> _commits;
-    private Commit? _selectedCommit;
+    private IReadOnlyCollection<ICommit> _commits;
+    private ICommit? _selectedCommit;
     private CommitedDirectoryTreeItem? _detailsRoot;
 
     public string Header => "History";
 
-    public IReadOnlyCollection<Commit> Commits
+    public IReadOnlyCollection<ICommit> Commits
     {
         get
         {
@@ -34,9 +34,9 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         }
     }
 
-    public bool AnyCommits => _commits?.Any() ?? false;
+    public bool AnyCommits => _commits.Any();
 
-    public Commit? SelectedCommit
+    public ICommit? SelectedCommit
     {
         get => _selectedCommit;
         set

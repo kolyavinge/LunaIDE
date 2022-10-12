@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
 using Luna.IDE.Versioning;
-using Luna.IDE.WindowsManagement;
 using Luna.Infrastructure;
-using Luna.Utils;
-using VersionControl.Core;
 
 namespace Luna.IDE.ProjectChanging;
 
@@ -29,7 +27,7 @@ public interface IProjectChanges
 public class ProjectChanges : NotificationObject, IProjectChanges
 {
     private readonly IProjectRepository _projectRepository;
-    private readonly IEnvironmentWindowsManager _windowsManager;
+    private readonly ICodeEditorSaver _codeEditorSaver;
     private readonly ITimerManager _timerManager;
     private ITimer? _timer;
     private bool _isRepositoryExist;
@@ -94,16 +92,14 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         }
     }
 
-    public CommitResult? LastCommitResult { get; private set; }
-
     public ProjectChanges(
         IProjectRepository projectRepository,
-        IEnvironmentWindowsManager windowsManager,
+        ICodeEditorSaver codeEditorSaver,
         ITimerManager timerManager)
     {
         _projectRepository = projectRepository;
+        _codeEditorSaver = codeEditorSaver;
         _projectRepository.RepositoryInitialized += OnRepositoryInitialized;
-        _windowsManager = windowsManager;
         _timerManager = timerManager;
         _comment = "";
         _included = new VersionedDirectoryTreeItem(null, new VersionedDirectory(""));
@@ -116,10 +112,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         IsRepositoryExist = _projectRepository.IsRepositoryExist;
         Included = new VersionedDirectoryTreeItem(null, _projectRepository.Included);
         Excluded = new VersionedDirectoryTreeItem(null, _projectRepository.Excluded);
-        if (_isActivated)
-        {
-            Activate();
-        }
+        if (_isActivated) Activate();
         RepositoryOpened?.Invoke(this, EventArgs.Empty);
     }
 
@@ -140,7 +133,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
 
     private void OnTimer(object? sender, EventArgs e)
     {
-        _windowsManager.Windows.Each(x => x.Model.Save());
+        _codeEditorSaver.SaveOpenedEditors();
         UpdateStatus();
     }
 
@@ -166,8 +159,8 @@ public class ProjectChanges : NotificationObject, IProjectChanges
 
     public void MakeCommit()
     {
-        _windowsManager.Windows.Each(x => x.Model.Save());
-        LastCommitResult = _projectRepository.MakeCommit(Comment);
+        _codeEditorSaver.SaveOpenedEditors();
+        _projectRepository.MakeCommit(Comment);
         Comment = "";
         UpdateStatus();
     }

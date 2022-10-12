@@ -2,7 +2,16 @@
 
 namespace Luna.IDE.Versioning;
 
-public class Commit
+public interface ICommit
+{
+    long Id { get; }
+    string Author { get; }
+    string Comment { get; }
+    DateTime Created { get; }
+    CommitedDirectory Details { get; }
+}
+
+internal class Commit : ICommit
 {
     private readonly string _projectName;
     private readonly VersionControl.Core.IVersionControlRepository _versionControlRepository;
@@ -26,7 +35,7 @@ public class Commit
         }
     }
 
-    internal Commit(
+    public Commit(
         string projectName,
         VersionControl.Core.IVersionControlRepository versionControlRepository,
         VersionControl.Core.Commit commit)

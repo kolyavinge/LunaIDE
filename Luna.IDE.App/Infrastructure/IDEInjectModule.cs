@@ -26,7 +26,9 @@ public class IDEInjectModule : InjectModule
 
         provider.Bind<IEnvironmentWindowsManager, EnvironmentWindowsManager>().ToSingleton();
         provider.Bind<EnvironmentWindowsViewModel, EnvironmentWindowsViewModel>().ToSingleton();
+        provider.Bind<ICodeEditorSaver, CodeEditorSaver>().ToSingleton();
 
+        provider.Bind<IVersionControlRepositoryFactory, VersionControlRepositoryFactory>().ToSingleton();
         provider.Bind<IProjectRepository, ProjectRepository>().ToSingleton();
 
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();

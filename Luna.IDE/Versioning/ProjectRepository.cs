@@ -18,19 +18,20 @@ public interface IProjectRepository
     void IncludeToCommit(IReadOnlyCollection<VersionedFile> files);
     void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> files);
     CommitResult MakeCommit(string comment);
-    IReadOnlyCollection<Commit> FindCommits(FindCommitsFilter filter);
+    IReadOnlyCollection<ICommit> FindCommits(FindCommitsFilter filter);
 }
 
 public class ProjectRepository : IProjectRepository
 {
     private IVersionControlRepository _versionControlRepository;
+    private readonly IVersionControlRepositoryFactory _versionControlRepositoryFactory;
     private readonly IProjectLoader _projectLoader;
 
     public event EventHandler? RepositoryInitialized;
 
     public event EventHandler? CommitMade;
 
-    public bool IsRepositoryExist => _projectLoader.Project != null && VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
+    public bool IsRepositoryExist => _projectLoader.Project != null && _versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
     public VersionedStatus Status { get; private set; }
 
@@ -38,11 +39,14 @@ public class ProjectRepository : IProjectRepository
 
     public VersionedDirectory Excluded { get; private set; }
 
-    public ProjectRepository(IProjectLoader projectLoader)
+    public ProjectRepository(
+        IVersionControlRepositoryFactory versionControlRepositoryFactory,
+        IProjectLoader projectLoader)
     {
+        _versionControlRepositoryFactory = versionControlRepositoryFactory;
         _projectLoader = projectLoader;
         _projectLoader.ProjectOpened += OnProjectOpened;
-        _versionControlRepository = DummyVersionControlRepository.Instance;
+        _versionControlRepository = _versionControlRepositoryFactory.GetDummyRepository();
         Status = VersionedStatus.Empty;
         Included = new VersionedDirectory("");
         Excluded = new VersionedDirectory("");
@@ -50,9 +54,9 @@ public class ProjectRepository : IProjectRepository
 
     private void OnProjectOpened(object? sender, EventArgs e)
     {
-        _versionControlRepository = DummyVersionControlRepository.Instance;
+        _versionControlRepository = _versionControlRepositoryFactory.GetDummyRepository();
         Status = VersionedStatus.Empty;
-        if (VersionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project!.Root.FullPath))
+        if (_versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project!.Root.FullPath))
         {
             OpenOrCreateRepository();
         }
@@ -65,7 +69,7 @@ public class ProjectRepository : IProjectRepository
     public void OpenOrCreateRepository()
     {
         if (_projectLoader.Project == null) return;
-        _versionControlRepository = VersionControlRepositoryFactory.OpenRepository(_projectLoader.Project.Root.FullPath);
+        _versionControlRepository = _versionControlRepositoryFactory.OpenRepository(_projectLoader.Project.Root.FullPath);
         Status = VersionedStatus.Empty;
         Included = new VersionedDirectory(_projectLoader.Project.Root.Name);
         Excluded = new VersionedDirectory(_projectLoader.Project.Root.Name);
@@ -103,7 +107,7 @@ public class ProjectRepository : IProjectRepository
         return result;
     }
 
-    public IReadOnlyCollection<Commit> FindCommits(FindCommitsFilter filter)
+    public IReadOnlyCollection<ICommit> FindCommits(FindCommitsFilter filter)
     {
         var commits = _versionControlRepository
             .FindCommits(filter)

@@ -225,7 +225,7 @@
     </Style>
 
     <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{StaticResource TextBoxBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
@@ -319,7 +319,7 @@
     </Style>
 
     <Style x:Key="ListBoxStyle" TargetType="{x:Type ListBox}">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -376,7 +376,7 @@
     </Style>
 
     <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Style.Resources>
             <Style TargetType="{x:Type TabItem}">

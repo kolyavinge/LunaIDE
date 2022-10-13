@@ -16,6 +16,7 @@
         <ListBox
             x:Name="lb"
             Style="{StaticResource ListBoxStyle}"
+            Background="{Binding Background, ElementName=parent}"
             ItemsSource="{Binding TreeItems}"
             SelectionMode="Extended"
             KeyUp="OnKeyUp">

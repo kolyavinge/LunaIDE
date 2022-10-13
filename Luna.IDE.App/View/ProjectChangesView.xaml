@@ -58,7 +58,6 @@
                 <!-- commit comment -->
                 <TextBox
                     Style="{StaticResource TextBoxStyle}"
-                    Background="{StaticResource TextBoxBackgroundBrush}"
                     Text="{Binding Model.Comment, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap"
                     VerticalAlignment="Top"

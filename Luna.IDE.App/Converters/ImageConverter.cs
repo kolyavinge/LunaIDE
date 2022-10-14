@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using Luna.IDE.App.Media;
 
-namespace Luna.IDE.App.Controls;
+namespace Luna.IDE.App.Converters;
 
 public class ImageConverter : IMultiValueConverter
 {

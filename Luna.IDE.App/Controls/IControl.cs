@@ -1,4 +1,4 @@
-﻿namespace Luna.IDE.App.View;
+﻿namespace Luna.IDE.App.Controls;
 
 public interface IControl
 {

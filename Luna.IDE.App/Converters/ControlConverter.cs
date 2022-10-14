@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
+using Luna.IDE.App.Controls;
 
-namespace Luna.IDE.App.View;
+namespace Luna.IDE.App.Converters;
 
 public class ControlConverter : IValueConverter
 {

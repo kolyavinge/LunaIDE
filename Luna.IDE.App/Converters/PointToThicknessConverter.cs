@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace Luna.IDE.App.View;
+namespace Luna.IDE.App.Converters;
 
 public class PointToThicknessConverter : IValueConverter
 {

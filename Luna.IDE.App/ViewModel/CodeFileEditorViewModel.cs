@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Commands;
+using Luna.IDE.App.Controls;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Mvvm;
-using Luna.IDE.App.View;
 using Luna.IDE.AutoCompletion;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;

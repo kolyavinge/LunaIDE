@@ -6,12 +6,13 @@
              xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Luna.IDE.App.View"
+             xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <view:ControlConverter x:Key="ControlConverter" />
+            <converters:ControlConverter x:Key="ControlConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>

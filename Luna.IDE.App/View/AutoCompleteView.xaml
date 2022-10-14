@@ -4,15 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:view="clr-namespace:Luna.IDE.App.View"
-             xmlns:local="clr-namespace:Luna.IDE.App.Controls"
+             xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
              x:Name="parent"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <view:ControlConverter x:Key="ControlConverter" />
-            <local:ImageConverter x:Key="ImageConverter" />
+            <converters:ControlConverter x:Key="ControlConverter" />
+            <converters:ImageConverter x:Key="ImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>

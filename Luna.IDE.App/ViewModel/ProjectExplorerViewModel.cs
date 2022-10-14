@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Commands;
+using Luna.IDE.App.Infrastructure;
+using Luna.IDE.App.Media;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectExploration;
 
@@ -12,6 +14,9 @@ public class ProjectExplorerViewModel : NotificationObject
     public ICommand OpenProjectHistoryCommand { get; }
 
     public ICommand ItemOpenCommand { get; }
+
+    [Inject]
+    public IImageCollection? ImageCollection { get; set; }
 
     public ProjectExplorerViewModel(
         IProjectExplorer projectExplorer,

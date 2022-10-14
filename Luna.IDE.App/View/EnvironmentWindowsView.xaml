@@ -10,7 +10,7 @@
             ItemsSource="{Binding WindowsManager.Windows}"
             SelectedItem="{Binding WindowsManager.SelectedWindow, Mode=TwoWay}"
             Style="{StaticResource TabControlStyle}"
-            Margin="-2">
+            Margin="0,-2,0,0">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Name="sp" Orientation="Horizontal" Height="32" Background="Transparent">

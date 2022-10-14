@@ -1,14 +1,12 @@
 ﻿using System.Linq;
-using System.Windows.Media;
 using Luna.Functions;
-using Luna.IDE.Media;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.AutoCompletion;
 
 public interface IAutoCompleteItem : IComparable<IAutoCompleteItem>
 {
-    ImageSource? Image { get; }
+    string? ImageName { get; }
 
     string Name { get; }
 
@@ -17,17 +15,15 @@ public interface IAutoCompleteItem : IComparable<IAutoCompleteItem>
 
 public class AutoCompleteItem : IAutoCompleteItem
 {
-    // чтобы в тестах не грузились картинки
-    private readonly Func<ImageSource?>? _imageFunc;
-    public ImageSource? Image => _imageFunc?.Invoke();
+    public string? ImageName { get; }
 
     public string Name { get; }
 
     public string AdditionalInfo { get; }
 
-    public AutoCompleteItem(Func<ImageSource?>? imageFunc, string name, string additionalInfo)
+    public AutoCompleteItem(string? imageName, string name, string additionalInfo)
     {
-        _imageFunc = imageFunc;
+        ImageName = imageName;
         Name = name;
         AdditionalInfo = additionalInfo;
     }
@@ -42,7 +38,7 @@ public class AutoCompleteItem : IAutoCompleteItem
 public class KeywordAutoCompleteItem : AutoCompleteItem
 {
     public KeywordAutoCompleteItem(string keyword)
-      : base(() => ImageCollection.GetImage("keyword.png"), keyword, "keyword")
+      : base("keyword.png", keyword, "keyword")
     {
     }
 }
@@ -52,13 +48,13 @@ public class CodeElementAutoCompleteItem : AutoCompleteItem
     public CodeElement CodeElement { get; }
 
     public CodeElementAutoCompleteItem(ConstantDeclaration constant)
-       : base(() => ImageCollection.GetImage("const.png"), constant.Name, constant.Value.ToString() ?? "")
+       : base("const.png", constant.Name, constant.Value.ToString() ?? "")
     {
         CodeElement = constant;
     }
 
     public CodeElementAutoCompleteItem(FunctionDeclaration func)
-        : base(() => ImageCollection.GetImage("func.png"), func.Name, $"({string.Join(" ", func.Arguments.Select(x => x.Name))})")
+        : base("func.png", func.Name, $"({string.Join(" ", func.Arguments.Select(x => x.Name))})")
     {
         CodeElement = func;
     }
@@ -67,7 +63,7 @@ public class CodeElementAutoCompleteItem : AutoCompleteItem
 public class EmbeddedFunctionAutoCompleteItem : AutoCompleteItem
 {
     public EmbeddedFunctionAutoCompleteItem(EmbeddedFunctionDeclaration func)
-      : base(() => ImageCollection.GetImage("func.png"), func.Name, $"({string.Join(" ", func.Arguments)})")
+      : base("func.png", func.Name, $"({string.Join(" ", func.Arguments)})")
     {
     }
 }

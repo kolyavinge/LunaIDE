@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Luna.IDE.App.Infrastructure;
+using Luna.IDE.App.Media;
 using Luna.IDE.App.ViewModel;
 using Luna.IDE.AutoCompletion;
 
@@ -25,6 +26,17 @@ public partial class AutoCompleteView : UserControl
         var vm = (AutoCompleteViewModel)view.DataContext;
         vm.Model = (AutoComplete)e.NewValue;
     }
+    #endregion
+
+    #region ImageCollection
+    public IImageCollection? ImageCollection
+    {
+        get { return (IImageCollection?)GetValue(ImageCollectionProperty); }
+        set { SetValue(ImageCollectionProperty, value); }
+    }
+
+    public static readonly DependencyProperty ImageCollectionProperty =
+        DependencyProperty.Register("ImageCollection", typeof(IImageCollection), typeof(AutoCompleteView));
     #endregion
 
     #region AdditionalInfoForeground

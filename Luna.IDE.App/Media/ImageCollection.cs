@@ -2,13 +2,13 @@
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Luna.IDE.Media;
+namespace Luna.IDE.App.Media;
 
-public static class ImageCollection
+public class ImageCollection : IImageCollection
 {
     private static readonly Dictionary<string, ImageSource> _images = new();
 
-    public static ImageSource? GetImage(string imageName)
+    public ImageSource? GetImage(string imageName)
     {
         if (_images.ContainsKey(imageName))
         {

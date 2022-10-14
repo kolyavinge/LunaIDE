@@ -44,8 +44,10 @@
                 </Grid.ColumnDefinitions>
                 <controls:TreeView
                     Grid.Column="0"
+                    Style="{StaticResource TreeViewStyle}"
                     TreeRoot="{Binding DataContext.Model.DetailsRoot, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    AdditionalInfoForeground="{StaticResource InnactiveForegroundBrush}" />
+                    AdditionalInfoForeground="{StaticResource InnactiveForegroundBrush}"
+                    ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                 <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
             </Grid>
         </Grid>

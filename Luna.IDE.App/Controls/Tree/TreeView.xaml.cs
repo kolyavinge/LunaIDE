@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Luna.IDE.App.Media;
 using Luna.IDE.Common;
 
 namespace Luna.IDE.App.Controls.Tree;
@@ -9,14 +10,14 @@ namespace Luna.IDE.App.Controls.Tree;
 public partial class TreeView : UserControl
 {
     #region TreeRoot
-    public static readonly DependencyProperty TreeRootProperty =
-        DependencyProperty.Register("TreeRoot", typeof(TreeItem), typeof(TreeView), new PropertyMetadata(OnRootPropertyChanged));
-
     public TreeItem TreeRoot
     {
         get { return (TreeItem)GetValue(TreeRootProperty); }
         set { SetValue(TreeRootProperty, value); }
     }
+
+    public static readonly DependencyProperty TreeRootProperty =
+        DependencyProperty.Register("TreeRoot", typeof(TreeItem), typeof(TreeView), new PropertyMetadata(OnRootPropertyChanged));
 
     private static void OnRootPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -28,14 +29,14 @@ public partial class TreeView : UserControl
     #endregion
 
     #region OpenItemCommand
-    public static readonly DependencyProperty OpenItemCommandProperty =
-        DependencyProperty.Register("OpenItemCommand", typeof(ICommand), typeof(TreeView), new PropertyMetadata(OnOpenItemCommandChanged));
-
     public ICommand OpenItemCommand
     {
         get { return (ICommand)GetValue(OpenItemCommandProperty); }
         set { SetValue(OpenItemCommandProperty, value); }
     }
+
+    public static readonly DependencyProperty OpenItemCommandProperty =
+        DependencyProperty.Register("OpenItemCommand", typeof(ICommand), typeof(TreeView), new PropertyMetadata(OnOpenItemCommandChanged));
 
     private static void OnOpenItemCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -44,6 +45,17 @@ public partial class TreeView : UserControl
         var vm = (TreeViewModel)tree.DataContext;
         vm.OpenItemCommand = command;
     }
+    #endregion
+
+    #region ImageCollection
+    public IImageCollection? ImageCollection
+    {
+        get { return (IImageCollection?)GetValue(ImageCollectionProperty); }
+        set { SetValue(ImageCollectionProperty, value); }
+    }
+
+    public static readonly DependencyProperty ImageCollectionProperty =
+        DependencyProperty.Register("ImageCollection", typeof(IImageCollection), typeof(TreeView));
     #endregion
 
     #region AdditionalInfoForeground

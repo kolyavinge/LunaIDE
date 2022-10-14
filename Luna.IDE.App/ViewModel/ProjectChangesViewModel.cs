@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Input;
+using Luna.IDE.App.Infrastructure;
+using Luna.IDE.App.Media;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectChanging;
@@ -12,6 +14,9 @@ public class ProjectChangesViewModel : NotificationObject
     private bool _isAnyFilesExcluded;
 
     public IProjectChanges Model { get; }
+
+    [Inject]
+    public IImageCollection? ImageCollection { get; set; }
 
     public bool IsAnyFilesIncluded
     {

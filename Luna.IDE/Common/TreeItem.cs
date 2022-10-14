@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using Luna.Utils;
 
 namespace Luna.IDE.Common;
 
 public abstract class TreeItem : NotificationObject
 {
-    // чтобы в тестах не грузились картинки
-    private readonly Func<ImageSource?>? _imageFunc;
     private IReadOnlyCollection<TreeItem>? _children;
     private bool _isExpanded;
     private bool _isSelected;
 
     public TreeItem? Parent { get; }
 
-    public ImageSource? Image => _imageFunc?.Invoke();
+    public string? ImageName { get; }
 
     public string Name { get; }
 
@@ -64,11 +61,11 @@ public abstract class TreeItem : NotificationObject
         }
     }
 
-    protected TreeItem(TreeItem? parent, string name, Func<ImageSource?>? imageFunc)
+    protected TreeItem(TreeItem? parent, string name, string? imageName)
     {
         Parent = parent;
         Name = name;
-        _imageFunc = imageFunc;
+        ImageName = imageName;
         Depth = GetDepth();
         _isExpanded = Parent == null;
     }

@@ -2,6 +2,7 @@
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Factories;
+using Luna.IDE.App.Media;
 using Luna.IDE.App.ViewModel;
 using Luna.IDE.AutoCompletion;
 using Luna.IDE.CodeEditing;
@@ -30,6 +31,8 @@ public class IDEInjectModule : InjectModule
 
         provider.Bind<IVersionControlRepositoryFactory, VersionControlRepositoryFactory>().ToSingleton();
         provider.Bind<IProjectRepository, ProjectRepository>().ToSingleton();
+
+        provider.Bind<IImageCollection, ImageCollection>().ToSingleton();
 
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());

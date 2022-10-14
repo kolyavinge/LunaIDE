@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Luna.IDE.App.View"
+             xmlns:local="clr-namespace:Luna.IDE.App.Controls"
              x:Name="parent"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <view:ControlConverter x:Key="ControlConverter" />
+            <local:ImageConverter x:Key="ImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -42,7 +44,20 @@
                             <ColumnDefinition Width="16" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Source="{Binding Image}" Margin="-4,0,0,0" HorizontalAlignment="Left" Width="16" Height="16" />
+                        <Image Grid.Column="0" Margin="-4,0,0,0" HorizontalAlignment="Left" Width="16" Height="16">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource ImageConverter}">
+                                                <Binding Path="DataContext.ImageCollection" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}" />
+                                                <Binding Path="ImageName" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Image.Style>
+                        </Image>
                         <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="-4,0,0,0" HorizontalAlignment="Left" />
                         <TextBlock Grid.Column="3" Text="{Binding AdditionalInfo}" Foreground="{Binding AdditionalInfoForeground, ElementName=parent}" HorizontalAlignment="Right" />
                     </Grid>

@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Controls\Tree\ImageConverter.cs~RF234e7759.TMP" />
       <None Remove="Images\arrow-down.png" />
       <None Remove="Images\arrow-right.png" />
       <None Remove="Images\codefile.png" />

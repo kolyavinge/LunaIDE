@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Common;
-using Luna.IDE.Media;
 using Luna.IDE.Versioning;
 
 namespace Luna.IDE.ProjectChanging;
@@ -11,7 +10,7 @@ public class VersionedDirectoryTreeItem : TreeItem
     private readonly VersionedDirectory _versionedDirectory;
 
     public VersionedDirectoryTreeItem(VersionedDirectoryTreeItem? parent, VersionedDirectory versionedDirectory) :
-        base(parent, versionedDirectory.Name, () => ImageCollection.GetImage("directory.png"))
+        base(parent, versionedDirectory.Name, "directory.png")
     {
         _versionedDirectory = versionedDirectory;
         _versionedDirectory.ChildrenRefreshed += (s, e) => RefreshChildren();

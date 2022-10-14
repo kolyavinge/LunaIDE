@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.Common;
-using Luna.IDE.Media;
 using Luna.IDE.Versioning;
 
 namespace Luna.IDE.HistoryExploration;
@@ -11,7 +10,7 @@ public class CommitedDirectoryTreeItem : TreeItem
     private readonly CommitedDirectory _commitedDirectory;
 
     public CommitedDirectoryTreeItem(CommitedDirectoryTreeItem? parent, CommitedDirectory commitedDirectory)
-        : base(parent, commitedDirectory.Name, () => ImageCollection.GetImage("directory.png"))
+        : base(parent, commitedDirectory.Name, "directory.png")
     {
         _commitedDirectory = commitedDirectory;
         _commitedDirectory.ChildrenRefreshed += (s, e) => RefreshChildren();

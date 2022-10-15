@@ -14,6 +14,7 @@ internal class ProjectChangesTest
 {
     private Mock<IProjectRepository> _projectRepository;
     private Mock<ICodeEditorSaver> _codeEditorSaver;
+    private Mock<ICodeEditorUndoChangesLogic> _codeEditorUndoChangesLogic;
     private Mock<ITimer> _timer;
     private Mock<ITimerManager> _timerManager;
     private ProjectChanges _projectChanges;
@@ -23,9 +24,10 @@ internal class ProjectChangesTest
     {
         _projectRepository = new Mock<IProjectRepository>();
         _codeEditorSaver = new Mock<ICodeEditorSaver>();
+        _codeEditorUndoChangesLogic = new Mock<ICodeEditorUndoChangesLogic>();
         _timer = new Mock<ITimer>();
         _timerManager = new Mock<ITimerManager>();
-        _projectChanges = new ProjectChanges(_projectRepository.Object, _codeEditorSaver.Object, _timerManager.Object);
+        _projectChanges = new ProjectChanges(_projectRepository.Object, _codeEditorSaver.Object, _codeEditorUndoChangesLogic.Object, _timerManager.Object);
     }
 
     [Test]
@@ -108,12 +110,9 @@ internal class ProjectChangesTest
     public void Activate_RepositoryNotExist()
     {
         _projectRepository.SetupGet(x => x.IsRepositoryExist).Returns(false);
-        var statusUpdatedFired = 0;
-        _projectChanges.StatusUpdated += (s, e) => statusUpdatedFired++;
 
         _projectChanges.Activate();
 
-        Assert.That(statusUpdatedFired, Is.EqualTo(0));
         _timerManager.Verify(x => x.CreateAndStart(TimeSpan.FromSeconds(2), It.IsAny<EventHandler>()), Times.Never());
     }
 
@@ -121,27 +120,21 @@ internal class ProjectChangesTest
     public void Activate_RepositoryExist()
     {
         _projectRepository.SetupGet(x => x.IsRepositoryExist).Returns(true);
-        var statusUpdatedFired = 0;
-        _projectChanges.StatusUpdated += (s, e) => statusUpdatedFired++;
 
         _projectChanges.Activate();
 
-        Assert.That(statusUpdatedFired, Is.EqualTo(1));
         _timerManager.Verify(x => x.CreateAndStart(TimeSpan.FromSeconds(2), It.IsAny<EventHandler>()), Times.Once());
     }
 
     [Test]
-    public void OnTimer_UpdateStatus()
+    public void OnTimer_SaveOpenedEditors()
     {
         _projectRepository.SetupGet(x => x.IsRepositoryExist).Returns(true);
-        var statusUpdatedFired = 0;
-        _projectChanges.StatusUpdated += (s, e) => statusUpdatedFired++;
         Action<TimeSpan, EventHandler> callback = (ts, e) => e.Invoke(this, EventArgs.Empty);
         _timerManager.Setup(x => x.CreateAndStart(TimeSpan.FromSeconds(2), It.IsAny<EventHandler>())).Callback(callback);
 
         _projectChanges.Activate();
 
-        Assert.That(statusUpdatedFired, Is.EqualTo(2));
         _codeEditorSaver.Verify(x => x.SaveOpenedEditors(), Times.Once());
     }
 
@@ -219,18 +212,6 @@ internal class ProjectChangesTest
     }
 
     [Test]
-    public void MakeCommit_StatusUpdated()
-    {
-        var statusUpdatedFired = 0;
-        _projectChanges.StatusUpdated += (s, e) => statusUpdatedFired++;
-
-        _projectChanges.MakeCommit();
-
-        Assert.That(statusUpdatedFired, Is.EqualTo(1));
-        _projectRepository.Verify(x => x.UpdateStatus(), Times.Once());
-    }
-
-    [Test]
     public void IsCommitAllowed_IncludeAndComment()
     {
         var included = new VersionedDirectory("");
@@ -259,5 +240,17 @@ internal class ProjectChangesTest
         _projectChanges.Comment = "comment";
 
         Assert.False(_projectChanges.IsCommitAllowed);
+    }
+
+    [Test]
+    public void UndoChanges()
+    {
+        var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
+        var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
+
+        _projectChanges.UndoChanges(treeItems);
+
+        _projectRepository.Verify(x => x.UndoChanges(new[] { versionedFile }), Times.Once());
+        _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(new[] { versionedFile }), Times.Once());
     }
 }

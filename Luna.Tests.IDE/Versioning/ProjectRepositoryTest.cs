@@ -264,4 +264,30 @@ internal class ProjectRepositoryTest
         Assert.That(result, Has.Count.EqualTo(1));
         Assert.That(result[0].Id, Is.EqualTo(123));
     }
+
+    [Test]
+    public void UndoChanges_RaiseChangesUndone()
+    {
+        var files = new VersionedFile[] { new(1, "", "", 10, FileActionKind.Add) };
+        var changesUndoneFired = 0;
+        _repository.ChangesUndone += (s, e) => changesUndoneFired++;
+        _projectLoader.SetupGet(x => x.Project).Returns(_project);
+        _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
+        _repository.OpenOrCreateRepository();
+
+        _repository.UndoChanges(files);
+
+        Assert.That(changesUndoneFired, Is.EqualTo(1));
+        _versionControlRepository.Verify(x => x.UndoChanges(files), Times.Once());
+    }
+
+    [Test]
+    public void UndoChanges_NotRaiseChangesUndone()
+    {
+        _projectLoader.SetupGet(x => x.Project).Returns(_project);
+        _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
+        _repository.OpenOrCreateRepository();
+
+        _repository.UndoChanges(new VersionedFile[0]);
+    }
 }

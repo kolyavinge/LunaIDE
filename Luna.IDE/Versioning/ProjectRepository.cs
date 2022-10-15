@@ -9,6 +9,7 @@ public interface IProjectRepository
 {
     event EventHandler? RepositoryInitialized;
     event EventHandler? CommitMade;
+    event EventHandler<ChangesUndoneEventArgs>? ChangesUndone;
     bool IsRepositoryExist { get; }
     VersionedStatus Status { get; }
     public VersionedDirectory Included { get; }
@@ -19,6 +20,16 @@ public interface IProjectRepository
     void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> files);
     CommitResult MakeCommit(string comment);
     IReadOnlyCollection<ICommit> FindCommits(FindCommitsFilter filter);
+    void UndoChanges(IReadOnlyCollection<VersionedFile> files);
+}
+
+public class ChangesUndoneEventArgs : EventArgs
+{
+    public IReadOnlyCollection<VersionedFile> VersionedFiles { get; }
+    public ChangesUndoneEventArgs(IReadOnlyCollection<VersionedFile> versionedFiles)
+    {
+        VersionedFiles = versionedFiles;
+    }
 }
 
 public class ProjectRepository : IProjectRepository
@@ -30,6 +41,8 @@ public class ProjectRepository : IProjectRepository
     public event EventHandler? RepositoryInitialized;
 
     public event EventHandler? CommitMade;
+
+    public event EventHandler<ChangesUndoneEventArgs>? ChangesUndone;
 
     public bool IsRepositoryExist => _projectLoader.Project != null && _versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
@@ -115,5 +128,11 @@ public class ProjectRepository : IProjectRepository
             .ToList();
 
         return commits;
+    }
+
+    public void UndoChanges(IReadOnlyCollection<VersionedFile> files)
+    {
+        _versionControlRepository.UndoChanges(files);
+        ChangesUndone?.Invoke(this, new(files));
     }
 }

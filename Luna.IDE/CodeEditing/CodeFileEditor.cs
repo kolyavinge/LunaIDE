@@ -7,23 +7,6 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ICodeFileEditor
-{
-    CodeFileProjectItem ProjectItem { get; }
-    CodeTextBoxModel CodeTextBoxModel { get; }
-    CursorPosition CursorPosition { get; }
-    TokenCursorPosition? GetTokenCursorPosition();
-    void NavigateTo(CodeElement codeElement);
-    void ReplaceText(CursorPosition start, CursorPosition end, string text);
-    void DeleteSelectedLines();
-    void ToLowerCase();
-    void ToUpperCase();
-    void MoveSelectedLinesUp();
-    void MoveSelectedLinesDown();
-    void Undo();
-    void Redo();
-}
-
 [EditorFor(typeof(CodeFileProjectItem))]
 public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
 {
@@ -50,7 +33,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
     }
 
-    public void OnCodeModelUpdated(CodeModelUpdatedEventArgs e)
+    internal void OnCodeModelUpdated(CodeModelUpdatedEventArgs e)
     {
         var diff = e.Different;
 
@@ -88,6 +71,14 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     {
         CodeTextBoxModel.TextSelection.Set(start, end);
         CodeTextBoxModel.InsertText(text);
+    }
+
+    public void UndoTextChanges()
+    {
+        ProjectItem.ResetTextGettingStrategy();
+        CodeTextBoxModel.SetText(ProjectItem.GetText());
+        ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
+        _codeModelUpdater.UpdateRequest();
     }
 
     public void DeleteSelectedLines() => CodeTextBoxModel.DeleteSelectedLines();

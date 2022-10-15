@@ -10,7 +10,6 @@ namespace Luna.IDE.ProjectChanging;
 public interface IProjectChanges
 {
     event EventHandler? RepositoryOpened;
-    event EventHandler? StatusUpdated;
     bool IsRepositoryExist { get; }
     bool IsCommitAllowed { get; }
     string Comment { get; set; }
@@ -22,12 +21,14 @@ public interface IProjectChanges
     void IncludeToCommit(IEnumerable<TreeItem> items);
     void ExcludeFromCommit(IEnumerable<TreeItem> items);
     void MakeCommit();
+    void UndoChanges(IEnumerable<TreeItem> items);
 }
 
 public class ProjectChanges : NotificationObject, IProjectChanges
 {
     private readonly IProjectRepository _projectRepository;
     private readonly ICodeEditorSaver _codeEditorSaver;
+    private readonly ICodeEditorUndoChangesLogic _codeEditorUndoChangesLogic;
     private readonly ITimerManager _timerManager;
     private ITimer? _timer;
     private bool _isRepositoryExist;
@@ -38,8 +39,6 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     private VersionedDirectoryTreeItem _included;
 
     public event EventHandler? RepositoryOpened;
-
-    public event EventHandler? StatusUpdated;
 
     public bool IsRepositoryExist
     {
@@ -95,10 +94,12 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     public ProjectChanges(
         IProjectRepository projectRepository,
         ICodeEditorSaver codeEditorSaver,
+        ICodeEditorUndoChangesLogic codeEditorUndoChangesLogic,
         ITimerManager timerManager)
     {
         _projectRepository = projectRepository;
         _codeEditorSaver = codeEditorSaver;
+        _codeEditorUndoChangesLogic = codeEditorUndoChangesLogic;
         _projectRepository.RepositoryInitialized += OnRepositoryInitialized;
         _timerManager = timerManager;
         _comment = "";
@@ -165,11 +166,18 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         UpdateStatus();
     }
 
+    public void UndoChanges(IEnumerable<TreeItem> items)
+    {
+        var versionedFiles = items.SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).ToList();
+        _projectRepository.UndoChanges(versionedFiles);
+        _codeEditorUndoChangesLogic.UndoTextChanges(versionedFiles);
+        UpdateStatus();
+    }
+
     private void UpdateStatus()
     {
         _projectRepository.UpdateStatus();
         UpdateCommitAllowed();
-        StatusUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateCommitAllowed()

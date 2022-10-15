@@ -50,6 +50,8 @@ public class ProjectChangesViewModel : NotificationObject
 
     public ICommand MakeCommitCommand { get; }
 
+    public ICommand UndoChangesCommand { get; }
+
     public ProjectChangesViewModel(IProjectChanges projectChanges)
     {
         Model = projectChanges;
@@ -59,6 +61,7 @@ public class ProjectChangesViewModel : NotificationObject
         IncludeToCommitCommand = new ActionCommand(IncludeToCommit);
         ExcludeFromCommitCommand = new ActionCommand(ExcludeFromCommit);
         MakeCommitCommand = new ActionCommand(Model.MakeCommit);
+        UndoChangesCommand = new ActionCommand(UndoChanges);
     }
 
     private void IncludeToCommit()
@@ -71,5 +74,11 @@ public class ProjectChangesViewModel : NotificationObject
     {
         var selected = Model.Included.AllChildren.Where(x => x.IsSelected);
         Model.ExcludeFromCommit(selected);
+    }
+
+    private void UndoChanges()
+    {
+        var selected = Model.Included.AllChildren.Union(Model.Excluded.AllChildren).Where(x => x.IsSelected);
+        Model.UndoChanges(selected);
     }
 }

@@ -27,11 +27,13 @@ internal class CodeModelUpdateRaiserTest
     public void NoDiff()
     {
         _raiser.StoreOldCodeModels(_projectItems);
+        CodeModel callbackOldCodeModel = null;
         CodeModelScopeIdentificatorsDifferent callbackDiff = null;
-        _projectItems.First().CodeModelUpdated += (s, e) => callbackDiff = e.Different;
+        _projectItems.First().CodeModelUpdated += (s, e) => { callbackOldCodeModel = e.OldCodeModel; callbackDiff = e.Different; };
 
         _raiser.RaiseUpdateCodeModelWithDiff();
 
+        Assert.That(callbackOldCodeModel, Is.EqualTo(_projectItems.First().CodeModel));
         Assert.NotNull(callbackDiff);
         Assert.False(callbackDiff.AnyChanges);
     }
@@ -40,14 +42,17 @@ internal class CodeModelUpdateRaiserTest
     public void WithDiff()
     {
         _raiser.StoreOldCodeModels(_projectItems);
-        var newModel = new CodeModel();
-        newModel.AddFunctionDeclaration(new("func", Enumerable.Empty<FunctionArgument>(), new()));
+        var oldCodeModel = _projectItems.First().CodeModel;
+        var newCodeModel = new CodeModel();
+        newCodeModel.AddFunctionDeclaration(new("func", Enumerable.Empty<FunctionArgument>(), new()));
+        CodeModel callbackOldCodeModel = null;
         CodeModelScopeIdentificatorsDifferent callbackDiff = null;
-        _projectItems.First().CodeModelUpdated += (s, e) => callbackDiff = e.Different;
-        _projectItems.First().CodeModel = newModel;
+        _projectItems.First().CodeModelUpdated += (s, e) => { callbackOldCodeModel = e.OldCodeModel; callbackDiff = e.Different; };
+        _projectItems.First().CodeModel = newCodeModel;
 
         _raiser.RaiseUpdateCodeModelWithDiff();
 
+        Assert.That(callbackOldCodeModel, Is.EqualTo(oldCodeModel));
         Assert.NotNull(callbackDiff);
         Assert.True(callbackDiff.AnyChanges);
         Assert.AreEqual(1, callbackDiff.AddedDeclaredFunctions.Count);

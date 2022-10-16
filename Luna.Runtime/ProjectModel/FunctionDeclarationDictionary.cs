@@ -14,7 +14,7 @@ public interface IFunctionDeclarationDictionary : IEnumerable<FunctionDeclaratio
     IFunctionDeclarationDictionary Subtraction(IFunctionDeclarationDictionary x);
 }
 
-internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary
+internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, IEquatable<FunctionDeclarationDictionary?>
 {
     private readonly Dictionary<string, FunctionDeclaration> _dictionary = new();
 
@@ -60,4 +60,26 @@ internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary
     public IEnumerator<FunctionDeclaration> GetEnumerator() => _dictionary.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _dictionary.Values.GetEnumerator();
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as FunctionDeclarationDictionary);
+    }
+
+    public bool Equals(FunctionDeclarationDictionary? other)
+    {
+        return other is not null &&
+               _dictionary.Values.SequenceEqual(other._dictionary.Values);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        foreach (var item in _dictionary.Values)
+        {
+            hashCode.Add(item);
+        }
+
+        return hashCode.ToHashCode();
+    }
 }

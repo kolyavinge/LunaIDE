@@ -14,7 +14,7 @@ public interface IConstantDeclarationDictionary : IEnumerable<ConstantDeclaratio
     IConstantDeclarationDictionary Subtraction(IConstantDeclarationDictionary x);
 }
 
-internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary
+internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary, IEquatable<ConstantDeclarationDictionary?>
 {
     private readonly Dictionary<string, ConstantDeclaration> _dictionary = new();
 
@@ -60,4 +60,26 @@ internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary
     public IEnumerator<ConstantDeclaration> GetEnumerator() => _dictionary.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _dictionary.Values.GetEnumerator();
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as ConstantDeclarationDictionary);
+    }
+
+    public bool Equals(ConstantDeclarationDictionary? other)
+    {
+        return other is not null &&
+               _dictionary.Values.SequenceEqual(other._dictionary.Values);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        foreach (var item in _dictionary.Values)
+        {
+            hashCode.Add(item);
+        }
+
+        return hashCode.ToHashCode();
+    }
 }

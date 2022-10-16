@@ -34,14 +34,9 @@ internal class CodeFileEditorTest
     }
 
     [Test]
-    public void Constructor()
-    {
-    }
-
-    [Test]
     public void OnCodeModelUpdated_NoDifferent()
     {
-        _editor.OnCodeModelUpdated(_editor, new(new CodeModelScopeIdentificatorsDifferent()));
+        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModelScopeIdentificatorsDifferent()));
         _codeProvider.Verify(x => x.UpdateTokenKinds(It.IsAny<IEnumerable<UpdatedTokenKind>>()), Times.Never());
     }
 
@@ -58,7 +53,7 @@ internal class CodeFileEditorTest
             new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedImportedConst", new IntegerValueElement(1)) }),
             new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }));
 
-        _editor.OnCodeModelUpdated(_editor, new(diff));
+        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), diff));
 
         _codeProvider.Verify(x => x.UpdateTokenKinds(new UpdatedTokenKind[]
         {

@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Luna.Output;
 using Luna.Parsing;
 using Luna.ProjectModel;
 using Moq;
 using NUnit.Framework;
 
-namespace Luna.Tests.Parsing;
+namespace Luna.Tests.ProjectModel;
 
 internal class CodeModelBuilderTest
 {
     private CodeFileProjectItem _codeFile1, _codeFile2;
     private CodeFileProjectItem[] _allCodeFiles;
-    private List<CodeFileProjectItem> _raiseUpdateModelFor;
     private Mock<ICodeFileParsingContext> _codeFile1ParsingContext, _codeFile2ParsingContext;
     private Mock<ICodeFileParsingContextFactory> _contextFactory;
     private Mock<ICodeFileOrderLogic> _orderLogic;
+    private Mock<ICodeModelUpdateRaiser> _codeModelUpdateRaiser;
     private Mock<IOutputWriter> _outputWriter;
     private CodeModelBuilder _builder;
 
@@ -24,14 +23,12 @@ internal class CodeModelBuilderTest
     {
         _contextFactory = new Mock<ICodeFileParsingContextFactory>();
         _orderLogic = new Mock<ICodeFileOrderLogic>();
+        _codeModelUpdateRaiser = new Mock<ICodeModelUpdateRaiser>();
         _outputWriter = new Mock<IOutputWriter>();
 
         _codeFile1 = new CodeFileProjectItem("", null, null);
         _codeFile2 = new CodeFileProjectItem("", null, null);
         _allCodeFiles = new[] { _codeFile1, _codeFile2 };
-        _raiseUpdateModelFor = new List<CodeFileProjectItem>();
-        _codeFile1.CodeModelUpdated += (s, e) => _raiseUpdateModelFor.Add(_codeFile1);
-        _codeFile2.CodeModelUpdated += (s, e) => _raiseUpdateModelFor.Add(_codeFile2);
         _codeFile1ParsingContext = new Mock<ICodeFileParsingContext>();
         _codeFile2ParsingContext = new Mock<ICodeFileParsingContext>();
         _codeFile1ParsingContext.SetupGet(x => x.CodeFile).Returns(_codeFile1);
@@ -44,7 +41,7 @@ internal class CodeModelBuilderTest
         _contextFactory.Setup(x => x.MakeContext(_allCodeFiles, _codeFile2)).Returns(_codeFile2ParsingContext.Object);
         _orderLogic.Setup(x => x.ByImports(_allCodeFiles)).Returns(_allCodeFiles);
 
-        _builder = new CodeModelBuilder(_contextFactory.Object, _orderLogic.Object, _outputWriter.Object);
+        _builder = new CodeModelBuilder(_contextFactory.Object, _orderLogic.Object, _codeModelUpdateRaiser.Object, _outputWriter.Object);
     }
 
     [Test]
@@ -60,7 +57,6 @@ internal class CodeModelBuilderTest
         _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
         _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
         _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-        AssertRaiseUpdateModelForAllCodeFiles();
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Once());
         _outputWriter.Verify(x => x.WriteWarning(It.IsAny<CodeFileProjectItem>(), It.IsAny<ParserMessage>()), Times.Never());
@@ -89,7 +85,6 @@ internal class CodeModelBuilderTest
         _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
         _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
         _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-        AssertRaiseUpdateModelForAllCodeFiles();
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Once());
         _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.First()), Times.Once());
@@ -121,7 +116,6 @@ internal class CodeModelBuilderTest
         _orderLogic.Verify(x => x.ByImports(_allCodeFiles), Times.Once());
         _codeFile1ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
         _codeFile2ParsingContext.Verify(x => x.ParseFunctions(), Times.Once());
-        AssertRaiseUpdateModelForAllCodeFiles();
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile1), Times.Once());
         _outputWriter.Verify(x => x.SuccessfullyParsed(_codeFile2), Times.Never());
         _outputWriter.Verify(x => x.WriteWarning(_codeFile1, parseResult1.Warnings.First()), Times.Once());
@@ -131,8 +125,12 @@ internal class CodeModelBuilderTest
         _outputWriter.Verify(x => x.WriteWarning(_codeFile2, parseResult2.Warnings.Last()), Times.Once());
     }
 
-    private void AssertRaiseUpdateModelForAllCodeFiles()
+    [Test]
+    public void AssertRaiseUpdateModelForAllCodeFiles()
     {
-        Assert.AreEqual(_allCodeFiles, _raiseUpdateModelFor);
+        var result = _builder.BuildFor(_allCodeFiles);
+
+        _codeModelUpdateRaiser.Verify(x => x.StoreOldCodeModels(_allCodeFiles), Times.Once());
+        _codeModelUpdateRaiser.Verify(x => x.RaiseUpdateCodeModelWithDiff(), Times.Once());
     }
 }

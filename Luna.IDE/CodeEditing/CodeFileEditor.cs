@@ -24,8 +24,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     public CodeFileEditor(CodeFileProjectItem projectItem, ICodeProviderFactory codeProviderFactory, ICodeModelUpdater codeModelUpdater)
     {
         ProjectItem = projectItem;
+        ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
-        _codeModelUpdater.Attach(ProjectItem, OnCodeModelUpdated);
         _codeProvider = codeProviderFactory.Make(projectItem);
         CodeTextBoxModel = new CodeTextBoxModel(_codeProvider, new() { HighlighteredBrackets = "()" });
         CodeTextBoxModel.TextChanged += OnTextChanged;
@@ -33,7 +33,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
     }
 
-    internal void OnCodeModelUpdated(CodeModelUpdatedEventArgs e)
+    internal void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
     {
         var diff = e.Different;
 
@@ -60,7 +60,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
     public void Close()
     {
         ProjectItem.ResetTextGettingStrategy();
-        _codeModelUpdater.Detach(ProjectItem);
+        ProjectItem.CodeModelUpdated -= OnCodeModelUpdated;
     }
 
     public TokenCursorPosition? GetTokenCursorPosition() => CodeTextBoxModel.Tokens.GetTokenOnPosition(CodeTextBoxModel.TextCursor.Position);

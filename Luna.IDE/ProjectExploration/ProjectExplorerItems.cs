@@ -38,19 +38,21 @@ public class CodeFileTreeItem : TreeItem
         base(parent, codeFile.Name, "codefile.png")
     {
         CodeFile = codeFile;
-        CodeFile.CodeModelUpdated += (s, e) => RefreshChildren();
+        CodeFile.CodeModelUpdated += OnCodeModelUpdated;
+    }
+
+    private void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
+    {
+        //if (e.Different.AnyChanges)
+        {
+            RefreshChildren();
+        }
     }
 
     protected override IEnumerable<TreeItem> GetChildren()
     {
-        foreach (var constant in CodeFile.CodeModel.Constants)
-        {
-            yield return new CodeElementTreeItem(this, constant);
-        }
-        foreach (var func in CodeFile.CodeModel.Functions)
-        {
-            yield return new CodeElementTreeItem(this, func);
-        }
+        foreach (var constant in CodeFile.CodeModel.Constants) yield return new CodeElementTreeItem(this, constant);
+        foreach (var func in CodeFile.CodeModel.Functions) yield return new CodeElementTreeItem(this, func);
     }
 }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Luna.Infrastructure;
-using Luna.Parsing;
 using Luna.ProjectModel;
 using Moq;
 using NUnit.Framework;
@@ -26,50 +24,35 @@ internal class CodeModelUpdaterTest
         _timerManager = new Mock<ITimerManager>();
         _codeModelBuilder = new Mock<ICodeModelBuilder>();
         _updater = new CodeModelUpdater(_timerManager.Object, _codeModelBuilder.Object);
+    }
+
+    [Test]
+    public void SetCodeFiles_UpdateRequest()
+    {
         _updater.SetCodeFiles(_projectItems);
-    }
-
-    [Test]
-    public void UpdateCodeModelFromBuilder()
-    {
-        var newModel = new CodeModel();
-        newModel.AddFunctionDeclaration(new("func", Enumerable.Empty<FunctionArgument>(), new()));
-        _codeModelBuilder.Setup(x => x.BuildFor(_projectItems)).Callback(() => _projectItems.First().CodeModel = newModel);
-        CodeModel callbackModel = null;
-        CodeModelScopeIdentificatorsDifferent callbackDiff = null;
-        _updater.Attach(_projectItems.First(), r => { callbackModel = r.NewModel; callbackDiff = r.Different; });
 
         _updater.OnTimerTick(_updater, EventArgs.Empty);
 
-        Assert.NotNull(callbackModel);
-        Assert.NotNull(callbackDiff);
-        Assert.AreEqual(newModel, callbackModel);
-        Assert.AreEqual(1, callbackDiff.AddedDeclaredFunctions.Count);
+        _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Once());
     }
 
     [Test]
-    public void UpdateCodeModelFromExternal()
+    public void UpdateRequest()
     {
-        var newModel = new CodeModel();
-        newModel.AddFunctionDeclaration(new("func", Enumerable.Empty<FunctionArgument>(), new()));
-        CodeModel callbackModel = null;
-        CodeModelScopeIdentificatorsDifferent callbackDiff = null;
-        _updater.Attach(_projectItems.First(), r => { callbackModel = r.NewModel; callbackDiff = r.Different; });
-        _projectItems.First().CodeModel = newModel;
+        _updater.SetCodeFiles(_projectItems);
 
         _updater.OnTimerTick(_updater, EventArgs.Empty);
+        _updater.UpdateRequest();
+        _updater.OnTimerTick(_updater, EventArgs.Empty);
 
-        Assert.NotNull(callbackModel);
-        Assert.NotNull(callbackDiff);
-        Assert.AreEqual(newModel, callbackModel);
-        Assert.AreEqual(1, callbackDiff.AddedDeclaredFunctions.Count);
+        _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Exactly(2));
     }
 
     [Test]
-    public void AttachDetach()
+    public void NoUpdateRequest()
     {
-        _updater.Attach(_projectItems.First(), _ => { });
-        _updater.Detach(_projectItems.First());
-        _updater.Attach(_projectItems.First(), _ => { });
+        _updater.OnTimerTick(_updater, EventArgs.Empty);
+
+        _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Never());
     }
 }

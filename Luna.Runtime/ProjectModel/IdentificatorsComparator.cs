@@ -1,4 +1,6 @@
-﻿namespace Luna.ProjectModel;
+﻿using System.Linq;
+
+namespace Luna.ProjectModel;
 
 public class CodeModelScopeIdentificatorsDifferent
 {
@@ -11,15 +13,25 @@ public class CodeModelScopeIdentificatorsDifferent
     public IConstantDeclarationDictionary RemovedImportedConstants { get; }
     public IFunctionDeclarationDictionary RemovedImportedFunctions { get; }
 
+    public bool AnyChanges =>
+        AddedDeclaredConstants.Any() ||
+        AddedDeclaredFunctions.Any() ||
+        RemovedDeclaredConstants.Any() ||
+        RemovedDeclaredFunctions.Any() ||
+        AddedImportedConstants.Any() ||
+        AddedImportedFunctions.Any() ||
+        RemovedImportedConstants.Any() ||
+        RemovedImportedFunctions.Any();
+
     public CodeModelScopeIdentificatorsDifferent(
-        IConstantDeclarationDictionary addedDeclaredConstants,
-        IFunctionDeclarationDictionary addedDeclaredFunctions,
-        IConstantDeclarationDictionary removedDeclaredConstants,
-        IFunctionDeclarationDictionary removedDeclaredFunctions,
-        IConstantDeclarationDictionary addedImportedConstants,
-        IFunctionDeclarationDictionary addedImportedFunctions,
-        IConstantDeclarationDictionary removedImportedConstants,
-        IFunctionDeclarationDictionary removedImportedFunctions)
+            IConstantDeclarationDictionary addedDeclaredConstants,
+            IFunctionDeclarationDictionary addedDeclaredFunctions,
+            IConstantDeclarationDictionary removedDeclaredConstants,
+            IFunctionDeclarationDictionary removedDeclaredFunctions,
+            IConstantDeclarationDictionary addedImportedConstants,
+            IFunctionDeclarationDictionary addedImportedFunctions,
+            IConstantDeclarationDictionary removedImportedConstants,
+            IFunctionDeclarationDictionary removedImportedFunctions)
     {
         AddedDeclaredConstants = addedDeclaredConstants;
         AddedDeclaredFunctions = addedDeclaredFunctions;

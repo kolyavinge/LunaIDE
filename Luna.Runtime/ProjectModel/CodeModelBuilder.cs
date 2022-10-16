@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.Output;
-using Luna.ProjectModel;
+using Luna.Parsing;
 using Luna.Utils;
 
-namespace Luna.Parsing;
+namespace Luna.ProjectModel;
 
 internal struct CodeModelBuilderResult
 {
@@ -22,20 +22,28 @@ internal class CodeModelBuilder : ICodeModelBuilder
     private readonly IOutputWriter _outputWriter;
     private readonly ICodeFileParsingContextFactory _contextFactory;
     private readonly ICodeFileOrderLogic _orderLogic;
+    private readonly ICodeModelUpdateRaiser _codeModelUpdateRaiser;
 
     public CodeModelBuilder() : this(new EmptyOutputWriter()) { }
 
-    public CodeModelBuilder(IOutputWriter outputWriter) : this(new CodeFileParsingContextFactory(), new CodeFileOrderLogic(), outputWriter) { }
+    public CodeModelBuilder(IOutputWriter outputWriter)
+        : this(new CodeFileParsingContextFactory(), new CodeFileOrderLogic(), new CodeModelUpdateRaiser(), outputWriter) { }
 
-    public CodeModelBuilder(ICodeFileParsingContextFactory contextFactory, ICodeFileOrderLogic orderLogic, IOutputWriter outputWriter)
+    internal CodeModelBuilder(
+        ICodeFileParsingContextFactory contextFactory,
+        ICodeFileOrderLogic orderLogic,
+        ICodeModelUpdateRaiser codeModelUpdateRaiser,
+        IOutputWriter outputWriter)
     {
         _contextFactory = contextFactory;
         _orderLogic = orderLogic;
+        _codeModelUpdateRaiser = codeModelUpdateRaiser;
         _outputWriter = outputWriter;
     }
 
     public CodeModelBuilderResult BuildFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles)
     {
+        _codeModelUpdateRaiser.StoreOldCodeModels(codeFiles);
         codeFiles.Each(x => x.CodeModel = new CodeModel());
         var contexts = codeFiles.Select(codeFile => _contextFactory.MakeContext(codeFiles, codeFile)).ToList();
         contexts.Each(x => x.ParseImports());
@@ -47,11 +55,7 @@ internal class CodeModelBuilder : ICodeModelBuilder
         var orderedCodeFiles = _orderLogic.ByImports(codeFiles).ToList();
         var contextsDictionary = contexts.ToDictionary(k => k.CodeFile, v => v);
         orderedCodeFiles.Each(codeFile => contextsDictionary[codeFile].ParseFunctions());
-        foreach (var context in contexts.Where(x =>
-                                               x.ImportDirectivesResult != null &&
-                                               x.FunctionParserResult != null &&
-                                               !x.ImportDirectivesResult.Errors.Any() &&
-                                               !x.FunctionParserResult.Errors.Any()))
+        foreach (var context in contexts.Where(x => !x.ImportDirectivesResult!.Errors.Any() && !x.FunctionParserResult!.Errors.Any()))
         {
             _outputWriter.SuccessfullyParsed(context.CodeFile);
         }
@@ -59,7 +63,7 @@ internal class CodeModelBuilder : ICodeModelBuilder
         {
             hasErrors |= WriteErrorsAndWarnings(context.CodeFile, context.FunctionParserResult!);
         }
-        codeFiles.Each(x => x.RaiseUpdateCodeModel());
+        _codeModelUpdateRaiser.RaiseUpdateCodeModelWithDiff();
         if (hasErrors) return new() { HasErrors = true };
 
         return new() { HasErrors = false };
@@ -72,15 +76,4 @@ internal class CodeModelBuilder : ICodeModelBuilder
 
         return parseResult.Errors.Any();
     }
-}
-
-internal interface ICodeFileParsingContextFactory
-{
-    ICodeFileParsingContext MakeContext(IReadOnlyCollection<CodeFileProjectItem> allCodeFiles, CodeFileProjectItem currentCodeFile);
-}
-
-internal class CodeFileParsingContextFactory : ICodeFileParsingContextFactory
-{
-    public ICodeFileParsingContext MakeContext(IReadOnlyCollection<CodeFileProjectItem> allCodeFiles, CodeFileProjectItem currentCodeFile)
-        => new CodeFileParsingContext(allCodeFiles, currentCodeFile);
 }

@@ -1,4 +1,5 @@
 ﻿using CodeHighlighter.Model;
+using Luna.CodeElements;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;

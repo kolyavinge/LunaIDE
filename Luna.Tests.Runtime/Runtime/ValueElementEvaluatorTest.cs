@@ -1,4 +1,5 @@
-﻿using Luna.ProjectModel;
+﻿using Luna.CodeElements;
+using Luna.ProjectModel;
 using Luna.Runtime;
 using Moq;
 using NUnit.Framework;
@@ -124,7 +125,7 @@ internal class ValueElementEvaluatorTest
         }
         catch (RuntimeException e)
         {
-            Assert.AreEqual("Type Luna.ProjectModel.FakeValueElement cannot be converted to RuntimeValue.", e.Message);
+            Assert.AreEqual("Type Luna.CodeElements.FakeValueElement cannot be converted to RuntimeValue.", e.Message);
         }
     }
 }

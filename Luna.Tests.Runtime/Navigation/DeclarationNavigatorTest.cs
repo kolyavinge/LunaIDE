@@ -1,4 +1,5 @@
-﻿using Luna.Navigation;
+﻿using Luna.CodeElements;
+using Luna.Navigation;
 using Luna.ProjectModel;
 using NUnit.Framework;
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Luna.CodeElements;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Moq;

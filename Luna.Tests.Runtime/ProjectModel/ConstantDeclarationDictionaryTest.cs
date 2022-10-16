@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Luna.CodeElements;
 using Luna.ProjectModel;
 using NUnit.Framework;
 

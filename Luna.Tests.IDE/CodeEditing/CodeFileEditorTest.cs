@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CodeHighlighter.CodeProvidering;
+using Luna.CodeElements;
 using Luna.IDE.CodeEditing;
 using Luna.Infrastructure;
 using Luna.Parsing;

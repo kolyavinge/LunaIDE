@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Luna.ProjectModel;
+using Luna.CodeElements;
 
 namespace Luna.Navigation;
 

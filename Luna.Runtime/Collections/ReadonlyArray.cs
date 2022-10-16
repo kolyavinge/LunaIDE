@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Luna.Collections;
 
-public class ReadonlyArray<T> : IEnumerable<T>
+public class ReadonlyArray<T> : IEnumerable<T>, IEquatable<ReadonlyArray<T>?>
 {
     private readonly List<T> _items;
 
@@ -30,6 +30,28 @@ public class ReadonlyArray<T> : IEnumerable<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return _items.GetEnumerator();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as ReadonlyArray<T>);
+    }
+
+    public bool Equals(ReadonlyArray<T>? other)
+    {
+        return other is not null &&
+               _items.SequenceEqual(other._items);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        foreach (var item in _items)
+        {
+            hashCode.Add(item?.GetHashCode());
+        }
+
+        return hashCode.ToHashCode();
     }
 }
 

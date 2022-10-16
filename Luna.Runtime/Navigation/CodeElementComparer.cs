@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Luna.ProjectModel;
+using Luna.CodeElements;
 
 namespace Luna.Navigation;
 

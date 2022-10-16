@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CodeHighlighter.Model;
+using Luna.CodeElements;
 using Luna.IDE.AutoCompletion;
 using Luna.Parsing;
 using Luna.ProjectModel;

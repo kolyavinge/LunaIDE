@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
+using Luna.CodeElements;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.WindowsManagement;

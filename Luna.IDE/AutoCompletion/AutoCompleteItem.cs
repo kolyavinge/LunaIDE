@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using Luna.CodeElements;
 using Luna.Functions;
-using Luna.ProjectModel;
 
 namespace Luna.IDE.AutoCompletion;
 

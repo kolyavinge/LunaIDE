@@ -1,0 +1,33 @@
+﻿<Window x:Class="Luna.IDE.App.Controls.MessageBox.MessageBoxView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        Title="MessageBoxView"
+        Background="{StaticResource SecondaryBackgroundBrush}"
+        Foreground="{StaticResource MainForegroundBrush}"
+        BorderBrush="{StaticResource MainBackgroundBrush}"
+        BorderThickness="1"
+        ShowInTaskbar="False"
+        Height="150"
+        Width="400">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="1" CornerRadius="0" CaptionHeight="0" />
+    </WindowChrome.WindowChrome>
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="24" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding Title}" TextAlignment="Center" VerticalAlignment="Top" FontWeight="Bold" />
+        <TextBlock Grid.Row="1" Text="{Binding Message}" TextAlignment="Center" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource ButtonStyle}" Content="Yes" Command="{Binding YesCommand}" Width="75" Margin="0,0,8,0" />
+            <Button Style="{StaticResource ButtonStyle}" Content="No" Command="{Binding NoCommand}" Width="75" />
+        </StackPanel>
+    </Grid>
+</Window>

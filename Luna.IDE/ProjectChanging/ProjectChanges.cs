@@ -30,6 +30,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     private readonly ICodeEditorSaver _codeEditorSaver;
     private readonly ICodeEditorUndoChangesLogic _codeEditorUndoChangesLogic;
     private readonly ITimerManager _timerManager;
+    private readonly IMessageBox _messageBox;
     private ITimer? _timer;
     private bool _isRepositoryExist;
     private bool _isCommitAllowed;
@@ -95,13 +96,15 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         IProjectRepository projectRepository,
         ICodeEditorSaver codeEditorSaver,
         ICodeEditorUndoChangesLogic codeEditorUndoChangesLogic,
-        ITimerManager timerManager)
+        ITimerManager timerManager,
+        IMessageBox messageBox)
     {
         _projectRepository = projectRepository;
         _codeEditorSaver = codeEditorSaver;
         _codeEditorUndoChangesLogic = codeEditorUndoChangesLogic;
         _projectRepository.RepositoryInitialized += OnRepositoryInitialized;
         _timerManager = timerManager;
+        _messageBox = messageBox;
         _comment = "";
         _included = new VersionedDirectoryTreeItem(null, new VersionedDirectory(""));
         _excluded = new VersionedDirectoryTreeItem(null, new VersionedDirectory(""));
@@ -169,9 +172,12 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     public void UndoChanges(IEnumerable<TreeItem> items)
     {
         var versionedFiles = items.SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).ToList();
-        _projectRepository.UndoChanges(versionedFiles);
-        _codeEditorUndoChangesLogic.UndoTextChanges(versionedFiles);
-        UpdateStatus();
+        if (versionedFiles.Any() && _messageBox.Show("Undo changes", "Do you want to undo changes in the selected files?", MessageBoxButtons.YesNo) == MessageBoxResult.Yes)
+        {
+            _projectRepository.UndoChanges(versionedFiles);
+            _codeEditorUndoChangesLogic.UndoTextChanges(versionedFiles);
+            UpdateStatus();
+        }
     }
 
     private void UpdateStatus()

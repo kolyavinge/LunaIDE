@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectChanging;
@@ -17,6 +18,7 @@ internal class ProjectChangesTest
     private Mock<ICodeEditorUndoChangesLogic> _codeEditorUndoChangesLogic;
     private Mock<ITimer> _timer;
     private Mock<ITimerManager> _timerManager;
+    private Mock<IMessageBox> _messageBox;
     private ProjectChanges _projectChanges;
 
     [SetUp]
@@ -27,7 +29,9 @@ internal class ProjectChangesTest
         _codeEditorUndoChangesLogic = new Mock<ICodeEditorUndoChangesLogic>();
         _timer = new Mock<ITimer>();
         _timerManager = new Mock<ITimerManager>();
-        _projectChanges = new ProjectChanges(_projectRepository.Object, _codeEditorSaver.Object, _codeEditorUndoChangesLogic.Object, _timerManager.Object);
+        _messageBox = new Mock<IMessageBox>();
+        _projectChanges = new ProjectChanges(
+            _projectRepository.Object, _codeEditorSaver.Object, _codeEditorUndoChangesLogic.Object, _timerManager.Object, _messageBox.Object);
     }
 
     [Test]
@@ -247,10 +251,33 @@ internal class ProjectChangesTest
     {
         var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
         var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
+        _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.Yes);
 
         _projectChanges.UndoChanges(treeItems);
 
         _projectRepository.Verify(x => x.UndoChanges(new[] { versionedFile }), Times.Once());
         _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(new[] { versionedFile }), Times.Once());
+    }
+
+    [Test]
+    public void UndoChanges_NoSelectedFiles()
+    {
+        _projectChanges.UndoChanges(new VersionedFileTreeItem[0]);
+
+        _projectRepository.Verify(x => x.UndoChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
+        _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
+    }
+
+    [Test]
+    public void UndoChanges_MessageBoxResultNo()
+    {
+        var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
+        var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
+        _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.No);
+
+        _projectChanges.UndoChanges(treeItems);
+
+        _projectRepository.Verify(x => x.UndoChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
+        _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
     }
 }

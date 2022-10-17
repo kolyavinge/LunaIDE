@@ -44,7 +44,7 @@ public class CodeFileTreeItem : TreeItem
 
     private void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
     {
-        //if (e.Different.AnyChanges)
+        if (!e.OldCodeModel.Equals(CodeFile.CodeModel))
         {
             RefreshChildren();
         }

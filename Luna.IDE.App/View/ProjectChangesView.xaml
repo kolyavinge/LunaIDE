@@ -79,6 +79,7 @@
                     Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     AdditionalInfoForeground="{StaticResource InnactiveForegroundBrush}"
                     TreeRoot="{Binding DataContext.Model.Included, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    SelectionMode="Extended"
                     Visibility="{Binding DataContext.Model.Included.HasChildren, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
@@ -105,6 +106,7 @@
                     Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     AdditionalInfoForeground="{StaticResource InnactiveForegroundBrush}"
                     TreeRoot="{Binding DataContext.Model.Excluded, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    SelectionMode="Extended"
                     Visibility="{Binding DataContext.Model.Excluded.HasChildren, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">

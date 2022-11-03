@@ -20,7 +20,7 @@
             Style="{StaticResource ListBoxStyle}"
             Background="{Binding Background, ElementName=parent}"
             ItemsSource="{Binding TreeItems}"
-            SelectionMode="Extended"
+            SelectionMode="{Binding SelectionMode, ElementName=parent}"
             KeyUp="OnKeyUp">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ListBoxItemStyle}">

@@ -69,6 +69,17 @@ public partial class TreeView : UserControl
         DependencyProperty.Register("AdditionalInfoForeground", typeof(Brush), typeof(TreeView));
     #endregion
 
+    #region SelectionMode
+    public SelectionMode SelectionMode
+    {
+        get { return (SelectionMode)GetValue(SelectionModeProperty); }
+        set { SetValue(SelectionModeProperty, value); }
+    }
+
+    public static readonly DependencyProperty SelectionModeProperty =
+        DependencyProperty.Register("SelectionMode", typeof(SelectionMode), typeof(TreeView), new PropertyMetadata(SelectionMode.Single));
+    #endregion
+
     public TreeView()
     {
         InitializeComponent();

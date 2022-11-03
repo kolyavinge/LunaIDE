@@ -10,6 +10,8 @@ public abstract class TreeItem : NotificationObject
     private bool _isExpanded;
     private bool _isSelected;
 
+    public event EventHandler? Selected;
+
     public TreeItem? Parent { get; }
 
     public string? ImageName { get; }
@@ -46,6 +48,7 @@ public abstract class TreeItem : NotificationObject
         {
             _isSelected = value;
             RaisePropertyChanged(() => IsSelected);
+            Selected?.Invoke(this, EventArgs.Empty);
         }
     }
 

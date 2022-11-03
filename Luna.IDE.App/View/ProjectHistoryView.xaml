@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -21,7 +22,7 @@
         <Grid Grid.Row="0">
             <TextBlock
                 Text="the repository is empty"
-                Visibility="{Binding Visibility, Converter={StaticResource InverseBooleanToVisibilityConverter}, ElementName=commitsDG}"
+                Visibility="{Binding Visibility, Converter={StaticResource InverseVisibilityConverter}, ElementName=commitsDG}"
                 TextAlignment="Center" Foreground="{StaticResource InnactiveForegroundBrush}" />
             <DataGrid
                 x:Name="commitsDG"

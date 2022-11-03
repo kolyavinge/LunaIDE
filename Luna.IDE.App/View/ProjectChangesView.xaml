@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+            <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -31,7 +31,7 @@
         <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
             <TextBlock Text="⮞ Project Changes" Style="{StaticResource WindowHeaderTextStyle}" Margin="4,0" />
         </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding Visibility, ElementName=mainGrid, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+        <Grid Grid.Row="1" Visibility="{Binding Visibility, ElementName=mainGrid, Converter={StaticResource InverseVisibilityConverter}}">
             <Grid Margin="0,16,0,0">
                 <TextBlock Text="no repository in the project" TextAlignment="Center" Foreground="{StaticResource MainForegroundBrush}" />
                 <Button Style="{StaticResource HyperlinkButtonStyle}" Command="{Binding CreateRepositoryCommand}" Content="create a new one" Margin="0,16,0,0" Width="90" />
@@ -71,7 +71,7 @@
                     Foreground="{StaticResource InnactiveForegroundBrush}"
                     TextAlignment="Center"
                     Margin="0,8,0,0"
-                    Visibility="{Binding Visibility, ElementName=includedTree, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    Visibility="{Binding Visibility, ElementName=includedTree, Converter={StaticResource InverseVisibilityConverter}}" />
                 <!-- includedTree -->
                 <controls:TreeView
                     x:Name="includedTree"
@@ -98,7 +98,7 @@
                     Foreground="{StaticResource InnactiveForegroundBrush}"
                     TextAlignment="Center"
                     Margin="0,8,0,0"
-                    Visibility="{Binding Visibility, ElementName=excludedTree, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    Visibility="{Binding Visibility, ElementName=excludedTree, Converter={StaticResource InverseVisibilityConverter}}" />
                 <!-- excludedTree -->
                 <controls:TreeView
                     x:Name="excludedTree"

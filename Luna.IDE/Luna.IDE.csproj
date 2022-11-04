@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter\CodeHighlighter.csproj" />
+    <ProjectReference Include="..\..\DiffTool\DiffTool\DiffTool.csproj" />
     <ProjectReference Include="..\..\VersionControl\VersionControl\VersionControl.csproj" />
     <ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />
   </ItemGroup>

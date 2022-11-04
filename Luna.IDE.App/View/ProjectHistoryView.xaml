@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Luna.IDE.App.Controls.Tree"
              xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
+             xmlns:local="clr-namespace:Luna.IDE.App.View"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -16,7 +17,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition MinHeight="100" />
+            <RowDefinition Height="200" MinHeight="100" />
             <RowDefinition Height="*" MinHeight="100" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -38,18 +39,28 @@
             </DataGrid>
         </Grid>
         <Grid Grid.Row="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="100" />
-                    <ColumnDefinition Width="*" MinWidth="100" />
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="200" />
+                <ColumnDefinition Width="*" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
                 <controls:TreeView
-                    Grid.Column="0"
                     Style="{StaticResource TreeViewStyle}"
                     TreeRoot="{Binding DataContext.Model.DetailsRoot, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    SelectionMode="Single"
                     AdditionalInfoForeground="{StaticResource InnactiveForegroundBrush}"
                     ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
-                <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
+            </Grid>
+            <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
+            <Grid Grid.Column="1">
+                <local:SingleTextDiffView
+                    Model="{Binding DataContext.Model.SingleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                <ProgressBar
+                    Style="{StaticResource ProgressBarStyle}"
+                    IsIndeterminate="True"
+                    Visibility="{Binding Model.SingleTextDiff.InProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Width="100" Height="12" />
             </Grid>
         </Grid>
         <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="4" />

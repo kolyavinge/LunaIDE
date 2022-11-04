@@ -21,6 +21,15 @@ public class CommitedFile
         }
     }
 
+    public string? BeforeContent
+    {
+        get
+        {
+            var bytes = _versionControlRepository.GetFileContentBefore(_detail);
+            return bytes != null ? Encoding.UTF8.GetString(bytes) : null;
+        }
+    }
+
     internal CommitedFile(IVersionControlRepository versionControlRepository, CommitDetail detail)
     {
         _versionControlRepository = versionControlRepository;

@@ -11,6 +11,7 @@ using Luna.IDE.Common;
 using Luna.IDE.Outputing;
 using Luna.IDE.ProjectChanging;
 using Luna.IDE.ProjectExploration;
+using Luna.IDE.TextDiff;
 using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
@@ -35,6 +36,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ICodeEditorUndoChangesLogic, CodeEditorUndoChangesLogic>().ToSingleton();
         provider.Bind<IVersionControlRepositoryFactory, VersionControlRepositoryFactory>().ToSingleton();
         provider.Bind<IProjectRepository, ProjectRepository>().ToSingleton();
+        provider.Bind<ITextDiffEngine, TextDiffEngine>().ToSingleton();
+        provider.Bind<ITextDiffCodeProviderFactory, TextDiffCodeProviderFactory>().ToSingleton();
 
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());
@@ -45,6 +48,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();
         provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
         provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
+        provider.Bind<ISingleTextDiff, SingleTextDiff>();
+        provider.Bind<SingleTextDiffViewModel, SingleTextDiffViewModel>();
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();
         provider.Bind<OutputAreaViewModel, OutputAreaViewModel>().ToSingleton();
         provider.Bind<IOutputConsole, OutputConsole>().ToSingleton();

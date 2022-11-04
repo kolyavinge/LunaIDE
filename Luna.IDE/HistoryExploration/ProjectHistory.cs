@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectExploration;
+using Luna.IDE.TextDiff;
 using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
+using Luna.Utils;
 
 namespace Luna.IDE.HistoryExploration;
 
@@ -14,6 +17,7 @@ public interface IProjectHistory : INotifyPropertyChanged
     bool AnyCommits { get; }
     ICommit? SelectedCommit { get; set; }
     CommitedDirectoryTreeItem? DetailsRoot { get; }
+    ISingleTextDiff SingleTextDiff { get; }
 }
 
 public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentWindowModel
@@ -45,6 +49,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
             if (_selectedCommit != null)
             {
                 DetailsRoot = new CommitedDirectoryTreeItem(null, _selectedCommit.Details);
+                DetailsRoot.AllChildren.OfType<CommitedFileTreeItem>().Each(x => x.Selected += OnDetailsSelected);
                 RaisePropertyChanged(() => SelectedCommit!);
             }
         }
@@ -60,9 +65,12 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         }
     }
 
-    public ProjectHistory(IProjectLoader projectLoader, IProjectRepository projectRepository)
+    public ISingleTextDiff SingleTextDiff { get; }
+
+    public ProjectHistory(IProjectLoader projectLoader, IProjectRepository projectRepository, ISingleTextDiff singleTextDiff)
     {
         _projectRepository = projectRepository;
+        SingleTextDiff = singleTextDiff;
         _projectRepository.CommitMade += OnCommitMade;
         projectLoader.ProjectOpened += OnProjectOpened;
         _commits = new List<Commit>();
@@ -82,6 +90,17 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         {
             SelectedCommit = _commits.First(x => x.Id == selectedCommit.Id);
         }
+    }
+
+    private async void OnDetailsSelected(object? sender, EventArgs e)
+    {
+        var fileTreeItem = (CommitedFileTreeItem)sender!;
+        if (!fileTreeItem.IsSelected) return;
+        var commitedFile = fileTreeItem.CommitedFile;
+        var fileExtension = Path.GetExtension(commitedFile.RelativePath);
+        var oldText = commitedFile.BeforeContent;
+        var newText = commitedFile.Content;
+        await SingleTextDiff.MakeDiff(fileExtension, oldText, newText);
     }
 
     private void RaiseCommitsChanged()

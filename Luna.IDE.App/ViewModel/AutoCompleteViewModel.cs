@@ -16,9 +16,9 @@ public class AutoCompleteViewModel : NotificationObject
     private IControl? _control;
     private double _parentWidth, _parentHeight;
     private VerticalAlignment _verticalAlignment;
-    private AutoComplete? _model;
+    private IAutoComplete? _model;
 
-    public AutoComplete? Model
+    public IAutoComplete? Model
     {
         get => _model;
         set

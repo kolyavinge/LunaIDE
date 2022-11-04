@@ -18,7 +18,7 @@ public class CodeFileEditorViewModel : NotificationObject
 
     public ICodeFileEditor Model { get; set; }
 
-    public AutoComplete AutoComplete { get; }
+    public IAutoComplete AutoComplete { get; }
 
     public ICommand CodeTextBoxLoadedCommand { get; }
 
@@ -31,7 +31,7 @@ public class CodeFileEditorViewModel : NotificationObject
     [Inject]
     public IGotoDeclarationCommand? GotoDeclarationCommand { get; set; }
 
-    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor, AutoComplete autoComplete)
+    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor, IAutoComplete autoComplete)
     {
         Model = codeFileEditor;
         AutoComplete = autoComplete;

@@ -11,20 +11,20 @@ namespace Luna.IDE.App.View;
 public partial class AutoCompleteView : UserControl
 {
     #region Model
-    public AutoComplete Model
+    public IAutoComplete Model
     {
-        get { return (AutoComplete)GetValue(ModelProperty); }
+        get { return (IAutoComplete)GetValue(ModelProperty); }
         set { SetValue(ModelProperty, value); }
     }
 
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(AutoComplete), typeof(AutoCompleteView), new PropertyMetadata(ModelChangedCallback));
+        DependencyProperty.Register("Model", typeof(IAutoComplete), typeof(AutoCompleteView), new PropertyMetadata(ModelChangedCallback));
 
     private static void ModelChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var view = (AutoCompleteView)d;
         var vm = (AutoCompleteViewModel)view.DataContext;
-        vm.Model = (AutoComplete)e.NewValue;
+        vm.Model = (IAutoComplete)e.NewValue;
     }
     #endregion
 

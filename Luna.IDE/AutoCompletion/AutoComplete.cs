@@ -9,7 +9,7 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.AutoCompletion;
 
-public class AutoComplete : NotificationObject
+public class AutoComplete : NotificationObject, IAutoComplete
 {
     private readonly KeywordsCollection _keywords = new();
     private readonly EmbeddedFunctionDeclarationsCollection _embeddedFunctions = new();

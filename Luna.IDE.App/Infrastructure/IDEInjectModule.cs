@@ -43,7 +43,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
-        provider.Bind<AutoComplete, AutoComplete>();
+        provider.Bind<IAutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();
         provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();

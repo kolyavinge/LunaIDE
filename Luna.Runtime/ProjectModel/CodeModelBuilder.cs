@@ -13,7 +13,6 @@ internal struct CodeModelBuilderResult
 
 internal interface ICodeModelBuilder
 {
-
     CodeModelBuilderResult BuildFor(IReadOnlyCollection<CodeFileProjectItem> codeFiles);
 }
 

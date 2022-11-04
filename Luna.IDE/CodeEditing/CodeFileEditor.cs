@@ -27,7 +27,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel
         ProjectItem = projectItem;
         ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
-        _codeProvider = codeProviderFactory.Make(projectItem);
+        _codeProvider = (ILunaCodeProvider)codeProviderFactory.Make(projectItem);
         CodeTextBoxModel = new CodeTextBoxModel(_codeProvider, new() { HighlighteredBrackets = "()" });
         CodeTextBoxModel.TextChanged += OnTextChanged;
         CodeTextBoxModel.SetText(ProjectItem.GetText());

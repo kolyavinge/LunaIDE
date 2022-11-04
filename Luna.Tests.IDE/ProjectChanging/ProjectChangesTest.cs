@@ -251,7 +251,7 @@ internal class ProjectChangesTest
     {
         var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
         var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
-        _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.Yes);
+        _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in the selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.Yes);
 
         _projectChanges.UndoChanges(treeItems);
 

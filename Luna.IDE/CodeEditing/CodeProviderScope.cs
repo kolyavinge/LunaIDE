@@ -2,30 +2,24 @@
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ICodeProviderScope
-{
-    bool IsConstant(string name);
-    bool IsFunction(string tokenName);
-}
-
 public class CodeProviderScope : ICodeProviderScope
 {
-    private readonly CodeFileProjectItem _codeFile;
+    private readonly CodeModel _codeModel;
     private readonly CodeModelScope _scope;
 
-    public CodeProviderScope(CodeFileProjectItem codeFile)
+    public CodeProviderScope(CodeModel codeModel)
     {
-        _codeFile = codeFile;
+        _codeModel = codeModel;
         _scope = new CodeModelScope();
     }
 
     public bool IsConstant(string name)
     {
-        return _scope.IsConstantExist(_codeFile.CodeModel, name);
+        return _scope.IsConstantExist(_codeModel, name);
     }
 
     public bool IsFunction(string name)
     {
-        return _scope.IsFunctionExist(_codeFile.CodeModel, name);
+        return _scope.IsFunctionExist(_codeModel, name);
     }
 }

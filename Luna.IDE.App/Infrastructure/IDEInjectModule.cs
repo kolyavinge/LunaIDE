@@ -13,6 +13,7 @@ using Luna.IDE.ProjectChanging;
 using Luna.IDE.ProjectExploration;
 using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
+using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Infrastructure;
 
@@ -24,6 +25,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IMessageBox, MessageBox>().ToSingleton();
         provider.Bind<IImageCollection, ImageCollection>().ToSingleton();
 
+        provider.Bind<ISingleFileCodeModelBuilder, SingleFileCodeModelBuilder>().ToSingleton();
         provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
         provider.Bind<IEnvironmentWindowsFactory, EnvironmentWindowsFactory>().ToSingleton();
         provider.Bind<IProjectItemEditorFactory, ProjectItemEditorFactory>().ToSingleton();

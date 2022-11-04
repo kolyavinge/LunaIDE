@@ -6,42 +6,42 @@ namespace Luna.IDE.App.Controls.MessageBox;
 
 public class MessageBoxViewModel : NotificationObject
 {
-	public event EventHandler? Closed;
+    public event EventHandler? Closed;
 
-	public string Title { get; set; }
+    public string Title { get; set; }
 
-	public string Message { get; set; }
+    public string Message { get; set; }
 
-	public MessageBoxButtons Buttons { get; set; }
+    public MessageBoxButtons Buttons { get; set; }
 
-	public ICommand YesCommand { get; }
+    public ICommand YesCommand { get; }
 
-	public ICommand NoCommand { get; }
+    public ICommand NoCommand { get; }
 
-	public MessageBoxResult? Result { get; private set; }
+    public MessageBoxResult? Result { get; private set; }
 
-	public MessageBoxViewModel()
-	{
-		Title = "";
-		Message = "";
-		YesCommand = new ActionCommand(Yes);
-		NoCommand = new ActionCommand(No);
-	}
+    public MessageBoxViewModel()
+    {
+        Title = "";
+        Message = "";
+        YesCommand = new ActionCommand(Yes);
+        NoCommand = new ActionCommand(No);
+    }
 
-	public void Close()
-	{
-		Closed?.Invoke(this, EventArgs.Empty);
-	}
+    public void Close()
+    {
+        Closed?.Invoke(this, EventArgs.Empty);
+    }
 
-	private void Yes()
-	{
-		Result = MessageBoxResult.Yes;
-		Close();
-	}
+    private void Yes()
+    {
+        Result = MessageBoxResult.Yes;
+        Close();
+    }
 
-	private void No()
-	{
-		Result = MessageBoxResult.No;
-		Close();
-	}
+    private void No()
+    {
+        Result = MessageBoxResult.No;
+        Close();
+    }
 }

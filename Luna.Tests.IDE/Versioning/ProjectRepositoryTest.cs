@@ -139,7 +139,7 @@ internal class ProjectRepositoryTest
     public void UpdateStatus_AddFile()
     {
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
-        var status = new VersionedStatus(new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) });
+        var status = new VersionedStatus(new VersionControl.Core.VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) });
         _versionControlRepository.Setup(x => x.GetStatus()).Returns(status);
         _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
         _repository.OpenOrCreateRepository();
@@ -156,12 +156,12 @@ internal class ProjectRepositoryTest
     public void UpdateStatus_DeleteFileFromExcluded()
     {
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
-        var status = new VersionedStatus(new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) });
+        var status = new VersionedStatus(new VersionControl.Core.VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) });
         _versionControlRepository.Setup(x => x.GetStatus()).Returns(status);
         _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
         _repository.OpenOrCreateRepository();
         _repository.UpdateStatus();
-        status = new VersionedStatus(new VersionedFile[0]);
+        status = new VersionedStatus(new VersionControl.Core.VersionedFile[0]);
         _versionControlRepository.Setup(x => x.GetStatus()).Returns(status);
 
         Assert.That(_repository.Excluded.InnerFiles.Count, Is.EqualTo(1));
@@ -175,13 +175,13 @@ internal class ProjectRepositoryTest
     public void UpdateStatus_DeleteFileFromIncluded()
     {
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
-        var files = new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) };
-        var status = new VersionedStatus(files);
+        var files = new Luna.IDE.Versioning.VersionedFile[] { new(_versionControlRepository.Object, new(10, "file1", "file1", 1, FileActionKind.Add)) };
+        var status = new VersionedStatus(files.Select(x => x.InnerVersionedFile).ToList());
         _versionControlRepository.Setup(x => x.GetStatus()).Returns(status);
         _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
         _repository.OpenOrCreateRepository();
         _repository.UpdateStatus();
-        status = new VersionedStatus(new VersionedFile[0]);
+        status = new VersionedStatus(new VersionControl.Core.VersionedFile[0]);
         _versionControlRepository.Setup(x => x.GetStatus()).Returns(status);
 
         _repository.Excluded.DeleteFiles(files);
@@ -195,7 +195,7 @@ internal class ProjectRepositoryTest
     [Test]
     public void IncludeToCommit()
     {
-        var files = new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) };
+        var files = new Luna.IDE.Versioning.VersionedFile[] { new(_versionControlRepository.Object, new(10, "file1", "file1", 1, FileActionKind.Add)) };
         _repository.Excluded.AddFiles(files);
 
         Assert.That(_repository.Included.InnerFiles.Count, Is.EqualTo(0));
@@ -210,7 +210,7 @@ internal class ProjectRepositoryTest
     [Test]
     public void ExcludeFromCommit()
     {
-        var files = new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) };
+        var files = new Luna.IDE.Versioning.VersionedFile[] { new(_versionControlRepository.Object, new(10, "file1", "file1", 1, FileActionKind.Add)) };
         _repository.Included.AddFiles(files);
 
         Assert.That(_repository.Included.InnerFiles.Count, Is.EqualTo(1));
@@ -226,8 +226,9 @@ internal class ProjectRepositoryTest
     public void MakeCommit_RaiseCommitMade()
     {
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
-        var filesToCommit = new VersionedFile[] { new(10, "file1", "file1", 1, FileActionKind.Add) };
-        _versionControlRepository.Setup(x => x.MakeCommit("comment", filesToCommit)).Returns(new CommitResult(123));
+        var versionedFile = new VersionControl.Core.VersionedFile(10, "file1", "file1", 1, FileActionKind.Add);
+        var filesToCommit = new Luna.IDE.Versioning.VersionedFile[] { new(_versionControlRepository.Object, versionedFile) };
+        _versionControlRepository.Setup(x => x.MakeCommit("comment", new[] { versionedFile })).Returns(new CommitResult(123));
         _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
         _repository.OpenOrCreateRepository();
         _repository.Included.AddFiles(filesToCommit);
@@ -268,7 +269,8 @@ internal class ProjectRepositoryTest
     [Test]
     public void UndoChanges_RaiseChangesUndone()
     {
-        var files = new VersionedFile[] { new(1, "", "", 10, FileActionKind.Add) };
+        var versionedFile = new VersionControl.Core.VersionedFile(1, "", "", 10, FileActionKind.Add);
+        var files = new Luna.IDE.Versioning.VersionedFile[] { new(_versionControlRepository.Object, versionedFile) };
         var changesUndoneFired = 0;
         _repository.ChangesUndone += (s, e) => changesUndoneFired++;
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
@@ -278,7 +280,7 @@ internal class ProjectRepositoryTest
         _repository.UndoChanges(files);
 
         Assert.That(changesUndoneFired, Is.EqualTo(1));
-        _versionControlRepository.Verify(x => x.UndoChanges(files), Times.Once());
+        _versionControlRepository.Verify(x => x.UndoChanges(new[] { versionedFile }), Times.Once());
     }
 
     [Test]
@@ -288,6 +290,6 @@ internal class ProjectRepositoryTest
         _repositoryFactory.Setup(x => x.OpenRepository(_projectPath)).Returns(_versionControlRepository.Object);
         _repository.OpenOrCreateRepository();
 
-        _repository.UndoChanges(new VersionedFile[0]);
+        _repository.UndoChanges(new Luna.IDE.Versioning.VersionedFile[0]);
     }
 }

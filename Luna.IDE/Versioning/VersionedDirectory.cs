@@ -1,6 +1,4 @@
-﻿using VersionControl.Core;
-
-namespace Luna.IDE.Versioning;
+﻿namespace Luna.IDE.Versioning;
 
 public class VersionedDirectory : AbstractDirectory<VersionedDirectory, VersionedFile>
 {

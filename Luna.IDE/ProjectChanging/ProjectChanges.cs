@@ -4,25 +4,9 @@ using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
 using Luna.IDE.Versioning;
 using Luna.Infrastructure;
+using Luna.Utils;
 
 namespace Luna.IDE.ProjectChanging;
-
-public interface IProjectChanges
-{
-    event EventHandler? RepositoryOpened;
-    bool IsRepositoryExist { get; }
-    bool IsCommitAllowed { get; }
-    string Comment { get; set; }
-    VersionedDirectoryTreeItem Included { get; }
-    VersionedDirectoryTreeItem Excluded { get; }
-    void CreateRepository();
-    void Activate();
-    void Deactivate();
-    void IncludeToCommit(IEnumerable<TreeItem> items);
-    void ExcludeFromCommit(IEnumerable<TreeItem> items);
-    void MakeCommit();
-    void UndoChanges(IEnumerable<TreeItem> items);
-}
 
 public class ProjectChanges : NotificationObject, IProjectChanges
 {
@@ -92,6 +76,16 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         }
     }
 
+    public IEnumerable<VersionedFile> SelectedIncludedVersionedFiles
+    {
+        get => Included.AllChildren.OfType<VersionedFileTreeItem>().Where(x => x.IsSelected).Select(x => x.VersionedFile);
+    }
+
+    public IEnumerable<VersionedFile> SelectedExcludedVersionedFiles
+    {
+        get => Excluded.AllChildren.OfType<VersionedFileTreeItem>().Where(x => x.IsSelected).Select(x => x.VersionedFile);
+    }
+
     public ProjectChanges(
         IProjectRepository projectRepository,
         ICodeEditorSaver codeEditorSaver,
@@ -116,6 +110,8 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         IsRepositoryExist = _projectRepository.IsRepositoryExist;
         Included = new VersionedDirectoryTreeItem(null, _projectRepository.Included);
         Excluded = new VersionedDirectoryTreeItem(null, _projectRepository.Excluded);
+        Included.AllChildren.Each(x => x.Selected += (s, e) => { RaisePropertyChanged(() => SelectedIncludedVersionedFiles); });
+        Excluded.AllChildren.Each(x => x.Selected += (s, e) => { RaisePropertyChanged(() => SelectedExcludedVersionedFiles); });
         if (_isActivated) Activate();
         RepositoryOpened?.Invoke(this, EventArgs.Empty);
     }

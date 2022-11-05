@@ -1,40 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Luna.IDE.ProjectExploration;
-using VersionControl.Core;
 
 namespace Luna.IDE.Versioning;
 
-public interface IProjectRepository
-{
-    event EventHandler? RepositoryInitialized;
-    event EventHandler? CommitMade;
-    event EventHandler<ChangesUndoneEventArgs>? ChangesUndone;
-    bool IsRepositoryExist { get; }
-    VersionedStatus Status { get; }
-    public VersionedDirectory Included { get; }
-    public VersionedDirectory Excluded { get; }
-    void OpenOrCreateRepository();
-    void UpdateStatus();
-    void IncludeToCommit(IReadOnlyCollection<VersionedFile> files);
-    void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> files);
-    CommitResult MakeCommit(string comment);
-    IReadOnlyCollection<ICommit> FindCommits(FindCommitsFilter filter);
-    void UndoChanges(IReadOnlyCollection<VersionedFile> files);
-}
-
-public class ChangesUndoneEventArgs : EventArgs
-{
-    public IReadOnlyCollection<VersionedFile> VersionedFiles { get; }
-    public ChangesUndoneEventArgs(IReadOnlyCollection<VersionedFile> versionedFiles)
-    {
-        VersionedFiles = versionedFiles;
-    }
-}
-
 public class ProjectRepository : IProjectRepository
 {
-    private IVersionControlRepository _versionControlRepository;
+    private VersionControl.Core.IVersionControlRepository _versionControlRepository;
     private readonly IVersionControlRepositoryFactory _versionControlRepositoryFactory;
     private readonly IProjectLoader _projectLoader;
 
@@ -46,7 +18,7 @@ public class ProjectRepository : IProjectRepository
 
     public bool IsRepositoryExist => _projectLoader.Project != null && _versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
-    public VersionedStatus Status { get; private set; }
+    public VersionControl.Core.VersionedStatus Status { get; private set; }
 
     public VersionedDirectory Included { get; private set; }
 
@@ -60,7 +32,7 @@ public class ProjectRepository : IProjectRepository
         _projectLoader = projectLoader;
         _projectLoader.ProjectOpened += OnProjectOpened;
         _versionControlRepository = _versionControlRepositoryFactory.GetDummyRepository();
-        Status = VersionedStatus.Empty;
+        Status = VersionControl.Core.VersionedStatus.Empty;
         Included = new VersionedDirectory("");
         Excluded = new VersionedDirectory("");
     }
@@ -68,7 +40,7 @@ public class ProjectRepository : IProjectRepository
     private void OnProjectOpened(object? sender, EventArgs e)
     {
         _versionControlRepository = _versionControlRepositoryFactory.GetDummyRepository();
-        Status = VersionedStatus.Empty;
+        Status = VersionControl.Core.VersionedStatus.Empty;
         if (_versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project!.Root.FullPath))
         {
             OpenOrCreateRepository();
@@ -83,7 +55,7 @@ public class ProjectRepository : IProjectRepository
     {
         if (_projectLoader.Project == null) return;
         _versionControlRepository = _versionControlRepositoryFactory.OpenRepository(_projectLoader.Project.Root.FullPath);
-        Status = VersionedStatus.Empty;
+        Status = VersionControl.Core.VersionedStatus.Empty;
         Included = new VersionedDirectory(_projectLoader.Project.Root.Name);
         Excluded = new VersionedDirectory(_projectLoader.Project.Root.Name);
         RepositoryInitialized?.Invoke(this, EventArgs.Empty);
@@ -92,11 +64,13 @@ public class ProjectRepository : IProjectRepository
     public void UpdateStatus()
     {
         var newStatus = _versionControlRepository.GetStatus();
-        var diff = VersionedStatusDiff.MakeDiff(Status, newStatus);
+        var diff = VersionControl.Core.VersionedStatusDiff.MakeDiff(Status, newStatus);
         if (diff.NoDifference) return;
-        Excluded.AddFiles(diff.Added);
-        Excluded.DeleteFiles(diff.Deleted);
-        Included.DeleteFiles(diff.Deleted);
+        var added = diff.Added.Select(file => new VersionedFile(_versionControlRepository, file)).ToList();
+        var deleted = diff.Deleted.Select(file => new VersionedFile(_versionControlRepository, file)).ToList();
+        Excluded.AddFiles(added);
+        Excluded.DeleteFiles(deleted);
+        Included.DeleteFiles(deleted);
         Status = newStatus;
     }
 
@@ -112,15 +86,15 @@ public class ProjectRepository : IProjectRepository
         Included.DeleteFiles(files);
     }
 
-    public CommitResult MakeCommit(string comment)
+    public VersionControl.Core.CommitResult MakeCommit(string comment)
     {
-        var result = _versionControlRepository.MakeCommit(comment, Included.AllFiles);
+        var result = _versionControlRepository.MakeCommit(comment, Included.AllFiles.Select(x => x.InnerVersionedFile).ToList());
         CommitMade?.Invoke(this, EventArgs.Empty);
 
         return result;
     }
 
-    public IReadOnlyCollection<ICommit> FindCommits(FindCommitsFilter filter)
+    public IReadOnlyCollection<ICommit> FindCommits(VersionControl.Core.FindCommitsFilter filter)
     {
         var commits = _versionControlRepository
             .FindCommits(filter)
@@ -132,7 +106,7 @@ public class ProjectRepository : IProjectRepository
 
     public void UndoChanges(IReadOnlyCollection<VersionedFile> files)
     {
-        _versionControlRepository.UndoChanges(files);
+        _versionControlRepository.UndoChanges(files.Select(x => x.InnerVersionedFile).ToList());
         ChangesUndone?.Invoke(this, new(files));
     }
 }

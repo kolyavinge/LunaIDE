@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
-using VersionControl.Core;
+using FileActionKind = VersionControl.Core.FileActionKind;
 
 namespace Luna.IDE.CodeEditing;
 

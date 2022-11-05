@@ -7,12 +7,13 @@ using Luna.IDE.Versioning;
 using Luna.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using VersionControl.Core;
+using FileActionKind = VersionControl.Core.FileActionKind;
 
 namespace Luna.Tests.IDE.ProjectChanging;
 
 internal class ProjectChangesTest
 {
+    private Mock<VersionControl.Core.IVersionControlRepository> _versionControlRepository;
     private Mock<IProjectRepository> _projectRepository;
     private Mock<ICodeEditorSaver> _codeEditorSaver;
     private Mock<ICodeEditorUndoChangesLogic> _codeEditorUndoChangesLogic;
@@ -24,14 +25,14 @@ internal class ProjectChangesTest
     [SetUp]
     public void Setup()
     {
+        _versionControlRepository = new Mock<VersionControl.Core.IVersionControlRepository>();
         _projectRepository = new Mock<IProjectRepository>();
         _codeEditorSaver = new Mock<ICodeEditorSaver>();
         _codeEditorUndoChangesLogic = new Mock<ICodeEditorUndoChangesLogic>();
         _timer = new Mock<ITimer>();
         _timerManager = new Mock<ITimerManager>();
         _messageBox = new Mock<IMessageBox>();
-        _projectChanges = new ProjectChanges(
-            _projectRepository.Object, _codeEditorSaver.Object, _codeEditorUndoChangesLogic.Object, _timerManager.Object, _messageBox.Object);
+        _projectChanges = new ProjectChanges(_projectRepository.Object, _codeEditorSaver.Object, _codeEditorUndoChangesLogic.Object, _timerManager.Object, _messageBox.Object);
     }
 
     [Test]
@@ -166,8 +167,8 @@ internal class ProjectChangesTest
     [Test]
     public void IncludeToCommit()
     {
-        var file1 = new VersionedFile(1, "", "", 1, FileActionKind.Add);
-        var file2 = new VersionedFile(2, "", "", 1, FileActionKind.Add);
+        var file1 = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
+        var file2 = new VersionedFile(_versionControlRepository.Object, new(2, "", "", 1, FileActionKind.Add));
         var items = new TreeItem[]
         {
             new VersionedFileTreeItem(null, file1),
@@ -182,8 +183,8 @@ internal class ProjectChangesTest
     [Test]
     public void ExcludeFromCommit()
     {
-        var file1 = new VersionedFile(1, "", "", 1, FileActionKind.Add);
-        var file2 = new VersionedFile(2, "", "", 1, FileActionKind.Add);
+        var file1 = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
+        var file2 = new VersionedFile(_versionControlRepository.Object, new(2, "", "", 1, FileActionKind.Add));
         var items = new TreeItem[]
         {
             new VersionedFileTreeItem(null, file1),
@@ -219,7 +220,7 @@ internal class ProjectChangesTest
     public void IsCommitAllowed_IncludeAndComment()
     {
         var included = new VersionedDirectory("");
-        included.AddFiles(new VersionedFile[] { new(1, "", "", 1, FileActionKind.Add) });
+        included.AddFiles(new VersionedFile[] { new(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add)) });
         _projectRepository.SetupGet(x => x.Included).Returns(included);
 
         _projectChanges.Comment = "comment";
@@ -249,7 +250,7 @@ internal class ProjectChangesTest
     [Test]
     public void UndoChanges()
     {
-        var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
+        var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 10, FileActionKind.Add));
         var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
         _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in the selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.Yes);
 
@@ -271,7 +272,7 @@ internal class ProjectChangesTest
     [Test]
     public void UndoChanges_MessageBoxResultNo()
     {
-        var versionedFile = new VersionedFile(1, "", "", 10, FileActionKind.Add);
+        var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 10, FileActionKind.Add));
         var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
         _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.No);
 

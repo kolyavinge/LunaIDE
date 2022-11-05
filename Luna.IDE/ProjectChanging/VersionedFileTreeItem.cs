@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Luna.IDE.Common;
 using Luna.IDE.Versioning;
-using VersionControl.Core;
 
 namespace Luna.IDE.ProjectChanging;
 

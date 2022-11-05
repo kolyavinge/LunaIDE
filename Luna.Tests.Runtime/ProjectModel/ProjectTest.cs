@@ -50,7 +50,7 @@ internal class ProjectTest
     }
 
     [Test]
-    public void FindItemByPath_File()
+    public void FindItemByPath_FileAbsolutePath()
     {
         _project = new Project(@"c:\path\project", _fileSystem.Object);
 
@@ -62,11 +62,35 @@ internal class ProjectTest
     }
 
     [Test]
-    public void FindItemByPath_Directory()
+    public void FindItemByPath_FileRelativePath()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"directory\file");
+
+        Assert.NotNull(result);
+        Assert.True(result is CodeFileProjectItem);
+        Assert.AreEqual(@"c:\path\project\directory\file", result.FullPath);
+    }
+
+    [Test]
+    public void FindItemByPath_DirectoryAbsolutePath()
     {
         _project = new Project(@"c:\path\project", _fileSystem.Object);
 
         var result = _project.FindItemByPath(@"c:\path\project\directory");
+
+        Assert.NotNull(result);
+        Assert.True(result is DirectoryProjectItem);
+        Assert.AreEqual(@"c:\path\project\directory", result.FullPath);
+    }
+
+    [Test]
+    public void FindItemByPath_DirectoryRelativePath()
+    {
+        _project = new Project(@"c:\path\project", _fileSystem.Object);
+
+        var result = _project.FindItemByPath(@"directory");
 
         Assert.NotNull(result);
         Assert.True(result is DirectoryProjectItem);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Luna.Infrastructure;
 
 namespace Luna.ProjectModel;
@@ -40,10 +41,13 @@ public class Project
         parent.AddChild(item);
     }
 
-    public ProjectItem? FindItemByPath(string fullPath)
+    public ProjectItem? FindItemByPath(string fullOrRelativePath)
     {
-        if (!fullPath.StartsWith(Root.FullPath)) return null;
-        var pathFromRoot = fullPath.Substring(Root.FullPath.Length + 1);
+        if (!fullOrRelativePath.StartsWith(Root.FullPath))
+        {
+            fullOrRelativePath = Path.Combine(Root.FullPath, fullOrRelativePath);
+        }
+        var pathFromRoot = fullOrRelativePath.Substring(Root.FullPath.Length + 1);
         var splittedPath = pathFromRoot.Split('\\');
         ProjectItem? result = Root;
         foreach (var itemName in splittedPath)

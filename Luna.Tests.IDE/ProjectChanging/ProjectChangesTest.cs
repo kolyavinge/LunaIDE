@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectChanging;
 using Luna.IDE.Versioning;
 using Luna.Infrastructure;
+using Luna.Utils;
 using Moq;
 using NUnit.Framework;
 using FileActionKind = VersionControl.Core.FileActionKind;
@@ -95,6 +97,36 @@ internal class ProjectChangesTest
         _projectChanges.CreateRepository();
 
         _projectRepository.Verify(x => x.OpenOrCreateRepository(), Times.Once());
+    }
+
+    [Test]
+    public void SelectedIncludedVersionedFiles()
+    {
+        var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
+        var root = new VersionedDirectory("root");
+        root.AddFiles(new VersionedFile[] { versionedFile });
+        _projectChanges.Included = new VersionedDirectoryTreeItem(null, root);
+        _projectChanges.Included.AllChildren.Each(x => x.IsSelected = true);
+
+        var result = _projectChanges.SelectedIncludedVersionedFiles.ToList();
+
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0], Is.EqualTo(versionedFile));
+    }
+
+    [Test]
+    public void SelectedExcludedVersionedFiles()
+    {
+        var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
+        var root = new VersionedDirectory("root");
+        root.AddFiles(new VersionedFile[] { versionedFile });
+        _projectChanges.Excluded = new VersionedDirectoryTreeItem(null, root);
+        _projectChanges.Excluded.AllChildren.Each(x => x.IsSelected = true);
+
+        var result = _projectChanges.SelectedExcludedVersionedFiles.ToList();
+
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0], Is.EqualTo(versionedFile));
     }
 
     [Test]

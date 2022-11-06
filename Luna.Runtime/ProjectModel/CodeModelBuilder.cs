@@ -23,8 +23,6 @@ internal class CodeModelBuilder : ICodeModelBuilder
     private readonly ICodeFileOrderLogic _orderLogic;
     private readonly ICodeModelUpdateRaiser _codeModelUpdateRaiser;
 
-    public CodeModelBuilder() : this(new EmptyOutputWriter()) { }
-
     public CodeModelBuilder(IOutputWriter outputWriter)
         : this(new CodeFileParsingContextFactory(), new CodeFileOrderLogic(), new CodeModelUpdateRaiser(), outputWriter) { }
 

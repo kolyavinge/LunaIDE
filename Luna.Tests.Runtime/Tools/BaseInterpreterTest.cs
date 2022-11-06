@@ -1,5 +1,4 @@
-﻿using System;
-using Luna.Infrastructure;
+﻿using Luna.Infrastructure;
 using Luna.Output;
 using Luna.ProjectModel;
 using Luna.Runtime;
@@ -27,8 +26,8 @@ internal class BaseInterpreterTest
     protected void Run()
     {
         _interpreter.Run(_project, _runtimeOutput.Object);
-        _result = _interpreter.Result ?? throw new NullReferenceException();
-        _resultString = _result.ToString();
+        _result = _interpreter.Result;
+        _resultString = _result?.ToString();
     }
 
     protected void CodeFile(string codeFileContent)

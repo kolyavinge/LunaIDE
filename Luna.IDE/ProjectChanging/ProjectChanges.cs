@@ -59,7 +59,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     public VersionedDirectoryTreeItem Included
     {
         get => _included;
-        private set
+        set
         {
             _included = value;
             RaisePropertyChanged(() => Included);
@@ -69,7 +69,7 @@ public class ProjectChanges : NotificationObject, IProjectChanges
     public VersionedDirectoryTreeItem Excluded
     {
         get => _excluded;
-        private set
+        set
         {
             _excluded = value;
             RaisePropertyChanged(() => Excluded);

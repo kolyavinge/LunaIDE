@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Luna.Infrastructure;
+using Luna.Output;
 
 namespace Luna.ProjectModel;
 
@@ -11,7 +12,7 @@ public class CodeModelUpdater : ICodeModelUpdater
     private List<CodeFileProjectItem> _projectItems = new();
     private int _updateRequest;
 
-    public CodeModelUpdater(ITimerManager timerManager) : this(timerManager, new CodeModelBuilder()) { }
+    public CodeModelUpdater(ITimerManager timerManager) : this(timerManager, new CodeModelBuilder(new EmptyOutputWriter())) { }
 
     internal CodeModelUpdater(ITimerManager timerManager, ICodeModelBuilder codeModelBuilder)
     {

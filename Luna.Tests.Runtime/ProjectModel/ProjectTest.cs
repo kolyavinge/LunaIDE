@@ -22,6 +22,13 @@ internal class ProjectTest
     }
 
     [Test]
+    public void Open()
+    {
+        var project = Project.Open("path", _fileSystem.Object);
+        Assert.That(project.Root.Name, Is.EqualTo("path"));
+    }
+
+    [Test]
     public void Read()
     {
         _project = new Project(@"c:\path\project", _fileSystem.Object);

@@ -9,7 +9,7 @@ public interface IRuntimeOutput
     void SendMessage(OutputMessage message);
 }
 
-public class OutputMessage
+public class OutputMessage : IEquatable<OutputMessage?>
 {
     private readonly List<OutputMessageItem> _items;
 
@@ -27,9 +27,31 @@ public class OutputMessage
             _items[i].ColumnIndex = _items[i - 1].ColumnIndex + _items[i - 1].Text.Length;
         }
     }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as OutputMessage);
+    }
+
+    public bool Equals(OutputMessage? other)
+    {
+        return other is not null &&
+               _items.SequenceEqual(other._items) &&
+               (ProjectItem == null && other.ProjectItem == null
+                || (ProjectItem?.Equals(other.ProjectItem) ?? false));
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        foreach (var item in _items) hashCode.Add(item.GetHashCode());
+        hashCode.Add(ProjectItem?.GetHashCode());
+
+        return hashCode.ToHashCode();
+    }
 }
 
-public class OutputMessageItem
+public class OutputMessageItem : IEquatable<OutputMessageItem?>
 {
     public string Text { get; }
     public OutputMessageKind Kind { get; }
@@ -39,6 +61,24 @@ public class OutputMessageItem
     {
         Text = text;
         Kind = kind;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as OutputMessageItem);
+    }
+
+    public bool Equals(OutputMessageItem? other)
+    {
+        return other is not null &&
+               Text == other.Text &&
+               Kind == other.Kind &&
+               ColumnIndex == other.ColumnIndex;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Text, Kind, ColumnIndex);
     }
 }
 

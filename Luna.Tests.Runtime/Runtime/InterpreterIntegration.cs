@@ -1,4 +1,6 @@
-﻿using Luna.Tests.Tools;
+﻿using Luna.Output;
+using Luna.Tests.Tools;
+using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Runtime;
@@ -251,5 +253,19 @@ internal class InterpreterIntegration : BaseInterpreterTest
 ");
         Run();
         Assert.AreEqual("false", _resultString);
+    }
+
+    [Test]
+    public void CodeModelBuildError_Stopped()
+    {
+        CodeFile(@"
+            (run wrong lexems)
+");
+        Run();
+        Assert.Null(_resultString);
+        _runtimeOutput.Verify(x => x.SendMessage(new OutputMessage(new OutputMessageItem[]
+        {
+            new("The program cannot be run.", OutputMessageKind.Error)
+        })), Times.Once());
     }
 }

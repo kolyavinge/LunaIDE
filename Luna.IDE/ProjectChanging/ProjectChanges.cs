@@ -76,14 +76,14 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         }
     }
 
-    public IEnumerable<VersionedFile> SelectedIncludedVersionedFiles
+    public IReadOnlyCollection<VersionedFile> SelectedIncludedVersionedFiles
     {
-        get => Included.AllChildren.OfType<VersionedFileTreeItem>().Where(x => x.IsSelected).Select(x => x.VersionedFile);
+        get => Included.AllChildren.Where(x => x.IsSelected).SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).Distinct().ToList();
     }
 
-    public IEnumerable<VersionedFile> SelectedExcludedVersionedFiles
+    public IReadOnlyCollection<VersionedFile> SelectedExcludedVersionedFiles
     {
-        get => Excluded.AllChildren.OfType<VersionedFileTreeItem>().Where(x => x.IsSelected).Select(x => x.VersionedFile);
+        get => Excluded.AllChildren.Where(x => x.IsSelected).SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).Distinct().ToList();
     }
 
     public ProjectChanges(
@@ -143,16 +143,14 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         _timer?.Stop();
     }
 
-    public void IncludeToCommit(IEnumerable<TreeItem> items)
+    public void IncludeToCommit(IReadOnlyCollection<VersionedFile> versionedFiles)
     {
-        var versionedFiles = items.SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).ToList();
         _projectRepository.IncludeToCommit(versionedFiles);
         UpdateCommitAllowed();
     }
 
-    public void ExcludeFromCommit(IEnumerable<TreeItem> items)
+    public void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> versionedFiles)
     {
-        var versionedFiles = items.SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).ToList();
         _projectRepository.ExcludeFromCommit(versionedFiles);
         UpdateCommitAllowed();
     }
@@ -165,9 +163,8 @@ public class ProjectChanges : NotificationObject, IProjectChanges
         UpdateStatus();
     }
 
-    public void UndoChanges(IEnumerable<TreeItem> items)
+    public void UndoChanges(IReadOnlyCollection<VersionedFile> versionedFiles)
     {
-        var versionedFiles = items.SelectMany(x => x.AllChildren).OfType<VersionedFileTreeItem>().Select(x => x.VersionedFile).ToList();
         if (versionedFiles.Any() && _messageBox.Show("Undo changes", "Do you want to undo changes in the selected files?", MessageBoxButtons.YesNo) == MessageBoxResult.Yes)
         {
             _projectRepository.UndoChanges(versionedFiles);

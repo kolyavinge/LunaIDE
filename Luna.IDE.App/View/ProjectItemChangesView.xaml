@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="Luna.IDE.App.View.ProjectItemChangesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Luna.IDE.App.View"
+             xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
+            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <local:SingleTextDiffView
+            Model="{Binding DataContext.Model.SingleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+            Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+
+        <ProgressBar
+            Style="{StaticResource ProgressBarStyle}"
+            IsIndeterminate="True"
+            Visibility="{Binding Model.SingleTextDiff.InProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Width="100" Height="12" />
+    </Grid>
+</UserControl>

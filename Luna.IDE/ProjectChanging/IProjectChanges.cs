@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Luna.IDE.Common;
 using Luna.IDE.Versioning;
 
 namespace Luna.IDE.ProjectChanging;
@@ -18,9 +17,9 @@ public interface IProjectChanges
 
     VersionedDirectoryTreeItem Excluded { get; }
 
-    IEnumerable<VersionedFile> SelectedIncludedVersionedFiles { get; }
+    IReadOnlyCollection<VersionedFile> SelectedIncludedVersionedFiles { get; }
 
-    IEnumerable<VersionedFile> SelectedExcludedVersionedFiles { get; }
+    IReadOnlyCollection<VersionedFile> SelectedExcludedVersionedFiles { get; }
 
     void CreateRepository();
 
@@ -28,11 +27,11 @@ public interface IProjectChanges
 
     void Deactivate();
 
-    void IncludeToCommit(IEnumerable<TreeItem> items);
+    void IncludeToCommit(IReadOnlyCollection<VersionedFile> versionedFiles);
 
-    void ExcludeFromCommit(IEnumerable<TreeItem> items);
+    void ExcludeFromCommit(IReadOnlyCollection<VersionedFile> versionedFiles);
 
     void MakeCommit();
 
-    void UndoChanges(IEnumerable<TreeItem> items);
+    void UndoChanges(IReadOnlyCollection<VersionedFile> versionedFiles);
 }

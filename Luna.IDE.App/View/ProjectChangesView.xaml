@@ -88,6 +88,8 @@
                         <ContextMenu Style="{StaticResource ContextMenuStyle}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <MenuItem Header="Exclude from commit" Command="{Binding DataContext.ExcludeFromCommitCommand}" />
                             <MenuItem Header="Undo changes" Command="{Binding DataContext.UndoChangesCommand}" />
+                            <Separator />
+                            <MenuItem Header="Compare changes" Command="{Binding DataContext.VersionedFilesChangesCommand}" CommandParameter="{Binding DataContext.Model.SelectedIncludedVersionedFiles}" />
                         </ContextMenu>
                     </controls:TreeView.ContextMenu>
                 </controls:TreeView>
@@ -116,6 +118,8 @@
                         <ContextMenu Style="{StaticResource ContextMenuStyle}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <MenuItem Header="Include to commit" Command="{Binding DataContext.IncludeToCommitCommand}" />
                             <MenuItem Header="Undo changes" Command="{Binding DataContext.UndoChangesCommand}" />
+                            <Separator />
+                            <MenuItem Header="Compare changes" Command="{Binding DataContext.VersionedFilesChangesCommand}" CommandParameter="{Binding DataContext.Model.SelectedExcludedVersionedFiles}" />
                         </ContextMenu>
                     </controls:TreeView.ContextMenu>
                 </controls:TreeView>

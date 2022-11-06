@@ -169,13 +169,8 @@ internal class ProjectChangesTest
     {
         var file1 = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
         var file2 = new VersionedFile(_versionControlRepository.Object, new(2, "", "", 1, FileActionKind.Add));
-        var items = new TreeItem[]
-        {
-            new VersionedFileTreeItem(null, file1),
-            new VersionedFileTreeItem(null, file2)
-        };
 
-        _projectChanges.IncludeToCommit(items);
+        _projectChanges.IncludeToCommit(new[] { file1, file2 });
 
         _projectRepository.Verify(x => x.IncludeToCommit(new[] { file1, file2 }), Times.Once());
     }
@@ -185,13 +180,8 @@ internal class ProjectChangesTest
     {
         var file1 = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 1, FileActionKind.Add));
         var file2 = new VersionedFile(_versionControlRepository.Object, new(2, "", "", 1, FileActionKind.Add));
-        var items = new TreeItem[]
-        {
-            new VersionedFileTreeItem(null, file1),
-            new VersionedFileTreeItem(null, file2)
-        };
 
-        _projectChanges.ExcludeFromCommit(items);
+        _projectChanges.ExcludeFromCommit(new[] { file1, file2 });
 
         _projectRepository.Verify(x => x.ExcludeFromCommit(new[] { file1, file2 }), Times.Once());
     }
@@ -251,10 +241,9 @@ internal class ProjectChangesTest
     public void UndoChanges()
     {
         var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 10, FileActionKind.Add));
-        var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
         _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in the selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.Yes);
 
-        _projectChanges.UndoChanges(treeItems);
+        _projectChanges.UndoChanges(new[] { versionedFile });
 
         _projectRepository.Verify(x => x.UndoChanges(new[] { versionedFile }), Times.Once());
         _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(new[] { versionedFile }), Times.Once());
@@ -263,7 +252,7 @@ internal class ProjectChangesTest
     [Test]
     public void UndoChanges_NoSelectedFiles()
     {
-        _projectChanges.UndoChanges(new VersionedFileTreeItem[0]);
+        _projectChanges.UndoChanges(new VersionedFile[0]);
 
         _projectRepository.Verify(x => x.UndoChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
         _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
@@ -273,10 +262,9 @@ internal class ProjectChangesTest
     public void UndoChanges_MessageBoxResultNo()
     {
         var versionedFile = new VersionedFile(_versionControlRepository.Object, new(1, "", "", 10, FileActionKind.Add));
-        var treeItems = new VersionedFileTreeItem[] { new(null, versionedFile) };
         _messageBox.Setup(x => x.Show("Undo changes", "Do you want to undo changes in selected files?", MessageBoxButtons.YesNo)).Returns(MessageBoxResult.No);
 
-        _projectChanges.UndoChanges(treeItems);
+        _projectChanges.UndoChanges(new[] { versionedFile });
 
         _projectRepository.Verify(x => x.UndoChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());
         _codeEditorUndoChangesLogic.Verify(x => x.UndoTextChanges(It.IsAny<IReadOnlyCollection<VersionedFile>>()), Times.Never());

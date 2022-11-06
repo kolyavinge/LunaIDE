@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Input;
+using Luna.IDE.App.Commands;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Media;
 using Luna.IDE.App.Mvvm;
@@ -52,6 +53,9 @@ public class ProjectChangesViewModel : NotificationObject
 
     public ICommand UndoChangesCommand { get; }
 
+    [Inject]
+    public IVersionedFilesChangesCommand? VersionedFilesChangesCommand { get; set; }
+
     public ProjectChangesViewModel(IProjectChanges projectChanges)
     {
         Model = projectChanges;
@@ -66,19 +70,16 @@ public class ProjectChangesViewModel : NotificationObject
 
     private void IncludeToCommit()
     {
-        var selected = Model.Excluded.AllChildren.Where(x => x.IsSelected);
-        Model.IncludeToCommit(selected);
+        Model.IncludeToCommit(Model.SelectedExcludedVersionedFiles);
     }
 
     private void ExcludeFromCommit()
     {
-        var selected = Model.Included.AllChildren.Where(x => x.IsSelected);
-        Model.ExcludeFromCommit(selected);
+        Model.ExcludeFromCommit(Model.SelectedIncludedVersionedFiles);
     }
 
     private void UndoChanges()
     {
-        var selected = Model.Included.AllChildren.Union(Model.Excluded.AllChildren).Where(x => x.IsSelected);
-        Model.UndoChanges(selected);
+        Model.UndoChanges(Model.SelectedIncludedVersionedFiles.Union(Model.SelectedExcludedVersionedFiles).ToList());
     }
 }

@@ -36,7 +36,7 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 
     public EnvironmentWindow? FindWindowById(object id)
     {
-        return Windows.FirstOrDefault(x => x.Id == id);
+        return Windows.FirstOrDefault(x => x.Id.Equals(id));
     }
 
     public EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, object view)

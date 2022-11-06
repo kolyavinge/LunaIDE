@@ -29,7 +29,7 @@ public class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
     {
         var editors = _environmentWindowsManager.Windows
             .Where(x => x.Model is ICodeFileEditor)
-            .ToDictionary(k => ((ICodeFileEditor)k.Model).ProjectItem.FullPath, v => v.Model);
+            .ToDictionary(k => ((ICodeFileEditor)k.Model).ProjectItem.FullPath, v => (ICodeFileEditor)v.Model);
 
         var filesToClose = versionedFiles.Where(x => x.ActionKind is FileActionKind.Add or FileActionKind.Replace or FileActionKind.ModifyAndReplace).ToList();
         var filesToUndoTextChanges = versionedFiles.Where(x => x.ActionKind is FileActionKind.Modify).ToList();
@@ -46,7 +46,7 @@ public class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
         {
             if (editors.ContainsKey(file.FullPath))
             {
-                ((ICodeFileEditor)editors[file.FullPath]).UndoTextChanges();
+                editors[file.FullPath].UndoTextChanges();
             }
         }
 

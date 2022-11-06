@@ -54,8 +54,8 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 
     public void CloseWindow(EnvironmentWindow window)
     {
-        window.Model.Save();
-        window.Model.Close();
+        if (window.Model is ISaveableEnvironmentWindow saveable) saveable.Save();
+        if (window.Model is ICloseableEnvironmentWindow closeable) closeable.Close();
         if (SelectedWindow == window)
         {
             var index = _windows.IndexOf(window);
@@ -69,8 +69,8 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 
     public void CloseAllWindows()
     {
-        Windows.Each(x => x.Model.Save());
-        Windows.Each(x => x.Model.Close());
+        Windows.Where(x => x.Model is ISaveableEnvironmentWindow).Each(x => ((ISaveableEnvironmentWindow)x.Model).Save());
+        Windows.Where(x => x.Model is ICloseableEnvironmentWindow).Each(x => ((ICloseableEnvironmentWindow)x.Model).Close());
         SelectedWindow = null;
         _windows.Clear();
     }

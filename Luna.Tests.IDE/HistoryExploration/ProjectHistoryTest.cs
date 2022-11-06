@@ -34,8 +34,6 @@ internal class ProjectHistoryTest
     public void Empty()
     {
         _projectHistory.Header.ToString();
-        _projectHistory.Save();
-        _projectHistory.Close();
     }
 
     [Test]

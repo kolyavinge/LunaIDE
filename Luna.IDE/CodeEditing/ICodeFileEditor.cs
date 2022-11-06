@@ -33,4 +33,8 @@ public interface ICodeFileEditor
     void Undo();
 
     void Redo();
+
+    void Close();
+
+    void Save();
 }

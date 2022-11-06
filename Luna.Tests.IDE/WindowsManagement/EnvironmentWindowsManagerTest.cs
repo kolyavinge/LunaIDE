@@ -7,6 +7,8 @@ namespace Luna.Tests.IDE.WindowsManagement;
 public class EnvironmentWindowsManagerTest
 {
     private Mock<IEnvironmentWindowModel> _environmentWindowModel;
+    private Mock<ISaveableEnvironmentWindow> _saveableEnvironmentWindow;
+    private Mock<ICloseableEnvironmentWindow> _closeableEnvironmentWindow;
     private object _environmentWindowView;
     private EnvironmentWindowsManager _manager;
 
@@ -15,6 +17,8 @@ public class EnvironmentWindowsManagerTest
     {
         _environmentWindowModel = new Mock<IEnvironmentWindowModel>();
         _environmentWindowView = new object();
+        _saveableEnvironmentWindow = _environmentWindowModel.As<ISaveableEnvironmentWindow>();
+        _closeableEnvironmentWindow = _environmentWindowModel.As<ICloseableEnvironmentWindow>();
         _manager = new EnvironmentWindowsManager();
     }
 
@@ -43,7 +47,7 @@ public class EnvironmentWindowsManagerTest
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView);
         _manager.CloseWindow(window);
         Assert.That(_manager.FindWindowById("id"), Is.EqualTo(null));
-        _environmentWindowModel.Verify(x => x.Close(), Times.Once());
+        _closeableEnvironmentWindow.Verify(x => x.Close(), Times.Once());
     }
 
     [Test]
@@ -131,7 +135,7 @@ public class EnvironmentWindowsManagerTest
         Assert.That(_manager.FindWindowById("left"), Is.EqualTo(null));
         Assert.That(_manager.FindWindowById("middle"), Is.EqualTo(null));
         Assert.That(_manager.FindWindowById("right"), Is.EqualTo(null));
-        _environmentWindowModel.Verify(x => x.Save(), Times.Exactly(3));
-        _environmentWindowModel.Verify(x => x.Close(), Times.Exactly(3));
+        _saveableEnvironmentWindow.Verify(x => x.Save(), Times.Exactly(3));
+        _closeableEnvironmentWindow.Verify(x => x.Close(), Times.Exactly(3));
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Linq;
+using System.Windows.Input;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.Outputing;
 using Luna.IDE.ProjectExploration;
@@ -28,7 +29,7 @@ public class RunProgramCommand : Command, IRunProgramCommand
     public override void Execute(object parameter)
     {
         if (_selectedProject.Project == null) return;
-        _windowsManager.Windows.Each(x => x.Model.Save());
+        _windowsManager.Windows.Where(x => x.Model is ISaveableEnvironmentWindow).Each(x => ((ISaveableEnvironmentWindow)x.Model).Save());
         _outputArea.Clear();
         _interpreter.Run(_selectedProject.Project, _outputArea);
     }

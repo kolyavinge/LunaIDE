@@ -3,6 +3,14 @@
 public interface IEnvironmentWindowModel
 {
     string Header { get; }
-    void Save();
+}
+
+public interface ICloseableEnvironmentWindow
+{
     void Close();
+}
+
+public interface ISaveableEnvironmentWindow
+{
+    void Save();
 }

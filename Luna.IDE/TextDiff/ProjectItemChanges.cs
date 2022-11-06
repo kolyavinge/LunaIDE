@@ -26,8 +26,4 @@ public class ProjectItemChanges : IProjectItemChanges, IEnvironmentWindowModel
         Header = $"Changes in {newFile.Name}";
         await SingleTextDiff.MakeDiff(oldFileText, newFile);
     }
-
-    public void Save() { } // перенести в другой интерфейс
-
-    public void Close() { }
 }

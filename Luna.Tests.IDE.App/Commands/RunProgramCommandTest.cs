@@ -56,6 +56,9 @@ internal class RunProgramCommandTest
         var model1 = new Mock<IEnvironmentWindowModel>();
         var model2 = new Mock<IEnvironmentWindowModel>();
         var model3 = new Mock<IEnvironmentWindowModel>();
+        var saveable1 = model1.As<ISaveableEnvironmentWindow>();
+        var saveable2 = model2.As<ISaveableEnvironmentWindow>();
+        var saveable3 = model3.As<ISaveableEnvironmentWindow>();
         var windows = new List<EnvironmentWindow>
         {
             new("1", model1.Object, new object()),
@@ -66,9 +69,9 @@ internal class RunProgramCommandTest
 
         _command.Execute(null);
 
-        model1.Verify(x => x.Save(), Times.Once());
-        model2.Verify(x => x.Save(), Times.Once());
-        model3.Verify(x => x.Save(), Times.Once());
+        saveable1.Verify(x => x.Save(), Times.Once());
+        saveable2.Verify(x => x.Save(), Times.Once());
+        saveable3.Verify(x => x.Save(), Times.Once());
     }
 
     [Test]

@@ -20,6 +20,6 @@ public class CodeEditorSaver : ICodeEditorSaver
 
     public void SaveOpenedEditors()
     {
-        _windowsManager.Windows.Where(w => w.Model is ICodeFileEditor).Each(w => w.Model.Save());
+        _windowsManager.Windows.Where(w => w.Model is ICodeFileEditor).Each(w => ((ICodeFileEditor)w.Model).Save());
     }
 }

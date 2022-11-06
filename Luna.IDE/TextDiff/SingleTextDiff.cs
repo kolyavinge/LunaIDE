@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using CodeHighlighter.Rendering;
 using DiffTool.Core;
 using DiffTool.Visualization;
 using Luna.IDE.Common;
 using Luna.IDE.Utils;
+using Luna.ProjectModel;
 
 namespace Luna.IDE.TextDiff;
 
@@ -15,6 +17,7 @@ public interface ISingleTextDiff
     CodeTextBoxModel? DiffCodeTextBoxModel { get; }
     bool InProgress { get; }
     Task MakeDiff(string fileExtension, string? oldFileText, string newFileText);
+    Task MakeDiff(string? oldFileText, TextFileProjectItem newFile);
 }
 
 public class SingleTextDiff : NotificationObject, ISingleTextDiff
@@ -50,16 +53,30 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         InProgress = true;
         var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFileText);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
+        InitDiffCodeTextBoxModel(codeProvider, diffResult, oldFileText != null);
+        InProgress = false;
+    }
+
+    public async Task MakeDiff(string? oldFileText, TextFileProjectItem newFile)
+    {
+        InProgress = true;
+        var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFile.GetText());
+        var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
+        InitDiffCodeTextBoxModel(codeProvider, diffResult, oldFileText != null);
+        InProgress = false;
+    }
+
+    private void InitDiffCodeTextBoxModel(ICodeProvider codeProvider, SingleTextVisualizerResult diffResult, bool hasOldFileText)
+    {
         DiffCodeTextBoxModel = new CodeTextBoxModel(codeProvider, new() { HighlighteredBrackets = "()" });
         DiffCodeTextBoxModel.IsReadOnly = false;
         DiffCodeTextBoxModel.SetText(diffResult.Text);
         DiffCodeTextBoxModel.IsReadOnly = true;
         DiffCodeTextBoxModel.LinesDecoration.Clear();
-        if (oldFileText != null)
+        if (hasOldFileText)
         {
             SetLineColors(diffResult.LinesDiff, DiffCodeTextBoxModel.LinesDecoration);
         }
-        InProgress = false;
     }
 
     private void SetLineColors(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, LinesDecorationCollection linesDecoration)

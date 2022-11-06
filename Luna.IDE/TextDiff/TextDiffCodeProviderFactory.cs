@@ -7,6 +7,7 @@ namespace Luna.IDE.TextDiff;
 public interface ITextDiffCodeProviderFactory
 {
     ICodeProvider Make(string fileExtension, string oldFileText, string newFileText);
+    ICodeProvider Make(string oldFileText, TextFileProjectItem newFile);
 }
 
 public class TextDiffCodeProviderFactory : ITextDiffCodeProviderFactory
@@ -29,5 +30,17 @@ public class TextDiffCodeProviderFactory : ITextDiffCodeProviderFactory
         }
 
         throw new ArgumentException($"CodeProvider for {fileExtension} extension isn't exist.");
+    }
+
+    public ICodeProvider Make(string oldFileText, TextFileProjectItem newFile)
+    {
+        if (newFile is CodeFileProjectItem codeFileProjectItem)
+        {
+            var oldCodeModel = _codeModelBuilder.BuildFor(oldFileText);
+
+            return new LunaCodeProvider(new CompositeCodeProviderScope(new[] { oldCodeModel, codeFileProjectItem.CodeModel }));
+        }
+
+        throw new ArgumentException($"CodeProvider for {newFile.GetType()} isn't exist.");
     }
 }

@@ -58,7 +58,7 @@ public class AutoCompleteTest
 
         _autoComplete.Show();
 
-        Assert.AreEqual(1, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(1));
         Assert.NotNull(_autoComplete.Items.FirstOrDefault(x => x.Name == "lambda"));
         Assert.NotNull(_autoComplete.SelectedItem);
         Assert.True(_autoComplete.SelectedItem.Name == "lambda");
@@ -72,7 +72,7 @@ public class AutoCompleteTest
 
         _autoComplete.Show();
 
-        Assert.AreEqual(1, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(1));
         Assert.NotNull(_autoComplete.Items.FirstOrDefault(x => x.Name == "lambda"));
         Assert.NotNull(_autoComplete.SelectedItem);
         Assert.True(_autoComplete.SelectedItem.Name == "lambda");
@@ -86,7 +86,7 @@ public class AutoCompleteTest
 
         _autoComplete.Show();
 
-        Assert.AreEqual(1, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(1));
         Assert.NotNull(_autoComplete.Items.FirstOrDefault(x => x.Name == "lambda"));
         Assert.NotNull(_autoComplete.SelectedItem);
         Assert.True(_autoComplete.SelectedItem.Name == "lambda");
@@ -104,19 +104,19 @@ public class AutoCompleteTest
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 3));
         _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz", 0, 3, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
-        Assert.AreEqual(3, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(3));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz");
 
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 4));
         _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz1", 0, 4, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
-        Assert.AreEqual(2, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(2));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz1");
 
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 5));
         _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz12", 0, 5, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
-        Assert.AreEqual(1, _autoComplete.Items.Count);
+        Assert.That(_autoComplete.Items.Count, Is.EqualTo(1));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz12");
     }
 

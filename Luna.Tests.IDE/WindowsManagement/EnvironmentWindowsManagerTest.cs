@@ -26,7 +26,7 @@ public class EnvironmentWindowsManagerTest
     public void OpenWindow()
     {
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView);
-        Assert.NotNull(_manager.FindWindowById("id"));
+        Assert.That(_manager.FindWindowById("id"), Is.Not.Null);
         Assert.That(window.Id, Is.EqualTo("id"));
         Assert.That(window.Model, Is.EqualTo(_environmentWindowModel.Object));
         Assert.That(window.View, Is.EqualTo(_environmentWindowView));

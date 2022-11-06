@@ -33,9 +33,9 @@ public class TreeItemTest
     [Test]
     public void Depth()
     {
-        Assert.AreEqual(0, _root.Depth);
-        Assert.AreEqual(0, _root.Children.First().Depth);
-        Assert.AreEqual(1, _root.Children.First().Children.First().Depth);
+        Assert.That(_root.Depth, Is.EqualTo(0));
+        Assert.That(_root.Children.First().Depth, Is.EqualTo(0));
+        Assert.That(_root.Children.First().Children.First().Depth, Is.EqualTo(1));
     }
 
     [Test]

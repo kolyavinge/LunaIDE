@@ -29,7 +29,7 @@ internal class CodeFileOrderLogicTest
 
         var result = _logic.ByImports(new[] { item1, item2, item3 }).ToList();
 
-        Assert.AreEqual(3, result.Count);
+        Assert.That(result.Count, Is.EqualTo(3));
         Assert.AreEqual(item1, result[0]);
         Assert.AreEqual(item2, result[1]);
         Assert.AreEqual(item3, result[2]);
@@ -44,7 +44,7 @@ internal class CodeFileOrderLogicTest
 
         var result = _logic.ByImports(new[] { parent, child }).ToList();
 
-        Assert.AreEqual(2, result.Count);
+        Assert.That(result.Count, Is.EqualTo(2));
         Assert.AreEqual(child, result[0]);
         Assert.AreEqual(parent, result[1]);
     }
@@ -60,7 +60,7 @@ internal class CodeFileOrderLogicTest
 
         var result = _logic.ByImports(new[] { parent1, parent2, child }).ToList();
 
-        Assert.AreEqual(3, result.Count);
+        Assert.That(result.Count, Is.EqualTo(3));
         Assert.AreEqual(child, result[0]);
         Assert.AreEqual(parent1, result[1]);
         Assert.AreEqual(parent2, result[2]);
@@ -76,7 +76,7 @@ internal class CodeFileOrderLogicTest
 
         var result = _logic.ByImports(new[] { item1, item2 }).ToList();
 
-        Assert.AreEqual(2, result.Count);
+        Assert.That(result.Count, Is.EqualTo(2));
         Assert.AreEqual(item2, result[0]);
         Assert.AreEqual(item1, result[1]);
     }

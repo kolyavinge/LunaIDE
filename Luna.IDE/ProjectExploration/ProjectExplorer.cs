@@ -5,7 +5,7 @@ namespace Luna.IDE.ProjectExploration;
 
 public interface IProjectExplorer
 {
-    Project? Project { get; }
+    IProject? Project { get; }
     DirectoryTreeItem? ProjectTreeRoot { get; }
 }
 
@@ -14,7 +14,7 @@ public class ProjectExplorer : NotificationObject, IProjectExplorer
     private readonly IProjectLoader _projectLoader;
     private DirectoryTreeItem? _projectTreeRoot;
 
-    public Project? Project => _projectLoader.Project;
+    public IProject? Project => _projectLoader.Project;
 
     public DirectoryTreeItem? ProjectTreeRoot
     {

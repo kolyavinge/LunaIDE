@@ -6,14 +6,14 @@ namespace Luna.Runtime;
 
 public interface IInterpreter
 {
-    void Run(Project project, IRuntimeOutput output);
+    void Run(IProject project, IRuntimeOutput output);
 }
 
 public class Interpreter : IInterpreter
 {
     internal IRuntimeValue? Result { get; private set; }
 
-    public void Run(Project project, IRuntimeOutput output)
+    public void Run(IProject project, IRuntimeOutput output)
     {
         var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
         var outputWriter = new OutputWriter(output);

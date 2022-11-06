@@ -7,7 +7,7 @@ namespace Luna.IDE.ProjectExploration;
 
 public interface ISelectedProject
 {
-    Project? Project { get; }
+    IProject? Project { get; }
 }
 
 public interface IProjectLoader : ISelectedProject
@@ -22,7 +22,7 @@ public class ProjectLoader : IProjectLoader
     private readonly IOutputArea _outputArea;
     private readonly IFileSystem _fileSystem;
 
-    public Project? Project { get; private set; }
+    public IProject? Project { get; private set; }
 
     public event EventHandler? ProjectOpened;
 
@@ -35,7 +35,7 @@ public class ProjectLoader : IProjectLoader
 
     public void OpenProject(string path)
     {
-        Project = Project.Open(path, _fileSystem);
+        Project = Luna.ProjectModel.Project.Open(path, _fileSystem);
         _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
         _outputArea.Clear();
         ProjectOpened?.Invoke(this, EventArgs.Empty);

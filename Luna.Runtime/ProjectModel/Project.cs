@@ -4,7 +4,14 @@ using Luna.Infrastructure;
 
 namespace Luna.ProjectModel;
 
-public class Project
+public interface IProject
+{
+    DirectoryProjectItem Root { get; }
+    void AddItem(DirectoryProjectItem parent, ProjectItem item);
+    ProjectItem? FindItemByPath(string fullOrRelativePath);
+}
+
+public class Project : IProject
 {
     public static Project Open(string fullPath, IFileSystem fileSystem) => new(fullPath, fileSystem);
 

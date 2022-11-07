@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:controls="clr-namespace:Luna.IDE.App.Controls.Tree"
+             xmlns:controls="clr-namespace:Luna.IDE.App.Controls"
+             xmlns:tree="clr-namespace:Luna.IDE.App.Controls.Tree"
              xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -62,7 +63,9 @@
                     TextWrapping="Wrap"
                     VerticalAlignment="Top"
                     MinHeight="36"
-                    Margin="4,23,4,4" />
+                    Margin="4,23,4,4"
+                    controls:TextboxExtensions.Placeholder="type a comment"
+                    controls:TextboxExtensions.PlaceholderForeground="{StaticResource InnactiveForegroundBrush}" />
             </Grid>
             <Grid Grid.Row="1">
                 <!-- empty message -->
@@ -73,7 +76,7 @@
                     Margin="0,8,0,0"
                     Visibility="{Binding Visibility, ElementName=includedTree, Converter={StaticResource InverseVisibilityConverter}}" />
                 <!-- includedTree -->
-                <controls:TreeView
+                <tree:TreeView
                     x:Name="includedTree"
                     Style="{StaticResource TreeViewStyle}"
                     Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
@@ -84,15 +87,15 @@
                     Visibility="{Binding DataContext.Model.Included.HasChildren, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
-                    <controls:TreeView.ContextMenu>
+                    <tree:TreeView.ContextMenu>
                         <ContextMenu Style="{StaticResource ContextMenuStyle}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <MenuItem Header="Exclude from commit" Command="{Binding DataContext.ExcludeFromCommitCommand}" />
                             <MenuItem Header="Undo changes" Command="{Binding DataContext.UndoChangesCommand}" />
                             <Separator />
                             <MenuItem Header="Compare changes" Command="{Binding DataContext.VersionedFilesChangesCommand}" CommandParameter="{Binding DataContext.Model.SelectedIncludedVersionedFiles}" />
                         </ContextMenu>
-                    </controls:TreeView.ContextMenu>
-                </controls:TreeView>
+                    </tree:TreeView.ContextMenu>
+                </tree:TreeView>
             </Grid>
             <Grid Grid.Row="2">
                 <!-- empty message -->
@@ -103,7 +106,7 @@
                     Margin="0,8,0,0"
                     Visibility="{Binding Visibility, ElementName=excludedTree, Converter={StaticResource InverseVisibilityConverter}}" />
                 <!-- excludedTree -->
-                <controls:TreeView
+                <tree:TreeView
                     x:Name="excludedTree"
                     Style="{StaticResource TreeViewStyle}"
                     Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
@@ -114,15 +117,15 @@
                     Visibility="{Binding DataContext.Model.Excluded.HasChildren, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     ImageCollection="{Binding DataContext.ImageCollection, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
-                    <controls:TreeView.ContextMenu>
+                    <tree:TreeView.ContextMenu>
                         <ContextMenu Style="{StaticResource ContextMenuStyle}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <MenuItem Header="Include to commit" Command="{Binding DataContext.IncludeToCommitCommand}" />
                             <MenuItem Header="Undo changes" Command="{Binding DataContext.UndoChangesCommand}" />
                             <Separator />
                             <MenuItem Header="Compare changes" Command="{Binding DataContext.VersionedFilesChangesCommand}" CommandParameter="{Binding DataContext.Model.SelectedExcludedVersionedFiles}" />
                         </ContextMenu>
-                    </controls:TreeView.ContextMenu>
-                </controls:TreeView>
+                    </tree:TreeView.ContextMenu>
+                </tree:TreeView>
             </Grid>
             <GridSplitter Grid.Row="2" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="4" />
         </Grid>

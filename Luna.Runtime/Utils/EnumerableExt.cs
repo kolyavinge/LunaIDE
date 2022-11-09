@@ -4,6 +4,18 @@ namespace Luna.Utils;
 
 public static class EnumerableExt
 {
+    public static int FindIndex<T>(this IEnumerable<T> collection, Func<T, bool> action)
+    {
+        int i = 0;
+        foreach (var item in collection)
+        {
+            if (action(item)) return i;
+            i++;
+        }
+
+        return -1;
+    }
+
     public static void Each<T>(this IEnumerable<T> collection, Action<T> action)
     {
         foreach (var item in collection)

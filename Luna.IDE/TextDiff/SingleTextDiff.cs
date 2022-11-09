@@ -1,39 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Threading.Tasks;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
-using CodeHighlighter.Rendering;
-using DiffTool.Core;
 using DiffTool.Visualization;
 using Luna.IDE.Common;
-using Luna.IDE.Utils;
 using Luna.ProjectModel;
+using Luna.Utils;
 
 namespace Luna.IDE.TextDiff;
 
-public interface ISingleTextDiff
-{
-    CodeTextBoxModel? DiffCodeTextBoxModel { get; }
-    bool InProgress { get; }
-    Task MakeDiff(string fileExtension, string? oldFileText, string newFileText);
-    Task MakeDiff(string? oldFileText, TextFileProjectItem newFile);
-}
-
 public class SingleTextDiff : NotificationObject, ISingleTextDiff
 {
-    public static readonly SolidColorBrush BrushAdd = new(ColorUtils.FromHex("325a28"));
-    public static readonly SolidColorBrush BrushRemove = new(ColorUtils.FromHex("5a2828"));
-
     private readonly ITextDiffEngine _textDiffEngine;
     private readonly ITextDiffCodeProviderFactory _textDiffCodeProviderFactory;
-    private CodeTextBoxModel? _diffCodeTextBoxModel;
+    private readonly ILinesDecorationProcessor _linesDecorationProcessor;
+    private readonly ILineNumberProcessor _lineNumberProcessor;
+    private CodeTextBoxModel _diffCodeTextBox;
+    private int _oldTextLinesCount;
+    private int _newTextLinesCount;
     private bool _inProgress;
 
-    public CodeTextBoxModel? DiffCodeTextBoxModel
+    public CodeTextBoxModel DiffCodeTextBox
     {
-        get => _diffCodeTextBoxModel;
-        private set { _diffCodeTextBoxModel = value; RaisePropertyChanged(() => DiffCodeTextBoxModel!); }
+        get => _diffCodeTextBox;
+        private set { _diffCodeTextBox = value; RaisePropertyChanged(() => DiffCodeTextBox!); }
+    }
+
+    public LineNumberPanelModel OldLineNumberPanel { get; }
+
+    public LineNumberPanelModel NewLineNumberPanel { get; }
+
+    public int OldTextLinesCount
+    {
+        get => _oldTextLinesCount;
+        private set { _oldTextLinesCount = value; RaisePropertyChanged(() => OldTextLinesCount!); }
+    }
+
+    public int NewTextLinesCount
+    {
+        get => _newTextLinesCount;
+        private set { _newTextLinesCount = value; RaisePropertyChanged(() => NewTextLinesCount!); }
     }
 
     public bool InProgress
@@ -42,10 +47,19 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         set { _inProgress = value; RaisePropertyChanged(() => InProgress); }
     }
 
-    public SingleTextDiff(ITextDiffEngine textDiffEngine, ITextDiffCodeProviderFactory textDiffCodeProviderFactory)
+    public SingleTextDiff(
+        ITextDiffEngine textDiffEngine,
+        ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
+        ILinesDecorationProcessor linesDecorationProcessor,
+        ILineNumberProcessor lineNumberProcessor)
     {
         _textDiffEngine = textDiffEngine;
         _textDiffCodeProviderFactory = textDiffCodeProviderFactory;
+        _linesDecorationProcessor = linesDecorationProcessor;
+        _lineNumberProcessor = lineNumberProcessor;
+        _diffCodeTextBox = new CodeTextBoxModel();
+        OldLineNumberPanel = new LineNumberPanelModel();
+        NewLineNumberPanel = new LineNumberPanelModel();
     }
 
     public async Task MakeDiff(string fileExtension, string? oldFileText, string newFileText)
@@ -53,7 +67,8 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         InProgress = true;
         var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFileText);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
-        InitDiffCodeTextBoxModel(codeProvider, diffResult, oldFileText != null);
+        InitDiffCodeTextBoxModel(codeProvider, diffResult.VisualizerResult, oldFileText != null);
+        InitNumberPanels(diffResult);
         InProgress = false;
     }
 
@@ -62,44 +77,32 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         InProgress = true;
         var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFile.GetText());
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
-        InitDiffCodeTextBoxModel(codeProvider, diffResult, oldFileText != null);
+        InitDiffCodeTextBoxModel(codeProvider, diffResult.VisualizerResult, oldFileText != null);
+        InitNumberPanels(diffResult);
         InProgress = false;
     }
 
     private void InitDiffCodeTextBoxModel(ICodeProvider codeProvider, SingleTextVisualizerResult diffResult, bool hasOldFileText)
     {
-        DiffCodeTextBoxModel = new CodeTextBoxModel(codeProvider, new() { HighlighteredBrackets = "()" });
-        DiffCodeTextBoxModel.IsReadOnly = false;
-        DiffCodeTextBoxModel.SetText(diffResult.Text);
-        DiffCodeTextBoxModel.IsReadOnly = true;
-        DiffCodeTextBoxModel.LinesDecoration.Clear();
+        DiffCodeTextBox = new CodeTextBoxModel(codeProvider, new() { HighlighteredBrackets = "()" });
+        DiffCodeTextBox.IsReadOnly = false;
+        DiffCodeTextBox.SetText(diffResult.Text);
+        DiffCodeTextBox.IsReadOnly = true;
+        var firstChangeLineIndex = diffResult.LinesDiff.FindIndex(x => x.DiffKind != DiffTool.Core.DiffKind.Same);
+        DiffCodeTextBox.GotoLine(firstChangeLineIndex != -1 ? firstChangeLineIndex : 0);
+        DiffCodeTextBox.LinesDecoration.Clear();
         if (hasOldFileText)
         {
-            SetLineColors(diffResult.LinesDiff, DiffCodeTextBoxModel.LinesDecoration);
+            _linesDecorationProcessor.SetLineColors(diffResult.LinesDiff, DiffCodeTextBox.LinesDecoration);
         }
     }
 
-    private void SetLineColors(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, LinesDecorationCollection linesDecoration)
+    private void InitNumberPanels(SingleTextDiffResult diffResult)
     {
-        for (int i = 0; i < linesDiff.Count; i++)
-        {
-            var lineDiff = linesDiff[i];
-            if (lineDiff.DiffKind == DiffKind.Add)
-            {
-                linesDecoration[i] = new() { Background = BrushAdd };
-            }
-            else if (lineDiff.DiffKind == DiffKind.Remove)
-            {
-                linesDecoration[i] = new() { Background = BrushRemove };
-            }
-            else if (lineDiff.DiffKind == DiffKind.Change && lineDiff.TextKind == TextKind.Old)
-            {
-                linesDecoration[i] = new() { Background = BrushRemove };
-            }
-            else if (lineDiff.DiffKind == DiffKind.Change && lineDiff.TextKind == TextKind.New)
-            {
-                linesDecoration[i] = new() { Background = BrushAdd };
-            }
-        }
+        OldLineNumberPanel.Gaps.Clear();
+        NewLineNumberPanel.Gaps.Clear();
+        OldTextLinesCount = diffResult.OldTextLinesCount;
+        NewTextLinesCount = diffResult.NewTextLinesCount;
+        _lineNumberProcessor.SetLineGaps(diffResult.VisualizerResult.LinesDiff, OldLineNumberPanel.Gaps, NewLineNumberPanel.Gaps);
     }
 }

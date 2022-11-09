@@ -48,6 +48,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();
         provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
         provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
+        provider.Bind<ILinesDecorationProcessor, LinesDecorationProcessor>();
+        provider.Bind<ILineNumberProcessor, SingleTextDiffLineNumberProcessor>();
         provider.Bind<ISingleTextDiff, SingleTextDiff>();
         provider.Bind<SingleTextDiffViewModel, SingleTextDiffViewModel>();
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();

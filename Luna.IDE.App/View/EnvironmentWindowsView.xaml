@@ -36,7 +36,7 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl Content="{Binding View}" />
+                    <ContentControl Content="{Binding View.Content}" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

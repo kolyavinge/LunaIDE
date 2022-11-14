@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.WindowsManagement;
 
@@ -57,13 +58,14 @@ public class EnvironmentWindowsFactory : IEnvironmentWindowsFactory
         return viewModel;
     }
 
-    private object MakeView(IEnumerable<Type> types, Type modelType, object viewModel)
+    private IEnvironmentWindowView MakeView(IEnumerable<Type> types, Type modelType, object viewModel)
     {
         var viewType = types.FirstOrDefault(type =>
             type.GetCustomAttribute<EnvironmentWindowForAttribute>()?.ModelType == modelType &&
             type.GetConstructor(new[] { viewModel.GetType() }) != null) ?? throw new EnvironmentWindowsFactoryException();
 
-        var view = Activator.CreateInstance(viewType, viewModel) ?? throw new EnvironmentWindowsFactoryException();
+        var fe = Activator.CreateInstance(viewType, viewModel) as FrameworkElement ?? throw new EnvironmentWindowsFactoryException();
+        var view = new EnvironmentWindowView(fe);
 
         return view;
     }

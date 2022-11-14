@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Luna.IDE.WindowsManagement;
+﻿namespace Luna.IDE.WindowsManagement;
 
 public class EnvironmentWindow
 {
@@ -8,21 +6,18 @@ public class EnvironmentWindow
 
     public IEnvironmentWindowModel Model { get; }
 
-    public object View { get; }
+    public IEnvironmentWindowView View { get; }
 
     public bool IsLoaded { get; private set; }
 
     public event EventHandler? Loaded;
 
-    public EnvironmentWindow(object id, IEnvironmentWindowModel model, object view)
+    public EnvironmentWindow(object id, IEnvironmentWindowModel model, IEnvironmentWindowView view)
     {
         Id = id;
         Model = model;
         View = view;
-        if (View is FrameworkElement fe)
-        {
-            fe.Loaded += (s, e) => { IsLoaded = true; Loaded?.Invoke(this, EventArgs.Empty); };
-            fe.Unloaded += (s, e) => { IsLoaded = false; };
-        }
+        view.Loaded += (s, e) => { IsLoaded = true; Loaded?.Invoke(this, EventArgs.Empty); };
+        view.Unloaded += (s, e) => { IsLoaded = false; };
     }
 }

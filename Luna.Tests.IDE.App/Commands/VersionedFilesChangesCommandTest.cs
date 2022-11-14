@@ -20,7 +20,7 @@ internal class VersionedFilesChangesCommandTest
     private Mock<IEnvironmentWindowsFactory> _environmentWindowsFactory;
     private Mock<IProjectItemChanges> _projectItemChanges;
     private Mock<IEnvironmentWindowModel> _windowModel;
-    private object _view;
+    private Mock<IEnvironmentWindowView> _view;
     private VersionedFilesChangesCommand _command;
 
     [SetUp]
@@ -34,7 +34,7 @@ internal class VersionedFilesChangesCommandTest
         _environmentWindowsFactory = new Mock<IEnvironmentWindowsFactory>();
         _projectItemChanges = new Mock<IProjectItemChanges>();
         _windowModel = _projectItemChanges.As<IEnvironmentWindowModel>();
-        _view = new object();
+        _view = new Mock<IEnvironmentWindowView>();
         _command = new VersionedFilesChangesCommand(_selectedProject.Object, _windowsManager.Object, _environmentWindowsFactory.Object);
     }
 
@@ -50,14 +50,14 @@ internal class VersionedFilesChangesCommandTest
             new(_versionControlRepository.Object, versionedRepositoryFile)
         };
         _windowsManager.Setup(x => x.FindWindowById("Changes_path")).Returns((EnvironmentWindow)null);
-        _environmentWindowsFactory.Setup(x => x.MakeWindowFor(typeof(ProjectItemChanges))).Returns(new EnvironmentWindowComponents(_windowModel.Object, _view));
-        var environmentWindow = new EnvironmentWindow("Changes_path", _windowModel.Object, _view);
-        _windowsManager.Setup(x => x.OpenWindow("Changes_path", _windowModel.Object, _view)).Returns(environmentWindow);
+        _environmentWindowsFactory.Setup(x => x.MakeWindowFor(typeof(ProjectItemChanges))).Returns(new EnvironmentWindowComponents(_windowModel.Object, _view.Object));
+        var environmentWindow = new EnvironmentWindow("Changes_path", _windowModel.Object, _view.Object);
+        _windowsManager.Setup(x => x.OpenWindow("Changes_path", _windowModel.Object, _view.Object)).Returns(environmentWindow);
 
         _command.Execute(versionedFiles);
 
         _projectItemChanges.Verify(x => x.MakeDiff("old text", codeFile), Times.Once());
-        _windowsManager.Verify(x => x.OpenWindow("Changes_path", _windowModel.Object, _view), Times.Once());
+        _windowsManager.Verify(x => x.OpenWindow("Changes_path", _windowModel.Object, _view.Object), Times.Once());
         _windowsManager.Verify(x => x.ActivateWindow(environmentWindow), Times.Once());
     }
 }

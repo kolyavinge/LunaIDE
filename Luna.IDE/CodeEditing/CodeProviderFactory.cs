@@ -14,7 +14,7 @@ public class CodeProviderFactory : ICodeProviderFactory
     {
         if (projectItem is CodeFileProjectItem codeFileProjectItem)
         {
-            return new LunaCodeProvider(new CodeProviderScope(codeFileProjectItem.CodeModel));
+            return new LunaCodeProvider(new CodeProviderScope(codeFileProjectItem));
         }
 
         throw new ArgumentException($"CodeProvider for {projectItem.GetType()} isn't exist.");

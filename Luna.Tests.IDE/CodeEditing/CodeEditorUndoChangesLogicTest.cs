@@ -15,6 +15,7 @@ internal class CodeEditorUndoChangesLogicTest
     private Mock<ICodeFileEditor> _codeFileEditor;
     private Mock<IEnvironmentWindowsManager> _windowsManager;
     private Mock<ICodeModelUpdater> _codeModelUpdater;
+    private Mock<IEnvironmentWindowView> _view;
     private CodeEditorUndoChangesLogic _undoChangesLogic;
 
     [SetUp]
@@ -25,6 +26,7 @@ internal class CodeEditorUndoChangesLogicTest
         _codeFileEditor = _environmentWindowModel.As<ICodeFileEditor>();
         _windowsManager = new Mock<IEnvironmentWindowsManager>();
         _codeModelUpdater = new Mock<ICodeModelUpdater>();
+        _view = new Mock<IEnvironmentWindowView>();
         _undoChangesLogic = new CodeEditorUndoChangesLogic(_codeModelUpdater.Object, _windowsManager.Object);
     }
 
@@ -32,7 +34,7 @@ internal class CodeEditorUndoChangesLogicTest
     public void AddedFile_CloseEditor()
     {
         _codeFileEditor.SetupGet(x => x.ProjectItem).Returns(new CodeFileProjectItem("c:\\file", null, null));
-        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, new object()) });
+        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, _view.Object) });
         var files = new VersionedFile[] { new(_versionControlRepository.Object, new(1, "c:\\file", "file", 1, FileActionKind.Add)) };
 
         _undoChangesLogic.UndoTextChanges(files);
@@ -45,7 +47,7 @@ internal class CodeEditorUndoChangesLogicTest
     public void ReplacedFile_CloseEditor()
     {
         _codeFileEditor.SetupGet(x => x.ProjectItem).Returns(new CodeFileProjectItem("c:\\file", null, null));
-        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, new object()) });
+        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, _view.Object) });
         var files = new VersionedFile[] { new(_versionControlRepository.Object, new(1, "c:\\file", "file", 1, FileActionKind.Replace)) };
 
         _undoChangesLogic.UndoTextChanges(files);
@@ -58,7 +60,7 @@ internal class CodeEditorUndoChangesLogicTest
     public void ModifiedAndReplacedFile_CloseEditor()
     {
         _codeFileEditor.SetupGet(x => x.ProjectItem).Returns(new CodeFileProjectItem("c:\\file", null, null));
-        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, new object()) });
+        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, _view.Object) });
         var files = new VersionedFile[] { new(_versionControlRepository.Object, new(1, "c:\\file", "file", 1, FileActionKind.ModifyAndReplace)) };
 
         _undoChangesLogic.UndoTextChanges(files);
@@ -71,7 +73,7 @@ internal class CodeEditorUndoChangesLogicTest
     public void ModifiedFile_UndoTextChanges()
     {
         _codeFileEditor.SetupGet(x => x.ProjectItem).Returns(new CodeFileProjectItem("c:\\file", null, null));
-        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, new object()) });
+        _windowsManager.Setup(x => x.Windows).Returns(new[] { new EnvironmentWindow("editor", _environmentWindowModel.Object, _view.Object) });
         var files = new VersionedFile[] { new(_versionControlRepository.Object, new(1, "c:\\file", "file", 1, FileActionKind.Modify)) };
 
         _undoChangesLogic.UndoTextChanges(files);

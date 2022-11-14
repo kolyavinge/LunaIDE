@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
@@ -64,13 +65,14 @@ public class ProjectItemEditorFactory : IProjectItemEditorFactory
         return viewModel;
     }
 
-    private object MakeView(IEnumerable<Type> types, ProjectItem projectItem, object viewModel)
+    private IEnvironmentWindowView MakeView(IEnumerable<Type> types, ProjectItem projectItem, object viewModel)
     {
         var viewType = types.FirstOrDefault(type =>
             type.GetCustomAttribute<EditorForAttribute>()?.ProjectItemType == projectItem.GetType() &&
             type.GetConstructor(new[] { viewModel.GetType() }) != null) ?? throw new ProjectItemEditorFactoryException();
 
-        var view = Activator.CreateInstance(viewType, viewModel) ?? throw new ProjectItemEditorFactoryException();
+        var fe = Activator.CreateInstance(viewType, viewModel) as FrameworkElement ?? throw new EnvironmentWindowsFactoryException();
+        var view = new EnvironmentWindowView(fe);
 
         return view;
     }

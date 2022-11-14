@@ -14,6 +14,7 @@ public class ProjectItemOpenCommandTest
     private Mock<IFileSystem> _fileSystem;
     private Mock<IEnvironmentWindowsManager> _windowsManager;
     private Mock<IProjectItemEditorFactory> _editorFactory;
+    private Mock<IEnvironmentWindowView> _view;
     private ProjectItemOpenCommand _command;
 
     [SetUp]
@@ -22,6 +23,7 @@ public class ProjectItemOpenCommandTest
         _fileSystem = new Mock<IFileSystem>();
         _windowsManager = new Mock<IEnvironmentWindowsManager>();
         _editorFactory = new Mock<IProjectItemEditorFactory>();
+        _view = new Mock<IEnvironmentWindowView>();
         _command = new ProjectItemOpenCommand(_windowsManager.Object, _editorFactory.Object);
     }
 
@@ -35,7 +37,7 @@ public class ProjectItemOpenCommandTest
     public void OneCodeFile()
     {
         var item = new CodeFileProjectItem("", null, _fileSystem.Object);
-        var components = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, new object());
+        var components = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, _view.Object);
         _editorFactory.Setup(x => x.MakeEditorFor(item)).Returns(components);
         _windowsManager.Setup(x => x.FindWindowById(item)).Returns((EnvironmentWindow)null);
         var environmentWindow = new EnvironmentWindow(item, components.Model, components.View);
@@ -53,14 +55,14 @@ public class ProjectItemOpenCommandTest
     public void TwoCodeFiles_FirstActivated()
     {
         var item1 = new CodeFileProjectItem("", null, _fileSystem.Object);
-        var components1 = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, new object());
+        var components1 = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, _view.Object);
         _editorFactory.Setup(x => x.MakeEditorFor(item1)).Returns(components1);
         _windowsManager.Setup(x => x.FindWindowById(item1)).Returns((EnvironmentWindow)null);
         var environmentWindow1 = new EnvironmentWindow(item1, components1.Model, components1.View);
         _windowsManager.Setup(x => x.OpenWindow(item1, components1.Model, components1.View)).Returns(environmentWindow1);
 
         var item2 = new CodeFileProjectItem("", null, _fileSystem.Object);
-        var components2 = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, new object());
+        var components2 = new EnvironmentWindowComponents(new Mock<IEnvironmentWindowModel>().Object, _view.Object);
         _editorFactory.Setup(x => x.MakeEditorFor(item2)).Returns(components2);
         _windowsManager.Setup(x => x.FindWindowById(item2)).Returns((EnvironmentWindow)null);
         var environmentWindow2 = new EnvironmentWindow(item2, components2.Model, components2.View);

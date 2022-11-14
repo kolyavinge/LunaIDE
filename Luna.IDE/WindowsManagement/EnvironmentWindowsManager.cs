@@ -11,7 +11,7 @@ public interface IEnvironmentWindowsManager
     IReadOnlyCollection<EnvironmentWindow> Windows { get; }
     EnvironmentWindow? SelectedWindow { get; }
     EnvironmentWindow? FindWindowById(object id);
-    EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, object view);
+    EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, IEnvironmentWindowView view);
     void ActivateWindow(EnvironmentWindow window);
     void CloseWindow(EnvironmentWindow window);
     void CloseAllWindows();
@@ -39,7 +39,7 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
         return Windows.FirstOrDefault(x => x.Id.Equals(id));
     }
 
-    public EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, object view)
+    public EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, IEnvironmentWindowView view)
     {
         var window = new EnvironmentWindow(id, model, view);
         _windows.Add(window);

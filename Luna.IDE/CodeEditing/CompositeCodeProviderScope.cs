@@ -11,6 +11,7 @@ public class CompositeCodeProviderScope : ICodeProviderScope
 
     public CompositeCodeProviderScope(IReadOnlyCollection<CodeModel> codeModels)
     {
+        // модели без CodeFileProjectItem, если они обновятся, тут останутся старые экземпляры
         _codeModels = codeModels;
         _scope = new CodeModelScope();
     }

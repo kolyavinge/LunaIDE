@@ -19,6 +19,7 @@ internal class RunProgramCommandTest
     private Mock<ISelectedProject> _selectedProject;
     private Mock<IEnvironmentWindowsManager> _windowsManager;
     private Mock<IOutputArea> _outputArea;
+    private Mock<IEnvironmentWindowView> _view;
     private RunProgramCommand _command;
 
     [SetUp]
@@ -32,6 +33,7 @@ internal class RunProgramCommandTest
         _windowsManager = new Mock<IEnvironmentWindowsManager>();
         _windowsManager.SetupGet(x => x.Windows).Returns(new List<EnvironmentWindow>());
         _outputArea = new Mock<IOutputArea>();
+        _view = new Mock<IEnvironmentWindowView>();
         _command = new RunProgramCommand(_interpreter.Object, _selectedProject.Object, _windowsManager.Object, _outputArea.Object);
     }
 
@@ -61,9 +63,9 @@ internal class RunProgramCommandTest
         var saveable3 = model3.As<ISaveableEnvironmentWindow>();
         var windows = new List<EnvironmentWindow>
         {
-            new("1", model1.Object, new object()),
-            new("1", model2.Object, new object()),
-            new("1", model3.Object, new object())
+            new("1", model1.Object, _view.Object),
+            new("1", model2.Object, _view.Object),
+            new("1", model3.Object, _view.Object)
         };
         _windowsManager.SetupGet(x => x.Windows).Returns(windows);
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 using Luna.IDE.App.Factories;
 using Luna.IDE.App.Mvvm;

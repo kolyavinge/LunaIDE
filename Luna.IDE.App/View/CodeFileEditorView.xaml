@@ -7,6 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:view="clr-namespace:Luna.IDE.App.View"
              xmlns:converters="clr-namespace:Luna.IDE.App.Converters"
+             xmlns:controls="clr-namespace:Luna.IDE.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -58,8 +59,7 @@
                 <highlighter:CodeTextBox
                     x:Name="codeTextBox"
                     Model="{Binding Model.CodeTextBoxModel}"
-                    Style="{StaticResource CodeEditorStyle}"
-                    MouseWheel="VerticalScrollBarOnMouseWheel">
+                    Style="{StaticResource CodeEditorStyle}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
@@ -85,9 +85,8 @@
             </Grid>
         </Grid>
 
-        <ScrollBar
+        <controls:ScrollBarExt
             Grid.Row="0"
-            x:Name="verticalScrollBar"
             Style="{StaticResource VerticalLineScrollBarStyle}"
             Orientation="Vertical"
             Maximum="{Binding VerticalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
@@ -95,20 +94,14 @@
             ViewportSize="{Binding ViewportHeight, ElementName=codeTextBox, Mode=TwoWay}"
             Width="22"
             Margin="0,0,-2,0"
-            HorizontalAlignment="Right"
-            Cursor="Arrow"
-            Scroll="ScrollBarOnScroll"
-            MouseWheel="VerticalScrollBarOnMouseWheel" />
+            HorizontalAlignment="Right" />
 
-        <ScrollBar
+        <controls:ScrollBarExt
             Grid.Row="1"
-            x:Name="horizontalScrollBar"
             Style="{StaticResource HorizontalLineScrollBarStyle}"
             Orientation="Horizontal"
             Maximum="{Binding HorizontalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
-            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}"
-            Cursor="Arrow"
-            Scroll="ScrollBarOnScroll" />
+            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}" />
     </Grid>
 </UserControl>

@@ -15,15 +15,15 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     }
 
     [Test]
-    public void ScopePushPopFunctionArguments()
+    public void ScopePushPopFunction()
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         var argument = new IntegerRuntimeValue(123);
         var arguments = new IRuntimeValue[] { argument };
         Eval("func", arguments);
         _scope.Verify(x => x.AddFunctionArgument("x", argument), Times.Once());
-        _scope.Verify(x => x.PushFunctionArguments(), Times.Once());
-        _scope.Verify(x => x.PopFunctionArguments(), Times.Once());
+        _scope.Verify(x => x.PushCallStack(_function), Times.Once());
+        _scope.Verify(x => x.PopCallStack(), Times.Once());
     }
 
     [Test]

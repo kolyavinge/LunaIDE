@@ -18,6 +18,8 @@ internal class RuntimeScopeTest
     private Mock<IEmbeddedFunctionsCollection> _embeddedFunctions;
     private List<FunctionDeclaration> _declaredFunctions;
     private List<ConstantDeclaration> _constantDeclarations;
+    private Mock<IFunctionRuntimeValue> _func;
+    private Stack<IFunctionRuntimeValue> _callStack;
     private RuntimeScope _scope;
 
     [SetUp]
@@ -28,11 +30,13 @@ internal class RuntimeScopeTest
         _embeddedFunctions = new Mock<IEmbeddedFunctionsCollection>();
         _declaredFunctions = new List<FunctionDeclaration>();
         _constantDeclarations = new List<ConstantDeclaration>();
+        _func = new Mock<IFunctionRuntimeValue>();
+        _callStack = new Stack<IFunctionRuntimeValue>();
     }
 
     private void MakeScope()
     {
-        _scope = new RuntimeScope(_evaluator.Object, _embeddedFunctions.Object, _declaredFunctions, _constantDeclarations);
+        _scope = new RuntimeScope(_evaluator.Object, _embeddedFunctions.Object, _declaredFunctions, _constantDeclarations, _callStack);
     }
 
     [Test]
@@ -62,12 +66,14 @@ internal class RuntimeScopeTest
     public void GetFunctionArgumentValue()
     {
         MakeScope();
+
+        _scope.PushCallStack(_func.Object);
         _scope.AddFunctionArgument("x", new IntegerRuntimeValue(123));
-        _scope.PushFunctionArguments();
+        _scope.PushCallStack(_func.Object);
         _scope.AddFunctionArgument("x", new StringRuntimeValue("123"));
 
         Assert.AreEqual(new StringRuntimeValue("123"), _scope.GetFunctionArgumentValue("x"));
-        _scope.PopFunctionArguments();
+        _scope.PopCallStack();
         Assert.AreEqual(new IntegerRuntimeValue(123), _scope.GetFunctionArgumentValue("x"));
     }
 
@@ -90,11 +96,31 @@ internal class RuntimeScopeTest
         importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("import_func_1", Enumerable.Empty<FunctionArgument>(), new FunctionBody()));
         codeModel.AddImportDirective(new ImportDirective("importFile", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = importCodeModel }));
 
-        var result = RuntimeScope.FromCodeModel(codeModel, _evaluator.Object, _embeddedFunctions.Object);
+        var result = RuntimeScope.FromCodeModel(codeModel, _evaluator.Object, _embeddedFunctions.Object, _callStack);
 
         Assert.AreEqual(typeof(BooleanValueElement), result.GetConstantValue("const_1").GetType());
         Assert.AreEqual(typeof(IntegerValueElement), result.GetConstantValue("import_const_1").GetType());
         Assert.True(result.IsDeclaredOrEmbeddedFunction("func_1"));
         Assert.True(result.IsDeclaredOrEmbeddedFunction("import_func_1"));
+    }
+
+    [Test]
+    public void CallStack()
+    {
+        MakeScope();
+
+        Assert.That(_callStack.Count(), Is.EqualTo(0));
+
+        _scope.PushCallStack(new FunctionRuntimeValue("func1", _scope));
+        Assert.That(_callStack.First().Name, Is.EqualTo("func1"));
+
+        _scope.PushCallStack(new FunctionRuntimeValue("func2", _scope));
+        Assert.That(_callStack.First().Name, Is.EqualTo("func2"));
+
+        _scope.PopCallStack();
+        Assert.That(_callStack.First().Name, Is.EqualTo("func1"));
+
+        _scope.PopCallStack();
+        Assert.That(_callStack.Count(), Is.EqualTo(0));
     }
 }

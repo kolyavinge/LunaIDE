@@ -4,7 +4,12 @@ using Luna.Utils;
 
 namespace Luna.Runtime;
 
-internal class FunctionRuntimeValue : RuntimeValue
+internal interface IFunctionRuntimeValue
+{
+    string Name { get; }
+}
+
+internal class FunctionRuntimeValue : RuntimeValue, IFunctionRuntimeValue
 {
     private readonly IRuntimeScope _scope;
 
@@ -20,13 +25,13 @@ internal class FunctionRuntimeValue : RuntimeValue
 
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue>? argumentValues = null)
     {
+        _scope.PushCallStack(this);
         argumentValues ??= new ReadonlyArray<IRuntimeValue>();
         if (AlreadyPassedArguments != null)
         {
             argumentValues = AlreadyPassedArguments.Concat(argumentValues).ToReadonlyArray();
         }
         var argumentNames = _scope.GetFunctionArgumentNames(Name);
-        _scope.PushFunctionArguments();
         Enumerable.Range(0, Math.Min(argumentNames.Length, argumentValues.Count)).Each(i => _scope.AddFunctionArgument(argumentNames[i], argumentValues[i]));
         IRuntimeValue result;
         if (argumentValues.Count < argumentNames.Length)
@@ -41,7 +46,6 @@ internal class FunctionRuntimeValue : RuntimeValue
         {
             result = _scope.GetDeclaredFunctionValue(Name);
         }
-        _scope.PopFunctionArguments();
         if (argumentValues.Count - argumentNames.Length > 0)
         {
             if (result is FunctionRuntimeValue resultFunction)
@@ -50,6 +54,7 @@ internal class FunctionRuntimeValue : RuntimeValue
             }
             else throw RuntimeException.ToManyArguments(Name);
         }
+        _scope.PopCallStack();
 
         return result;
     }

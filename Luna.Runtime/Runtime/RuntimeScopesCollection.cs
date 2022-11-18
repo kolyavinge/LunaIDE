@@ -11,13 +11,14 @@ internal interface IRuntimeScopesCollection
 
 internal class RuntimeScopesCollection : IRuntimeScopesCollection
 {
-    public static RuntimeScopesCollection BuildForCodeModels(IEnumerable<CodeModel> codeModels, IValueElementEvaluator evaluator)
+    public static RuntimeScopesCollection BuildForCodeModels(
+        IEnumerable<CodeModel> codeModels, IValueElementEvaluator evaluator, Stack<IFunctionRuntimeValue> callStack)
     {
         var scopes = new RuntimeScopesCollection();
         var embeddedFunctions = new EmbeddedFunctionsCollection();
         foreach (var codeModel in codeModels)
         {
-            var scope = RuntimeScope.FromCodeModel(codeModel, evaluator, embeddedFunctions);
+            var scope = RuntimeScope.FromCodeModel(codeModel, evaluator, embeddedFunctions, callStack);
             scopes.Add(codeModel, scope);
         }
 

@@ -7,11 +7,12 @@ namespace Luna.Tests.Tools;
 
 internal class BaseFunctionRuntimeValueTest
 {
+    protected FunctionRuntimeValue _function;
     protected Mock<IRuntimeScope> _scope;
 
     protected IRuntimeValue Eval(string funcName, IEnumerable<IRuntimeValue> arguments, ReadonlyArray<IRuntimeValue> alreadyPassedArguments = null)
     {
-        var funcValue = new FunctionRuntimeValue(funcName, _scope.Object) { AlreadyPassedArguments = alreadyPassedArguments };
-        return funcValue.GetValue(new ReadonlyArray<IRuntimeValue>(arguments));
+        _function = new FunctionRuntimeValue(funcName, _scope.Object) { AlreadyPassedArguments = alreadyPassedArguments };
+        return _function.GetValue(new ReadonlyArray<IRuntimeValue>(arguments));
     }
 }

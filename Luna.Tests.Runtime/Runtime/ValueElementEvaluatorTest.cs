@@ -101,8 +101,8 @@ internal class ValueElementEvaluatorTest
         Assert.AreEqual(1, result.AlreadyPassedArguments.Count);
         Assert.AreEqual(new IntegerRuntimeValue(123), result.AlreadyPassedArguments[0]);
         _scope.Verify(x => x.AddLambda(lambda), Times.Once());
-        _scope.Verify(x => x.PushFunctionArguments(), Times.Never());
-        _scope.Verify(x => x.PopFunctionArguments(), Times.Never());
+        _scope.Verify(x => x.PushCallStack(It.IsAny<IFunctionRuntimeValue>()), Times.Never());
+        _scope.Verify(x => x.PopCallStack(), Times.Never());
     }
 
     [Test]

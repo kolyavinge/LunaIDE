@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Luna.Output;
 using Luna.ProjectModel;
 
@@ -11,7 +12,14 @@ public interface IInterpreter
 
 public class Interpreter : IInterpreter
 {
+    private readonly ValueElementEvaluator _evaluator;
+
     internal IRuntimeValue? Result { get; private set; }
+
+    public Interpreter()
+    {
+        _evaluator = new ValueElementEvaluator();
+    }
 
     public void Run(IProject project, IRuntimeOutput output)
     {
@@ -21,12 +29,34 @@ public class Interpreter : IInterpreter
         var builderResult = codeModelBuilder.BuildFor(codeFiles);
         if (builderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
         var codeModels = codeFiles.Select(x => x.CodeModel).ToList();
-        var evaluator = new ValueElementEvaluator();
-        var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, evaluator);
-        evaluator.Scopes = scopes;
-        var main = codeModels.First(x => x.RunFunction != null);
-        var mainScope = scopes.GetForCodeModel(main);
-        Result = evaluator.Eval(mainScope, main.RunFunction!).GetValue();
-        outputWriter.ProgramResult(Result!);
+        var callStack = new Stack<IFunctionRuntimeValue>();
+        var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, _evaluator, callStack);
+        _evaluator.Scopes = scopes;
+        var mainCodeModel = codeModels.First(x => x.RunFunction != null);
+        var mainScope = scopes.GetForCodeModel(mainCodeModel);
+        mainScope.PushCallStack(new RunFunctionStub());
+        try
+        {
+            Result = _evaluator.Eval(mainScope, mainCodeModel.RunFunction!).GetValue();
+        }
+        catch (RuntimeException rte)
+        {
+            throw new InterpreterException(rte.Message, callStack);
+        }
+        finally
+        {
+            mainScope.PopCallStack();
+            outputWriter.ProgramResult(Result!);
+        }
+    }
+}
+
+internal class InterpreterException : Exception
+{
+    public Stack<IFunctionRuntimeValue> CallStack { get; }
+
+    public InterpreterException(string message, Stack<IFunctionRuntimeValue> callStack) : base(message)
+    {
+        CallStack = callStack;
     }
 }

@@ -22,14 +22,17 @@ internal abstract class EmbeddedFunction
         var value = argumentValues[argumentIndex].GetValue();
         if (value is VariableRuntimeValue variable)
         {
-            return (TValue)variable.Value;
+            if (variable.Value is TValue typedValue)
+            {
+                return typedValue;
+            }
         }
-        if (value is not TValue valueConverted)
+        if (value is TValue valueConverted)
         {
-            throw RuntimeException.ArgumentСannotGet();
+            return valueConverted;
         }
 
-        return valueConverted;
+        throw RuntimeException.ArgumentСannotGet();
     }
 
     public FunctionRuntimeValue GetFunctionOrError(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex)

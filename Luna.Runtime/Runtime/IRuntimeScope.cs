@@ -10,8 +10,8 @@ internal interface IRuntimeScope
     VariableRuntimeValue GetVariableOrCreateNew(string variableName);
     string[] GetFunctionArgumentNames(string functionName);
     IRuntimeValue GetFunctionArgumentValue(string argumentName);
-    void PushFunctionArguments();
-    void PopFunctionArguments();
+    void PushCallStack(IFunctionRuntimeValue function);
+    void PopCallStack();
     void AddFunctionArgument(string argumentName, IRuntimeValue argumentValue);
     IRuntimeValue GetDeclaredFunctionValue(string functionName);
     bool IsEmbeddedFunction(string functionName);

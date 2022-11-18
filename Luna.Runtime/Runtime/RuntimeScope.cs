@@ -12,7 +12,8 @@ internal class RuntimeScope : IRuntimeScope
     public static IRuntimeScope FromCodeModel(
         CodeModel codeModel,
         IValueElementEvaluator evaluator,
-        IEmbeddedFunctionsCollection embeddedFunctions)
+        IEmbeddedFunctionsCollection embeddedFunctions,
+        Stack<IFunctionRuntimeValue> callStack)
     {
         var constants = codeModel.Constants.ToList();
         var functions = codeModel.Functions.ToList();
@@ -23,7 +24,7 @@ internal class RuntimeScope : IRuntimeScope
             functions.AddRange(importCodeModel.Functions);
         }
 
-        return new RuntimeScope(evaluator, embeddedFunctions, functions, constants);
+        return new RuntimeScope(evaluator, embeddedFunctions, functions, constants, callStack);
     }
 
     private readonly IValueElementEvaluator _evaluator;
@@ -31,22 +32,23 @@ internal class RuntimeScope : IRuntimeScope
     private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
     private readonly Dictionary<string, ConstantDeclaration> _constantDeclarations;
     private readonly Dictionary<string, VariableRuntimeValue> _variables;
-
+    private readonly Stack<IFunctionRuntimeValue> _callStack;
     private readonly Stack<Dictionary<string, IRuntimeValue>> _argumentStack;
 
     public RuntimeScope(
         IValueElementEvaluator evaluator,
         IEmbeddedFunctionsCollection embeddedFunctions,
         IEnumerable<FunctionDeclaration> declaredFunctions,
-        IEnumerable<ConstantDeclaration> constantDeclarations)
+        IEnumerable<ConstantDeclaration> constantDeclarations,
+        Stack<IFunctionRuntimeValue> callStack)
     {
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;
         _declaredFunctions = declaredFunctions.Select(x => new ScopeFunctionDeclaration(x.Name, x.Arguments, x.Body)).ToDictionary(x => x.Name, v => v);
         _constantDeclarations = constantDeclarations.ToDictionary(x => x.Name, v => v);
+        _callStack = callStack;
         _variables = new();
         _argumentStack = new();
-        _argumentStack.Push(new());
     }
 
     public ValueElement GetConstantValue(string constantName)
@@ -85,13 +87,15 @@ internal class RuntimeScope : IRuntimeScope
         return _argumentStack.Peek()[argumentName];
     }
 
-    public void PushFunctionArguments()
+    public void PushCallStack(IFunctionRuntimeValue function)
     {
+        _callStack.Push(function);
         _argumentStack.Push(new());
     }
 
-    public void PopFunctionArguments()
+    public void PopCallStack()
     {
+        _callStack.Pop();
         _argumentStack.Pop();
     }
 

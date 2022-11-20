@@ -7,7 +7,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("range", "start count")]
 internal class Range : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var start = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
         var count = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;

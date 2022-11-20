@@ -1,38 +1,31 @@
 ﻿using Luna.Functions.Math;
 using Luna.Runtime;
 using Luna.Tests.Tools;
+using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Math;
 
 internal class MinText : BaseFunctionTest<Min>
 {
+    [SetUp]
+    public void Setup()
+    {
+        Init();
+    }
+
     [Test]
     public void GetValue_EmptyList()
     {
-        try
-        {
-            GetValue<NumericRuntimeValue>(new ListRuntimeValue(new IRuntimeValue[0]));
-            Assert.Fail();
-        }
-        catch (RuntimeException e)
-        {
-            Assert.AreEqual("the list cannot be empty", e.Message);
-        }
+        GetValue<VoidRuntimeValue>(new ListRuntimeValue(new IRuntimeValue[0]));
+        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("The list cannot be empty.")), Times.Once());
     }
 
     [Test]
     public void GetValue_NonNumeric()
     {
-        try
-        {
-            GetValue<NumericRuntimeValue>(new ListRuntimeValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new BooleanRuntimeValue(true) }));
-            Assert.Fail();
-        }
-        catch (RuntimeException e)
-        {
-            Assert.AreEqual("all the list items must be a numeric values", e.Message);
-        }
+        GetValue<VoidRuntimeValue>(new ListRuntimeValue(new IRuntimeValue[] { new IntegerRuntimeValue(1), new BooleanRuntimeValue(true) }));
+        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("All the list items must be a numeric values.")), Times.Once());
     }
 
     [Test]

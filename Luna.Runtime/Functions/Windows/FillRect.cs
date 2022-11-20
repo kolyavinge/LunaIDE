@@ -8,7 +8,7 @@ namespace Luna.Functions.Windows;
 [EmbeddedFunctionDeclaration("fill_rect", "context x y width height color")]
 internal class FillRect : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var context = GetValueOrError<ObjectRuntimeValue>(argumentValues, 0).Get<DrawingContext>();
         var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 1).FloatValue;

@@ -9,7 +9,7 @@ namespace Luna.Functions.Windows;
 [EmbeddedFunctionDeclaration("draw_text", "context x y text color size")]
 internal class DrawText : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var context = GetValueOrError<ObjectRuntimeValue>(argumentValues, 0).Get<DrawingContext>();
         var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 1).FloatValue;

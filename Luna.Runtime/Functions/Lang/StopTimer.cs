@@ -6,7 +6,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("stop_timer", "timer_id")]
 internal class StopTimer : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var timerId = GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
         TimersCollection.Timers[timerId].Stop();

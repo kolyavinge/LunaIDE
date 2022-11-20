@@ -46,7 +46,7 @@ internal class FunctionRuntimeValue : RuntimeValue, IFunctionRuntimeValue
         {
             result = _scope.GetDeclaredFunctionValue(Name);
         }
-        if (argumentValues.Count - argumentNames.Length > 0)
+        if (argumentValues.Count > argumentNames.Length)
         {
             if (result is FunctionRuntimeValue resultFunction)
             {

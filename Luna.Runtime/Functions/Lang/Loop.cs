@@ -6,7 +6,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("loop", "start count func")]
 internal class Loop : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var start = GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
         var count = GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;

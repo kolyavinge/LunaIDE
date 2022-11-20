@@ -7,7 +7,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("any", "list")]
 internal class Any : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
         return new BooleanRuntimeValue(list.Any());

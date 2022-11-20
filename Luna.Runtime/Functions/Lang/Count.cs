@@ -6,7 +6,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("count", "list")]
 internal class Count : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
         return new IntegerRuntimeValue(list.Count);

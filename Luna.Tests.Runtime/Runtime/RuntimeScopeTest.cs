@@ -19,7 +19,7 @@ internal class RuntimeScopeTest
     private List<FunctionDeclaration> _declaredFunctions;
     private List<ConstantDeclaration> _constantDeclarations;
     private Mock<IFunctionRuntimeValue> _func;
-    private Stack<IFunctionRuntimeValue> _callStack;
+    private CallStack _callStack;
     private RuntimeScope _scope;
 
     [SetUp]
@@ -31,7 +31,7 @@ internal class RuntimeScopeTest
         _declaredFunctions = new List<FunctionDeclaration>();
         _constantDeclarations = new List<ConstantDeclaration>();
         _func = new Mock<IFunctionRuntimeValue>();
-        _callStack = new Stack<IFunctionRuntimeValue>();
+        _callStack = new CallStack();
     }
 
     private void MakeScope()

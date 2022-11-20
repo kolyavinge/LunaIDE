@@ -13,7 +13,7 @@ internal class RuntimeScope : IRuntimeScope
         CodeModel codeModel,
         IValueElementEvaluator evaluator,
         IEmbeddedFunctionsCollection embeddedFunctions,
-        Stack<IFunctionRuntimeValue> callStack)
+        CallStack callStack)
     {
         var constants = codeModel.Constants.ToList();
         var functions = codeModel.Functions.ToList();
@@ -32,7 +32,7 @@ internal class RuntimeScope : IRuntimeScope
     private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
     private readonly Dictionary<string, ConstantDeclaration> _constantDeclarations;
     private readonly Dictionary<string, VariableRuntimeValue> _variables;
-    private readonly Stack<IFunctionRuntimeValue> _callStack;
+    private readonly CallStack _callStack;
     private readonly Stack<Dictionary<string, IRuntimeValue>> _argumentStack;
 
     public RuntimeScope(
@@ -40,7 +40,7 @@ internal class RuntimeScope : IRuntimeScope
         IEmbeddedFunctionsCollection embeddedFunctions,
         IEnumerable<FunctionDeclaration> declaredFunctions,
         IEnumerable<ConstantDeclaration> constantDeclarations,
-        Stack<IFunctionRuntimeValue> callStack)
+        CallStack callStack)
     {
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;

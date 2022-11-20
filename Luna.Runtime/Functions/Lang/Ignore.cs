@@ -6,7 +6,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("ignore", "")]
 internal class Ignore : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         return VoidRuntimeValue.Instance;
     }

@@ -12,7 +12,7 @@ internal interface IRuntimeScopesCollection
 internal class RuntimeScopesCollection : IRuntimeScopesCollection
 {
     public static RuntimeScopesCollection BuildForCodeModels(
-        IEnumerable<CodeModel> codeModels, IValueElementEvaluator evaluator, Stack<IFunctionRuntimeValue> callStack)
+        IEnumerable<CodeModel> codeModels, IValueElementEvaluator evaluator, CallStack callStack)
     {
         var scopes = new RuntimeScopesCollection();
         var embeddedFunctions = new EmbeddedFunctionsCollection();

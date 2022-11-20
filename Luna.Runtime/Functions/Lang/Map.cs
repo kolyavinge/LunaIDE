@@ -7,7 +7,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("map", "list func")]
 internal class Map : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
         var func = GetFunctionOrError(argumentValues, 1);

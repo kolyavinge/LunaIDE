@@ -6,7 +6,7 @@ namespace Luna.Functions.Math;
 [EmbeddedFunctionDeclaration("sqrt", "x")]
 internal class Sqrt : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 0);
         return new FloatRuntimeValue(System.Math.Sqrt(x.FloatValue));

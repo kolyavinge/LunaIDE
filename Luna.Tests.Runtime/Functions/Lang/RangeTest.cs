@@ -1,12 +1,19 @@
-﻿using Luna.Functions.Lang;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 using Luna.Tests.Tools;
+using Moq;
 using NUnit.Framework;
+using Range = Luna.Functions.Lang.Range;
 
 namespace Luna.Tests.Functions.Lang;
 
 internal class RangeTest : BaseFunctionTest<Range>
 {
+    [SetUp]
+    public void Setup()
+    {
+        Init();
+    }
+
     [Test]
     public void GetValue()
     {
@@ -29,14 +36,7 @@ internal class RangeTest : BaseFunctionTest<Range>
     [Test]
     public void NegativeCount_Error()
     {
-        try
-        {
-            GetValue<ListRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1));
-            Assert.Fail();
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Count must be zero or greater.", exp.Message);
-        }
+        GetValue<VoidRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1));
+        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Count must be zero or greater.")), Times.Once());
     }
 }

@@ -7,7 +7,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("print", "text")]
 internal class Print : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         if (RuntimeEnvironment.StandartOutput != null)
         {

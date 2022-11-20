@@ -10,6 +10,8 @@ internal interface IOutputWriter
     void SuccessfullyParsed(CodeFileProjectItem codeFile);
     void WriteWarning(CodeFileProjectItem codeFile, ParserMessage message);
     void WriteError(CodeFileProjectItem codeFile, ParserMessage message);
+    void WriteError(string errorMessage);
+    void WriteCallStack(IEnumerable<IFunctionRuntimeValue> callStack);
     void ProgramResult(IRuntimeValue runtimeValue);
     void ProgramStopped();
 }
@@ -56,6 +58,30 @@ internal class OutputWriter : IOutputWriter
             new($". Line {token.LineIndex + 1}, col {token.StartColumnIndex + 1}. {_textMessage[message.Type]}.", OutputMessageKind.Error)
         })
         { ProjectItem = codeFile });
+    }
+
+    public void WriteError(string errorMessage)
+    {
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
+        {
+            new(errorMessage, OutputMessageKind.Error)
+        }));
+    }
+
+    public void WriteCallStack(IEnumerable<IFunctionRuntimeValue> callStack)
+    {
+        _output.SendMessage(new OutputMessage(new OutputMessageItem[]
+        {
+            new("Stack trace:", OutputMessageKind.Text)
+        }));
+
+        foreach (var item in callStack)
+        {
+            _output.SendMessage(new OutputMessage(new OutputMessageItem[]
+            {
+                new(item.Name, OutputMessageKind.Text)
+            }));
+        }
     }
 
     public void ProgramResult(IRuntimeValue runtimeValue)

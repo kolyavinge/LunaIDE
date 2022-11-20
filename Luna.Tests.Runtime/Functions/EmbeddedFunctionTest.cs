@@ -5,14 +5,14 @@ using Luna.Runtime;
 using Moq;
 using NUnit.Framework;
 
-namespace Luna.Tests.Runtime;
+namespace Luna.Tests.Functions;
 
 internal class EmbeddedFunctionTest
 {
     [EmbeddedFunctionDeclaration("test", "x")]
     class TestEmbeddedFunction : EmbeddedFunction
     {
-        public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+        protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
         {
             throw new NotImplementedException();
         }
@@ -37,7 +37,7 @@ internal class EmbeddedFunctionTest
     }
 
     [Test]
-    public void ArgumentCannotBeGet()
+    public void ArgumentCannotBeGotten()
     {
         try
         {
@@ -48,7 +48,7 @@ internal class EmbeddedFunctionTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be get.", exp.Message);
+            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
         }
     }
 
@@ -81,7 +81,7 @@ internal class EmbeddedFunctionTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be get.", exp.Message);
+            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
         }
     }
 
@@ -105,7 +105,7 @@ internal class EmbeddedFunctionTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be get.", exp.Message);
+            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
         }
     }
 
@@ -130,7 +130,7 @@ internal class EmbeddedFunctionTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be get.", exp.Message);
+            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
         }
     }
 }

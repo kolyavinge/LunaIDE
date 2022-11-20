@@ -8,7 +8,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("printf", "format params")]
 internal class PrintF : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         if (RuntimeEnvironment.StandartOutput != null)
         {

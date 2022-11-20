@@ -2,6 +2,7 @@
 using Luna.Functions.Lang;
 using Luna.Runtime;
 using Luna.Tests.Tools;
+using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Lang;
@@ -47,6 +48,7 @@ internal class SortTest : BaseFunctionTest<Sort>
     [SetUp]
     public void Setup()
     {
+        Init();
     }
 
     [Test]
@@ -83,14 +85,8 @@ internal class SortTest : BaseFunctionTest<Sort>
         var list = new ListRuntimeValue(new[] { new IntegerRuntimeValue(5), new IntegerRuntimeValue(2), new IntegerRuntimeValue(-1) });
         var compareFunc = new WrongCompareFunc();
 
-        try
-        {
-            GetValue<ListRuntimeValue>(list, compareFunc);
-            Assert.Fail();
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("The compare function must return a numeric value.", exp.Message);
-        }
+        GetValue<VoidRuntimeValue>(list, compareFunc);
+
+        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("The compare function must return a numeric value.")), Times.Once());
     }
 }

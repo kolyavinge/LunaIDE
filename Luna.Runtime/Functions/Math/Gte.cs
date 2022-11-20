@@ -6,7 +6,7 @@ namespace Luna.Functions.Math;
 [EmbeddedFunctionDeclaration("gte", "x y")]
 internal class Gte : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var x = GetValueOrError<NumericRuntimeValue>(argumentValues, 0);
         var y = GetValueOrError<NumericRuntimeValue>(argumentValues, 1);

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Luna.Output;
 using Luna.ProjectModel;
 
@@ -29,34 +28,15 @@ public class Interpreter : IInterpreter
         var builderResult = codeModelBuilder.BuildFor(codeFiles);
         if (builderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
         var codeModels = codeFiles.Select(x => x.CodeModel).ToList();
-        var callStack = new Stack<IFunctionRuntimeValue>();
+        var callStack = new CallStack();
         var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, _evaluator, callStack);
         _evaluator.Scopes = scopes;
+        RuntimeEnvironment.ExceptionHandler = new RuntimeExceptionHandler(callStack, outputWriter);
         var mainCodeModel = codeModels.First(x => x.RunFunction != null);
         var mainScope = scopes.GetForCodeModel(mainCodeModel);
         mainScope.PushCallStack(new RunFunctionStub());
-        try
-        {
-            Result = _evaluator.Eval(mainScope, mainCodeModel.RunFunction!).GetValue();
-        }
-        catch (RuntimeException rte)
-        {
-            throw new InterpreterException(rte.Message, callStack);
-        }
-        finally
-        {
-            mainScope.PopCallStack();
-            outputWriter.ProgramResult(Result!);
-        }
-    }
-}
-
-internal class InterpreterException : Exception
-{
-    public Stack<IFunctionRuntimeValue> CallStack { get; }
-
-    public InterpreterException(string message, Stack<IFunctionRuntimeValue> callStack) : base(message)
-    {
-        CallStack = callStack;
+        Result = _evaluator.Eval(mainScope, mainCodeModel.RunFunction!).GetValue();
+        mainScope.PopCallStack();
+        outputWriter.ProgramResult(Result!);
     }
 }

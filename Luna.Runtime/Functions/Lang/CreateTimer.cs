@@ -13,7 +13,7 @@ static class TimersCollection
 [EmbeddedFunctionDeclaration("create_timer", "interval callback")]
 internal class CreateTimer : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var interval = GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
         var callback = GetFunctionOrError(argumentValues, 1);

@@ -7,7 +7,7 @@ namespace Luna.Functions.Windows;
 [EmbeddedFunctionDeclaration("draw_line", "context from_x from_y to_x to_y color")]
 internal class DrawLine : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var context = GetValueOrError<ObjectRuntimeValue>(argumentValues, 0).Get<DrawingContext>();
         var fromX = GetValueOrError<NumericRuntimeValue>(argumentValues, 1).FloatValue;

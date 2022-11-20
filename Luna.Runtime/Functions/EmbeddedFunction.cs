@@ -17,6 +17,21 @@ internal abstract class EmbeddedFunction
         Arguments = attr.Arguments;
     }
 
+    public IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    {
+        try
+        {
+            return InnerGetValue(argumentValues);
+        }
+        catch (RuntimeException rte)
+        {
+            RuntimeEnvironment.ExceptionHandler?.Handle(rte);
+            return VoidRuntimeValue.Instance;
+        }
+    }
+
+    protected abstract IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues);
+
     public TValue GetValueOrError<TValue>(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex) where TValue : IRuntimeValue
     {
         var value = argumentValues[argumentIndex].GetValue();
@@ -56,8 +71,6 @@ internal abstract class EmbeddedFunction
 
         return valueConverted;
     }
-
-    public abstract IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues);
 }
 
 [AttributeUsage(AttributeTargets.Class)]

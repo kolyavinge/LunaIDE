@@ -8,7 +8,7 @@ internal class Rand : EmbeddedFunction
 {
     private readonly Random _rand = new();
 
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var from = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
         var to = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;

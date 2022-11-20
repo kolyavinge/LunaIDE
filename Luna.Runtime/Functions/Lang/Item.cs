@@ -6,7 +6,7 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("item", "index list")]
 internal class Item : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var index = (int)GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 1);

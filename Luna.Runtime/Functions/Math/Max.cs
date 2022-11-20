@@ -7,13 +7,13 @@ namespace Luna.Functions.Math;
 [EmbeddedFunctionDeclaration("max", "list")]
 internal class Max : EmbeddedFunction
 {
-    public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
         var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
-        if (!list.Any()) throw new RuntimeException("the list cannot be empty");
+        if (!list.Any()) throw new RuntimeException("The list cannot be empty.");
 
         var evaluated = list.Select(x => x.GetValue()).ToList();
-        if (evaluated.Any(x => x is not NumericRuntimeValue)) throw new RuntimeException("all the list items must be a numeric values");
+        if (evaluated.Any(x => x is not NumericRuntimeValue)) throw new RuntimeException("All the list items must be a numeric values.");
         var evaluatedNumeric = evaluated.Cast<NumericRuntimeValue>().ToList();
 
         var result = evaluatedNumeric[0];

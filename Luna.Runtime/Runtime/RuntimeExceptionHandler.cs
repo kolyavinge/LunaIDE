@@ -1,4 +1,7 @@
-﻿using Luna.Output;
+﻿using Luna.Functions.Lang;
+using Luna.Functions.Windows;
+using Luna.Output;
+using Luna.Utils;
 
 namespace Luna.Runtime;
 
@@ -22,6 +25,8 @@ internal class RuntimeExceptionHandler : IRuntimeExceptionHandler
     {
         _outputWriter.WriteError(rte.Message);
         _outputWriter.WriteCallStack(_callStack);
+        AppWindowsCollection.Windows.Each(x => x.Close());
+        AppTimersCollection.Timers.Each(x => x.Value.Stop());
     }
 }
 

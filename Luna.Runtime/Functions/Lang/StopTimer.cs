@@ -8,7 +8,7 @@ internal class StopTimer : EmbeddedFunction
     protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
         var timerId = arguments.GetValueOrError<NumericRuntimeValue>(0).IntegerValue;
-        TimersCollection.Timers[timerId].Stop();
+        AppTimersCollection.Timers[timerId].Stop();
 
         return VoidRuntimeValue.Instance;
     }

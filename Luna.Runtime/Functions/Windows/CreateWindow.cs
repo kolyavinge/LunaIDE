@@ -26,7 +26,12 @@ internal class CreateWindow : EmbeddedFunction
     }
 }
 
-class AppWindow : System.Windows.Window
+interface IAppWindow
+{
+    void Close();
+}
+
+class AppWindow : System.Windows.Window, IAppWindow
 {
     private readonly FunctionRuntimeValue _renderFunc;
     private readonly FunctionRuntimeValue _mouseHandlerFunc;
@@ -52,7 +57,6 @@ class AppWindow : System.Windows.Window
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         var pos = e.GetPosition(this);
-        var window = new ObjectRuntimeValue(this);
         var eventName = new StringRuntimeValue("click");
         var x = new FloatRuntimeValue(pos.X);
         var y = new FloatRuntimeValue(pos.Y);

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
@@ -7,10 +6,10 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("sort", "list compare_func")]
 internal class Sort : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
-        var compareFunc = GetFunctionOrError(argumentValues, 1);
+        var list = arguments.GetValueOrError<ListRuntimeValue>(0);
+        var compareFunc = arguments.GetFunctionOrError(1);
 
         var comparer = new ListRuntimeValueComparer(compareFunc);
 

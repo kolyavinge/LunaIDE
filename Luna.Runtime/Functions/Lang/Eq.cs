@@ -1,15 +1,14 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
 [EmbeddedFunctionDeclaration("eq", "x y")]
 internal class Eq : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var x = GetValueOrError<IRuntimeValue>(argumentValues, 0);
-        var y = GetValueOrError<IRuntimeValue>(argumentValues, 1);
+        var x = arguments.GetValueOrError<IRuntimeValue>(0);
+        var y = arguments.GetValueOrError<IRuntimeValue>(1);
 
         var result = x.Equals(y);
 

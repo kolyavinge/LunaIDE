@@ -1,5 +1,4 @@
-﻿using Luna.Collections;
-using Luna.Output;
+﻿using Luna.Output;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
@@ -7,11 +6,11 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("print", "text")]
 internal class Print : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
         if (RuntimeEnvironment.StandartOutput != null)
         {
-            var value = GetValueOrError<IRuntimeValue>(argumentValues, 0);
+            var value = arguments.GetValueOrError<IRuntimeValue>(0);
             var text = value.ToString();
             if (value is StringRuntimeValue)
             {

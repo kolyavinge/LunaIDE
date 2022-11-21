@@ -1,14 +1,13 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Windows;
 
 [EmbeddedFunctionDeclaration("update_window", "window")]
 internal class UpdateWindow : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var window = GetValueOrError<ObjectRuntimeValue>(argumentValues, 0).Get<System.Windows.Window>();
+        var window = arguments.GetValueOrError<ObjectRuntimeValue>(0).Get<System.Windows.Window>();
         window.InvalidateVisual();
 
         return new ObjectRuntimeValue(window);

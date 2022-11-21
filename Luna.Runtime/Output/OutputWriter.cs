@@ -11,7 +11,7 @@ internal interface IOutputWriter
     void WriteWarning(CodeFileProjectItem codeFile, ParserMessage message);
     void WriteError(CodeFileProjectItem codeFile, ParserMessage message);
     void WriteError(string errorMessage);
-    void WriteCallStack(IEnumerable<IFunctionRuntimeValue> callStack);
+    void WriteCallStack(CallStack callStack);
     void ProgramResult(IRuntimeValue runtimeValue);
     void ProgramStopped();
 }
@@ -68,7 +68,7 @@ internal class OutputWriter : IOutputWriter
         }));
     }
 
-    public void WriteCallStack(IEnumerable<IFunctionRuntimeValue> callStack)
+    public void WriteCallStack(CallStack callStack)
     {
         _output.SendMessage(new OutputMessage(new OutputMessageItem[]
         {

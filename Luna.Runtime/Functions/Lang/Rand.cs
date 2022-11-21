@@ -1,5 +1,4 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
@@ -8,10 +7,10 @@ internal class Rand : EmbeddedFunction
 {
     private readonly Random _rand = new();
 
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var from = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
-        var to = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;
+        var from = (int)arguments.GetValueOrError<IntegerRuntimeValue>(0).IntegerValue;
+        var to = (int)arguments.GetValueOrError<IntegerRuntimeValue>(1).IntegerValue;
 
         var result = _rand.Next(from, to + 1);
 

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Math;
@@ -7,9 +6,9 @@ namespace Luna.Functions.Math;
 [EmbeddedFunctionDeclaration("min", "list")]
 internal class Min : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var list = GetValueOrError<ListRuntimeValue>(argumentValues, 0);
+        var list = arguments.GetValueOrError<ListRuntimeValue>(0);
         if (!list.Any()) throw new RuntimeException("The list cannot be empty.");
 
         var evaluated = list.Select(x => x.GetValue()).ToList();

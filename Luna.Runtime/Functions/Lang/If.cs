@@ -1,21 +1,20 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
 [EmbeddedFunctionDeclaration("if", "condition true_func false_func")]
 internal class If : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var condition = GetValueOrError<BooleanRuntimeValue>(argumentValues, 0);
+        var condition = arguments.GetValueOrError<BooleanRuntimeValue>(0);
         if (condition.Value)
         {
-            return GetValueOrError<IRuntimeValue>(argumentValues, 1);
+            return arguments.GetValueOrError<IRuntimeValue>(1);
         }
         else
         {
-            return GetValueOrError<IRuntimeValue>(argumentValues, 2);
+            return arguments.GetValueOrError<IRuntimeValue>(2);
         }
     }
 }

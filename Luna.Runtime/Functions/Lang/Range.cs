@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
@@ -7,10 +6,10 @@ namespace Luna.Functions.Lang;
 [EmbeddedFunctionDeclaration("range", "start count")]
 internal class Range : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var start = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
-        var count = (int)GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;
+        var start = (int)arguments.GetValueOrError<IntegerRuntimeValue>(0).IntegerValue;
+        var count = (int)arguments.GetValueOrError<IntegerRuntimeValue>(1).IntegerValue;
         if (count < 0)
         {
             throw new RuntimeException("Count must be zero or greater.");

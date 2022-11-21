@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Threading;
-using Luna.Collections;
 using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
@@ -13,10 +12,10 @@ static class TimersCollection
 [EmbeddedFunctionDeclaration("create_timer", "interval callback")]
 internal class CreateTimer : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var interval = GetValueOrError<NumericRuntimeValue>(argumentValues, 0).IntegerValue;
-        var callback = GetFunctionOrError(argumentValues, 1);
+        var interval = arguments.GetValueOrError<NumericRuntimeValue>(0).IntegerValue;
+        var callback = arguments.GetFunctionOrError(1);
 
         var timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(interval);

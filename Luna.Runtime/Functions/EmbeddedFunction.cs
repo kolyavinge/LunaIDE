@@ -4,75 +4,6 @@ using Luna.Runtime;
 
 namespace Luna.Functions;
 
-internal abstract class EmbeddedFunction
-{
-    public string Name { get; }
-
-    public string[] Arguments { get; }
-
-    protected EmbeddedFunction()
-    {
-        var attr = GetType().GetCustomAttribute<EmbeddedFunctionDeclaration>() ?? throw new NullReferenceException();
-        Name = attr.Name;
-        Arguments = attr.Arguments;
-    }
-
-    public IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
-    {
-        try
-        {
-            return InnerGetValue(argumentValues);
-        }
-        catch (RuntimeException rte)
-        {
-            RuntimeEnvironment.ExceptionHandler?.Handle(rte);
-            return VoidRuntimeValue.Instance;
-        }
-    }
-
-    protected abstract IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues);
-
-    public TValue GetValueOrError<TValue>(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex) where TValue : IRuntimeValue
-    {
-        var value = argumentValues[argumentIndex].GetValue();
-        if (value is VariableRuntimeValue variable)
-        {
-            if (variable.Value is TValue typedValue)
-            {
-                return typedValue;
-            }
-        }
-        if (value is TValue valueConverted)
-        {
-            return valueConverted;
-        }
-
-        throw RuntimeException.ArgumentСannotGet();
-    }
-
-    public FunctionRuntimeValue GetFunctionOrError(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex)
-    {
-        var value = argumentValues[argumentIndex];
-        if (value is not FunctionRuntimeValue valueConverted)
-        {
-            throw RuntimeException.ArgumentСannotGet();
-        }
-
-        return valueConverted;
-    }
-
-    public VariableRuntimeValue GetVariableOrError(ReadonlyArray<IRuntimeValue> argumentValues, int argumentIndex)
-    {
-        var value = argumentValues[argumentIndex];
-        if (value is not VariableRuntimeValue valueConverted)
-        {
-            throw RuntimeException.ArgumentСannotGet();
-        }
-
-        return valueConverted;
-    }
-}
-
 [AttributeUsage(AttributeTargets.Class)]
 public class EmbeddedFunctionDeclaration : Attribute
 {
@@ -84,5 +15,34 @@ public class EmbeddedFunctionDeclaration : Attribute
     {
         Name = name;
         Arguments = arguments.Split(' ');
+    }
+}
+
+internal abstract class EmbeddedFunction
+{
+    public string Name { get; }
+
+    public string[] Arguments { get; }
+
+    protected EmbeddedFunction()
+    {
+        var attr = GetType().GetCustomAttribute<EmbeddedFunctionDeclaration>() ?? throw new ArgumentException();
+        Name = attr.Name;
+        Arguments = attr.Arguments;
+    }
+
+    protected abstract IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments);
+
+    public IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    {
+        try
+        {
+            return InnerGetValue(new(argumentValues));
+        }
+        catch (RuntimeException rte)
+        {
+            RuntimeEnvironment.ExceptionHandler?.Handle(rte);
+            return VoidRuntimeValue.Instance;
+        }
     }
 }

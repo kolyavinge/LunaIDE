@@ -1,14 +1,13 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
 [EmbeddedFunctionDeclaration("not", "x")]
 internal class Not : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var x = GetValueOrError<BooleanRuntimeValue>(argumentValues, 0);
+        var x = arguments.GetValueOrError<BooleanRuntimeValue>(0);
         return new BooleanRuntimeValue(!x.Value);
     }
 }

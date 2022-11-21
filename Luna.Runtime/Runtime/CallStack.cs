@@ -7,6 +7,8 @@ internal class CallStack : IEnumerable<IFunctionRuntimeValue>
 {
     private readonly Stack<IFunctionRuntimeValue> _stack = new();
 
+    public int Count => _stack.Count;
+
     public void Push(IFunctionRuntimeValue function)
     {
         _stack.Push(function);

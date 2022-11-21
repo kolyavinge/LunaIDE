@@ -1,17 +1,16 @@
-﻿using Luna.Collections;
-using Luna.Runtime;
+﻿using Luna.Runtime;
 
 namespace Luna.Functions.Lang;
 
 [EmbeddedFunctionDeclaration("loop", "start count func")]
 internal class Loop : EmbeddedFunction
 {
-    protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+    protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        var start = GetValueOrError<IntegerRuntimeValue>(argumentValues, 0).IntegerValue;
-        var count = GetValueOrError<IntegerRuntimeValue>(argumentValues, 1).IntegerValue;
+        var start = arguments.GetValueOrError<IntegerRuntimeValue>(0).IntegerValue;
+        var count = arguments.GetValueOrError<IntegerRuntimeValue>(1).IntegerValue;
         if (count < 0) throw new RuntimeException("Parameter count must be greater than zero.");
-        var func = GetFunctionOrError(argumentValues, 2);
+        var func = arguments.GetFunctionOrError(2);
 
         var end = start + count;
         for (var i = start; i < end; i++)

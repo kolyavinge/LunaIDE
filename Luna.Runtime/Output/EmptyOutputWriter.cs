@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Luna.Parsing;
+﻿using Luna.Parsing;
 using Luna.ProjectModel;
 using Luna.Runtime;
 
@@ -13,7 +12,7 @@ internal class EmptyOutputWriter : IOutputWriter
 
     public void SuccessfullyParsed(CodeFileProjectItem codeFile) { }
 
-    public void WriteCallStack(IEnumerable<IFunctionRuntimeValue> callStack) { }
+    public void WriteCallStack(CallStack callStack) { }
 
     public void WriteError(CodeFileProjectItem codeFile, ParserMessage message) { }
 

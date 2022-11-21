@@ -1,5 +1,4 @@
-﻿using System;
-using Luna.Collections;
+﻿using Luna.Collections;
 using Luna.Functions;
 using Luna.Runtime;
 using Moq;
@@ -12,125 +11,63 @@ internal class EmbeddedFunctionTest
     [EmbeddedFunctionDeclaration("test", "x")]
     class TestEmbeddedFunction : EmbeddedFunction
     {
-        protected override IRuntimeValue InnerGetValue(ReadonlyArray<IRuntimeValue> argumentValues)
-        {
-            throw new NotImplementedException();
-        }
+        protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments) => new BooleanRuntimeValue(true);
     }
 
-    class ArgumentFunction : FunctionRuntimeValue
+    [EmbeddedFunctionDeclaration("test", "x")]
+    class ExceptionEmbeddedFunction : EmbeddedFunction
     {
-        public ArgumentFunction() : base("", new Mock<IRuntimeScope>().Object) { }
+        private readonly RuntimeException _rte;
 
-        public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
+        public ExceptionEmbeddedFunction(RuntimeException rte)
         {
-            return new BooleanRuntimeValue(true);
+            _rte = rte;
         }
+
+        protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments) => throw _rte;
     }
 
-    private EmbeddedFunction _func;
+    private Mock<IRuntimeExceptionHandler> _exceptionHandler;
 
     [SetUp]
-    public void Setup()
+    public void SetUp()
     {
-        _func = new TestEmbeddedFunction();
+        _exceptionHandler = new Mock<IRuntimeExceptionHandler>();
+        RuntimeEnvironment.ExceptionHandler = _exceptionHandler.Object;
     }
 
     [Test]
-    public void ArgumentCannotBeGotten()
+    public void GetValue()
     {
-        try
-        {
-            var value = new IntegerRuntimeValue(123);
-            var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _func.GetValueOrError<StringRuntimeValue>(argumentValues, 0);
-            Assert.Fail();
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
-        }
+        var func = new TestEmbeddedFunction();
+
+        var result = func.GetValue(new IRuntimeValue[0].ToReadonlyArray());
+
+        Assert.True(result is BooleanRuntimeValue);
+        _exceptionHandler.Verify(x => x.Handle(It.IsAny<RuntimeException>()), Times.Never());
     }
 
     [Test]
-    public void GetValueOrError()
+    public void GetValue_Exception()
     {
-        var value = new IntegerRuntimeValue(123);
-        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
-        Assert.AreEqual(123, argumentValue.IntegerValue);
+        var rte = new RuntimeException("exception");
+        var func = new ExceptionEmbeddedFunction(rte);
+
+        var result = func.GetValue(new IRuntimeValue[0].ToReadonlyArray());
+
+        Assert.True(result is VoidRuntimeValue);
+        _exceptionHandler.Verify(x => x.Handle(rte), Times.Once());
     }
 
     [Test]
-    public void GetValueOrError_Variable()
+    public void GetValue_Exception_NoExceptionHandler()
     {
-        var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
-        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        var argumentValue = _func.GetValueOrError<IntegerRuntimeValue>(argumentValues, 0);
-        Assert.AreEqual(123, argumentValue.IntegerValue);
-    }
+        var rte = new RuntimeException("exception");
+        var func = new ExceptionEmbeddedFunction(rte);
+        RuntimeEnvironment.ExceptionHandler = null;
 
-    [Test]
-    public void GetValueOrError_VariableWrongType()
-    {
-        try
-        {
-            var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
-            var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _func.GetValueOrError<StringRuntimeValue>(argumentValues, 0);
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
-        }
-    }
+        var result = func.GetValue(new IRuntimeValue[0].ToReadonlyArray());
 
-    [Test]
-    public void GetFunctionOrError()
-    {
-        var value = new ArgumentFunction();
-        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        var argumentValue = _func.GetFunctionOrError(argumentValues, 0);
-        Assert.True(argumentValue is FunctionRuntimeValue);
-    }
-
-    [Test]
-    public void GetFunctionOrError_WrongType()
-    {
-        try
-        {
-            var value = new IntegerRuntimeValue(123);
-            var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            var argumentValue = _func.GetFunctionOrError(argumentValues, 0);
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
-        }
-    }
-
-    [Test]
-    public void GetVariableOrError()
-    {
-        var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
-        var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        var argumentValue = _func.GetVariableOrError(argumentValues, 0);
-        Assert.True(argumentValue.Value is IntegerRuntimeValue);
-        Assert.AreEqual(123, ((IntegerRuntimeValue)argumentValue.Value).IntegerValue);
-    }
-
-    [Test]
-    public void GetVariableOrError_WrongType()
-    {
-        try
-        {
-            var value = new IntegerRuntimeValue(123);
-            var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            var argumentValue = _func.GetVariableOrError(argumentValues, 0);
-        }
-        catch (RuntimeException exp)
-        {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
-        }
+        Assert.True(result is VoidRuntimeValue);
     }
 }

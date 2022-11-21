@@ -109,7 +109,7 @@ internal class RuntimeScopeTest
     {
         MakeScope();
 
-        Assert.That(_callStack.Count(), Is.EqualTo(0));
+        Assert.That(_callStack.Count, Is.EqualTo(0));
 
         _scope.PushCallStack(new FunctionRuntimeValue("func1", _scope));
         Assert.That(_callStack.First().Name, Is.EqualTo("func1"));
@@ -121,6 +121,6 @@ internal class RuntimeScopeTest
         Assert.That(_callStack.First().Name, Is.EqualTo("func1"));
 
         _scope.PopCallStack();
-        Assert.That(_callStack.Count(), Is.EqualTo(0));
+        Assert.That(_callStack.Count, Is.EqualTo(0));
     }
 }

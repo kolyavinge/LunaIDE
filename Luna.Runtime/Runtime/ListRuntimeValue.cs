@@ -46,16 +46,16 @@ internal class ListRuntimeValue : RuntimeValue, IEnumerable<IRuntimeValue>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_items);
+        var hashCode = new HashCode();
+        foreach (var item in _items)
+        {
+            hashCode.Add(item.GetHashCode());
+        }
+
+        return hashCode.ToHashCode();
     }
 
-    public IEnumerator<IRuntimeValue> GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
+    public IEnumerator<IRuntimeValue> GetEnumerator() => _items.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 }

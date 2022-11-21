@@ -37,7 +37,7 @@ internal abstract class EmbeddedFunction
     {
         try
         {
-            return InnerGetValue(new(argumentValues));
+            return InnerGetValue(new(argumentValues, Arguments));
         }
         catch (RuntimeException rte)
         {

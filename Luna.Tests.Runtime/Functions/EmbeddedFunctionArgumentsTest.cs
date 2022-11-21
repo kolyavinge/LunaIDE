@@ -27,7 +27,7 @@ internal class EmbeddedFunctionArgumentsTest
         {
             var value = new IntegerRuntimeValue(123);
             var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _arguments = new EmbeddedFunctionArguments(argumentValues);
+            _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
             _arguments.GetValueOrError<StringRuntimeValue>(0);
 
@@ -35,7 +35,7 @@ internal class EmbeddedFunctionArgumentsTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
+            Assert.AreEqual("Argument x must be string instead of numeric.", exp.Message);
         }
     }
 
@@ -44,7 +44,7 @@ internal class EmbeddedFunctionArgumentsTest
     {
         var value = new IntegerRuntimeValue(123);
         var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        _arguments = new EmbeddedFunctionArguments(argumentValues);
+        _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
         var argumentValue = _arguments.GetValueOrError<IntegerRuntimeValue>(0);
 
@@ -56,7 +56,7 @@ internal class EmbeddedFunctionArgumentsTest
     {
         var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
         var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        _arguments = new EmbeddedFunctionArguments(argumentValues);
+        _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
         var argumentValue = _arguments.GetValueOrError<IntegerRuntimeValue>(0);
 
@@ -70,7 +70,7 @@ internal class EmbeddedFunctionArgumentsTest
         {
             var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
             var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _arguments = new EmbeddedFunctionArguments(argumentValues);
+            _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
             _arguments.GetValueOrError<StringRuntimeValue>(0);
 
@@ -78,7 +78,7 @@ internal class EmbeddedFunctionArgumentsTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
+            Assert.AreEqual("Argument x must be string instead of numeric.", exp.Message);
         }
     }
 
@@ -87,7 +87,7 @@ internal class EmbeddedFunctionArgumentsTest
     {
         var value = new ArgumentFunction();
         var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        _arguments = new EmbeddedFunctionArguments(argumentValues);
+        _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
         var argumentValue = _arguments.GetFunctionOrError(0);
 
@@ -101,7 +101,7 @@ internal class EmbeddedFunctionArgumentsTest
         {
             var value = new IntegerRuntimeValue(123);
             var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _arguments = new EmbeddedFunctionArguments(argumentValues);
+            _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
             var argumentValue = _arguments.GetFunctionOrError(0);
 
@@ -109,7 +109,7 @@ internal class EmbeddedFunctionArgumentsTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
+            Assert.AreEqual("Argument x must be function instead of numeric.", exp.Message);
         }
     }
 
@@ -118,7 +118,7 @@ internal class EmbeddedFunctionArgumentsTest
     {
         var value = new VariableRuntimeValue(new IntegerRuntimeValue(123));
         var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-        _arguments = new EmbeddedFunctionArguments(argumentValues);
+        _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
         var argumentValue = _arguments.GetVariableOrError(0);
 
@@ -133,7 +133,7 @@ internal class EmbeddedFunctionArgumentsTest
         {
             var value = new IntegerRuntimeValue(123);
             var argumentValues = new IRuntimeValue[] { value }.ToReadonlyArray();
-            _arguments = new EmbeddedFunctionArguments(argumentValues);
+            _arguments = new EmbeddedFunctionArguments(argumentValues, new[] { "x" });
 
             var argumentValue = _arguments.GetVariableOrError(0);
 
@@ -141,7 +141,7 @@ internal class EmbeddedFunctionArgumentsTest
         }
         catch (RuntimeException exp)
         {
-            Assert.AreEqual("Embedded function argument cannot be gotten.", exp.Message);
+            Assert.AreEqual("Argument x must be variable instead of numeric.", exp.Message);
         }
     }
 }

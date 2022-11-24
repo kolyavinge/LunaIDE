@@ -5,49 +5,6 @@
     xmlns:controls="clr-namespace:Luna.IDE.App.Controls.Tree"
     xmlns:view="clr-namespace:Luna.IDE.App.View">
 
-    <Color x:Key="MainBackgroundColor" R="30" G="30" B="30" A="255" />
-    <Color x:Key="MainSelectionColor" R="90" G="40" B="70" A="255" />
-    <Color x:Key="InnactiveForegroundColor" R="150" G="150" B="150" A="255" />
-    <Color x:Key="InnactiveSelectedItemColor" R="80" G="80" B="80" A="255" />
-    <Color x:Key="AlertColor" R="175" G="45" B="45" A="255" />
-
-    <SolidColorBrush x:Key="MainBackgroundBrush" Color="{StaticResource MainBackgroundColor}" />
-    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="#252525" />
-    <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#505050" />
-    <SolidColorBrush x:Key="LineNumberBrush" Color="#808080" />
-
-    <SolidColorBrush x:Key="AlertBrush" Color="{StaticResource AlertColor}" />
-
-    <SolidColorBrush x:Key="WindowHeaderBackgroundBrush" Color="#171717" />
-
-    <SolidColorBrush x:Key="MainForegroundBrush" Color="#e0e0e0" />
-    <SolidColorBrush x:Key="InnactiveForegroundBrush" Color="{StaticResource InnactiveForegroundColor}" />
-    <SolidColorBrush x:Key="HyperlinkForegroundBrush" Color="#5CA4DB" />
-
-    <SolidColorBrush x:Key="InnactiveSelectedItemBrush" Color="{StaticResource InnactiveSelectedItemColor}" />
-
-    <SolidColorBrush x:Key="HoveredItemBrush" Color="#323232" />
-
-    <SolidColorBrush x:Key="MainSelectionBrush" Color="{StaticResource MainSelectionColor}" />
-
-    <SolidColorBrush x:Key="ScrollBarBrush" Color="#5e5e5e" />
-
-    <Style x:Key="MainTitleTextStyle" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-        <Setter Property="FontWeight" Value="Bold" />
-    </Style>
-
-    <Style x:Key="WindowHeaderStyle" TargetType="{x:Type Grid}">
-        <Setter Property="Background" Value="{StaticResource WindowHeaderBackgroundBrush}" />
-        <Setter Property="Height" Value="21" />
-    </Style>
-
-    <Style x:Key="WindowHeaderTextStyle" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-        <Setter Property="Height" Value="20" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-
     <Style x:Key="GridSplitterStyle" TargetType="{x:Type GridSplitter}">
         <Setter Property="Background" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="Opacity" Value="0" />
@@ -112,19 +69,6 @@
                 </TransformGroup>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <Style x:Key="TitleButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
-        <Setter Property="Foreground" Value="{StaticResource InnactiveForegroundBrush}" />
-    </Style>
-
-    <Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
-        <Setter Property="Foreground" Value="{StaticResource InnactiveForegroundBrush}" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource AlertBrush}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="HyperlinkButtonStyle" TargetType="{x:Type Button}">
@@ -283,50 +227,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="AutoCompleteListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                    <Border x:Name="Bd"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}"
-                            SnapsToDevicePixels="true">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelectionActive" Value="False" />
-                                <Condition Property="IsSelected" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource MainSelectionBrush}" />
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Border.IsMouseOver" Value="True" />
-                                <Condition Property="IsSelected" Value="False" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource HoveredItemBrush}" />
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelectionActive" Value="True" />
-                                <Condition Property="IsSelected" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource MainSelectionBrush}" />
-                        </MultiTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="ListBoxStyle" TargetType="{x:Type ListBox}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
@@ -334,53 +234,6 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Style.Resources>
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource VerticalLineScrollBarStyle}" />
-        </Style.Resources>
-    </Style>
-
-    <Style x:Key="OutputAreaStyle" TargetType="{x:Type highlighter:CodeTextBox}">
-        <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
-        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="14" />
-    </Style>
-
-    <Style x:Key="CodeFileEditorMainPanelStyle" TargetType="{x:Type view:CodeFileEditorMainPanelView}">
-        <Setter Property="Height" Value="24" />
-        <Style.Resources>
-            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource PanelButtonStyle}" />
-            <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource PanelSeparatorStyle}" />
-        </Style.Resources>
-    </Style>
-
-    <Style x:Key="LineNumberPanelStyle" TargetType="{x:Type highlighter:LineNumberPanel}">
-        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource LineNumberBrush}" />
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="14" />
-    </Style>
-
-    <Style x:Key="CodeEditorStyle" TargetType="{x:Type highlighter:CodeTextBox}">
-        <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
-        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="HighlightPairBracketsBrush" Value="{StaticResource MainSelectionBrush}" />
-        <Setter Property="HighlightNoPairBracketBrush" Value="{StaticResource AlertBrush}" />
-        <Setter Property="CursorLineHighlightingBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
-    </Style>
-
-    <Style x:Key="AutoCompleteStyle" TargetType="{x:Type view:AutoCompleteView}">
-        <Setter Property="MinWidth" Value="250" />
-        <Setter Property="MaxHeight" Value="209" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-        <Setter Property="AdditionalInfoForeground" Value="{StaticResource InnactiveForegroundBrush}" />
-        <Style.Resources>
-            <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBoxStyle}" />
-            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource AutoCompleteListBoxItemStyle}" />
         </Style.Resources>
     </Style>
 
@@ -422,31 +275,6 @@
 
     <Style x:Key="TreeViewStyle" TargetType="{x:Type controls:TreeView}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-    </Style>
-
-    <Style x:Key="MiniCloseButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{StaticResource InnactiveForegroundBrush}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid x:Name="gd" Background="{TemplateBinding Background}">
-                        <ContentPresenter />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Button.IsFocused" Value="True">
-                            <Setter Property="Background" Value="Transparent" TargetName="gd" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
-                <Setter Property="Border.Background" Value="Transparent" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
@@ -550,14 +378,6 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource MainSelectionColor}" />
             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource InnactiveSelectedItemColor}" />
         </Style.Resources>
-    </Style>
-
-    <Style x:Key="MainWindowStyle" TargetType="{x:Type Window}">
-        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource MainBackgroundBrush}" />
-        <Setter Property="BorderThickness" Value="4" />
-        <Setter Property="Height" Value="800" />
-        <Setter Property="Width" Value="1200" />
     </Style>
 
 </ResourceDictionary>

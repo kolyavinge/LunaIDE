@@ -16,9 +16,9 @@ public class RuntimeException : Exception
 
     internal static RuntimeException ArgumentMustBe(string name, string expectedType, string actualType) => new($"Argument {name} must be {expectedType} instead of {actualType}.");
 
-    internal RuntimeException(string message) : base(message)
-    {
-    }
+    internal static RuntimeException Stackoverflow() => new("Stack overflow.");
+
+    internal RuntimeException(string message) : base(message) { }
 
     public override bool Equals(object? obj)
     {

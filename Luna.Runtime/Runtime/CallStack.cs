@@ -5,12 +5,15 @@ namespace Luna.Runtime;
 
 internal class CallStack : IEnumerable<IFunctionRuntimeValue>
 {
+    public const int MaxDepth = 1000;
+
     private readonly Stack<IFunctionRuntimeValue> _stack = new();
 
     public int Count => _stack.Count;
 
     public void Push(IFunctionRuntimeValue function)
     {
+        if (Count == MaxDepth) throw RuntimeException.Stackoverflow();
         _stack.Push(function);
     }
 

@@ -996,6 +996,7 @@ internal class FunctionParserTest
         Assert.AreEqual(1, func.Body.Count);
         Assert.True(func.Body.First() is FunctionValueElement);
         var body = (FunctionValueElement)func.Body.First();
+        Assert.AreEqual("g", body.Name);
         var innerbody = (FunctionValueElement)body.ArgumentValues[1];
         Assert.AreEqual("k", innerbody.Name);
         Assert.AreEqual(0, innerbody.LineIndex);
@@ -1259,6 +1260,43 @@ internal class FunctionParserTest
         Assert.AreEqual(1, _codeModel.Functions.Count);
         var func = _codeModel.Functions.First();
         Assert.AreEqual(5, func.Body.Count);
+    }
+
+    [Test]
+    public void FunctionDeclaration_MathOperatorsAsArgumentValues()
+    {
+        // ( f () (g + - * / %) )
+        Parse(new Token[]
+        {
+            new("(", 0, 0, 1, TokenKind.OpenBracket),
+
+            new("f", 0, 2, 1, TokenKind.Identificator),
+            new("(", 0, 4, 1, TokenKind.OpenBracket),
+            new(")", 0, 5, 1, TokenKind.CloseBracket),
+
+            new("(", 0, 7, 1, TokenKind.OpenBracket),
+            new("g", 0, 8, 1, TokenKind.Identificator),
+            new("+", 0, 10, 1, TokenKind.Plus),
+            new("-", 0, 12, 1, TokenKind.Minus),
+            new("*", 0, 14, 1, TokenKind.Asterisk),
+            new("/", 0, 16, 1, TokenKind.Slash),
+            new("%", 0, 18, 1, TokenKind.Percent),
+            new(")", 0, 19, 1, TokenKind.CloseBracket),
+
+            new(")", 0, 21, 1, TokenKind.CloseBracket)
+        });
+        Assert.False(_result.Errors.Any());
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.AreEqual(1, func.Body.Count);
+        var body = (FunctionValueElement)func.Body.First();
+        Assert.AreEqual("g", body.Name);
+        Assert.AreEqual("+", ((FunctionValueElement)body.ArgumentValues[0]).Name);
+        Assert.AreEqual("-", ((FunctionValueElement)body.ArgumentValues[1]).Name);
+        Assert.AreEqual("*", ((FunctionValueElement)body.ArgumentValues[2]).Name);
+        Assert.AreEqual("/", ((FunctionValueElement)body.ArgumentValues[3]).Name);
+        Assert.AreEqual("%", ((FunctionValueElement)body.ArgumentValues[4]).Name);
     }
 
     [Test]

@@ -298,6 +298,12 @@ public class FunctionParser : AbstractParser
             }
             MoveNext();
         }
+        else if (Token.Kind is TokenKind.Plus or TokenKind.Minus or TokenKind.Asterisk or TokenKind.Slash or TokenKind.Percent)
+        {
+            var name = GetTokenName();
+            body = new FunctionValueElement(_codeModel, name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex);
+            MoveNext();
+        }
         else if (Token.Kind == TokenKind.Variable)
         {
             var name = GetTokenName();

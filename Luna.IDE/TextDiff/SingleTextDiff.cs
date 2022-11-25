@@ -14,16 +14,11 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
     private readonly ITextDiffCodeProviderFactory _textDiffCodeProviderFactory;
     private readonly ILinesDecorationProcessor _linesDecorationProcessor;
     private readonly ILineNumberProcessor _lineNumberProcessor;
-    private CodeTextBoxModel _diffCodeTextBox;
     private int _oldTextLinesCount;
     private int _newTextLinesCount;
     private bool _inProgress;
 
-    public CodeTextBoxModel DiffCodeTextBox
-    {
-        get => _diffCodeTextBox;
-        private set { _diffCodeTextBox = value; RaisePropertyChanged(() => DiffCodeTextBox!); }
-    }
+    public IDiffCodeTextBox DiffCodeTextBox { get; }
 
     public LineNumberPanelModel OldLineNumberPanel { get; }
 
@@ -50,6 +45,7 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
     public SingleTextDiff(
         ITextDiffEngine textDiffEngine,
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
+        IDiffCodeTextBox diffCodeTextBox,
         ILinesDecorationProcessor linesDecorationProcessor,
         ILineNumberProcessor lineNumberProcessor)
     {
@@ -57,7 +53,7 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         _textDiffCodeProviderFactory = textDiffCodeProviderFactory;
         _linesDecorationProcessor = linesDecorationProcessor;
         _lineNumberProcessor = lineNumberProcessor;
-        _diffCodeTextBox = new CodeTextBoxModel();
+        DiffCodeTextBox = diffCodeTextBox;
         OldLineNumberPanel = new LineNumberPanelModel();
         NewLineNumberPanel = new LineNumberPanelModel();
     }
@@ -67,7 +63,7 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         InProgress = true;
         var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFileText);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
-        InitDiffCodeTextBoxModel(codeProvider, diffResult.VisualizerResult, oldFileText != null);
+        InitDiffCodeTextBox(codeProvider, diffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(diffResult);
         InProgress = false;
     }
@@ -77,20 +73,16 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         InProgress = true;
         var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFile.GetText());
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
-        InitDiffCodeTextBoxModel(codeProvider, diffResult.VisualizerResult, oldFileText != null);
+        InitDiffCodeTextBox(codeProvider, diffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(diffResult);
         InProgress = false;
     }
 
-    private void InitDiffCodeTextBoxModel(ICodeProvider codeProvider, SingleTextVisualizerResult diffResult, bool hasOldFileText)
+    private void InitDiffCodeTextBox(ICodeProvider codeProvider, SingleTextVisualizerResult diffResult, bool hasOldFileText)
     {
-        DiffCodeTextBox = new CodeTextBoxModel(codeProvider, new() { HighlighteredBrackets = "()" });
-        DiffCodeTextBox.IsReadOnly = false;
-        DiffCodeTextBox.SetText(diffResult.Text);
-        DiffCodeTextBox.IsReadOnly = true;
+        DiffCodeTextBox.Init(codeProvider, diffResult.Text);
         var firstChangeLineIndex = diffResult.LinesDiff.FindIndex(x => x.DiffKind != DiffTool.Core.DiffKind.Same);
         DiffCodeTextBox.GotoLine(firstChangeLineIndex != -1 ? firstChangeLineIndex : 0);
-        DiffCodeTextBox.LinesDecoration.Clear();
         if (hasOldFileText)
         {
             _linesDecorationProcessor.SetLineColors(diffResult.LinesDiff, DiffCodeTextBox.LinesDecoration);

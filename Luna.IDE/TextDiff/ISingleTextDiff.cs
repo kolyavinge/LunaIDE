@@ -6,7 +6,7 @@ namespace Luna.IDE.TextDiff;
 
 public interface ISingleTextDiff
 {
-    CodeTextBoxModel DiffCodeTextBox { get; }
+    IDiffCodeTextBox DiffCodeTextBox { get; }
 
     LineNumberPanelModel OldLineNumberPanel { get; }
 

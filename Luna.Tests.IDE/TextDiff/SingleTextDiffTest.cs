@@ -17,6 +17,7 @@ internal class SingleTextDiffTest
     private Mock<ILinesDecorationProcessor> _linesDecorationProcessor;
     private Mock<ILineNumberProcessor> _lineNumberProcessor;
     private Mock<ICodeProvider> _codeProvider;
+    private Mock<IDiffCodeTextBox> _diffCodeTextBox;
     private Mock<IFileSystem> _fileSystem;
     private List<SingleTextVisualizerLineDiff> _linesDiff;
     private SingleTextDiffResult _diffResult;
@@ -30,11 +31,16 @@ internal class SingleTextDiffTest
         _linesDecorationProcessor = new Mock<ILinesDecorationProcessor>();
         _lineNumberProcessor = new Mock<ILineNumberProcessor>();
         _codeProvider = new Mock<ICodeProvider>();
+        _diffCodeTextBox = new Mock<IDiffCodeTextBox>();
         _fileSystem = new Mock<IFileSystem>();
         _linesDiff = new List<SingleTextVisualizerLineDiff>();
         _diffResult = new SingleTextDiffResult(1, 1, new SingleTextVisualizerResult("diff text", _linesDiff));
         _singleTextDiff = new SingleTextDiff(
-            _textDiffEngine.Object, _textDiffCodeProviderFactory.Object, _linesDecorationProcessor.Object, _lineNumberProcessor.Object);
+            _textDiffEngine.Object,
+            _textDiffCodeProviderFactory.Object,
+            _diffCodeTextBox.Object,
+            _linesDecorationProcessor.Object,
+            _lineNumberProcessor.Object);
     }
 
     [Test]
@@ -45,7 +51,7 @@ internal class SingleTextDiffTest
 
         _singleTextDiff.MakeDiff(".ext", "old text", "new text").Wait();
 
-        Assert.That(_singleTextDiff.DiffCodeTextBox.Text.ToString(), Is.EqualTo("diff text"));
+        _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
     }
 
@@ -57,7 +63,7 @@ internal class SingleTextDiffTest
 
         _singleTextDiff.MakeDiff(".ext", null, "new text").Wait();
 
-        Assert.That(_singleTextDiff.DiffCodeTextBox.Text.ToString(), Is.EqualTo("diff text"));
+        _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());
     }
 
@@ -71,7 +77,7 @@ internal class SingleTextDiffTest
 
         _singleTextDiff.MakeDiff("old text", codeFile).Wait();
 
-        Assert.That(_singleTextDiff.DiffCodeTextBox.Text.ToString(), Is.EqualTo("diff text"));
+        _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
     }
 
@@ -85,7 +91,7 @@ internal class SingleTextDiffTest
 
         _singleTextDiff.MakeDiff(null, codeFile).Wait();
 
-        Assert.That(_singleTextDiff.DiffCodeTextBox.Text.ToString(), Is.EqualTo("diff text"));
+        _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());
     }
 }

@@ -50,6 +50,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
         provider.Bind<ILinesDecorationProcessor, LinesDecorationProcessor>();
         provider.Bind<ILineNumberProcessor, SingleTextDiffLineNumberProcessor>();
+        provider.Bind<IDiffCodeTextBox, DiffCodeTextBox>();
         provider.Bind<ISingleTextDiff, SingleTextDiff>();
         provider.Bind<SingleTextDiffViewModel, SingleTextDiffViewModel>();
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();

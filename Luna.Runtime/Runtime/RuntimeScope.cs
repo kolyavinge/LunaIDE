@@ -29,7 +29,8 @@ internal class RuntimeScope : IRuntimeScope
 
     private readonly IValueElementEvaluator _evaluator;
     private readonly IEmbeddedFunctionsCollection _embeddedFunctions;
-    private readonly Dictionary<string, ScopeFunctionDeclaration> _declaredFunctions;
+    private readonly Dictionary<string, FunctionDeclaration> _declaredFunctions;
+    private readonly Dictionary<string, ScopeLambdaDeclaration> _declaredLambdas;
     private readonly Dictionary<string, ConstantDeclaration> _constantDeclarations;
     private readonly Dictionary<string, VariableRuntimeValue> _variables;
     private readonly CallStack _callStack;
@@ -44,7 +45,8 @@ internal class RuntimeScope : IRuntimeScope
     {
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;
-        _declaredFunctions = declaredFunctions.Select(x => new ScopeFunctionDeclaration(x.Name, x.Arguments, x.Body)).ToDictionary(x => x.Name, v => v);
+        _declaredFunctions = declaredFunctions.ToDictionary(x => x.Name, v => v);
+        _declaredLambdas = new();
         _constantDeclarations = constantDeclarations.ToDictionary(x => x.Name, v => v);
         _callStack = callStack;
         _variables = new();
@@ -54,6 +56,11 @@ internal class RuntimeScope : IRuntimeScope
     public ValueElement GetConstantValue(string constantName)
     {
         return _constantDeclarations[constantName].Value;
+    }
+
+    public FunctionDeclaration GetFunctionDeclaration(string functionName)
+    {
+        return _declaredFunctions[functionName];
     }
 
     public bool IsDeclaredOrEmbeddedFunction(string functionName)
@@ -77,14 +84,28 @@ internal class RuntimeScope : IRuntimeScope
 
     public string[] GetFunctionArgumentNames(string functionName)
     {
-        return _embeddedFunctions.Contains(functionName)
-            ? _embeddedFunctions.GetByName(functionName).Arguments
-            : _declaredFunctions[functionName].Arguments.Select(x => x.Name).ToArray();
+        if (_embeddedFunctions.Contains(functionName))
+        {
+            return _embeddedFunctions.GetByName(functionName).Arguments;
+        }
+        else if (_declaredFunctions.ContainsKey(functionName))
+        {
+            return _declaredFunctions[functionName].Arguments.Select(x => x.Name).ToArray();
+        }
+        else
+        {
+            return _declaredLambdas[functionName].Arguments.Select(x => x.Name).ToArray();
+        }
     }
 
     public IRuntimeValue GetFunctionArgumentValue(string argumentName)
     {
         return _argumentStack.Peek()[argumentName];
+    }
+
+    public void AddFunctionArgument(string argumentName, IRuntimeValue argumentValue)
+    {
+        _argumentStack.Peek().Add(argumentName, argumentValue);
     }
 
     public void PushCallStack(IFunctionRuntimeValue function)
@@ -99,21 +120,23 @@ internal class RuntimeScope : IRuntimeScope
         _argumentStack.Pop();
     }
 
-    public void AddFunctionArgument(string argumentName, IRuntimeValue argumentValue)
-    {
-        _argumentStack.Peek().Add(argumentName, argumentValue);
-    }
-
     public IRuntimeValue GetDeclaredFunctionValue(string functionName)
     {
         IRuntimeValue result = VoidRuntimeValue.Instance;
-        var declaration = _declaredFunctions[functionName];
-        foreach (var item in declaration.Body)
+        var body = GetFunctionBody(functionName);
+        foreach (var bodyItem in body)
         {
-            result = _evaluator.Eval(this, item).GetValue();
+            result = _evaluator.Eval(this, bodyItem).GetValue();
         }
 
         return result;
+    }
+
+    private FunctionBody GetFunctionBody(string functionName)
+    {
+        return _declaredFunctions.ContainsKey(functionName)
+            ? _declaredFunctions[functionName].Body
+            : _declaredLambdas[functionName].Body;
     }
 
     public bool IsEmbeddedFunction(string functionName)
@@ -135,18 +158,18 @@ internal class RuntimeScope : IRuntimeScope
         var currentArguments = _argumentStack.Peek().Keys.Select(x => new FunctionArgument(x)).ToList();
         var alreadyPassedArguments = currentArguments.Select(x => GetFunctionArgumentValue(x.Name)).ToReadonlyArray();
         var arguments = currentArguments.Union(lambdaElement.Arguments).ToReadonlyArray();
-        _declaredFunctions.Add(name, new ScopeFunctionDeclaration(name, arguments, lambdaElement.Body));
+        _declaredLambdas.Add(name, new(name, arguments, lambdaElement.Body));
 
         return new(name, alreadyPassedArguments);
     }
 
-    class ScopeFunctionDeclaration
+    class ScopeLambdaDeclaration
     {
         public string Name { get; }
         public ReadonlyArray<FunctionArgument> Arguments { get; }
         public FunctionBody Body { get; }
 
-        public ScopeFunctionDeclaration(string name, ReadonlyArray<FunctionArgument> arguments, FunctionBody body)
+        public ScopeLambdaDeclaration(string name, ReadonlyArray<FunctionArgument> arguments, FunctionBody body)
         {
             Name = name;
             Arguments = arguments;

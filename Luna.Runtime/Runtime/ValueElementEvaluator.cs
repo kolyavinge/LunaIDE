@@ -26,7 +26,7 @@ internal class ValueElementEvaluator : IValueElementEvaluator
         if (element is FunctionValueElement funcElement && scope.IsDeclaredOrEmbeddedFunction(funcElement.Name))
         {
             var arguments = funcElement.ArgumentValues.Select(arg => Eval(scope, arg)).ToReadonlyArray();
-            var funcScope = Scopes!.GetForCodeModel(funcElement.CodeModel);
+            var funcScope = Scopes!.GetForFunction(scope, funcElement.Name);
             return new FunctionRuntimeValue(funcElement.Name, funcScope) { AlreadyPassedArguments = arguments };
         }
         if (element is FunctionValueElement argFuncElement)

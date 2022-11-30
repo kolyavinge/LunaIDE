@@ -105,7 +105,7 @@ internal class DeclarationNavigatorTest
     [Test]
     public void Function()
     {
-        var result = _navigator.GetDeclarationFor(_codeFile, new FunctionValueElement(_codeFile.CodeModel, "FUNC", new ValueElement[0]));
+        var result = _navigator.GetDeclarationFor(_codeFile, new FunctionValueElement("FUNC", new ValueElement[0]));
         Assert.NotNull(result);
         Assert.AreEqual(_func, result.Declaration);
         Assert.AreEqual(_codeFile, result.CodeFile);
@@ -114,7 +114,7 @@ internal class DeclarationNavigatorTest
     [Test]
     public void Function_Imported()
     {
-        var result = _navigator.GetDeclarationFor(_codeFile, new FunctionValueElement(_importedCodeFile.CodeModel, "IMPORTED_FUNC", new ValueElement[0]));
+        var result = _navigator.GetDeclarationFor(_codeFile, new FunctionValueElement("IMPORTED_FUNC", new ValueElement[0]));
         Assert.NotNull(result);
         Assert.AreEqual(_importedFunc, result.Declaration);
         Assert.AreEqual(_importedCodeFile, result.CodeFile);

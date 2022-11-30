@@ -19,18 +19,21 @@ internal class CodeModelNavigatorTest
         _codeModel.AddConstantDeclaration(new("WIDTH", new IntegerValueElement(1, 0, 12), 0, 6));
 
         _codeModel.AddFunctionDeclaration(new(
+            _codeModel,
             "get_value",
             new FunctionArgument[] { new("x", 5, 12), new("y", 5, 14) },
             new() { new IntegerValueElement(1, 6, 4), new FloatValueElement(1.0, 7, 4) },
             5, 1));
 
         _codeModel.AddFunctionDeclaration(new(
+            _codeModel,
             "get_list",
             new FunctionArgument[0],
             new() { new ListValueElement(new[] { new StringValueElement("123", 9, 6) }, 9, 4) },
             8, 1));
 
         _codeModel.AddFunctionDeclaration(new(
+            _codeModel,
             "with_lambda",
             new FunctionArgument[] { new("x", 12, 12) },
             new()
@@ -43,19 +46,19 @@ internal class CodeModelNavigatorTest
             12, 1));
 
         _codeModel.AddFunctionDeclaration(new(
+            _codeModel,
             "func_call",
             new FunctionArgument[] { new("x", 16, 12) },
             new()
             {
                 new FunctionValueElement(
-                    _codeModel,
                     "func",
                     new ValueElement[] { new FunctionArgumentValueElement("x", 17, 8), new FloatValueElement(1.0, 17, 10) },
                     17, 4)
             },
             16, 1));
 
-        _codeModel.RunFunction = new FunctionValueElement(_codeModel, "func_in_run", new[] { new FloatValueElement(1.0, 20, 25) }, 20, 1);
+        _codeModel.RunFunction = new FunctionValueElement("func_in_run", new[] { new FloatValueElement(1.0, 20, 25) }, 20, 1);
 
         _navigator = new();
     }

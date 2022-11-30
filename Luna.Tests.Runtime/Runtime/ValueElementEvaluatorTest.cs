@@ -52,7 +52,8 @@ internal class ValueElementEvaluatorTest
     public void DeclaredFunctionRuntimeValue()
     {
         var arguments = new[] { new IntegerValueElement(123) };
-        var func = new FunctionValueElement(_codeModel, "func", arguments);
+        var func = new FunctionValueElement("func", arguments);
+        _scopes.Setup(x => x.GetForFunction(_scope.Object, "func")).Returns(_scope.Object);
         _scope.Setup(x => x.IsDeclaredOrEmbeddedFunction("func")).Returns(true);
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new IntegerRuntimeValue(888));
@@ -64,7 +65,7 @@ internal class ValueElementEvaluatorTest
     public void ArgumentAsFunctionRuntimeValue()
     {
         var arguments = new[] { new IntegerValueElement(123) };
-        var func = new FunctionValueElement(_codeModel, "x", arguments);
+        var func = new FunctionValueElement("x", arguments);
         _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new FunctionRuntimeValue("func", _scope.Object));
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new IntegerRuntimeValue(888));
@@ -78,7 +79,7 @@ internal class ValueElementEvaluatorTest
         try
         {
             var arguments = new[] { new IntegerValueElement(123) };
-            var func = new FunctionValueElement(_codeModel, "x", arguments);
+            var func = new FunctionValueElement("x", arguments);
             _scope.Setup(x => x.GetFunctionArgumentValue("x")).Returns(new IntegerRuntimeValue(1));
             _evaluator.Eval(_scope.Object, func);
         }

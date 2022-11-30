@@ -213,6 +213,30 @@ internal class InterpreterIntegration : BaseInterpreterTest
     }
 
     [Test]
+    public void SetVariableDifferentFiles()
+    {
+        CodeFiles(new[]
+        {
+            // main
+            ("main.luna", @"
+            import 'imported.luna'
+            (get_result ()
+                (set @var 456)
+                ((get_var) @var)
+            )
+            (run (get_result))"),
+            // imported
+            ("imported.luna", @"
+            (get_var ()
+                (set @var 123)
+                @var
+            )")
+        });
+        Run();
+        Assert.AreEqual("(123 456)", _resultString);
+    }
+
+    [Test]
     public void EqVariableTrue()
     {
         CodeFile(@"

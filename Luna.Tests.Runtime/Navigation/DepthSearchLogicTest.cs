@@ -315,7 +315,7 @@ internal class DepthSearchLogicTest
     [Test]
     public void FunctionValueElement()
     {
-        var root = new FunctionValueElement(null, "func_call", new FunctionValueElement[0]);
+        var root = new FunctionValueElement("func_call", new FunctionValueElement[0]);
         static bool crit(CodeElement e) => e is FunctionValueElement { Name: "func_call" };
 
         var result = _logic.Seach(root, crit);
@@ -328,7 +328,7 @@ internal class DepthSearchLogicTest
     [Test]
     public void FunctionValueElement_NoResult()
     {
-        var root = new FunctionValueElement(null, "func_call", new FunctionValueElement[0]);
+        var root = new FunctionValueElement("func_call", new FunctionValueElement[0]);
         static bool crit(CodeElement e) => false;
 
         var result = _logic.Seach(root, crit);
@@ -340,7 +340,7 @@ internal class DepthSearchLogicTest
     public void FunctionValueElement_Argument()
     {
         var arg = new FloatValueElement(1.2);
-        var root = new FunctionValueElement(null, "func_call", new[] { arg });
+        var root = new FunctionValueElement("func_call", new[] { arg });
         static bool crit(CodeElement e) => e is FloatValueElement { Value: 1.2 };
 
         var result = _logic.Seach(root, crit);

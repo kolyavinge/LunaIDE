@@ -1,23 +1,20 @@
 ﻿using System.Collections.Generic;
 using Luna.Collections;
-using Luna.ProjectModel;
 
 namespace Luna.CodeElements;
 
 public class FunctionValueElement : ValueElement, IEquatable<FunctionValueElement?>
 {
-    public CodeModel CodeModel { get; }
     public string Name { get; }
     public ReadonlyArray<ValueElement> ArgumentValues { get; }
 
-    public FunctionValueElement(CodeModel codeModel, string name, IEnumerable<ValueElement> argumentValues, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    public FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
     {
-        CodeModel = codeModel;
         Name = name;
         ArgumentValues = new ReadonlyArray<ValueElement>(argumentValues);
     }
 
-    internal FunctionValueElement(CodeModel codeModel, string name, IEnumerable<ValueElement> argumentValues) : this(codeModel, name, argumentValues, 0, 0) { }
+    internal FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues) : this(name, argumentValues, 0, 0) { }
 
     public override string ToString()
     {

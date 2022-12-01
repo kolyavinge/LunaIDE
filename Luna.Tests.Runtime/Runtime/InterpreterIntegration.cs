@@ -10,212 +10,184 @@ internal class InterpreterIntegration : BaseInterpreterTest
     [SetUp]
     public void Setup()
     {
-        Init();
     }
 
     [Test]
     public void ConstList()
     {
-        CodeFile(@"
+        Run(@"
             (func () (123 1.23 '123'))
-            (run (func))
-");
-        Run();
+            (run (func))");
         Assert.AreEqual("(123 1.23 '123')", _resultString);
     }
 
     [Test]
     public void DeclaredConstList()
     {
-        CodeFile(@"
+        Run(@"
             const INT_CONST 123
             const FLOAT_CONST 1.23
             const STRING_CONST '123'
             (func () (INT_CONST FLOAT_CONST STRING_CONST))
-            (run (func))
-");
-        Run();
+            (run (func))");
         Assert.AreEqual("(123 1.23 '123')", _resultString);
     }
 
     [Test]
     public void ListGetValue()
     {
-        CodeFile(@"
+        Run(@"
             (get_list () ((+ 1 2) (+ 3 4)))
-            (run (get_list))
-");
-        Run();
+            (run (get_list))");
         Assert.AreEqual("(3 7)", _resultString);
     }
 
     [Test]
     public void Func()
     {
-        CodeFile(@"
+        Run(@"
             (func (x) x)
-            (run (func 123))
-");
-        Run();
+            (run (func 123))");
         Assert.AreEqual("123", _resultString);
     }
 
     [Test]
     public void Lambda()
     {
-        CodeFile(@"
+        Run(@"
             (func (x) (x))
-            (run (func (lambda () 1.23)))
-");
-        Run();
+            (run (func (lambda () 1.23)))");
         Assert.AreEqual("1.23", _resultString);
     }
 
     [Test]
     public void LambdaResult()
     {
-        CodeFile(@"
+        Run(@"
             (func (x) x)
-            (run (func (lambda (x) x)))
-");
-        Run();
-        Assert.AreEqual("lambda_0", _resultString);
+            (run (func (lambda (x) x)))");
+        Assert.AreEqual("#lambda_x", _resultString);
     }
 
     [Test]
     public void LambdaWithFuncArgument_1()
     {
-        CodeFile(@"
+        Run(@"
             (func (x) (x))
             (func2 (x) (lambda () x))
-            (run (func (func2 4)))
-");
-        Run();
+            (run (func (func2 4)))");
         Assert.AreEqual("4", _resultString);
     }
 
     [Test]
     public void LambdaWithFuncArgument_2()
     {
-        CodeFile(@"
+        Run(@"
             (func2 (x) (lambda (y) (1 x y)))
-            (run (func2 2 3))
-");
-        Run();
+            (run (func2 2 3))");
         Assert.AreEqual("(1 2 3)", _resultString);
     }
 
     [Test]
     public void Carrying_1()
     {
-        CodeFile(@"
+        Run(@"
             (func (x y) (1 x y))
             (func2 () (func 2))
-            (run (func2 3))
-");
-        Run();
+            (run (func2 3))");
         Assert.AreEqual("(1 2 3)", _resultString);
     }
 
     [Test]
     public void Carrying_2()
     {
-        CodeFile(@"
+        Run(@"
             (func (x y) (1 x y))
             (func2 (x) (x 3))
-            (run (func2 (func 2)))
-");
-        Run();
+            (run (func2 (func 2)))");
         Assert.AreEqual("(1 2 3)", _resultString);
+    }
+
+    [Test]
+    public void Carrying_EmbeddedFunction()
+    {
+        Run(@"
+            (add () (+ 1))
+            (run (add 2))");
+        Assert.AreEqual("3", _resultString);
     }
 
     [Test]
     public void SameArgumentName()
     {
-        CodeFile(@"
+        Run(@"
             (func (x) x)
             (func2 (x) (func x))
-            (run (func2 1))
-");
-        Run();
+            (run (func2 1))");
         Assert.AreEqual("1", _resultString);
     }
 
     [Test]
     public void If()
     {
-        CodeFile(@"
-            (run (if true 1 2))
-");
-        Run();
+        Run(@"
+            (run (if true 1 2))");
         Assert.AreEqual("1", _resultString);
     }
 
     [Test]
     public void Add()
     {
-        CodeFile(@"
-            (run (+ 1 2))
-");
-        Run();
+        Run(@"
+            (run (+ 1 2))");
         Assert.AreEqual("3", _resultString);
     }
 
     [Test]
     public void Sub()
     {
-        CodeFile(@"
-            (run (- 1 2))
-");
-        Run();
+        Run(@"
+            (run (- 1 2))");
         Assert.AreEqual("-1", _resultString);
     }
 
     [Test]
     public void Mul()
     {
-        CodeFile(@"
-            (run (* 3 2))
-");
-        Run();
+        Run(@"
+            (run (* 3 2))");
         Assert.AreEqual("6", _resultString);
     }
 
     [Test]
     public void Div()
     {
-        CodeFile(@"
-            (run (/ 8 2))
-");
-        Run();
+        Run(@"
+            (run (/ 8 2))");
         Assert.AreEqual("4", _resultString);
     }
 
     [Test]
     public void Remainder()
     {
-        CodeFile(@"
-            (run (% 8 3))
-");
-        Run();
+        Run(@"
+            (run (% 8 3))");
         Assert.AreEqual("2", _resultString);
     }
 
     [Test]
     public void SetVariable()
     {
-        CodeFile(@"
+        Run(@"
             (set_get_var () (set @var 123) @var)
-            (run (set_get_var))
-");
-        Run();
+            (run (set_get_var))");
         Assert.AreEqual("123", _resultString);
     }
 
     [Test]
     public void SetVariableDifferentFiles()
     {
-        CodeFiles(new[]
+        Run(new[]
         {
             // main
             ("main.luna", @"
@@ -232,60 +204,49 @@ internal class InterpreterIntegration : BaseInterpreterTest
                 @var
             )")
         });
-        Run();
         Assert.AreEqual("(123 456)", _resultString);
     }
 
     [Test]
     public void EqVariableTrue()
     {
-        CodeFile(@"
+        Run(@"
             (eq_var ()
                 (set @var true)
                 (eq @var true))
-            (run (eq_var))
-");
-        Run();
+            (run (eq_var))");
         Assert.AreEqual("true", _resultString);
     }
 
     [Test]
     public void InnerEmbeddedFunctions()
     {
-        CodeFile(@"
-            (run (+ (+ 1 2) (+ 3 4)))
-");
-        Run();
+        Run(@"
+            (run (+ (+ 1 2) (+ 3 4)))");
         Assert.AreEqual("10", _resultString);
     }
 
     [Test]
     public void ListsEqual()
     {
-        CodeFile(@"
-            (run (eq (1 2 3) (1.0 2.0 3.0)))
-");
-        Run();
+        Run(@"
+            (run (eq (1 2 3) (1.0 2.0 3.0)))");
         Assert.AreEqual("true", _resultString);
     }
 
     [Test]
     public void ListsNotEqual()
     {
-        CodeFile(@"
-            (run (eq (1 2 3) (3 2 1)))
-");
-        Run();
+        Run(@"
+            (run (eq (1 2 3) (3 2 1)))");
         Assert.AreEqual("false", _resultString);
     }
 
     [Test]
     public void CodeModelBuildError_Stopped()
     {
-        CodeFile(@"
-            (run wrong lexems)
-");
-        Run();
+        Run(@"
+            (run wrong lexems)");
         Assert.Null(_resultString);
         _runtimeOutput.Verify(x => x.SendMessage(new OutputMessage(new OutputMessageItem[]
         {

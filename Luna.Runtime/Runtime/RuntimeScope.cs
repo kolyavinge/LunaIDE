@@ -48,8 +48,8 @@ internal class RuntimeScope : IRuntimeScope
         _declaredFunctions = declaredFunctions.ToDictionary(x => x.Name, v => v);
         _declaredLambdas = new();
         _constantDeclarations = constantDeclarations.ToDictionary(x => x.Name, v => v);
-        _callStack = callStack;
         _variables = new();
+        _callStack = callStack;
         _argumentStack = new();
     }
 
@@ -150,28 +150,22 @@ internal class RuntimeScope : IRuntimeScope
         return func.GetValue(argumentValues);
     }
 
-    private int _lambdaNameIncrement;
     public AddLambdaResult AddLambda(LambdaValueElement lambdaElement)
     {
-        var name = $"lambda_{_lambdaNameIncrement}";
-        _lambdaNameIncrement++;
-        var currentArguments = _argumentStack.Peek().Keys.Select(x => new FunctionArgument(x)).ToList();
-        var alreadyPassedArguments = currentArguments.Select(x => GetFunctionArgumentValue(x.Name)).ToReadonlyArray();
-        var arguments = currentArguments.Union(lambdaElement.Arguments).ToReadonlyArray();
-        _declaredLambdas.Add(name, new(name, arguments, lambdaElement.Body));
+        var stackArguments = _argumentStack.Peek().Keys.Select(x => new FunctionArgument(x)).ToList();
+        var alreadyPassedArguments = stackArguments.Select(x => GetFunctionArgumentValue(x.Name)).ToReadonlyArray();
+        var arguments = stackArguments.Union(lambdaElement.Arguments).ToReadonlyArray();
+        _declaredLambdas.Add(lambdaElement.Name, new(arguments, lambdaElement.Body));
 
-        return new(name, alreadyPassedArguments);
+        return new(alreadyPassedArguments);
     }
 
     class ScopeLambdaDeclaration
     {
-        public string Name { get; }
         public ReadonlyArray<FunctionArgument> Arguments { get; }
         public FunctionBody Body { get; }
-
-        public ScopeLambdaDeclaration(string name, ReadonlyArray<FunctionArgument> arguments, FunctionBody body)
+        public ScopeLambdaDeclaration(ReadonlyArray<FunctionArgument> arguments, FunctionBody body)
         {
-            Name = name;
             Arguments = arguments;
             Body = body;
         }

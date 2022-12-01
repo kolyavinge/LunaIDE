@@ -95,9 +95,9 @@ internal class ValueElementEvaluatorTest
     {
         var arguments = new[] { new FunctionArgument("x") };
         var lambda = new LambdaValueElement(arguments, new FunctionBody());
-        _scope.Setup(x => x.AddLambda(lambda)).Returns(new AddLambdaResult("lambda_0", new(new[] { new IntegerRuntimeValue(123) })));
+        _scope.Setup(x => x.AddLambda(lambda)).Returns(new AddLambdaResult(new(new[] { new IntegerRuntimeValue(123) })));
         var result = (FunctionRuntimeValue)_evaluator.Eval(_scope.Object, lambda);
-        Assert.AreEqual("lambda_0", result.Name);
+        Assert.AreEqual("#lambda_x", result.Name);
         Assert.NotNull(result.AlreadyPassedArguments);
         Assert.AreEqual(1, result.AlreadyPassedArguments.Count);
         Assert.AreEqual(new IntegerRuntimeValue(123), result.AlreadyPassedArguments[0]);

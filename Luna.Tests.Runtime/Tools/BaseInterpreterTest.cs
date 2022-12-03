@@ -8,7 +8,7 @@ namespace Luna.Tests.Tools;
 
 internal class BaseInterpreterTest
 {
-    protected Mock<IRuntimeOutput> _output;
+    protected Mock<IRuntimeOutput> _runtimeOutput;
     protected Mock<IOutputWriter> _outputWriter;
     protected ICodeModelBuilder _codeModelBuilder;
     protected Mock<IRuntimeExceptionHandler> _runtimeExceptionHandler;
@@ -19,13 +19,13 @@ internal class BaseInterpreterTest
 
     protected void Init()
     {
-        _output = new Mock<IRuntimeOutput>();
+        _runtimeOutput = new Mock<IRuntimeOutput>();
         _outputWriter = new Mock<IOutputWriter>();
         _codeModelBuilder = new CodeModelBuilder(_outputWriter.Object);
         _runtimeExceptionHandler = new Mock<IRuntimeExceptionHandler>();
-        RuntimeEnvironment.ExceptionHandler = _runtimeExceptionHandler.Object;
         _callStack = new CallStack();
         _evaluator = new ValueElementEvaluator();
+        RuntimeEnvironment.StandartOutput = _runtimeOutput.Object;
     }
 
     protected void Run(string codeFileContent)

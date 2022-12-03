@@ -22,10 +22,12 @@ internal interface IRuntimeScope
 
 internal class AddLambdaResult
 {
+    public string Name { get; }
     public ReadonlyArray<IRuntimeValue> AlreadyPassedArguments { get; }
 
-    public AddLambdaResult(ReadonlyArray<IRuntimeValue> alreadyPassedArguments)
+    public AddLambdaResult(string name, ReadonlyArray<IRuntimeValue> alreadyPassedArguments)
     {
+        Name = name;
         AlreadyPassedArguments = alreadyPassedArguments;
     }
 }

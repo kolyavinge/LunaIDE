@@ -67,7 +67,7 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run(@"
             (func (x) x)
             (run (func (lambda (x) x)))");
-        Assert.AreEqual("#lambda_x", _resultString);
+        Assert.AreEqual("#lambda_0", _resultString);
     }
 
     [Test]

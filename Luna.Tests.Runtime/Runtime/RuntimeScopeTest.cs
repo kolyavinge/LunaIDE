@@ -147,8 +147,8 @@ internal class RuntimeScopeTest
         _scope.AddFunctionArgument("x", _runtimeValue.Object);
 
         var lambda = new LambdaValueElement(new FunctionArgument[] { new("y") }, new());
-        _scope.AddLambda(lambda);
-        var result = _scope.GetFunctionArgumentNames(lambda.Name);
+        var addLambdaResult = _scope.AddLambda(lambda);
+        var result = _scope.GetFunctionArgumentNames(addLambdaResult.Name);
 
         Assert.That(result, Has.Length.EqualTo(2));
         Assert.That(result[0], Is.EqualTo("x"));
@@ -165,8 +165,8 @@ internal class RuntimeScopeTest
         _evaluator.Setup(x => x.Eval(_scope, new StringValueElement("1"))).Returns(new StringRuntimeValue("1"));
 
         var lambda = new LambdaValueElement(new FunctionArgument[] { new("y") }, new() { new IntegerValueElement(1), new StringValueElement("1") });
-        _scope.AddLambda(lambda);
-        var result = _scope.GetDeclaredFunctionValue(lambda.Name);
+        var addLambdaResult = _scope.AddLambda(lambda);
+        var result = _scope.GetDeclaredFunctionValue(addLambdaResult.Name);
 
         Assert.That(result, Is.EqualTo(new StringRuntimeValue("1")));
         _evaluator.Verify(x => x.Eval(_scope, new IntegerValueElement(1)), Times.Once());

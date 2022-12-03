@@ -43,7 +43,7 @@ internal class ValueElementEvaluator : IValueElementEvaluator
         if (element is LambdaValueElement lambdaElement)
         {
             var result = scope.AddLambda(lambdaElement);
-            return new FunctionRuntimeValue(lambdaElement.Name, scope) { AlreadyPassedArguments = result.AlreadyPassedArguments };
+            return new FunctionRuntimeValue(result.Name, scope) { AlreadyPassedArguments = result.AlreadyPassedArguments };
         }
         throw RuntimeException.CannotConvert(element);
     }

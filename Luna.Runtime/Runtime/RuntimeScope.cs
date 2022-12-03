@@ -27,6 +27,7 @@ internal class RuntimeScope : IRuntimeScope
         return new RuntimeScope(evaluator, embeddedFunctions, functions, constants, callStack);
     }
 
+    private int _lambdaNameIncrement = 0;
     private readonly IValueElementEvaluator _evaluator;
     private readonly IEmbeddedFunctionsCollection _embeddedFunctions;
     private readonly Dictionary<string, FunctionDeclaration> _declaredFunctions;
@@ -43,6 +44,7 @@ internal class RuntimeScope : IRuntimeScope
         IEnumerable<ConstantDeclaration> constantDeclarations,
         CallStack callStack)
     {
+        _lambdaNameIncrement = 0;
         _evaluator = evaluator;
         _embeddedFunctions = embeddedFunctions;
         _declaredFunctions = declaredFunctions.ToDictionary(x => x.Name, v => v);
@@ -152,12 +154,14 @@ internal class RuntimeScope : IRuntimeScope
 
     public AddLambdaResult AddLambda(LambdaValueElement lambdaElement)
     {
+        var name = $"#lambda_{_lambdaNameIncrement}";
+        _lambdaNameIncrement++;
         var stackArguments = _argumentStack.Peek().Keys.Select(x => new FunctionArgument(x)).ToList();
         var alreadyPassedArguments = stackArguments.Select(x => GetFunctionArgumentValue(x.Name)).ToReadonlyArray();
         var arguments = stackArguments.Union(lambdaElement.Arguments).ToReadonlyArray();
-        _declaredLambdas.Add(lambdaElement.Name, new(arguments, lambdaElement.Body));
+        _declaredLambdas.Add(name, new(arguments, lambdaElement.Body));
 
-        return new(alreadyPassedArguments);
+        return new(name, alreadyPassedArguments);
     }
 
     class ScopeLambdaDeclaration

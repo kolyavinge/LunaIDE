@@ -29,8 +29,3 @@ internal class RuntimeExceptionHandler : IRuntimeExceptionHandler
         AppWindowsCollection.Windows.Each(x => x.Close());
     }
 }
-
-internal class EmptyRuntimeExceptionHandler : IRuntimeExceptionHandler
-{
-    public void Handle(RuntimeException rte) { }
-}

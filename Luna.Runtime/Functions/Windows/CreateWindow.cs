@@ -3,7 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Luna.Collections;
+using Luna.Functions.Lang;
 using Luna.Runtime;
+using Luna.Utils;
 
 namespace Luna.Functions.Windows;
 
@@ -21,6 +23,10 @@ internal class CreateWindow : EmbeddedFunction
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         window.Width = 800;
         window.Height = 600;
+        window.Closing += (s, e) =>
+        {
+            AppTimersCollection.Timers.Each(x => x.Value.Stop());
+        };
 
         return new ObjectRuntimeValue(window);
     }

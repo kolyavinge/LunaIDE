@@ -44,24 +44,4 @@ internal class LambdaValueElementTest
         Assert.False(lambda1.Equals(lambda2));
         Assert.False(lambda2.Equals(lambda1));
     }
-
-    [Test]
-    public void Name()
-    {
-        var lambda = new LambdaValueElement(new FunctionArgument[0], new());
-        Assert.That(lambda.Name, Is.EqualTo("#lambda_"));
-
-        lambda = new LambdaValueElement(new FunctionArgument[] { new("x") }, new());
-        Assert.That(lambda.Name, Is.EqualTo("#lambda_x"));
-
-        lambda = new LambdaValueElement(new FunctionArgument[] { new("x"), new("y"), new("z") }, new());
-        Assert.That(lambda.Name, Is.EqualTo("#lambda_x_y_z"));
-    }
-
-    [Test]
-    public void NameToString()
-    {
-        var lambda = new LambdaValueElement(new FunctionArgument[] { new("x"), new("y"), new("z") }, new());
-        Assert.That(lambda.ToString(), Is.EqualTo("#lambda_x_y_z"));
-    }
 }

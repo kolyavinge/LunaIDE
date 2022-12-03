@@ -1,4 +1,4 @@
-﻿using Luna.Output;
+﻿using Luna.Runtime;
 using Luna.Tests.Tools;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +10,7 @@ internal class InterpreterIntegration : BaseInterpreterTest
     [SetUp]
     public void Setup()
     {
+        Init();
     }
 
     [Test]
@@ -248,9 +249,26 @@ internal class InterpreterIntegration : BaseInterpreterTest
         Run(@"
             (run wrong lexems)");
         Assert.Null(_resultString);
-        _runtimeOutput.Verify(x => x.SendMessage(new OutputMessage(new OutputMessageItem[]
-        {
-            new("The program cannot be run.", OutputMessageKind.Error)
-        })), Times.Once());
+        _outputWriter.Verify(x => x.ProgramStopped(), Times.Once());
+    }
+
+    [Test]
+    public void Stackoverflow_1()
+    {
+        Run(@"
+            (recursive () (recursive))
+            (run (recursive))");
+        Assert.AreEqual("void", _resultString);
+        _runtimeExceptionHandler.Verify(x => x.Handle(RuntimeException.Stackoverflow()), Times.Once());
+    }
+
+    [Test]
+    public void Stackoverflow_2()
+    {
+        Run(@"
+            (recursive () (recursive))
+            (run (print (recursive)))");
+        Assert.AreEqual("void", _resultString);
+        _runtimeExceptionHandler.Verify(x => x.Handle(RuntimeException.Stackoverflow()), Times.Once());
     }
 }

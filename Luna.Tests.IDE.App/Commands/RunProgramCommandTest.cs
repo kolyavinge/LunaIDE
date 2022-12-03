@@ -14,19 +14,19 @@ namespace Luna.Tests.IDE.App.Commands;
 internal class RunProgramCommandTest
 {
     private Mock<IFileSystem> _fileSystem;
-    private Mock<IInterpreter> _interpreter;
     private Project _project;
     private Mock<ISelectedProject> _selectedProject;
     private Mock<IEnvironmentWindowsManager> _windowsManager;
     private Mock<IOutputArea> _outputArea;
     private Mock<IEnvironmentWindowView> _view;
+    private Mock<IInterpreter> _interpreter;
+    private Mock<IInterpreterFactory> _interpreterFactory;
     private RunProgramCommand _command;
 
     [SetUp]
     public void Setup()
     {
         _fileSystem = new Mock<IFileSystem>();
-        _interpreter = new Mock<IInterpreter>();
         _selectedProject = new Mock<ISelectedProject>();
         _project = new Project("", _fileSystem.Object);
         _selectedProject.SetupGet(x => x.Project).Returns(_project);
@@ -34,7 +34,10 @@ internal class RunProgramCommandTest
         _windowsManager.SetupGet(x => x.Windows).Returns(new List<EnvironmentWindow>());
         _outputArea = new Mock<IOutputArea>();
         _view = new Mock<IEnvironmentWindowView>();
-        _command = new RunProgramCommand(_interpreter.Object, _selectedProject.Object, _windowsManager.Object, _outputArea.Object);
+        _interpreter = new Mock<IInterpreter>();
+        _interpreterFactory = new Mock<IInterpreterFactory>();
+        _interpreterFactory.Setup(x => x.Make(_project, _outputArea.Object)).Returns(_interpreter.Object);
+        _command = new RunProgramCommand(_interpreterFactory.Object, _selectedProject.Object, _windowsManager.Object, _outputArea.Object);
     }
 
     [Test]
@@ -42,14 +45,14 @@ internal class RunProgramCommandTest
     {
         _selectedProject.SetupGet(x => x.Project).Returns((Project)null);
         _command.Execute(null);
-        _interpreter.Verify(x => x.Run(_project, _outputArea.Object), Times.Never());
+        _interpreter.Verify(x => x.Run(), Times.Never());
     }
 
     [Test]
     public void ProjectSelected_Run()
     {
         _command.Execute(null);
-        _interpreter.Verify(x => x.Run(_project, _outputArea.Object), Times.Once());
+        _interpreter.Verify(x => x.Run(), Times.Once());
     }
 
     [Test]

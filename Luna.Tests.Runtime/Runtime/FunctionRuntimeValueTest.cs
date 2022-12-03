@@ -11,7 +11,7 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     [SetUp]
     public void Setup()
     {
-        _scope = new Mock<IRuntimeScope>();
+        Init();
     }
 
     [Test]
@@ -51,16 +51,8 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     public void ToManyArguments()
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
-        try
-        {
-            Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2) });
-            Assert.Fail();
-        }
-        catch (RuntimeException e)
-        {
-            Assert.AreEqual("Function func has too many passed arguments and cannot be evaluated.", e.Message);
-            Assert.Pass();
-        }
+        Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2) });
+        _runtimeExceptionHandler.Verify(x => x.Handle(new RuntimeException("Function func has too many passed arguments and cannot be evaluated.")), Times.Once());
     }
 
     [Test]

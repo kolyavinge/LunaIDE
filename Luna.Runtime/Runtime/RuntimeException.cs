@@ -2,7 +2,7 @@
 
 namespace Luna.Runtime;
 
-public class RuntimeException : Exception
+public class RuntimeException : Exception, IEquatable<RuntimeException?>
 {
     internal static RuntimeException CannotConvert(ValueElement v) => new($"Type {v.GetType()} cannot be converted to RuntimeValue.");
 
@@ -22,12 +22,17 @@ public class RuntimeException : Exception
 
     public override bool Equals(object? obj)
     {
-        return obj is RuntimeException rte &&
-            Message == rte.Message;
+        return Equals(obj as RuntimeException);
+    }
+
+    public bool Equals(RuntimeException? other)
+    {
+        return other is not null &&
+               Message == other.Message;
     }
 
     public override int GetHashCode()
     {
-        return Message.GetHashCode();
+        return HashCode.Combine(Message);
     }
 }

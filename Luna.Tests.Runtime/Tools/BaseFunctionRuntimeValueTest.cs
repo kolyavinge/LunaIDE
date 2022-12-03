@@ -9,6 +9,14 @@ internal class BaseFunctionRuntimeValueTest
 {
     protected FunctionRuntimeValue _function;
     protected Mock<IRuntimeScope> _scope;
+    protected Mock<IRuntimeExceptionHandler> _runtimeExceptionHandler;
+
+    protected void Init()
+    {
+        _scope = new Mock<IRuntimeScope>();
+        _runtimeExceptionHandler = new Mock<IRuntimeExceptionHandler>();
+        RuntimeEnvironment.ExceptionHandler = _runtimeExceptionHandler.Object;
+    }
 
     protected IRuntimeValue Eval(string funcName, IEnumerable<IRuntimeValue> arguments, ReadonlyArray<IRuntimeValue> alreadyPassedArguments = null)
     {

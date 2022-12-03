@@ -13,14 +13,15 @@ public interface IRunProgramCommand : ICommand { }
 
 public class RunProgramCommand : Command, IRunProgramCommand
 {
-    private readonly IInterpreter _interpreter;
+    private readonly IInterpreterFactory _interpreterFactory;
     private readonly ISelectedProject _selectedProject;
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly IOutputArea _outputArea;
 
-    public RunProgramCommand(IInterpreter interpreter, ISelectedProject selectedProject, IEnvironmentWindowsManager windowsManager, IOutputArea outputArea)
+    public RunProgramCommand(
+        IInterpreterFactory interpreterFactory, ISelectedProject selectedProject, IEnvironmentWindowsManager windowsManager, IOutputArea outputArea)
     {
-        _interpreter = interpreter;
+        _interpreterFactory = interpreterFactory;
         _selectedProject = selectedProject;
         _windowsManager = windowsManager;
         _outputArea = outputArea;
@@ -31,6 +32,7 @@ public class RunProgramCommand : Command, IRunProgramCommand
         if (_selectedProject.Project == null) return;
         _windowsManager.Windows.Where(x => x.Model is ISaveableEnvironmentWindow).Each(x => ((ISaveableEnvironmentWindow)x.Model).Save());
         _outputArea.Clear();
-        _interpreter.Run(_selectedProject.Project, _outputArea);
+        var interpreter = _interpreterFactory.Make(_selectedProject.Project, _outputArea);
+        interpreter.Run();
     }
 }

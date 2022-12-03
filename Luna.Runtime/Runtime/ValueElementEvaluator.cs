@@ -6,6 +6,7 @@ namespace Luna.Runtime;
 
 internal interface IValueElementEvaluator
 {
+    IRuntimeScopesCollection? Scopes { get; set; }
     IRuntimeValue Eval(IRuntimeScope scope, ValueElement element);
 }
 

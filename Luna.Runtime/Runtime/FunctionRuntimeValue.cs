@@ -25,6 +25,19 @@ internal class FunctionRuntimeValue : RuntimeValue, IFunctionRuntimeValue
 
     public override IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue>? argumentValues = null)
     {
+        try
+        {
+            return TryGetValue(argumentValues);
+        }
+        catch (RuntimeException rte)
+        {
+            RuntimeEnvironment.ExceptionHandler?.Handle(rte);
+            return VoidRuntimeValue.Instance;
+        }
+    }
+
+    private IRuntimeValue TryGetValue(ReadonlyArray<IRuntimeValue>? argumentValues = null)
+    {
         _scope.PushCallStack(this);
         argumentValues ??= new ReadonlyArray<IRuntimeValue>();
         if (AlreadyPassedArguments != null)

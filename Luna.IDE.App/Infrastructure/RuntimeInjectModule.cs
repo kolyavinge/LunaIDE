@@ -15,6 +15,6 @@ public class RuntimeInjectModule : InjectModule
         provider.Bind<ICodeModelUpdater, CodeModelUpdater>().ToSingleton();
         provider.Bind<ICodeModelNavigator, CodeModelNavigator>().ToSingleton();
         provider.Bind<IDeclarationNavigator, DeclarationNavigator>().ToSingleton();
-        provider.Bind<IInterpreter, Interpreter>().ToSingleton();
+        provider.Bind<IInterpreterFactory, InterpreterFactory>().ToSingleton();
     }
 }

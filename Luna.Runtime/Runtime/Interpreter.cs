@@ -6,37 +6,50 @@ namespace Luna.Runtime;
 
 public interface IInterpreter
 {
-    void Run(IProject project, IRuntimeOutput output);
+    void Run();
 }
 
 public class Interpreter : IInterpreter
 {
-    private readonly ValueElementEvaluator _evaluator;
+    private readonly IProject _project;
+    private readonly IOutputWriter _outputWriter;
+    private readonly ICodeModelBuilder _codeModelBuilder;
+    private readonly IRuntimeExceptionHandler _runtimeExceptionHandler;
+    private readonly CallStack _callStack;
+    private readonly IValueElementEvaluator _evaluator;
 
     internal IRuntimeValue? Result { get; private set; }
 
-    public Interpreter()
+    internal Interpreter(
+        IProject project,
+        IOutputWriter outputWriter,
+        ICodeModelBuilder codeModelBuilder,
+        IRuntimeExceptionHandler runtimeExceptionHandler,
+        CallStack callStack,
+        IValueElementEvaluator evaluator)
     {
-        _evaluator = new ValueElementEvaluator();
+        _project = project;
+        _outputWriter = outputWriter;
+        _codeModelBuilder = codeModelBuilder;
+        _runtimeExceptionHandler = runtimeExceptionHandler;
+        _callStack = callStack;
+        _evaluator = evaluator;
     }
 
-    public void Run(IProject project, IRuntimeOutput output)
+    public void Run()
     {
-        var codeFiles = project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
-        var outputWriter = new OutputWriter(output);
-        var codeModelBuilder = new CodeModelBuilder(outputWriter);
-        var builderResult = codeModelBuilder.BuildFor(codeFiles);
-        if (builderResult.HasErrors) { outputWriter.ProgramStopped(); return; }
+        var codeFiles = _project.Root.AllChildren.OfType<CodeFileProjectItem>().ToList();
+        var builderResult = _codeModelBuilder.BuildFor(codeFiles);
+        if (builderResult.HasErrors) { _outputWriter.ProgramStopped(); return; }
         var codeModels = codeFiles.Select(x => x.CodeModel).ToList();
-        var callStack = new CallStack();
-        var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, _evaluator, callStack);
+        var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, _evaluator, _callStack);
         _evaluator.Scopes = scopes;
-        RuntimeEnvironment.ExceptionHandler = new RuntimeExceptionHandler(callStack, outputWriter);
+        RuntimeEnvironment.ExceptionHandler = _runtimeExceptionHandler;
         var mainCodeModel = codeModels.First(x => x.RunFunction != null);
         var mainScope = scopes.GetForCodeModel(mainCodeModel);
         mainScope.PushCallStack(new RunFunctionStub());
         Result = _evaluator.Eval(mainScope, mainCodeModel.RunFunction!).GetValue();
         mainScope.PopCallStack();
-        outputWriter.ProgramResult(Result!);
+        _outputWriter.ProgramResult(Result!);
     }
 }

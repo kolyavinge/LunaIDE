@@ -1,7 +1,6 @@
 ﻿using Luna.Functions.Lang;
 using Luna.Runtime;
 using Luna.Tests.Tools;
-using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Lang;
@@ -75,25 +74,39 @@ internal class CaseTest : BaseFunctionTest<Case>
     [Test]
     public void IncorrectItem()
     {
-        GetValue<VoidRuntimeValue>(
-            new IntegerRuntimeValue(1),
-            new ListRuntimeValue(new IRuntimeValue[]
-            {
-                new IntegerRuntimeValue(10),
-                new ListRuntimeValue(new IRuntimeValue[] { new IntegerRuntimeValue(2), new IntegerRuntimeValue(20) }),
-                new IntegerRuntimeValue(30)
-            }));
+        try
+        {
+            GetValue<VoidRuntimeValue>(
+                new IntegerRuntimeValue(1),
+                new ListRuntimeValue(new IRuntimeValue[]
+                {
+                    new IntegerRuntimeValue(10),
+                    new ListRuntimeValue(new IRuntimeValue[] { new IntegerRuntimeValue(2), new IntegerRuntimeValue(20) }),
+                    new IntegerRuntimeValue(30)
+                }));
 
-        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Items in cases must be a list with two items.")), Times.Once());
+            Assert.Fail();
+        }
+        catch (RuntimeException rte)
+        {
+            Assert.That(rte, Is.EqualTo(new RuntimeException("Items in cases must be a list with two items.")));
+        }
     }
 
     [Test]
     public void EmptyCases_Error()
     {
-        GetValue<VoidRuntimeValue>(
-            new IntegerRuntimeValue(1),
-            new ListRuntimeValue(new IRuntimeValue[0]));
+        try
+        {
+            GetValue<VoidRuntimeValue>(
+                new IntegerRuntimeValue(1),
+                new ListRuntimeValue(new IRuntimeValue[0]));
 
-        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Cases cannot be empty.")), Times.Once());
+            Assert.Fail();
+        }
+        catch (RuntimeException rte)
+        {
+            Assert.That(rte, Is.EqualTo(new RuntimeException("Cases cannot be empty.")));
+        }
     }
 }

@@ -4,7 +4,6 @@ using Luna.Collections;
 using Luna.Functions.Lang;
 using Luna.Runtime;
 using Luna.Tests.Tools;
-using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Lang;
@@ -47,7 +46,15 @@ internal class LoopTest : BaseFunctionTest<Loop>
     [Test]
     public void CountMustBeGreaterThanZero()
     {
-        GetValue<VoidRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1), _func);
-        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Parameter count must be greater than zero.")), Times.Once());
+        try
+        {
+            GetValue<VoidRuntimeValue>(new IntegerRuntimeValue(1), new IntegerRuntimeValue(-1), _func);
+
+            Assert.Fail();
+        }
+        catch (RuntimeException rte)
+        {
+            Assert.That(rte, Is.EqualTo(new RuntimeException("Parameter count must be greater than zero.")));
+        }
     }
 }

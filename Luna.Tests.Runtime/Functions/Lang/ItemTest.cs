@@ -1,7 +1,6 @@
 ﻿using Luna.Functions.Lang;
 using Luna.Runtime;
 using Luna.Tests.Tools;
-using Moq;
 using NUnit.Framework;
 
 namespace Luna.Tests.Functions.Lang;
@@ -31,16 +30,30 @@ internal class ItemTest : BaseFunctionTest<Item>
     [Test]
     public void NegativeIndex_Error()
     {
-        var list = new ListRuntimeValue(new[] { new FloatRuntimeValue(1.2), new FloatRuntimeValue(2.2), new FloatRuntimeValue(3.2) });
-        GetValue<IRuntimeValue>(new IntegerRuntimeValue(-1), list);
-        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Index must be within list items range.")), Times.Once());
+        try
+        {
+            var list = new ListRuntimeValue(new[] { new FloatRuntimeValue(1.2), new FloatRuntimeValue(2.2), new FloatRuntimeValue(3.2) });
+            GetValue<IRuntimeValue>(new IntegerRuntimeValue(-1), list);
+            Assert.Fail();
+        }
+        catch (RuntimeException rte)
+        {
+            Assert.That(rte, Is.EqualTo(new RuntimeException("Index must be within list items range.")));
+        }
     }
 
     [Test]
     public void BigIndex_Error()
     {
-        var list = new ListRuntimeValue(new[] { new FloatRuntimeValue(1.2), new FloatRuntimeValue(2.2), new FloatRuntimeValue(3.2) });
-        GetValue<IRuntimeValue>(new IntegerRuntimeValue(10), list);
-        _exceptionHandler.Verify(x => x.Handle(new RuntimeException("Index must be within list items range.")), Times.Once());
+        try
+        {
+            var list = new ListRuntimeValue(new[] { new FloatRuntimeValue(1.2), new FloatRuntimeValue(2.2), new FloatRuntimeValue(3.2) });
+            GetValue<IRuntimeValue>(new IntegerRuntimeValue(10), list);
+            Assert.Fail();
+        }
+        catch (RuntimeException rte)
+        {
+            Assert.That(rte, Is.EqualTo(new RuntimeException("Index must be within list items range.")));
+        }
     }
 }

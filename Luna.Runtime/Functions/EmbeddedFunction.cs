@@ -31,18 +31,10 @@ internal abstract class EmbeddedFunction
         Arguments = attr.Arguments;
     }
 
-    protected abstract IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments);
-
     public IRuntimeValue GetValue(ReadonlyArray<IRuntimeValue> argumentValues)
     {
-        try
-        {
-            return InnerGetValue(new(argumentValues, Arguments));
-        }
-        catch (RuntimeException rte)
-        {
-            RuntimeEnvironment.ExceptionHandler?.Handle(rte);
-            return VoidRuntimeValue.Instance;
-        }
+        return InnerGetValue(new(argumentValues, Arguments));
     }
+
+    protected abstract IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments);
 }

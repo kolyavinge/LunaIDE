@@ -14,10 +14,15 @@ const MAIN_TIMER_INTERVAL  1000
 
 // render constants
 
-const SHAPE_I_COLOR        ''
-const SHAPE_L_COLOR        ''
-const SHAPE_T_COLOR        ''
-const SHAPE_O_COLOR        ''
-const SHAPE_S_COLOR        ''
+const SHAPE_I_COLOR        '4287f5'
+const SHAPE_L_COLOR        'f5b642'
+const SHAPE_T_COLOR        'e342f5'
+const SHAPE_O_COLOR        'f54242'
+const SHAPE_S_COLOR        '42f575'
 
 const CELL_SIZE            40
+
+// colors
+
+const BLACK                '000000'
+const FIELD_COLOR          'dddddd'

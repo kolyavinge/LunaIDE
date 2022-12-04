@@ -3,13 +3,68 @@
 import 'constants.luna'
 import 'shapes.luna'
 
+(get_shape_color_by_index (index)
+    (case index (
+        (0  SHAPE_I_COLOR)
+        (1  SHAPE_I_COLOR)
+        (2  SHAPE_L_COLOR)
+        (3  SHAPE_L_COLOR)
+        (4  SHAPE_L_COLOR)
+        (5  SHAPE_L_COLOR)
+        (6  SHAPE_L_COLOR)
+        (7  SHAPE_L_COLOR)
+        (8  SHAPE_L_COLOR)
+        (9  SHAPE_L_COLOR)
+        (10 SHAPE_T_COLOR)
+        (11 SHAPE_T_COLOR)
+        (12 SHAPE_T_COLOR)
+        (13 SHAPE_T_COLOR)
+        (14 SHAPE_O_COLOR)
+        (15 SHAPE_S_COLOR)
+        (16 SHAPE_S_COLOR)
+        (17 SHAPE_S_COLOR)
+            SHAPE_S_COLOR))
+)
+
+(get_shape_by_index (index)
+    (case index (
+        (0  make_shape_I)
+        (1  make_shape_I_90)
+        (2  make_shape_L)
+        (3  make_shape_L_90)
+        (4  make_shape_L_180)
+        (5  make_shape_L_270)
+        (6  make_shape_L_i)
+        (7  make_shape_L_i_90)
+        (8  make_shape_L_i_180)
+        (9  make_shape_L_i_270)
+        (10 make_shape_T)
+        (11 make_shape_T_90)
+        (12 make_shape_T_180)
+        (13 make_shape_T_270)
+        (14 make_shape_O)
+        (15 make_shape_S)
+        (16 make_shape_S_90)
+        (17 make_shape_S_i)
+            make_shape_S_i_90))
+)
+
 (get_random_shape ()
-    ()
+    (set @shape_index (rand 0 18))
+    (get_shape_by_index @shape_index)
 )
 
 (set_random_shape ()
     (set @shape (get_random_shape))
     (set @y_offset 0)
+)
+
+(get_current_shape_index ()
+    @shape_index
+)
+
+(get_current_shape ()
+    @shape
 )
 
 (get_empty_field ()
@@ -37,11 +92,13 @@ import 'shapes.luna'
 )
 
 (update_game ()
-    (+ @y_offset 1)
+    (set @y_offset (+ @y_offset 1))
+    (printf 'y_offset: {0}' (@y_offset))
 )
 
 (init_game ()
+    (print '--- init game ---')
+    (set @y_offset 0)
     (clear_field)
     (set_random_shape)
 )
-

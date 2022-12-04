@@ -3,17 +3,33 @@
 import 'constants.luna'
 import 'game.luna'
 
-(render_field (context)
-    ()
+(render_field_background (context)
+    (fill_rect context 0 0 (* FIELD_COLS CELL_SIZE) (* FIELD_ROWS CELL_SIZE) FIELD_COLOR)
+)
+
+(render_field_grid (context)
+    (loop 0 (+ FIELD_ROWS 1) (lambda (row) (draw_line context                 0 (* row CELL_SIZE) (* FIELD_COLS CELL_SIZE) (*  row CELL_SIZE) BLACK)))
+    (loop 0 (+ FIELD_COLS 1) (lambda (col) (draw_line context (* col CELL_SIZE)                 0 (*  col CELL_SIZE) (* FIELD_ROWS CELL_SIZE) BLACK)))
+)
+
+(render_shape_item (context shape_item)
+    (fill_rect
+        context
+        (* (item 0 shape_item) CELL_SIZE)
+        (* (item 1 shape_item) CELL_SIZE)
+        CELL_SIZE
+        CELL_SIZE
+        (get_shape_color_by_index (get_current_shape_index)))
 )
 
 (render_current_shape (context)
-    ()
+    (map (get_current_shape) (lambda (shape_item) (render_shape_item context shape_item)))
 )
 
 (render_func (context)
-    (render_field context)
+    (render_field_background context)
     (render_current_shape context)
+    (render_field_grid context)
 )
 
 (keyboard_handler_func (event key)

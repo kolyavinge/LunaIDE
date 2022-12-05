@@ -18,9 +18,19 @@ internal class BaseFunctionRuntimeValueTest
         RuntimeEnvironment.ExceptionHandler = _runtimeExceptionHandler.Object;
     }
 
-    protected IRuntimeValue Eval(string funcName, IEnumerable<IRuntimeValue> arguments, ReadonlyArray<IRuntimeValue> alreadyPassedArguments = null)
+    protected void MakeFunction(string funcName, ReadonlyArray<IRuntimeValue> alreadyPassedArguments = null)
     {
         _function = new FunctionRuntimeValue(funcName, _scope.Object) { AlreadyPassedArguments = alreadyPassedArguments };
+    }
+
+    protected IRuntimeValue GetValue(IEnumerable<IRuntimeValue> arguments)
+    {
         return _function.GetValue(new ReadonlyArray<IRuntimeValue>(arguments));
+    }
+
+    protected IRuntimeValue MakeFunctionAndGetValue(string funcName, IEnumerable<IRuntimeValue> arguments, ReadonlyArray<IRuntimeValue> alreadyPassedArguments = null)
+    {
+        MakeFunction(funcName, alreadyPassedArguments);
+        return GetValue(arguments);
     }
 }

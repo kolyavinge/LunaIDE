@@ -9,7 +9,7 @@ public interface IInterpreter
     void Run();
 }
 
-public class Interpreter : IInterpreter
+internal class Interpreter : IInterpreter
 {
     private readonly IProject _project;
     private readonly IOutputWriter _outputWriter;

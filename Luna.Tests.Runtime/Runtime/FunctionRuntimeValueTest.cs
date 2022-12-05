@@ -20,7 +20,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         var argument = new IntegerRuntimeValue(123);
         var arguments = new IRuntimeValue[] { argument };
-        Eval("func", arguments);
+
+        MakeFunctionAndGetValue("func", arguments);
+
         _scope.Verify(x => x.AddFunctionArgument("x", argument), Times.Once());
         _scope.Verify(x => x.PushCallStack(_function), Times.Once());
         _scope.Verify(x => x.PopCallStack(), Times.Once());
@@ -32,7 +34,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
         var arguments = new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray();
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new StringRuntimeValue("123"));
-        var result = (StringRuntimeValue)Eval("func", arguments);
+
+        var result = (StringRuntimeValue)MakeFunctionAndGetValue("func", arguments);
+
         Assert.AreEqual("123", result.Value);
     }
 
@@ -43,7 +47,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
         var arguments = new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray();
         _scope.Setup(x => x.IsEmbeddedFunction("func")).Returns(true);
         _scope.Setup(x => x.GetEmbeddedFunctionValue("func", arguments)).Returns(new StringRuntimeValue("123"));
-        var result = (StringRuntimeValue)Eval("func", arguments);
+
+        var result = (StringRuntimeValue)MakeFunctionAndGetValue("func", arguments);
+
         Assert.AreEqual("123", result.Value);
     }
 
@@ -51,7 +57,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     public void ToManyArguments()
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x" });
-        Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2) });
+
+        MakeFunctionAndGetValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(1), new IntegerRuntimeValue(2) });
+
         _runtimeExceptionHandler.Verify(x => x.Handle(new RuntimeException("Function func has too many passed arguments and cannot be evaluated.")), Times.Once());
     }
 
@@ -60,7 +68,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x", "y" });
         var arguments = new IRuntimeValue[] { new IntegerRuntimeValue(123) };
-        var result = (FunctionRuntimeValue)Eval("func", arguments);
+
+        var result = (FunctionRuntimeValue)MakeFunctionAndGetValue("func", arguments);
+
         Assert.NotNull(result.AlreadyPassedArguments);
         Assert.AreEqual(1, result.AlreadyPassedArguments.Count);
         Assert.AreEqual(new IntegerRuntimeValue(123), result.AlreadyPassedArguments[0]);
@@ -71,7 +81,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x", "y" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new StringRuntimeValue("123"));
-        var result = (StringRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }, new IRuntimeValue[] { new BooleanRuntimeValue(true) }.ToReadonlyArray());
+
+        var result = (StringRuntimeValue)MakeFunctionAndGetValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }, new IRuntimeValue[] { new BooleanRuntimeValue(true) }.ToReadonlyArray());
+
         Assert.AreEqual("123", result.Value);
     }
 
@@ -80,7 +92,9 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
     {
         _scope.Setup(x => x.GetFunctionArgumentNames("func")).Returns(new[] { "x", "y" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new StringRuntimeValue("123"));
-        var result = (StringRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }, new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
+        var result = (StringRuntimeValue)MakeFunctionAndGetValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }, new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
         Assert.AreEqual("123", result.Value);
     }
 
@@ -90,7 +104,36 @@ internal class FunctionRuntimeValueTest : BaseFunctionRuntimeValueTest
         _scope.Setup(x => x.GetFunctionArgumentNames("funcResult")).Returns(new[] { "x" });
         _scope.Setup(x => x.GetDeclaredFunctionValue("funcResult")).Returns(new IntegerRuntimeValue(123));
         _scope.Setup(x => x.GetDeclaredFunctionValue("func")).Returns(new FunctionRuntimeValue("funcResult", _scope.Object));
-        var result = (IntegerRuntimeValue)Eval("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
+        var result = (IntegerRuntimeValue)MakeFunctionAndGetValue("func", new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
         Assert.AreEqual(123, result.IntegerValue);
+    }
+
+    [Test]
+    public void GetValue_Exception()
+    {
+        MakeFunction("func");
+        var rte = new RuntimeException("exception");
+        _scope.Setup(x => x.PushCallStack(_function)).Throws(rte);
+
+        var result = (VoidRuntimeValue)GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
+        Assert.True(result is VoidRuntimeValue);
+        _runtimeExceptionHandler.Verify(x => x.Handle(rte), Times.Once());
+    }
+
+    [Test]
+    public void GetValue_Exception_NoExceptionHandler()
+    {
+        MakeFunction("func");
+        var rte = new RuntimeException("exception");
+        _scope.Setup(x => x.PushCallStack(_function)).Throws(rte);
+        RuntimeEnvironment.ExceptionHandler = null;
+
+        var result = (VoidRuntimeValue)GetValue(new IRuntimeValue[] { new IntegerRuntimeValue(123) }.ToReadonlyArray());
+
+        Assert.True(result is VoidRuntimeValue);
+        _runtimeExceptionHandler.Verify(x => x.Handle(rte), Times.Never());
     }
 }

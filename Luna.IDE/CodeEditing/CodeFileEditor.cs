@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CodeHighlighter;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using Luna.CodeElements;
@@ -16,9 +17,9 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public CodeFileProjectItem ProjectItem { get; }
 
-    public CodeTextBoxModel CodeTextBoxModel { get; }
+    public ICodeTextBoxModel CodeTextBoxModel { get; }
 
-    public CursorPosition CursorPosition => CodeTextBoxModel.TextCursor.Position;
+    public CursorPosition CursorPosition => CodeTextBoxModel.CursorPosition;
 
     public string Header => ProjectItem.Name;
 
@@ -28,9 +29,9 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
         _codeProvider = (ILunaCodeProvider)codeProviderFactory.Make(projectItem);
-        CodeTextBoxModel = new CodeTextBoxModel(_codeProvider, new() { HighlighteredBrackets = "()" });
-        CodeTextBoxModel.TextChanged += OnTextChanged;
-        CodeTextBoxModel.SetText(ProjectItem.GetText());
+        CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(_codeProvider, new() { HighlighteredBrackets = "()" });
+        CodeTextBoxModel.TextEvents.TextChanged += OnTextChanged;
+        CodeTextBoxModel.Text = ProjectItem.GetText();
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
     }
 
@@ -64,29 +65,32 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         ProjectItem.CodeModelUpdated -= OnCodeModelUpdated;
     }
 
-    public TokenCursorPosition? GetTokenCursorPosition() => CodeTextBoxModel.Tokens.GetTokenOnPosition(CodeTextBoxModel.TextCursor.Position);
+    public TokenCursorPosition? GetTokenCursorPosition() => CodeTextBoxModel.Tokens.GetTokenOnPosition(CodeTextBoxModel.CursorPosition);
 
     public void NavigateTo(CodeElement codeElement) => CodeTextBoxModel.GotoLine(codeElement.LineIndex);
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        CodeTextBoxModel.TextSelection.Set(start, end);
+        CodeTextBoxModel.MoveCursorTo(start);
+        CodeTextBoxModel.ActivateSelection();
+        CodeTextBoxModel.MoveCursorTo(end);
+        CodeTextBoxModel.CompleteSelection();
         CodeTextBoxModel.InsertText(text);
     }
 
     public void UndoTextChanges()
     {
         ProjectItem.ResetTextGettingStrategy();
-        CodeTextBoxModel.SetText(ProjectItem.GetText());
+        CodeTextBoxModel.Text = ProjectItem.GetText();
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
         _codeModelUpdater.UpdateRequest();
     }
 
     public void DeleteSelectedLines() => CodeTextBoxModel.DeleteSelectedLines();
 
-    public void ToLowerCase() => CodeTextBoxModel.ToLowerCase();
+    public void ToLowerCase() => CodeTextBoxModel.SetTextCase(TextCase.Lower);
 
-    public void ToUpperCase() => CodeTextBoxModel.ToUpperCase();
+    public void ToUpperCase() => CodeTextBoxModel.SetTextCase(TextCase.Upper);
 
     public void MoveSelectedLinesUp() => CodeTextBoxModel.MoveSelectedLinesUp();
 
@@ -99,9 +103,9 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
 class EditorTextGettingStrategy : TextFileProjectItem.ITextGettingStrategy
 {
-    private readonly CodeTextBoxModel _model;
+    private readonly ICodeTextBoxModel _model;
 
-    public EditorTextGettingStrategy(CodeTextBoxModel model)
+    public EditorTextGettingStrategy(ICodeTextBoxModel model)
     {
         _model = model;
     }

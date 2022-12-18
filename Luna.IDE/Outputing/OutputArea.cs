@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CodeHighlighter;
 using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Common;
 using CodeHighlighter.Model;
-using Luna.IDE.Utils;
 using Luna.Output;
 using Luna.Runtime;
 using Token = CodeHighlighter.CodeProvidering.Token;
@@ -11,7 +12,7 @@ namespace Luna.IDE.Outputing;
 
 public interface IOutputArea : IRuntimeOutput, ICodeProvider
 {
-    CodeTextBoxModel CodeTextBoxModel { get; }
+    ICodeTextBoxModel CodeTextBoxModel { get; }
     void Clear();
 }
 
@@ -20,11 +21,11 @@ public class OutputArea : IOutputArea
     private int _currentLine;
     private readonly List<Token> _tokens = new();
 
-    public CodeTextBoxModel CodeTextBoxModel { get; }
+    public ICodeTextBoxModel CodeTextBoxModel { get; }
 
     public OutputArea()
     {
-        CodeTextBoxModel = new CodeTextBoxModel(this, new() { IsReadOnly = true });
+        CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(this, new() { IsReadOnly = true });
         RuntimeEnvironment.StandartOutput = this;
     }
 
@@ -32,7 +33,7 @@ public class OutputArea : IOutputArea
     {
         CodeTextBoxModel.IsReadOnly = false;
         _currentLine = 0;
-        CodeTextBoxModel.SetText("");
+        CodeTextBoxModel.Text = "";
         _tokens.Clear();
         CodeTextBoxModel.IsReadOnly = true;
     }
@@ -66,9 +67,9 @@ public class OutputArea : IOutputArea
     {
         return new TokenColor[]
         {
-            new ((byte)OutputMessageKind.Info, ColorUtils.FromHex("5ae65c")),
-            new ((byte)OutputMessageKind.Warning, ColorUtils.FromHex("d9d177")),
-            new ((byte)OutputMessageKind.Error, ColorUtils.FromHex("f44753"))
+            new ((byte)OutputMessageKind.Info, Color.FromHex("5ae65c")),
+            new ((byte)OutputMessageKind.Warning, Color.FromHex("d9d177")),
+            new ((byte)OutputMessageKind.Error, Color.FromHex("f44753"))
         };
     }
 }

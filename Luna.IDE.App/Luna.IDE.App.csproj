@@ -48,6 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter.Model\CodeHighlighter.Model.csproj" />
         <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter\CodeHighlighter.csproj" />
         <ProjectReference Include="..\..\DependencyInjection\DependencyInjection\DependencyInjection.csproj" />
         <ProjectReference Include="..\..\VersionControl\VersionControl\VersionControl.csproj" />

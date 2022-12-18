@@ -8,7 +8,7 @@ public interface ICodeFileEditor
 {
     CodeFileProjectItem ProjectItem { get; }
 
-    CodeTextBoxModel CodeTextBoxModel { get; }
+    ICodeTextBoxModel CodeTextBoxModel { get; }
 
     CursorPosition CursorPosition { get; }
 

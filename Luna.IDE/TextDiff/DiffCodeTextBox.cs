@@ -1,4 +1,5 @@
-﻿using CodeHighlighter.CodeProvidering;
+﻿using CodeHighlighter;
+using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using Luna.IDE.Common;
 
@@ -6,33 +7,33 @@ namespace Luna.IDE.TextDiff;
 
 public interface IDiffCodeTextBox
 {
-    LinesDecorationCollection LinesDecoration { get; }
+    ILinesDecorationCollection LinesDecoration { get; }
     void Init(ICodeProvider codeProvider, string text);
     void GotoLine(int lineIndex);
 }
 
 public class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
 {
-    private CodeTextBoxModel _codeTextBoxModel;
+    private ICodeTextBoxModel _codeTextBoxModel;
 
-    public CodeTextBoxModel CodeTextBoxModel
+    public ICodeTextBoxModel CodeTextBoxModel
     {
         get => _codeTextBoxModel;
         private set { _codeTextBoxModel = value; RaisePropertyChanged(() => CodeTextBoxModel); }
     }
 
-    public LinesDecorationCollection LinesDecoration => _codeTextBoxModel.LinesDecoration;
+    public ILinesDecorationCollection LinesDecoration => _codeTextBoxModel.LinesDecoration;
 
     public DiffCodeTextBox()
     {
-        _codeTextBoxModel = new CodeTextBoxModel();
+        _codeTextBoxModel = CodeTextBoxModelFactory.MakeModel(new EmptyCodeProvider());
     }
 
     public void Init(ICodeProvider codeProvider, string text)
     {
-        CodeTextBoxModel = new CodeTextBoxModel(codeProvider, new() { HighlighteredBrackets = "()" });
+        CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(codeProvider, new() { HighlighteredBrackets = "()" });
         CodeTextBoxModel.IsReadOnly = false;
-        CodeTextBoxModel.SetText(text);
+        CodeTextBoxModel.Text = text;
         CodeTextBoxModel.IsReadOnly = true;
     }
 

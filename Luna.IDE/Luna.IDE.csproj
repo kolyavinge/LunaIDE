@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter\CodeHighlighter.csproj" />
+    <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter.Model\CodeHighlighter.Model.csproj" />
     <ProjectReference Include="..\..\DiffTool\DiffTool\DiffTool.csproj" />
     <ProjectReference Include="..\..\VersionControl\VersionControl\VersionControl.csproj" />
     <ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />

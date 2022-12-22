@@ -17,14 +17,14 @@ public class EnvironmentWindowsFactory : IEnvironmentWindowsFactory
     public EnvironmentWindowComponents MakeWindowFor(Type modelType)
     {
         var types = Assembly.GetExecutingAssembly().GetTypes().Union(Assembly.LoadFrom("Luna.IDE.dll").GetTypes()).ToList();
-        var model = MakeModel(types, modelType);
+        var model = MakeModel(modelType);
         var viewModel = MakeViewModel(types, modelType, model);
         var view = MakeView(types, modelType, viewModel);
 
         return new EnvironmentWindowComponents(model, view);
     }
 
-    private IEnvironmentWindowModel MakeModel(IEnumerable<Type> types, Type modelType)
+    private IEnvironmentWindowModel MakeModel(Type modelType)
     {
         var modelTypeConstructorParams = new List<object>();
         foreach (var parameter in modelType.GetConstructors().First().GetParameters())

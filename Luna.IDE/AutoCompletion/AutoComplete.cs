@@ -3,7 +3,6 @@ using System.Linq;
 using Luna.Functions;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
-using Luna.IDE.Utils;
 using Luna.Parsing;
 using Luna.ProjectModel;
 

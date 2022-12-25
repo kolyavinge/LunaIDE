@@ -21,7 +21,7 @@ public class OpenProjectHistoryCommand : Command, IOpenProjectHistoryCommand
         _environmentWindowsFactory = environmentWindowsFactory;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
         var window = _windowsManager.FindWindowById(WindowId);
         if (window == null)

@@ -22,8 +22,9 @@ public class ProjectExplorerItemOpenCommand : Command, IProjectExplorerItemOpenC
         _codeElementNavigateCommand = codeElementNavigateCommand;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
+        if (parameter == null) throw new ArgumentNullException();
         var treeItems = ((IEnumerable)parameter).Cast<TreeItem>().Where(x => x.Parent != null).ToList();
         if (!treeItems.Any()) return;
         if (treeItems.Count == 1 && treeItems.First() is DirectoryTreeItem)

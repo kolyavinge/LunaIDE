@@ -15,7 +15,7 @@ public class MainWindowClosedCommand : Command, IMainWindowClosedCommand
         _windowsManager = windowsManager;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
         _windowsManager.CloseAllWindows();
     }

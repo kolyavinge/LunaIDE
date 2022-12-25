@@ -9,7 +9,7 @@ public class ActionCommand : Command
         _action = action;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
         _action();
     }
@@ -24,8 +24,8 @@ public class ActionCommand<TParameter> : Command
         _action = action;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
-        _action((TParameter)parameter);
+        _action((TParameter)parameter!);
     }
 }

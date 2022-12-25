@@ -27,7 +27,7 @@ public class RunProgramCommand : Command, IRunProgramCommand
         _outputArea = outputArea;
     }
 
-    public override void Execute(object parameter)
+    public override void Execute(object? parameter)
     {
         if (_selectedProject.Project == null) return;
         _windowsManager.Windows.Where(x => x.Model is ISaveableEnvironmentWindow).Each(x => ((ISaveableEnvironmentWindow)x.Model).Save());

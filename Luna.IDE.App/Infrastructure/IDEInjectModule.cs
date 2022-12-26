@@ -8,6 +8,7 @@ using Luna.IDE.App.ViewModel;
 using Luna.IDE.AutoCompletion;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
+using Luna.IDE.Configuration;
 using Luna.IDE.Outputing;
 using Luna.IDE.ProjectChanging;
 using Luna.IDE.ProjectExploration;
@@ -42,6 +43,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
+        provider.Bind<IConfigStorage, ConfigStorage>().ToSingleton();
+        provider.Bind<ILastOpenedProjectFiles, LastOpenedProjectFiles>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
         provider.Bind<IAutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();

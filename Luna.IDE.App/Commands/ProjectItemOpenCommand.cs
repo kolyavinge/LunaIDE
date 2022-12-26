@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using Luna.IDE.App.Factories;
 using Luna.IDE.App.Mvvm;
+using Luna.IDE.ProjectExploration;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Commands;
-
-public interface IProjectItemOpenCommand : ICommand { }
 
 public class ProjectItemOpenCommand : Command<IEnumerable<ProjectItem>>, IProjectItemOpenCommand
 {

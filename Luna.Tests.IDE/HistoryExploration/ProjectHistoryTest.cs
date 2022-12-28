@@ -49,7 +49,7 @@ internal class ProjectHistoryTest
     {
         _projectHistory.SelectedCommit = _commit.Object;
 
-        _projectLoader.Raise(x => x.ProjectOpened += null, EventArgs.Empty);
+        _projectLoader.Raise(x => x.ProjectOpened += null, new ProjectOpenedEventArgs(null));
 
         Assert.Null(_projectHistory.SelectedCommit);
     }

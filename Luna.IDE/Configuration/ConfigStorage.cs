@@ -6,8 +6,8 @@ namespace Luna.IDE.Configuration;
 
 public interface IConfigStorage
 {
-    TEntity? GetById<TEntity>(object id);
-    void Save<TEntity>(TEntity poco);
+    TConfigStoragePoco? GetById<TConfigStoragePoco>(object id) where TConfigStoragePoco : IConfigStoragePoco;
+    void Save<TConfigStoragePoco>(TConfigStoragePoco poco) where TConfigStoragePoco : IConfigStoragePoco;
 }
 
 public class ConfigStorage : IConfigStorage
@@ -24,16 +24,21 @@ public class ConfigStorage : IConfigStorage
             .PrimaryKey(x => x.ProjectFullPath)
             .Field(1, x => x.FilesRelativePathes);
 
+        builder.Map<RecentProjectPoco>()
+            .PrimaryKey(x => x.Id)
+            .Field(1, x => x.ProjectFullPath)
+            .Field(2, x => x.LastAccess);
+
         _engine = builder.BuildEngine();
     }
 
-    public TEntity? GetById<TEntity>(object id)
+    public TConfigStoragePoco? GetById<TConfigStoragePoco>(object id) where TConfigStoragePoco : IConfigStoragePoco
     {
-        return _engine.GetCollection<TEntity>().Get(id);
+        return _engine.GetCollection<TConfigStoragePoco>().Get(id);
     }
 
-    public void Save<TEntity>(TEntity poco)
+    public void Save<TConfigStoragePoco>(TConfigStoragePoco poco) where TConfigStoragePoco : IConfigStoragePoco
     {
-        _engine.GetCollection<TEntity>().InsertOrUpdate(poco);
+        _engine.GetCollection<TConfigStoragePoco>().InsertOrUpdate(poco);
     }
 }

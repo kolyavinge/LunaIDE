@@ -82,6 +82,7 @@
                 <!-- code editors and other windows -->
                 <Grid Grid.Row="0">
                     <view:EnvironmentWindowsView />
+                    <view:RecentProjectsView VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Grid>
                 <!-- output -->
                 <Grid Grid.Row="1">

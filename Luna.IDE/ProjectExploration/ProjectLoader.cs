@@ -16,7 +16,17 @@ public interface IProjectLoader : ISelectedProject
 {
     void OpenProject(string projectFullPath);
     void CloseCurrentProject();
-    event EventHandler? ProjectOpened;
+    event EventHandler<ProjectOpenedEventArgs>? ProjectOpened;
+}
+
+public class ProjectOpenedEventArgs : EventArgs
+{
+    public IProject Project { get; }
+
+    public ProjectOpenedEventArgs(IProject project)
+    {
+        Project = project;
+    }
 }
 
 public class ProjectLoader : IProjectLoader
@@ -29,7 +39,7 @@ public class ProjectLoader : IProjectLoader
 
     public IProject? Project { get; private set; }
 
-    public event EventHandler? ProjectOpened;
+    public event EventHandler<ProjectOpenedEventArgs>? ProjectOpened;
 
     public ProjectLoader(
         IEnvironmentWindowsManager windowsManager,
@@ -52,7 +62,7 @@ public class ProjectLoader : IProjectLoader
         _codeModelUpdater.SetCodeFiles(Project.Root.AllChildren.OfType<CodeFileProjectItem>());
         _lastOpenedProjectFiles.RestoreLastOpenedFiles(Project);
         _outputArea.Clear();
-        ProjectOpened?.Invoke(this, EventArgs.Empty);
+        ProjectOpened?.Invoke(this, new(Project));
     }
 
     public void CloseCurrentProject()

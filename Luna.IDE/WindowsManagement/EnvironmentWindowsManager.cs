@@ -8,6 +8,8 @@ namespace Luna.IDE.WindowsManagement;
 
 public interface IEnvironmentWindowsManager
 {
+    event EventHandler? WindowOpened;
+    event EventHandler? WindowClosed;
     IReadOnlyCollection<EnvironmentWindow> Windows { get; }
     EnvironmentWindow? SelectedWindow { get; }
     EnvironmentWindow? FindWindowById(object id);
@@ -21,6 +23,9 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
 {
     private readonly ObservableCollection<EnvironmentWindow> _windows = new();
     private EnvironmentWindow? _selectedWindow;
+
+    public event EventHandler? WindowOpened;
+    public event EventHandler? WindowClosed;
 
     public IReadOnlyCollection<EnvironmentWindow> Windows => _windows;
 
@@ -43,6 +48,7 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
     {
         var window = new EnvironmentWindow(id, model, view);
         _windows.Add(window);
+        WindowOpened?.Invoke(this, EventArgs.Empty);
 
         return window;
     }
@@ -65,6 +71,7 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
         }
         var component = Windows.First(x => x == window);
         _windows.Remove(component);
+        WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
     public void CloseAllWindows()
@@ -73,5 +80,6 @@ public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindows
         Windows.Where(x => x.Model is ICloseableEnvironmentWindow).Each(x => ((ICloseableEnvironmentWindow)x.Model).Close());
         SelectedWindow = null;
         _windows.Clear();
+        WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 }

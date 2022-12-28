@@ -73,7 +73,7 @@ internal class ProjectRepositoryTest
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
         _repositoryFactory.Setup(x => x.IsRepositoryExist(_projectPath)).Returns(false);
 
-        _projectLoader.Raise(x => x.ProjectOpened += null, EventArgs.Empty);
+        _projectLoader.Raise(x => x.ProjectOpened += null, new ProjectOpenedEventArgs(null));
     }
 
     [Test]
@@ -84,7 +84,7 @@ internal class ProjectRepositoryTest
         var repositoryInitializedFired = 0;
         _repository.RepositoryInitialized += (s, e) => repositoryInitializedFired++;
 
-        _projectLoader.Raise(x => x.ProjectOpened += null, EventArgs.Empty);
+        _projectLoader.Raise(x => x.ProjectOpened += null, new ProjectOpenedEventArgs(null));
 
         Assert.That(repositoryInitializedFired, Is.EqualTo(1));
         Assert.That(_repository.Status, Is.EqualTo(VersionedStatus.Empty));
@@ -100,7 +100,7 @@ internal class ProjectRepositoryTest
         var repositoryInitializedFired = 0;
         _repository.RepositoryInitialized += (s, e) => repositoryInitializedFired++;
 
-        _projectLoader.Raise(x => x.ProjectOpened += null, EventArgs.Empty);
+        _projectLoader.Raise(x => x.ProjectOpened += null, new ProjectOpenedEventArgs(null));
 
         Assert.That(repositoryInitializedFired, Is.EqualTo(1));
         Assert.That(_repository.Status, Is.EqualTo(VersionedStatus.Empty));
@@ -116,7 +116,7 @@ internal class ProjectRepositoryTest
         _projectLoader.SetupGet(x => x.Project).Returns(_project);
         _repositoryFactory.Setup(x => x.IsRepositoryExist(_projectPath)).Returns(true);
 
-        _projectLoader.Raise(x => x.ProjectOpened += null, EventArgs.Empty);
+        _projectLoader.Raise(x => x.ProjectOpened += null, new ProjectOpenedEventArgs(null));
     }
 
     [Test]

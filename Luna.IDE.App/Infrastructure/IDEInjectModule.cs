@@ -23,6 +23,7 @@ public class IDEInjectModule : InjectModule
 {
     public override void Init(IBindingProvider provider)
     {
+        provider.Bind<IDateTimeProvider, DateTimeProvider>();
         provider.Bind<IOpenFileDialog, OpenFileDialog>();
         provider.Bind<IMessageBox, MessageBox>().ToSingleton();
         provider.Bind<IImageCollection, ImageCollection>().ToSingleton();
@@ -45,6 +46,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();
         provider.Bind<IConfigStorage, ConfigStorage>().ToSingleton();
         provider.Bind<ILastOpenedProjectFiles, LastOpenedProjectFiles>().ToSingleton();
+        provider.Bind<IRecentProjects, RecentProjects>().ToSingleton();
+        provider.Bind<RecentProjectsViewModel, RecentProjectsViewModel>().ToSingleton();
         provider.Bind<ProjectExplorerViewModel, ProjectExplorerViewModel>().ToSingleton();
         provider.Bind<IAutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();

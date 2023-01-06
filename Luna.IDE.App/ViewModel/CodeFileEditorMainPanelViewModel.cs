@@ -17,4 +17,7 @@ public class CodeFileEditorMainPanelViewModel : NotificationObject
 
     [Inject]
     public IToLowerCaseCommand? ToLowerCaseCommand { get; set; }
+
+    [Inject]
+    public IFormatCodeCommand? FormatCodeCommand { get; set; }
 }

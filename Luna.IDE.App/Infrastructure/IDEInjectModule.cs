@@ -77,6 +77,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IRedoCommand, RedoCommand>().ToSingleton();
         provider.Bind<IToUpperCaseCommand, ToUpperCaseCommand>().ToSingleton();
         provider.Bind<IToLowerCaseCommand, ToLowerCaseCommand>().ToSingleton();
+        provider.Bind<IFormatCodeCommand, FormatCodeCommand>().ToSingleton();
         provider.Bind<IMainWindowClosedCommand, MainWindowClosedCommand>().ToSingleton();
     }
 }

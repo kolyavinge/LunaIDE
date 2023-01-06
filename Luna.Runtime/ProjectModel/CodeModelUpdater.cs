@@ -17,7 +17,7 @@ public class CodeModelUpdater : ICodeModelUpdater
     internal CodeModelUpdater(ITimerManager timerManager, ICodeModelBuilder codeModelBuilder)
     {
         _codeModelBuilder = codeModelBuilder;
-        timerManager.CreateAndStart(TimeSpan.FromSeconds(2), OnTimerTick);
+        timerManager.CreateAndStart(TimeSpan.FromSeconds(2), (s, e) => UpdateNow());
     }
 
     public void SetCodeFiles(IEnumerable<CodeFileProjectItem> projectItems)
@@ -31,7 +31,7 @@ public class CodeModelUpdater : ICodeModelUpdater
         Interlocked.Exchange(ref _updateRequest, 1);
     }
 
-    public void OnTimerTick(object? sender, EventArgs e)
+    public void UpdateNow()
     {
         if (_updateRequest == 0) return;
         Interlocked.Exchange(ref _updateRequest, 0);

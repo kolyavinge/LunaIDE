@@ -10,7 +10,7 @@ public interface ITextIterator
     void MoveNext();
 }
 
-internal class TextIterator : ITextIterator
+public class TextIterator : ITextIterator
 {
     private readonly Text _text;
 

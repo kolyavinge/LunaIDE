@@ -17,39 +17,34 @@ public class FunctionParser : AbstractParser
 
     protected override void InnerParse()
     {
-        switch (State.Begin)
+        while (!Eof)
         {
-            case State.Begin:
-                if (Eof) break;
-                else if (Token.Kind == TokenKind.ConstDeclaration)
+            if (Token.Kind == TokenKind.ConstDeclaration)
+            {
+                ParserMessage? error = null;
+                ParseConstDeclaration(ref error);
+                if (error != null) _result.AddError(error);
+            }
+            else if (Token.Kind == TokenKind.ImportDirective)
+            {
+                _result.AddError(new(ParserMessageType.UnexpectedImport, Token));
+                break;
+            }
+            else if (Token.Kind == TokenKind.OpenBracket)
+            {
+                ParserMessage? error = null;
+                ParseRunFunctionOrFunctionDeclaration(ref error);
+                if (error != null)
                 {
-                    ParserMessage? error = null;
-                    ParseConstDeclaration(ref error);
-                    if (error != null) _result.AddError(error);
-                    goto case State.Begin;
+                    _result.AddError(error);
+                    SkipFunctionDeclaration();
                 }
-                else if (Token.Kind == TokenKind.ImportDirective)
-                {
-                    _result.AddError(new(ParserMessageType.UnexpectedImport, Token));
-                    break;
-                }
-                else if (Token.Kind == TokenKind.OpenBracket)
-                {
-                    ParserMessage? error = null;
-                    ParseRunFunctionOrFunctionDeclaration(ref error);
-                    if (error != null)
-                    {
-                        _result.AddError(error);
-                        SkipFunctionDeclaration();
-                    }
-                    goto case State.Begin;
-                }
-                else
-                {
-                    if (!_result.Errors.Any()) _result.AddError(new(ParserMessageType.UnexpectedToken, Token));
-                    MoveNext();
-                    goto case State.Begin;
-                }
+            }
+            else
+            {
+                if (!_result.Errors.Any()) _result.AddError(new(ParserMessageType.UnexpectedToken, Token));
+                MoveNext();
+            }
         }
     }
 
@@ -416,10 +411,5 @@ public class FunctionParser : AbstractParser
         MoveNext();
 
         return new(items, listToken.LineIndex, listToken.StartColumnIndex);
-    }
-
-    enum State
-    {
-        Begin
     }
 }

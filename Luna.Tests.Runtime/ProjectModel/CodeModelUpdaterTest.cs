@@ -31,7 +31,7 @@ internal class CodeModelUpdaterTest
     {
         _updater.SetCodeFiles(_projectItems);
 
-        _updater.OnTimerTick(_updater, EventArgs.Empty);
+        _updater.UpdateNow();
 
         _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Once());
     }
@@ -41,9 +41,9 @@ internal class CodeModelUpdaterTest
     {
         _updater.SetCodeFiles(_projectItems);
 
-        _updater.OnTimerTick(_updater, EventArgs.Empty);
+        _updater.UpdateNow();
         _updater.UpdateRequest();
-        _updater.OnTimerTick(_updater, EventArgs.Empty);
+        _updater.UpdateNow();
 
         _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Exactly(2));
     }
@@ -51,7 +51,7 @@ internal class CodeModelUpdaterTest
     [Test]
     public void NoUpdateRequest()
     {
-        _updater.OnTimerTick(_updater, EventArgs.Empty);
+        _updater.UpdateNow();
 
         _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Never());
     }

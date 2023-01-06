@@ -7,6 +7,8 @@ public interface ICodeModelUpdater
     void SetCodeFiles(IEnumerable<CodeFileProjectItem> projectItems);
 
     void UpdateRequest();
+
+    void UpdateNow();
 }
 
 public delegate void CodeModelUpdatedCallback(CodeModelUpdatedEventArgs e);

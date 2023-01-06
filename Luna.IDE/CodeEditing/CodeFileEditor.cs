@@ -19,7 +19,17 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public ICodeTextBoxModel CodeTextBoxModel { get; }
 
+    public string Text { get => CodeTextBoxModel.Text; set => CodeTextBoxModel.Text = value; }
+
     public CursorPosition CursorPosition => CodeTextBoxModel.CursorPosition;
+
+    public IViewport Viewport => CodeTextBoxModel.Viewport;
+
+    public ITextMeasures TextMeasures => CodeTextBoxModel.TextMeasures;
+
+    public ITextEvents TextEvents => CodeTextBoxModel.TextEvents;
+
+    public ITokenCollection Tokens => CodeTextBoxModel.Tokens;
 
     public string Header => ProjectItem.Name;
 
@@ -95,6 +105,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
     public void MoveSelectedLinesUp() => CodeTextBoxModel.MoveSelectedLinesUp();
 
     public void MoveSelectedLinesDown() => CodeTextBoxModel.MoveSelectedLinesDown();
+
+    public void MoveCursorTo(CursorPosition position) => CodeTextBoxModel.MoveCursorTo(position);
 
     public void Undo() => CodeTextBoxModel.History.Undo();
 

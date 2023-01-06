@@ -21,19 +21,19 @@ public class AutoCompleteDataContext : IAutoCompleteDataContext
 
     public event EventHandler? TextChanged;
     public CodeModel CodeModel => _model.ProjectItem.CodeModel;
-    public CursorPosition CursorPosition => _model.CodeTextBoxModel.CursorPosition;
-    public double TextLetterWidth => _model.CodeTextBoxModel.TextMeasures.LetterWidth;
-    public double TextLineHeight => _model.CodeTextBoxModel.TextMeasures.LineHeight;
+    public CursorPosition CursorPosition => _model.CursorPosition;
+    public double TextLetterWidth => _model.TextMeasures.LetterWidth;
+    public double TextLineHeight => _model.TextMeasures.LineHeight;
 
     public AutoCompleteDataContext(ICodeFileEditor model)
     {
         _model = model;
-        _model.CodeTextBoxModel.TextEvents.TextChanged += (s, e) => TextChanged?.Invoke(s, e);
+        _model.TextEvents.TextChanged += (s, e) => TextChanged?.Invoke(s, e);
     }
 
     public Token? GetTokenOnCursorPosition()
     {
-        var position = _model.CodeTextBoxModel.Tokens.GetTokenOnPosition(CursorPosition);
+        var position = _model.Tokens.GetTokenOnPosition(CursorPosition);
         return position?.TokenOnPosition;
     }
 

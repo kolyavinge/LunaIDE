@@ -8,9 +8,17 @@ public interface ICodeFileEditor
 {
     CodeFileProjectItem ProjectItem { get; }
 
-    ICodeTextBoxModel CodeTextBoxModel { get; }
+    string Text { get; set; }
 
     CursorPosition CursorPosition { get; }
+
+    IViewport Viewport { get; }
+
+    ITextMeasures TextMeasures { get; }
+
+    ITextEvents TextEvents { get; }
+
+    ITokenCollection Tokens { get; }
 
     TokenCursorPosition? GetTokenCursorPosition();
 
@@ -29,6 +37,8 @@ public interface ICodeFileEditor
     void MoveSelectedLinesUp();
 
     void MoveSelectedLinesDown();
+
+    void MoveCursorTo(CursorPosition position);
 
     void Undo();
 

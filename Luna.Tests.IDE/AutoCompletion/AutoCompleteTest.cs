@@ -53,7 +53,7 @@ public class AutoCompleteTest
     public void Show_Filtered_FullTokenName()
     {
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(10, 6));
-        var token = new Token("lambda", 0, 6, (byte)TokenKind.Lambda);
+        var token = new Token("lambda", 0, (byte)TokenKind.Lambda);
         _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(token);
 
         _autoComplete.Show();
@@ -68,7 +68,7 @@ public class AutoCompleteTest
     public void Show_Filtered_ShortTokenName()
     {
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(10, 4));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("lambda", 0, 6, (byte)TokenKind.Lambda));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("lambda", 0, (byte)TokenKind.Lambda));
 
         _autoComplete.Show();
 
@@ -82,7 +82,7 @@ public class AutoCompleteTest
     public void Show_Filtered_IgnoreCase()
     {
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(10, 6));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("LAMBDA", 0, 6, (byte)TokenKind.Lambda));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("LAMBDA", 0, (byte)TokenKind.Lambda));
 
         _autoComplete.Show();
 
@@ -102,19 +102,19 @@ public class AutoCompleteTest
         _autoComplete.Show();
 
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 3));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz", 0, 3, (byte)TokenKind.Identificator));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz", 0, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
         Assert.That(_autoComplete.Items.Count, Is.EqualTo(3));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz");
 
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 4));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz1", 0, 4, (byte)TokenKind.Identificator));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz1", 0, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
         Assert.That(_autoComplete.Items.Count, Is.EqualTo(2));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz1");
 
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 5));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz12", 0, 5, (byte)TokenKind.Identificator));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("zzz12", 0, (byte)TokenKind.Identificator));
         _dataContext.Raise(x => x.TextChanged += null, EventArgs.Empty);
         Assert.That(_autoComplete.Items.Count, Is.EqualTo(1));
         Assert.NotNull(_autoComplete.SelectedItem.Name == "zzz12");
@@ -136,7 +136,7 @@ public class AutoCompleteTest
     public void Complete_WithKeyboardInput()
     {
         _dataContext.SetupGet(x => x.CursorPosition).Returns(new CursorPosition(0, 6));
-        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("lambda", 0, 6, (byte)TokenKind.Lambda));
+        _dataContext.Setup(x => x.GetTokenOnCursorPosition()).Returns(new Token("lambda", 0, (byte)TokenKind.Lambda));
         _autoComplete.Show();
 
         _autoComplete.Complete();

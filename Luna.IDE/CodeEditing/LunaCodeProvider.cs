@@ -32,7 +32,7 @@ public class LunaCodeProvider : ILunaCodeProvider
     private Token Convert(Parsing.Token token)
     {
         var kind = GetTokenKind(token.Name, token.Kind);
-        return new(token.Name, token.LineIndex, token.StartColumnIndex, token.Length, kind);
+        return new(token.Name, token.LineIndex, token.StartColumnIndex, kind);
     }
 
     private byte GetTokenKind(string name, TokenKind kind)

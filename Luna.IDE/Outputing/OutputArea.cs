@@ -41,7 +41,7 @@ public class OutputArea : IOutputArea
     public void SendMessage(OutputMessage message)
     {
         CodeTextBoxModel.IsReadOnly = false;
-        _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, item.Text.Length, (byte)item.Kind)).ToList());
+        _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, (byte)item.Kind)).ToList());
         _currentLine++;
         CodeTextBoxModel.MoveCursorTextEnd();
         CodeTextBoxModel.InsertText(message.Text + Environment.NewLine);

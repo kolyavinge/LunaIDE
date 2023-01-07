@@ -25,13 +25,12 @@ public class Token
                Name == token.Name &&
                LineIndex == token.LineIndex &&
                StartColumnIndex == token.StartColumnIndex &&
-               Length == token.Length &&
                Kind == token.Kind;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Name, LineIndex, StartColumnIndex, Length, Kind);
+        return HashCode.Combine(Name, LineIndex, StartColumnIndex, Kind);
     }
 }
 

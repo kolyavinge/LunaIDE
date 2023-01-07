@@ -34,7 +34,7 @@ internal class GotoDeclarationCommandTest
     [Test]
     public void TokenOnPosition()
     {
-        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, 5, (byte)TokenKind.Identificator), null));
+        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), null));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
         _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
@@ -48,7 +48,7 @@ internal class GotoDeclarationCommandTest
     [Test]
     public void NeighbourToken_TokenOnPositionIdentificator()
     {
-        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, 5, (byte)TokenKind.Identificator), new("(", 6, 1, 0)));
+        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), new("(", 6, 0)));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
         _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
@@ -62,7 +62,7 @@ internal class GotoDeclarationCommandTest
     [Test]
     public void NeighbourToken_NeighbourIdentificator()
     {
-        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("(", 1, 1, 0), new("WIDTH", 2, 5, (byte)TokenKind.Identificator)));
+        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("(", 1, 0), new("WIDTH", 2, (byte)TokenKind.Identificator)));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
         _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 2)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
@@ -86,7 +86,7 @@ internal class GotoDeclarationCommandTest
     [Test]
     public void NoCodeModelNavigatorResult()
     {
-        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, 5, (byte)TokenKind.Identificator), null));
+        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), null));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
         _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(default(CodeModelNavigatorResult));
@@ -99,7 +99,7 @@ internal class GotoDeclarationCommandTest
     [Test]
     public void NoDeclarationNavigatorResult()
     {
-        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, 5, (byte)TokenKind.Identificator), null));
+        _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), null));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
         _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Moq;

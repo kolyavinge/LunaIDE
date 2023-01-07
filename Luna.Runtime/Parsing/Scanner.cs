@@ -13,7 +13,7 @@ public class Scanner
     private readonly char[] _nameArray = new char[1024];
     private TokenKind? _kind;
 
-    public IEnumerable<Token> GetTokens(ITextIterator textIterator)
+    public IReadOnlyCollection<Token> GetTokens(ITextIterator textIterator)
     {
         _textIterator = textIterator;
         _tokens.Clear();

@@ -142,6 +142,16 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
+            new("import", 0, 10, 6, TokenKind.ImportDirective)
+        });
+        AssertFormatted("import\r\n");
+    }
+
+    [Test]
+    public void FormatImportWrong_4()
+    {
+        Format(new Token[]
+        {
             new("import", 0, 3, 6, TokenKind.ImportDirective),
             new("'file'", 1, 5, 6, TokenKind.String)
         });
@@ -149,7 +159,7 @@ internal class CodeFormatterTest
     }
 
     [Test]
-    public void FormatImportWrong_4()
+    public void FormatImportWrong_5()
     {
         Format(new Token[]
         {
@@ -159,12 +169,191 @@ internal class CodeFormatterTest
         AssertFormatted("import   123\r\n");
     }
 
+    [Test]
+    public void FormatConst()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
+            new("123", 0, 17, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH 123\r\n");
+    }
+
+    [Test]
+    public void FormatConstWithComment()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
+            new("123", 0, 17, 3, TokenKind.IntegerNumber),
+            new("// comment", 0, 22, 10, TokenKind.Comment)
+        });
+        AssertFormatted("const WIDTH 123  // comment\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_NoSign()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("123", 0, 20, 3, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH  123\r\nconst HEIGHT 45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_WithNegativeSign_1()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("-123", 0, 20, 4, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("45", 1, 20, 2, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH -123\r\nconst HEIGHT 45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_WithPositiveSign_1()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("45", 1, 20, 2, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH +123\r\nconst HEIGHT 45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_WithNegativeSign_2()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("123", 0, 20, 3, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH   123\r\nconst HEIGHT -45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_WithNegativeSign_3()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH  +123\r\nconst HEIGHT -45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_WithPositiveSign_2()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("123", 0, 20, 3, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("+45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH   123\r\nconst HEIGHT +45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_BothNegativeSigns()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("-123", 0, 20, 4, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH  -123\r\nconst HEIGHT -45\r\n");
+    }
+
+    [Test]
+    public void FormatTwoConsts_BothPositiveSigns()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
+            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
+            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
+            new("+45", 1, 20, 3, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const WIDTH  +123\r\nconst HEIGHT +45\r\n");
+    }
+
+    [Test]
+    public void FormatConst_Wrong_1()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 3, 5, TokenKind.ConstDeclaration)
+        });
+        AssertFormatted("const\r\n");
+    }
+
+    [Test]
+    public void FormatConst_Wrong_2()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, 5, TokenKind.Identificator)
+        });
+        AssertFormatted("const  WIDTH\r\n");
+    }
+
+    [Test]
+    public void FormatConst_Wrong_3()
+    {
+        Format(new Token[]
+        {
+            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
+            new("1", 0, 17, 5, TokenKind.IntegerNumber),
+            new("2", 0, 20, 5, TokenKind.IntegerNumber)
+        });
+        AssertFormatted("const  WIDTH  1  2\r\n");
+    }
+
     private void AssertFormatted(string expected)
     {
         Assert.That(_formatted, Is.EqualTo(expected));
     }
 
-    private void Format(IEnumerable<Token> tokens)
+    private void Format(IReadOnlyCollection<Token> tokens)
     {
         _formatter = new CodeFormatter(tokens);
         _formatted = _formatter.Format();

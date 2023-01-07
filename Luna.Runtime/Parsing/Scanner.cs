@@ -187,7 +187,7 @@ public class Scanner
 
     private void MakeToken()
     {
-        _tokens.Add(new(new string(_nameArray, 0, _nameLength), _lineIndex, _columnIndex, _nameLength, _kind ?? GetTokenKind()));
+        _tokens.Add(new(new string(_nameArray, 0, _nameLength), _lineIndex, _columnIndex, _kind ?? GetTokenKind()));
         _kind = null;
     }
 

@@ -20,7 +20,7 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("// comment", 0, 5, 10, TokenKind.Comment)
+            new("// comment", 0, 5, TokenKind.Comment)
         });
         AssertFormatted("// comment\r\n");
     }
@@ -30,8 +30,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 17, 6, TokenKind.String)
+            new("import", 0, 10, TokenKind.ImportDirective),
+            new("'file'", 0, 17, TokenKind.String)
         });
         AssertFormatted("import 'file'\r\n");
     }
@@ -41,9 +41,9 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("// comment", 0, 0, 10, TokenKind.Comment),
-            new("import", 1, 10, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 17, 6, TokenKind.String)
+            new("// comment", 0, 0, TokenKind.Comment),
+            new("import", 1, 10, TokenKind.ImportDirective),
+            new("'file'", 1, 17, TokenKind.String)
         });
         AssertFormatted("// comment\r\nimport 'file'\r\n");
     }
@@ -53,8 +53,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 20, 6, TokenKind.String)
+            new("import", 0, 10, TokenKind.ImportDirective),
+            new("'file'", 0, 20, TokenKind.String)
         });
         AssertFormatted("import 'file'\r\n");
     }
@@ -64,9 +64,9 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 20, 6, TokenKind.String),
-            new("// comment", 0, 28, 10, TokenKind.Comment)
+            new("import", 0, 10, TokenKind.ImportDirective),
+            new("'file'", 0, 20, TokenKind.String),
+            new("// comment", 0, 28, TokenKind.Comment)
         });
         AssertFormatted("import 'file'  // comment\r\n");
     }
@@ -76,11 +76,11 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String),
-            new("// comment", 2, 0, 10, TokenKind.Comment),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String),
+            new("// comment", 2, 0, TokenKind.Comment),
         });
         AssertFormatted("import 'file'\r\n// comment\r\n");
     }
@@ -90,11 +90,11 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("'wrong'", 0, 14, 6, TokenKind.String),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("'wrong'", 0, 14, TokenKind.String),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         AssertFormatted("import 'file' 'wrong'\r\nimport 'file'\r\n");
     }
@@ -104,11 +104,11 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("123", 0, 0, 3, TokenKind.IntegerNumber),
-            new("import", 0, 4, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 11, 6, TokenKind.String),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("123", 0, 0, TokenKind.IntegerNumber),
+            new("import", 0, 4, TokenKind.ImportDirective),
+            new("'file'", 0, 11, TokenKind.String),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         AssertFormatted("123 import 'file'\r\nimport 'file'\r\n");
     }
@@ -118,10 +118,10 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 20, 6, TokenKind.String),
-            new("'file'", 0, 28, 6, TokenKind.String),
-            new("// comment", 0, 36, 10, TokenKind.Comment)
+            new("import", 0, 10, TokenKind.ImportDirective),
+            new("'file'", 0, 20, TokenKind.String),
+            new("'file'", 0, 28, TokenKind.String),
+            new("// comment", 0, 36, TokenKind.Comment)
         });
         AssertFormatted("import    'file'  'file'  // comment\r\n");
     }
@@ -131,8 +131,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective),
-            new("import", 0, 20, 6, TokenKind.ImportDirective)
+            new("import", 0, 10, TokenKind.ImportDirective),
+            new("import", 0, 20, TokenKind.ImportDirective)
         });
         AssertFormatted("import    import\r\n");
     }
@@ -142,7 +142,7 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 10, 6, TokenKind.ImportDirective)
+            new("import", 0, 10, TokenKind.ImportDirective)
         });
         AssertFormatted("import\r\n");
     }
@@ -152,8 +152,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 3, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 5, 6, TokenKind.String)
+            new("import", 0, 3, TokenKind.ImportDirective),
+            new("'file'", 1, 5, TokenKind.String)
         });
         AssertFormatted("import\r\n     'file'\r\n");
     }
@@ -163,8 +163,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("import", 0, 3, 6, TokenKind.ImportDirective),
-            new("123", 0, 12, 3, TokenKind.IntegerNumber)
+            new("import", 0, 3, TokenKind.ImportDirective),
+            new("123", 0, 12, TokenKind.IntegerNumber)
         });
         AssertFormatted("import   123\r\n");
     }
@@ -174,9 +174,9 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
-            new("123", 0, 17, 3, TokenKind.IntegerNumber)
+            new("const", 0, 3, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, TokenKind.Identificator),
+            new("123", 0, 17, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH 123\r\n");
     }
@@ -186,10 +186,10 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
-            new("123", 0, 17, 3, TokenKind.IntegerNumber),
-            new("// comment", 0, 22, 10, TokenKind.Comment)
+            new("const", 0, 3, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, TokenKind.Identificator),
+            new("123", 0, 17, TokenKind.IntegerNumber),
+            new("// comment", 0, 22, TokenKind.Comment)
         });
         AssertFormatted("const WIDTH 123  // comment\r\n");
     }
@@ -199,12 +199,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("123", 0, 20, 3, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH  123\r\nconst HEIGHT 45\r\n");
     }
@@ -214,12 +214,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("-123", 0, 20, 4, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("45", 1, 20, 2, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("-123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH -123\r\nconst HEIGHT 45\r\n");
     }
@@ -229,12 +229,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("45", 1, 20, 2, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("+123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH +123\r\nconst HEIGHT 45\r\n");
     }
@@ -244,12 +244,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("123", 0, 20, 3, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("-45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH   123\r\nconst HEIGHT -45\r\n");
     }
@@ -259,12 +259,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("+123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("-45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH  +123\r\nconst HEIGHT -45\r\n");
     }
@@ -274,12 +274,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("123", 0, 20, 3, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("+45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("+45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH   123\r\nconst HEIGHT +45\r\n");
     }
@@ -289,12 +289,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("-123", 0, 20, 4, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("-45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("-123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("-45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH  -123\r\nconst HEIGHT -45\r\n");
     }
@@ -304,12 +304,12 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 0, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 6, 5, TokenKind.Identificator),
-            new("+123", 0, 20, 4, TokenKind.IntegerNumber),
-            new("const", 1, 0, 5, TokenKind.ConstDeclaration),
-            new("HEIGHT", 1, 7, 6, TokenKind.Identificator),
-            new("+45", 1, 20, 3, TokenKind.IntegerNumber)
+            new("const", 0, 0, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 6, TokenKind.Identificator),
+            new("+123", 0, 20, TokenKind.IntegerNumber),
+            new("const", 1, 0, TokenKind.ConstDeclaration),
+            new("HEIGHT", 1, 7, TokenKind.Identificator),
+            new("+45", 1, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const WIDTH  +123\r\nconst HEIGHT +45\r\n");
     }
@@ -319,7 +319,7 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 3, 5, TokenKind.ConstDeclaration)
+            new("const", 0, 3, TokenKind.ConstDeclaration)
         });
         AssertFormatted("const\r\n");
     }
@@ -329,8 +329,8 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 10, 5, TokenKind.Identificator)
+            new("const", 0, 3, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, TokenKind.Identificator)
         });
         AssertFormatted("const  WIDTH\r\n");
     }
@@ -340,10 +340,10 @@ internal class CodeFormatterTest
     {
         Format(new Token[]
         {
-            new("const", 0, 3, 5, TokenKind.ConstDeclaration),
-            new("WIDTH", 0, 10, 5, TokenKind.Identificator),
-            new("1", 0, 17, 5, TokenKind.IntegerNumber),
-            new("2", 0, 20, 5, TokenKind.IntegerNumber)
+            new("const", 0, 3, TokenKind.ConstDeclaration),
+            new("WIDTH", 0, 10, TokenKind.Identificator),
+            new("1", 0, 17, TokenKind.IntegerNumber),
+            new("2", 0, 20, TokenKind.IntegerNumber)
         });
         AssertFormatted("const  WIDTH  1  2\r\n");
     }

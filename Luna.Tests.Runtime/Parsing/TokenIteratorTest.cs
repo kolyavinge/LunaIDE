@@ -14,8 +14,8 @@ internal class TokenIteratorTest
     {
         _iterator = new TokenIterator(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String)
         });
 
         var tokens = GetTokens().ToList();
@@ -30,9 +30,9 @@ internal class TokenIteratorTest
     {
         _iterator = new TokenIterator(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("// comment", 0, 14, 10, TokenKind.Comment)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("// comment", 0, 14, TokenKind.Comment)
         });
 
         var tokens = GetTokens().ToList();
@@ -47,9 +47,9 @@ internal class TokenIteratorTest
     {
         _iterator = new TokenIterator(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("// comment", 0, 14, 10, TokenKind.Comment)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("// comment", 0, 14, TokenKind.Comment)
         }, new() { SkipComments = false });
 
         var tokens = GetTokens().ToList();

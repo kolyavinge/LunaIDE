@@ -2,7 +2,7 @@
 
 public class Token
 {
-    public static readonly Token Default = new("", 0, 0, 0, TokenKind.Unknown);
+    public static readonly Token Default = new("", 0, 0, TokenKind.Unknown);
 
     public readonly string Name;
     public readonly int LineIndex;
@@ -10,12 +10,12 @@ public class Token
     public readonly int Length;
     public readonly TokenKind Kind;
 
-    public Token(string name, int lineIndex, int startColumnIndex, int length, TokenKind kind)
+    public Token(string name, int lineIndex, int startColumnIndex, TokenKind kind)
     {
         Name = name;
         LineIndex = lineIndex;
         StartColumnIndex = startColumnIndex;
-        Length = length;
+        Length = name.Length;
         Kind = kind;
     }
 

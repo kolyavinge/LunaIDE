@@ -30,9 +30,9 @@ internal class ImportDirectiveParserTest
         // import 'file' // comment
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("// comment", 0, 14, 10, TokenKind.Comment),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("// comment", 0, 14, TokenKind.Comment),
         });
         Assert.False(_result.Errors.Any());
         Assert.AreEqual(0, _result.Warnings.Count);
@@ -48,11 +48,11 @@ internal class ImportDirectiveParserTest
         // import 'file 1' // comment\r\nimport 'file 2'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file 1'", 0, 7, 8, TokenKind.String),
-            new("// comment", 0, 14, 10, TokenKind.Comment),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file 2'", 1, 7, 8, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file 1'", 0, 7, TokenKind.String),
+            new("// comment", 0, 14, TokenKind.Comment),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file 2'", 1, 7, TokenKind.String),
         });
         Assert.False(_result.Errors.Any());
         Assert.AreEqual(0, _result.Warnings.Count);
@@ -71,11 +71,11 @@ internal class ImportDirectiveParserTest
         // import 'file 1' // comment\r\nimport 'file 1'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file 1'", 0, 7, 8, TokenKind.String),
-            new("// comment", 0, 14, 10, TokenKind.Comment),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file 1'", 1, 7, 8, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file 1'", 0, 7, TokenKind.String),
+            new("// comment", 0, 14, TokenKind.Comment),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file 1'", 1, 7, TokenKind.String),
         });
         Assert.False(_result.Errors.Any());
         Assert.AreEqual(1, _result.Warnings.Count);
@@ -93,14 +93,14 @@ internal class ImportDirectiveParserTest
         // import ''
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("''", 0, 7, 2, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("''", 0, 7, TokenKind.String)
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportEmptyFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("''", 0, 7, 2, TokenKind.String), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("''", 0, 7, TokenKind.String), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -110,13 +110,13 @@ internal class ImportDirectiveParserTest
         // import 
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective)
+            new("import", 0, 0, TokenKind.ImportDirective)
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportNoFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 0, 6, TokenKind.ImportDirective), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("import", 0, 0, TokenKind.ImportDirective), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -126,16 +126,16 @@ internal class ImportDirectiveParserTest
         // import\r\nimport 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         Assert.AreEqual(1, _codeModel.Imports.Count);
         Assert.AreEqual("file", _codeModel.Imports.First().FilePath);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportNoFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 0, 6, TokenKind.ImportDirective), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("import", 0, 0, TokenKind.ImportDirective), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -145,17 +145,17 @@ internal class ImportDirectiveParserTest
         // import\r\nimport 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'", 0, 0, 1, TokenKind.String),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'", 0, 0, TokenKind.String),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         Assert.AreEqual(1, _codeModel.Imports.Count);
         Assert.AreEqual("file", _codeModel.Imports.First().FilePath);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportEmptyFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("'", 0, 0, 1, TokenKind.String), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("'", 0, 0, TokenKind.String), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -165,12 +165,12 @@ internal class ImportDirectiveParserTest
         // import 'wrong'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'wrong'", 0, 7, 7, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'wrong'", 0, 7, TokenKind.String),
         });
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportFileNotFound, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 0, 6, TokenKind.ImportDirective), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("import", 0, 0, TokenKind.ImportDirective), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
         Assert.AreEqual(0, _codeModel.Imports.Count);
     }
@@ -181,14 +181,14 @@ internal class ImportDirectiveParserTest
         // import 123
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("123", 0, 7, 3, TokenKind.IntegerNumber),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("123", 0, 7, TokenKind.IntegerNumber),
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportFilePathNotString, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("123", 0, 7, 3, TokenKind.IntegerNumber), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("123", 0, 7, TokenKind.IntegerNumber), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -198,14 +198,14 @@ internal class ImportDirectiveParserTest
         // import 1.23
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("1.23", 0, 7, 4, TokenKind.FloatNumber),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("1.23", 0, 7, TokenKind.FloatNumber),
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportFilePathNotString, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("1.23", 0, 7, 4, TokenKind.FloatNumber), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("1.23", 0, 7, TokenKind.FloatNumber), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -215,14 +215,14 @@ internal class ImportDirectiveParserTest
         // import import
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("import", 0, 7, 6, TokenKind.ImportDirective),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("import", 0, 7, TokenKind.ImportDirective),
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.IncorrectTokenAfterImport, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 7, 6, TokenKind.ImportDirective), _result.Errors.First().Token);
+        Assert.AreEqual(new Token("import", 0, 7, TokenKind.ImportDirective), _result.Errors.First().Token);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -232,19 +232,19 @@ internal class ImportDirectiveParserTest
         // import 'file' 1 1.2 'string'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("1", 0, 14, 1, TokenKind.IntegerNumber),
-            new("1.2", 0, 16, 3, TokenKind.FloatNumber),
-            new("'string'", 0, 20, 8, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("1", 0, 14, TokenKind.IntegerNumber),
+            new("1.2", 0, 16, TokenKind.FloatNumber),
+            new("'string'", 0, 20, TokenKind.String),
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("1", 0, 14, 1, TokenKind.IntegerNumber), _result.Errors.First().Tokens[0]);
-        Assert.AreEqual(new Token("1.2", 0, 16, 3, TokenKind.FloatNumber), _result.Errors.First().Tokens[1]);
-        Assert.AreEqual(new Token("'string'", 0, 20, 8, TokenKind.String), _result.Errors.First().Tokens[2]);
+        Assert.AreEqual(new Token("1", 0, 14, TokenKind.IntegerNumber), _result.Errors.First().Tokens[0]);
+        Assert.AreEqual(new Token("1.2", 0, 16, TokenKind.FloatNumber), _result.Errors.First().Tokens[1]);
+        Assert.AreEqual(new Token("'string'", 0, 20, TokenKind.String), _result.Errors.First().Tokens[2]);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -254,17 +254,17 @@ internal class ImportDirectiveParserTest
         // import 'file' import 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 7, 6, TokenKind.String),
-            new("import", 0, 14, 6, TokenKind.ImportDirective),
-            new("'file'", 0, 21, 8, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("'file'", 0, 7, TokenKind.String),
+            new("import", 0, 14, TokenKind.ImportDirective),
+            new("'file'", 0, 21, TokenKind.String),
         });
         Assert.AreEqual(0, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.UnexpectedToken, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 14, 6, TokenKind.ImportDirective), _result.Errors.First().Tokens[0]);
-        Assert.AreEqual(new Token("'file'", 0, 21, 8, TokenKind.String), _result.Errors.First().Tokens[1]);
+        Assert.AreEqual(new Token("import", 0, 14, TokenKind.ImportDirective), _result.Errors.First().Tokens[0]);
+        Assert.AreEqual(new Token("'file'", 0, 21, TokenKind.String), _result.Errors.First().Tokens[1]);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -275,16 +275,16 @@ internal class ImportDirectiveParserTest
         // import 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("888", 0, 7, 3, TokenKind.IntegerNumber),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String),
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("888", 0, 7, TokenKind.IntegerNumber),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String),
         });
         Assert.AreEqual(1, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportFilePathNotString, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("888", 0, 7, 3, TokenKind.IntegerNumber), _result.Errors.First().Tokens[0]);
+        Assert.AreEqual(new Token("888", 0, 7, TokenKind.IntegerNumber), _result.Errors.First().Tokens[0]);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -295,15 +295,15 @@ internal class ImportDirectiveParserTest
         // import 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         Assert.AreEqual(1, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportNoFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("import", 0, 0, 6, TokenKind.ImportDirective), _result.Errors.First().Tokens[0]);
+        Assert.AreEqual(new Token("import", 0, 0, TokenKind.ImportDirective), _result.Errors.First().Tokens[0]);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 
@@ -314,16 +314,16 @@ internal class ImportDirectiveParserTest
         // import 'file'
         Parse(new Token[]
         {
-            new("import", 0, 0, 6, TokenKind.ImportDirective),
-            new("''", 0, 0, 2, TokenKind.String),
-            new("import", 1, 0, 6, TokenKind.ImportDirective),
-            new("'file'", 1, 7, 6, TokenKind.String)
+            new("import", 0, 0, TokenKind.ImportDirective),
+            new("''", 0, 0, TokenKind.String),
+            new("import", 1, 0, TokenKind.ImportDirective),
+            new("'file'", 1, 7, TokenKind.String)
         });
         Assert.AreEqual(1, _codeModel.Imports.Count);
         Assert.AreEqual(0, _codeModel.Constants.Count);
         Assert.AreEqual(1, _result.Errors.Count);
         Assert.AreEqual(ParserMessageType.ImportEmptyFilePath, _result.Errors.First().Type);
-        Assert.AreEqual(new Token("''", 0, 0, 2, TokenKind.String), _result.Errors.First().Tokens[0]);
+        Assert.AreEqual(new Token("''", 0, 0, TokenKind.String), _result.Errors.First().Tokens[0]);
         Assert.AreEqual(0, _result.Warnings.Count);
     }
 

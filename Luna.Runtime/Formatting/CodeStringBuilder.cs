@@ -4,9 +4,19 @@ namespace Luna.Formatting;
 
 internal class CodeStringBuilder
 {
-    private readonly StringBuilder _stringBuilder = new();
+    private readonly StringBuilder _stringBuilder;
     private int _linesCount;
     private int _lastLineLength;
+
+    public CodeStringBuilder()
+    {
+        _stringBuilder = new StringBuilder();
+    }
+
+    public CodeStringBuilder(int capacity)
+    {
+        _stringBuilder = new StringBuilder(capacity);
+    }
 
     public void Append(int lineIndex, int columnIndex, string text)
     {

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Luna.Parsing;
 
-public class Text
+internal class Text
 {
     private readonly List<string> _lines = new();
 

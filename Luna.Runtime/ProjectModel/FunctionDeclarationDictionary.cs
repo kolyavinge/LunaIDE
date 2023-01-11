@@ -18,7 +18,7 @@ internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, I
 {
     private readonly Dictionary<string, FunctionDeclaration> _dictionary = new();
 
-    public FunctionDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
+    public FunctionDeclaration? this[string name] => _dictionary.TryGetValue(name, out var value) ? value : null;
 
     public int Count => _dictionary.Count;
 

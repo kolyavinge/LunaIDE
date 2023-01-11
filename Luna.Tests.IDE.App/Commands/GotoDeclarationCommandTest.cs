@@ -1,4 +1,5 @@
-﻿using CodeHighlighter.Model;
+﻿using System;
+using CodeHighlighter.Model;
 using Luna.CodeElements;
 using Luna.IDE.App.Commands;
 using Luna.IDE.CodeEditing;
@@ -37,7 +38,7 @@ internal class GotoDeclarationCommandTest
         _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), null));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
-        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
+        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, Array.Empty<CodeElement>()));
         _declarationNavigator.Setup(x => x.GetDeclarationFor(_projectItem, codeElement)).Returns(new DeclarationNavigatorResult(_projectItem, declaration));
 
         _command.Execute(_codeFileEditor.Object);
@@ -51,7 +52,7 @@ internal class GotoDeclarationCommandTest
         _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), new("(", 6, 0)));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
-        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
+        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, Array.Empty<CodeElement>()));
         _declarationNavigator.Setup(x => x.GetDeclarationFor(_projectItem, codeElement)).Returns(new DeclarationNavigatorResult(_projectItem, declaration));
 
         _command.Execute(_codeFileEditor.Object);
@@ -65,7 +66,7 @@ internal class GotoDeclarationCommandTest
         _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("(", 1, 0), new("WIDTH", 2, (byte)TokenKind.Identificator)));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
-        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 2)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
+        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 2)).Returns(new CodeModelNavigatorResult(codeElement, Array.Empty<CodeElement>()));
         _declarationNavigator.Setup(x => x.GetDeclarationFor(_projectItem, codeElement)).Returns(new DeclarationNavigatorResult(_projectItem, declaration));
 
         _command.Execute(_codeFileEditor.Object);
@@ -102,7 +103,7 @@ internal class GotoDeclarationCommandTest
         _codeFileEditor.Setup(x => x.GetTokenCursorPosition()).Returns(new TokenCursorPosition(new("WIDTH", 1, (byte)TokenKind.Identificator), null));
         var codeElement = new NamedConstantValueElement("WIDTH");
         var declaration = new ConstantDeclaration("WIDTH", new IntegerValueElement(1));
-        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, new CodeElement[0]));
+        _codeModelNavigator.Setup(x => x.GetCodeElementByPosition(_projectItem.CodeModel, 0, 1)).Returns(new CodeModelNavigatorResult(codeElement, Array.Empty<CodeElement>()));
         _declarationNavigator.Setup(x => x.GetDeclarationFor(_projectItem, codeElement)).Returns(default(DeclarationNavigatorResult));
 
         _command.Execute(_codeFileEditor.Object);

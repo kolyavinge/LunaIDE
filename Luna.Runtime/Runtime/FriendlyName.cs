@@ -24,6 +24,6 @@ static class FriendlyName
         if (runtimeValueType == typeof(FunctionRuntimeValue)) return "function";
         if (runtimeValueType == typeof(VariableRuntimeValue)) return "variable";
 
-        throw new ArgumentException();
+        throw new ArgumentException("Wrong runtime value type.", nameof(runtimeValueType));
     }
 }

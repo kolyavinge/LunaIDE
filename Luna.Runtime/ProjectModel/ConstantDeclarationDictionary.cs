@@ -18,7 +18,7 @@ internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary, I
 {
     private readonly Dictionary<string, ConstantDeclaration> _dictionary = new();
 
-    public ConstantDeclaration? this[string name] => _dictionary.ContainsKey(name) ? _dictionary[name] : null;
+    public ConstantDeclaration? this[string name] => _dictionary.TryGetValue(name, out var value) ? value : null;
 
     public int Count => _dictionary.Count;
 

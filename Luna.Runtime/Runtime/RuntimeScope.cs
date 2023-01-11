@@ -72,9 +72,9 @@ internal class RuntimeScope : IRuntimeScope
 
     public VariableRuntimeValue GetVariableOrCreateNew(string variableName)
     {
-        if (_variables.ContainsKey(variableName))
+        if (_variables.TryGetValue(variableName, out var value))
         {
-            return _variables[variableName];
+            return value;
         }
         else
         {
@@ -136,8 +136,7 @@ internal class RuntimeScope : IRuntimeScope
 
     private FunctionBody GetFunctionBody(string functionName)
     {
-        return _declaredFunctions.ContainsKey(functionName)
-            ? _declaredFunctions[functionName].Body
+        return _declaredFunctions.TryGetValue(functionName, out var value) ? value.Body
             : _declaredLambdas[functionName].Body;
     }
 

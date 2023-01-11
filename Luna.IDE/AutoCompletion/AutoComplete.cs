@@ -13,8 +13,8 @@ public class AutoComplete : NotificationObject, IAutoComplete
     private readonly KeywordsCollection _keywords = new();
     private readonly EmbeddedFunctionDeclarationsCollection _embeddedFunctions = new();
     private readonly CodeModelScope _scope = new();
-    private IReadOnlyCollection<IAutoCompleteItem> _originalItems = new IAutoCompleteItem[0];
-    private IReadOnlyCollection<IAutoCompleteItem> _items = new IAutoCompleteItem[0];
+    private IReadOnlyCollection<IAutoCompleteItem> _originalItems = Array.Empty<IAutoCompleteItem>();
+    private IReadOnlyCollection<IAutoCompleteItem> _items = Array.Empty<IAutoCompleteItem>();
     private IAutoCompleteItem? _selectedItem;
     private IAutoCompleteDataContext? _dataContext;
     private int _selectedIndex;

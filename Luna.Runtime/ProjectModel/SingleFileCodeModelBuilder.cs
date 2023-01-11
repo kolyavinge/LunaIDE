@@ -16,7 +16,7 @@ public class SingleFileCodeModelBuilder : ISingleFileCodeModelBuilder
         var scanner = new Scanner();
         var tokens = scanner.GetTokens(new TextIterator(new Text(text))).ToList();
         var iter = new TokenIterator(tokens);
-        var importDirectiveParser = new ImportDirectiveParser(iter, codeModel, new ImportDirectiveParserScope(new CodeFileProjectItem[0]));
+        var importDirectiveParser = new ImportDirectiveParser(iter, codeModel, new ImportDirectiveParserScope(Array.Empty<CodeFileProjectItem>()));
         var functionParser = new FunctionParser(iter, codeModel, new FunctionParserScope(new[] { codeModel }, codeModel));
         importDirectiveParser.Parse(); // skip imports
         functionParser.Parse();

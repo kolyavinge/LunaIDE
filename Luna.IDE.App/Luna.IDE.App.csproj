@@ -8,6 +8,8 @@
         <LangVersion>preview</LangVersion>
         <ApplicationIcon>main.ico</ApplicationIcon>
         <StartupObject>Luna.IDE.App.LunaIDEApp</StartupObject>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,6 +32,10 @@
 
     <ItemGroup>
       <Content Include="main.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\.editorconfig" Link=".editorconfig" />
     </ItemGroup>
 
     <ItemGroup>
@@ -82,6 +88,10 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     </ItemGroup>
 

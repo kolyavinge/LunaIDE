@@ -20,6 +20,6 @@ public class ImportDirectiveParserScope : IImportDirectiveParserScope
 
     public CodeFileProjectItem? GetCodeFileByPath(string path)
     {
-        return _codeFiles.ContainsKey(path) ? _codeFiles[path] : null;
+        return _codeFiles.TryGetValue(path, out var value) ? value : null;
     }
 }

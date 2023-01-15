@@ -9,6 +9,7 @@ namespace Luna.IDE.Configuration;
 public interface IRecentProjects
 {
     IEnumerable<RecentProject> Projects { get; }
+    bool AnyProjects { get; }
 }
 
 public class RecentProject
@@ -46,6 +47,11 @@ public class RecentProjects : NotificationObject, IRecentProjects
     public IEnumerable<RecentProject> Projects
     {
         get => _recentProjects.Select(x => new RecentProject(x.ProjectFullPath, Path.GetFileName(x.ProjectFullPath))).OrderBy(x => x.Name);
+    }
+
+    public bool AnyProjects
+    {
+        get => _recentProjects.Any();
     }
 
     private void OnProjectOpened(object? sender, ProjectOpenedEventArgs e)

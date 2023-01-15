@@ -29,8 +29,8 @@ public class RecentProjectsViewModel : NotificationObject
     {
         Model = recentProjects;
         OpenProjectCommand = new ActionCommand<RecentProject>(rp => projectLoader.OpenProject(rp.FullPath));
-        IsVisible = true;
+        IsVisible = Model.AnyProjects;
         windowsManager.WindowOpened += (s, e) => IsVisible = false;
-        windowsManager.WindowClosed += (s, e) => IsVisible = !windowsManager.Windows.Any();
+        windowsManager.WindowClosed += (s, e) => IsVisible = !windowsManager.Windows.Any() && Model.AnyProjects;
     }
 }

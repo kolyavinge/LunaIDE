@@ -59,7 +59,8 @@
                 <highlighter:CodeTextBox
                     x:Name="codeTextBox"
                     Model="{Binding Model.CodeTextBoxModel}"
-                    Style="{StaticResource CodeEditorStyle}">
+                    Style="{StaticResource CodeEditorStyle}"
+                    Tag="{Binding Model}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding CodeTextBoxLoadedCommand}" CommandParameter="{Binding ElementName=codeTextBox, Converter={StaticResource ControlConverter}}" />
@@ -68,6 +69,9 @@
                             <i:InvokeCommandAction Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <highlighter:CodeTextBox.ContextMenu>
+                        <view:CodeFileEditorContextMenuView CodeFileEditor="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" />
+                    </highlighter:CodeTextBox.ContextMenu>
                 </highlighter:CodeTextBox>
 
                 <view:AutoCompleteView

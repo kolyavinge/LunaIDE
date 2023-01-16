@@ -12,7 +12,6 @@ namespace Luna.IDE.Outputing;
 
 public interface IOutputArea : IRuntimeOutput, ICodeProvider
 {
-    ICodeTextBoxModel CodeTextBoxModel { get; }
     void Clear();
 }
 

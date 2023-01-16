@@ -108,6 +108,12 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public void MoveCursorTo(CursorPosition position) => CodeTextBoxModel.MoveCursorTo(position);
 
+    public void Copy() => CodeTextBoxModel.Copy();
+
+    public void Paste() => CodeTextBoxModel.Paste();
+
+    public void Cut() => CodeTextBoxModel.Cut();
+
     public void Undo() => CodeTextBoxModel.History.Undo();
 
     public void Redo() => CodeTextBoxModel.History.Redo();

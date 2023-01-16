@@ -50,6 +50,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IAutoComplete, AutoComplete>();
         provider.Bind<AutoCompleteViewModel, AutoCompleteViewModel>();
         provider.Bind<CodeFileEditorMainPanelViewModel, CodeFileEditorMainPanelViewModel>();
+        provider.Bind<CodeFileEditorContextMenuViewModel, CodeFileEditorContextMenuViewModel>();
         provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
         provider.Bind<ProjectChangesViewModel, ProjectChangesViewModel>().ToSingleton();
         provider.Bind<ILinesDecorationProcessor, LinesDecorationProcessor>();
@@ -73,9 +74,13 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IRunProgramCommand, RunProgramCommand>().ToSingleton();
         provider.Bind<IUndoCommand, UndoCommand>().ToSingleton();
         provider.Bind<IRedoCommand, RedoCommand>().ToSingleton();
+        provider.Bind<ICopyCommand, CopyCommand>().ToSingleton();
+        provider.Bind<IPasteCommand, PasteCommand>().ToSingleton();
+        provider.Bind<ICutCommand, CutCommand>().ToSingleton();
         provider.Bind<IToUpperCaseCommand, ToUpperCaseCommand>().ToSingleton();
         provider.Bind<IToLowerCaseCommand, ToLowerCaseCommand>().ToSingleton();
         provider.Bind<IFormatCodeCommand, FormatCodeCommand>().ToSingleton();
+        provider.Bind<ICodeFileEditorChangesCommand, CodeFileEditorChangesCommand>().ToSingleton();
         provider.Bind<IMainWindowClosedCommand, MainWindowClosedCommand>().ToSingleton();
     }
 }

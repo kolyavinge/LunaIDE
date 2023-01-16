@@ -1,0 +1,44 @@
+﻿<ContextMenu x:Class="Luna.IDE.App.View.CodeFileEditorContextMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Style="{StaticResource ContextMenuStyle}">
+
+    <MenuItem Header="Goto declaration"
+              InputGestureText="F12"
+              Command="{Binding GotoDeclarationCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+    <Separator />
+
+    <MenuItem Header="Format and cleaup code"
+              Command="{Binding FormatCodeCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+    <Separator />
+
+    <MenuItem Header="Cut"
+              InputGestureText="Ctrl+X"
+              Command="{Binding CutCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+    <MenuItem Header="Copy"
+              InputGestureText="Ctrl+C"
+              Command="{Binding CopyCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+    <MenuItem Header="Paste"
+              InputGestureText="Ctrl+V"
+              Command="{Binding PasteCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+    <Separator />
+
+    <MenuItem Header="Show uncommited changes"
+              Command="{Binding ChangesCommand}"
+              CommandParameter="{Binding CodeFileEditor, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+
+</ContextMenu>

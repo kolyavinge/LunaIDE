@@ -307,15 +307,31 @@
                             Background="{TemplateBinding Background}"
                             SnapsToDevicePixels="True"
                             Uid="Border_38">
-                        <ContentPresenter
-                            x:Name="ContentPresenter"
-                            Content="{TemplateBinding Header}"
-                            Grid.Column="1"
-                            ContentSource="Header"
-                            Margin="{TemplateBinding Padding}"
-                            RecognizesAccessKey="True"
-                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                            Uid="ContentPresenter_33"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                                <ColumnDefinition Width="13" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                ContentSource="Icon" />
+                            <ContentPresenter
+                                Grid.Column="1"
+                                ContentSource="Header"
+                                Content="{TemplateBinding Header}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <ContentPresenter
+                                Grid.Column="2"
+                                ContentSource="InputGestureText"
+                                Content="{TemplateBinding InputGestureText}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                Margin="8,0,0,0" />
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
@@ -328,7 +344,13 @@
         </Setter>
     </Style>
 
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+        <Setter Property="Background" Value="{StaticResource InnactiveSelectedItemBrush}" />
+    </Style>
+
     <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="FontFamily" Value="{x:Static SystemFonts.MenuFontFamily}" />
+        <Setter Property="FontSize" Value="{x:Static SystemFonts.MenuFontSize}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Grid.IsSharedSizeScope" Value="true" />

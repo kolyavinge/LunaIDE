@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using Luna.IDE.App.Commands;
+using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Controls;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Mvvm;

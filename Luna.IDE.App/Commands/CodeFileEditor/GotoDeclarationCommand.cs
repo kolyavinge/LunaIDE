@@ -3,7 +3,7 @@ using Luna.IDE.App.Mvvm;
 using Luna.IDE.CodeEditing;
 using Luna.Navigation;
 
-namespace Luna.IDE.App.Commands;
+namespace Luna.IDE.App.Commands.CodeFileEditor;
 
 public interface IGotoDeclarationCommand : ICommand { }
 

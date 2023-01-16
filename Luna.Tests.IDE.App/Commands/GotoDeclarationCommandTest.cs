@@ -2,6 +2,7 @@
 using CodeHighlighter.Model;
 using Luna.CodeElements;
 using Luna.IDE.App.Commands;
+using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.CodeEditing;
 using Luna.Navigation;
 using Luna.Parsing;

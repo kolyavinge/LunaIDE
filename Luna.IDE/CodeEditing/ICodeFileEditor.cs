@@ -40,6 +40,12 @@ public interface ICodeFileEditor
 
     void MoveCursorTo(CursorPosition position);
 
+    void Copy();
+
+    void Paste();
+
+    void Cut();
+
     void Undo();
 
     void Redo();

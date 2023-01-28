@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CodeHighlighter;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using DiffTool.Visualization;
@@ -13,16 +14,16 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
     private readonly ITextDiffEngine _textDiffEngine;
     private readonly ITextDiffCodeProviderFactory _textDiffCodeProviderFactory;
     private readonly ILinesDecorationProcessor _linesDecorationProcessor;
-    private readonly ILineNumberProcessor _lineNumberProcessor;
+    private readonly ISingleTextDiffGapProcessor _gapProcessor;
     private int _oldTextLinesCount;
     private int _newTextLinesCount;
     private bool _inProgress;
 
     public IDiffCodeTextBox DiffCodeTextBox { get; }
 
-    public LineNumberPanelModel OldLineNumberPanel { get; }
+    public ILineNumberPanelModel OldLineNumberPanel { get; }
 
-    public LineNumberPanelModel NewLineNumberPanel { get; }
+    public ILineNumberPanelModel NewLineNumberPanel { get; }
 
     public int OldTextLinesCount
     {
@@ -47,34 +48,34 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox diffCodeTextBox,
         ILinesDecorationProcessor linesDecorationProcessor,
-        ILineNumberProcessor lineNumberProcessor)
+        ISingleTextDiffGapProcessor gapProcessor)
     {
         _textDiffEngine = textDiffEngine;
         _textDiffCodeProviderFactory = textDiffCodeProviderFactory;
         _linesDecorationProcessor = linesDecorationProcessor;
-        _lineNumberProcessor = lineNumberProcessor;
+        _gapProcessor = gapProcessor;
         DiffCodeTextBox = diffCodeTextBox;
-        OldLineNumberPanel = new LineNumberPanelModel();
-        NewLineNumberPanel = new LineNumberPanelModel();
+        OldLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
+        NewLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
     }
 
-    public async Task MakeDiff(string fileExtension, string? oldFileText, string newFileText)
+    public async Task MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText)
     {
         InProgress = true;
-        var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFileText);
+        var singleDiffResult = await _textDiffEngine.GetSingleTextResultAsync(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
-        InitDiffCodeTextBox(codeProvider, diffResult.VisualizerResult, oldFileText != null);
-        InitNumberPanels(diffResult);
+        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
+        InitNumberPanels(singleDiffResult);
         InProgress = false;
     }
 
-    public async Task MakeDiff(string? oldFileText, TextFileProjectItem newFile)
+    public async Task MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
     {
         InProgress = true;
-        var diffResult = await _textDiffEngine.GetSingleTextResultAsync(oldFileText ?? "", newFile.GetText());
+        var singleDiffResult = await _textDiffEngine.GetSingleTextResultAsync(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
-        InitDiffCodeTextBox(codeProvider, diffResult.VisualizerResult, oldFileText != null);
-        InitNumberPanels(diffResult);
+        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
+        InitNumberPanels(singleDiffResult);
         InProgress = false;
     }
 
@@ -95,6 +96,6 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         NewLineNumberPanel.Gaps.Clear();
         OldTextLinesCount = diffResult.OldTextLinesCount;
         NewTextLinesCount = diffResult.NewTextLinesCount;
-        _lineNumberProcessor.SetLineGaps(diffResult.VisualizerResult.LinesDiff, OldLineNumberPanel.Gaps, NewLineNumberPanel.Gaps);
+        _gapProcessor.SetLineGaps(diffResult.VisualizerResult.LinesDiff, OldLineNumberPanel.Gaps, NewLineNumberPanel.Gaps);
     }
 }

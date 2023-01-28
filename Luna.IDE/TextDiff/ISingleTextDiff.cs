@@ -8,9 +8,9 @@ public interface ISingleTextDiff
 {
     IDiffCodeTextBox DiffCodeTextBox { get; }
 
-    LineNumberPanelModel OldLineNumberPanel { get; }
+    ILineNumberPanelModel OldLineNumberPanel { get; }
 
-    LineNumberPanelModel NewLineNumberPanel { get; }
+    ILineNumberPanelModel NewLineNumberPanel { get; }
 
     int OldTextLinesCount { get; }
 
@@ -18,7 +18,7 @@ public interface ISingleTextDiff
 
     bool InProgress { get; }
 
-    Task MakeDiff(string fileExtension, string? oldFileText, string newFileText);
+    Task MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText);
 
-    Task MakeDiff(string? oldFileText, TextFileProjectItem newFile);
+    Task MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile);
 }

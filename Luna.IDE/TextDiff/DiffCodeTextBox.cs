@@ -8,6 +8,7 @@ namespace Luna.IDE.TextDiff;
 public interface IDiffCodeTextBox
 {
     ILinesDecorationCollection LinesDecoration { get; }
+    ILineNumberGapCollection Gaps { get; }
     void Init(ICodeProvider codeProvider, string text);
     void GotoLine(int lineIndex);
 }
@@ -23,6 +24,8 @@ public class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
     }
 
     public ILinesDecorationCollection LinesDecoration => _codeTextBoxModel.LinesDecoration;
+
+    public ILineNumberGapCollection Gaps => _codeTextBoxModel.Gaps;
 
     public DiffCodeTextBox()
     {

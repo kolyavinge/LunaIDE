@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using DiffTool.Core;
 using Luna.IDE.HistoryExploration;
 using Luna.IDE.ProjectExploration;
 using Luna.IDE.TextDiff;
@@ -16,6 +17,7 @@ internal class ProjectHistoryTest
     private Mock<ICommit> _commit;
     private Mock<IProjectLoader> _projectLoader;
     private Mock<IProjectRepository> _projectRepository;
+    private Mock<ITextDiffEngine> _textDiffEngine;
     private Mock<ISingleTextDiff> _singleTextDiff;
     private ProjectHistory _projectHistory;
 
@@ -26,8 +28,9 @@ internal class ProjectHistoryTest
         _commit.SetupGet(x => x.Details).Returns(new CommitedDirectory("root"));
         _projectLoader = new Mock<IProjectLoader>();
         _projectRepository = new Mock<IProjectRepository>();
+        _textDiffEngine = new Mock<ITextDiffEngine>();
         _singleTextDiff = new Mock<ISingleTextDiff>();
-        _projectHistory = new ProjectHistory(_projectLoader.Object, _projectRepository.Object, _singleTextDiff.Object);
+        _projectHistory = new ProjectHistory(_projectLoader.Object, _projectRepository.Object, _textDiffEngine.Object, _singleTextDiff.Object);
     }
 
     [Test]
@@ -99,11 +102,13 @@ internal class ProjectHistoryTest
         var root = new CommitedDirectory("root");
         root.AddFiles(new[] { file });
         _commit.SetupGet(x => x.Details).Returns(root);
+        var diffResult = new TextDiffResult(new("content before"), new("content"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("content before", "content")).ReturnsAsync(diffResult);
 
         _projectHistory.SelectedCommit = _commit.Object;
         _projectHistory.DetailsRoot.Children.First().IsSelected = true;
 
-        _singleTextDiff.Verify(x => x.MakeDiff(".ext", "content before", "content"), Times.Once());
+        _singleTextDiff.Verify(x => x.MakeDiff(diffResult, ".ext", "content before", "content"), Times.Once());
     }
 
     [Test]
@@ -117,10 +122,12 @@ internal class ProjectHistoryTest
         var root = new CommitedDirectory("root");
         root.AddFiles(new[] { file });
         _commit.SetupGet(x => x.Details).Returns(root);
+        var diffResult = new TextDiffResult(new("content before"), new("content"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("content before", "content")).ReturnsAsync(diffResult);
 
         _projectHistory.SelectedCommit = _commit.Object;
         _projectHistory.DetailsRoot.Children.First().IsSelected = false;
 
-        _singleTextDiff.Verify(x => x.MakeDiff(".ext", "content before", "content"), Times.Never());
+        _singleTextDiff.Verify(x => x.MakeDiff(diffResult, ".ext", "content before", "content"), Times.Never());
     }
 }

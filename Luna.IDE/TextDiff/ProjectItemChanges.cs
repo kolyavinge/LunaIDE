@@ -12,18 +12,24 @@ public interface IProjectItemChanges
 
 public class ProjectItemChanges : IProjectItemChanges, IEnvironmentWindowModel
 {
+    private readonly ITextDiffEngine _textDiffEngine;
+
     public ISingleTextDiff SingleTextDiff { get; }
 
     public string Header { get; private set; } = "";
 
-    public ProjectItemChanges(ISingleTextDiff singleTextDiff)
+    public ProjectItemChanges(
+        ITextDiffEngine textDiffEngine,
+        ISingleTextDiff singleTextDiff)
     {
+        _textDiffEngine = textDiffEngine;
         SingleTextDiff = singleTextDiff;
     }
 
     public async Task MakeDiff(string? oldFileText, TextFileProjectItem newFile)
     {
         Header = $"Changes in {newFile.Name}";
-        await SingleTextDiff.MakeDiff(oldFileText, newFile);
+        var diffResult = await _textDiffEngine.GetDiffResultAsync(oldFileText ?? "", newFile.GetText());
+        await SingleTextDiff.MakeDiff(diffResult, oldFileText, newFile);
     }
 }

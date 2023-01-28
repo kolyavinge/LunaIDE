@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
+using DiffTool.Core;
 using DiffTool.Visualization;
 using Luna.IDE.TextDiff;
 using Luna.Infrastructure;
@@ -15,7 +17,7 @@ internal class SingleTextDiffTest
     private Mock<ITextDiffEngine> _textDiffEngine;
     private Mock<ITextDiffCodeProviderFactory> _textDiffCodeProviderFactory;
     private Mock<ILinesDecorationProcessor> _linesDecorationProcessor;
-    private Mock<ILineNumberProcessor> _lineNumberProcessor;
+    private Mock<ISingleTextDiffGapProcessor> _lineNumberProcessor;
     private Mock<ICodeProvider> _codeProvider;
     private Mock<IDiffCodeTextBox> _diffCodeTextBox;
     private Mock<IFileSystem> _fileSystem;
@@ -29,7 +31,7 @@ internal class SingleTextDiffTest
         _textDiffEngine = new Mock<ITextDiffEngine>();
         _textDiffCodeProviderFactory = new Mock<ITextDiffCodeProviderFactory>();
         _linesDecorationProcessor = new Mock<ILinesDecorationProcessor>();
-        _lineNumberProcessor = new Mock<ILineNumberProcessor>();
+        _lineNumberProcessor = new Mock<ISingleTextDiffGapProcessor>();
         _codeProvider = new Mock<ICodeProvider>();
         _diffCodeTextBox = new Mock<IDiffCodeTextBox>();
         _fileSystem = new Mock<IFileSystem>();
@@ -46,10 +48,12 @@ internal class SingleTextDiffTest
     [Test]
     public void MakeDiff()
     {
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync("old text", "new text")).ReturnsAsync(_diffResult);
+        var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
         _textDiffCodeProviderFactory.Setup(x => x.Make(".ext", "old text", "new text")).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(".ext", "old text", "new text").Wait();
+        _singleTextDiff.MakeDiff(diffResult, ".ext", "old text", "new text").Wait();
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
@@ -58,10 +62,12 @@ internal class SingleTextDiffTest
     [Test]
     public void MakeDiff_OldTextNull()
     {
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync("", "new text")).ReturnsAsync(_diffResult);
+        var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
         _textDiffCodeProviderFactory.Setup(x => x.Make(".ext", "", "new text")).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(".ext", null, "new text").Wait();
+        _singleTextDiff.MakeDiff(diffResult, ".ext", null, "new text").Wait();
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());
@@ -70,12 +76,14 @@ internal class SingleTextDiffTest
     [Test]
     public void MakeDiff_TextFileProjectItem()
     {
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync("old text", "new text")).ReturnsAsync(_diffResult);
+        var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
         _fileSystem.Setup(x => x.ReadFileText("code file path")).Returns("new text");
         var codeFile = new CodeFileProjectItem("code file path", null, _fileSystem.Object);
         _textDiffCodeProviderFactory.Setup(x => x.Make("old text", codeFile)).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff("old text", codeFile).Wait();
+        _singleTextDiff.MakeDiff(diffResult, "old text", codeFile).Wait();
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
@@ -84,12 +92,14 @@ internal class SingleTextDiffTest
     [Test]
     public void MakeDiff_TextFileProjectItem_OldTextNull()
     {
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync("", "new text")).ReturnsAsync(_diffResult);
+        var diffResult = new TextDiffResult(new(""), new("new text"), Array.Empty<LineDiff>());
+        _textDiffEngine.Setup(x => x.GetDiffResultAsync("", "new text")).ReturnsAsync(diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
         _fileSystem.Setup(x => x.ReadFileText("code file path")).Returns("new text");
         var codeFile = new CodeFileProjectItem("code file path", null, _fileSystem.Object);
         _textDiffCodeProviderFactory.Setup(x => x.Make("", codeFile)).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(null, codeFile).Wait();
+        _singleTextDiff.MakeDiff(diffResult, null, codeFile).Wait();
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());

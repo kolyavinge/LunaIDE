@@ -1,4 +1,7 @@
-﻿using Luna.IDE.TextDiff;
+﻿using System;
+using System.Threading.Tasks;
+using DiffTool.Core;
+using Luna.IDE.TextDiff;
 using NUnit.Framework;
 
 namespace Luna.Tests.IDE.TextDiff;
@@ -14,18 +17,20 @@ internal class TextDiffEngineTest
     }
 
     [Test]
-    public void GetSingleTextResult_EmptyTextes()
+    public async Task GetSingleTextResult_EmptyTextes()
     {
-        var result = _engine.GetSingleTextResult("", "");
+        var diffResult = new TextDiffResult(new(""), new(""), Array.Empty<LineDiff>());
+        var result = await _engine.GetSingleTextResultAsync(diffResult);
 
         Assert.That(result.OldTextLinesCount, Is.EqualTo(0));
         Assert.That(result.NewTextLinesCount, Is.EqualTo(0));
     }
 
     [Test]
-    public void GetSingleTextResult()
+    public async Task GetSingleTextResult()
     {
-        var result = _engine.GetSingleTextResult("old", "new");
+        var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
+        var result = await _engine.GetSingleTextResultAsync(diffResult);
 
         Assert.That(result.OldTextLinesCount, Is.EqualTo(1));
         Assert.That(result.NewTextLinesCount, Is.EqualTo(1));

@@ -1,8 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DiffTool.Core;
 using DiffTool.Visualization;
 
 namespace Luna.IDE.TextDiff;
+
+public class TextDiffResult
+{
+    public Text OldText { get; }
+    public Text NewText { get; }
+    public IReadOnlyList<LineDiff> LinesDiff { get; }
+
+    public TextDiffResult(Text oldText, Text newText, IReadOnlyList<LineDiff> linesDiff)
+    {
+        OldText = oldText;
+        NewText = newText;
+        LinesDiff = linesDiff;
+    }
+}
 
 public class SingleTextDiffResult
 {
@@ -20,29 +35,40 @@ public class SingleTextDiffResult
 
 public interface ITextDiffEngine
 {
-    SingleTextDiffResult GetSingleTextResult(string oldText, string newText);
-    Task<SingleTextDiffResult> GetSingleTextResultAsync(string oldText, string newText);
+    Task<TextDiffResult> GetDiffResultAsync(string oldText, string newText);
+    Task<SingleTextDiffResult> GetSingleTextResultAsync(TextDiffResult diffResult);
 }
 
 public class TextDiffEngine : ITextDiffEngine
 {
-    public SingleTextDiffResult GetSingleTextResult(string oldText, string newText)
+    public async Task<TextDiffResult> GetDiffResultAsync(string oldText, string newText)
+    {
+        return await Task.Factory.StartNew(() => GetDiffResult(oldText, newText));
+    }
+
+    public async Task<SingleTextDiffResult> GetSingleTextResultAsync(TextDiffResult diffResult)
+    {
+        return await Task.Factory.StartNew(() => GetSingleTextResult(diffResult));
+    }
+
+    private TextDiffResult GetDiffResult(string oldText, string newText)
     {
         var oldTextObj = new Text(oldText);
         var newTextObj = new Text(newText);
         var diffEngine = new DiffEngine();
         var diffResult = diffEngine.GetDiff(oldTextObj, newTextObj);
-        var visualizator = new SingleTextVisualizer();
-        var visualizationResult = visualizator.GetResult(oldTextObj, newTextObj, diffResult.LinesDiff);
 
-        return new(
-            oldTextObj.IsEmpty ? 0 : oldTextObj.Lines.Count,
-            newTextObj.IsEmpty ? 0 : newTextObj.Lines.Count,
-            visualizationResult);
+        return new TextDiffResult(oldTextObj, newTextObj, diffResult.LinesDiff);
     }
 
-    public async Task<SingleTextDiffResult> GetSingleTextResultAsync(string oldText, string newText)
+    private SingleTextDiffResult GetSingleTextResult(TextDiffResult diffResult)
     {
-        return await Task.Factory.StartNew(() => GetSingleTextResult(oldText, newText));
+        var visualizator = new SingleTextVisualizer();
+        var visualizationResult = visualizator.GetResult(diffResult.OldText, diffResult.NewText, diffResult.LinesDiff);
+
+        return new(
+            diffResult.OldText.IsEmpty ? 0 : diffResult.OldText.Lines.Count,
+            diffResult.NewText.IsEmpty ? 0 : diffResult.NewText.Lines.Count,
+            visualizationResult);
     }
 }

@@ -9,16 +9,16 @@ namespace Luna.Tests.IDE.TextDiff;
 
 internal class SingleTextDiffLineNumberProcessorTest
 {
-    private LineNumberGapCollection _oldGaps;
-    private LineNumberGapCollection _newGaps;
-    private SingleTextDiffLineNumberProcessor _processor;
+    private ILineNumberGapCollection _oldGaps;
+    private ILineNumberGapCollection _newGaps;
+    private SingleTextDiffGapProcessor _processor;
 
     [SetUp]
     public void Setup()
     {
         _oldGaps = new LineNumberGapCollection();
         _newGaps = new LineNumberGapCollection();
-        _processor = new SingleTextDiffLineNumberProcessor();
+        _processor = new SingleTextDiffGapProcessor();
     }
 
     [Test]

@@ -23,6 +23,7 @@ public interface IProjectHistory : INotifyPropertyChanged
 public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentWindowModel
 {
     private readonly IProjectRepository _projectRepository;
+    private readonly ITextDiffEngine _textDiffEngine;
     private IReadOnlyCollection<ICommit> _commits;
     private ICommit? _selectedCommit;
     private CommitedDirectoryTreeItem? _detailsRoot;
@@ -67,9 +68,14 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
 
     public ISingleTextDiff SingleTextDiff { get; }
 
-    public ProjectHistory(IProjectLoader projectLoader, IProjectRepository projectRepository, ISingleTextDiff singleTextDiff)
+    public ProjectHistory(
+        IProjectLoader projectLoader,
+        IProjectRepository projectRepository,
+        ITextDiffEngine textDiffEngine,
+        ISingleTextDiff singleTextDiff)
     {
         _projectRepository = projectRepository;
+        _textDiffEngine = textDiffEngine;
         SingleTextDiff = singleTextDiff;
         _projectRepository.CommitMade += OnCommitMade;
         projectLoader.ProjectOpened += OnProjectOpened;
@@ -100,7 +106,8 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         var fileExtension = Path.GetExtension(commitedFile.RelativePath);
         var oldText = commitedFile.BeforeContent;
         var newText = commitedFile.Content;
-        await SingleTextDiff.MakeDiff(fileExtension, oldText, newText);
+        var diffResult = await _textDiffEngine.GetDiffResultAsync(oldText ?? "", newText);
+        await SingleTextDiff.MakeDiff(diffResult, fileExtension, oldText, newText);
     }
 
     private void RaiseCommitsChanged()

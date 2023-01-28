@@ -5,14 +5,14 @@ using DiffTool.Visualization;
 
 namespace Luna.IDE.TextDiff;
 
-public interface ILineNumberProcessor
+public interface ISingleTextDiffGapProcessor
 {
-    void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, LineNumberGapCollection oldGaps, LineNumberGapCollection newGaps);
+    void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineNumberGapCollection oldGaps, ILineNumberGapCollection newGaps);
 }
 
-public class SingleTextDiffLineNumberProcessor : ILineNumberProcessor
+public class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
 {
-    public void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, LineNumberGapCollection oldGaps, LineNumberGapCollection newGaps)
+    public void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineNumberGapCollection oldGaps, ILineNumberGapCollection newGaps)
     {
         int oldLineIndex = 0, newLineIndex = 0;
         foreach (var lineDiff in linesDiff)
@@ -45,7 +45,7 @@ public class SingleTextDiffLineNumberProcessor : ILineNumberProcessor
         }
     }
 
-    private void IncrementLineGap(LineNumberGapCollection gaps, int lineIndex)
+    private void IncrementLineGap(ILineNumberGapCollection gaps, int lineIndex)
     {
         var gap = gaps[lineIndex];
         if (gap != null)

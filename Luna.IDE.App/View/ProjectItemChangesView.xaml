@@ -15,10 +15,21 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <local:SingleTextDiffView
-            Model="{Binding DataContext.Model.SingleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-            Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-
+        <TabControl
+            Margin="-2"
+            Background="Transparent"
+            Style="{StaticResource TabControlStyle}">
+            <TabItem Header="Double view" Height="24" Width="100">
+                <local:DoubleTextDiffView
+                    Model="{Binding DataContext.Model.DoubleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+            </TabItem>
+            <TabItem Header="Single view" Height="24" Width="100">
+                <local:SingleTextDiffView
+                    Model="{Binding DataContext.Model.SingleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+            </TabItem>
+        </TabControl>
         <ProgressBar
             Style="{StaticResource ProgressBarStyle}"
             IsIndeterminate="True"

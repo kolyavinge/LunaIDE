@@ -8,6 +8,7 @@ namespace Luna.IDE.App.View;
 
 public partial class SingleTextDiffView : UserControl
 {
+    #region Model
     public ISingleTextDiff Model
     {
         get { return (ISingleTextDiff)GetValue(ModelProperty); }
@@ -24,6 +25,7 @@ public partial class SingleTextDiffView : UserControl
         var vm = (SingleTextDiffViewModel)view.DataContext;
         vm.Model = model;
     }
+    #endregion
 
     public SingleTextDiffView()
     {

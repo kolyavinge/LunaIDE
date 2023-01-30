@@ -8,6 +8,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="8" />
@@ -38,6 +41,7 @@
             Orientation="Horizontal"
             Maximum="{Binding HorizontalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
-            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}" />
+            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}"
+            Visibility="{Binding IsHorizontalScrollBarVisible, ElementName=codeTextBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 </UserControl>

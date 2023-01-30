@@ -18,7 +18,7 @@ public interface ISingleTextDiff
 
     bool InProgress { get; }
 
-    Task MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText);
+    void MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText);
 
-    Task MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile);
+    void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile);
 }

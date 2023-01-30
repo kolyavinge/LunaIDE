@@ -106,6 +106,7 @@
             Orientation="Horizontal"
             Maximum="{Binding HorizontalScrollBarMaximum, ElementName=codeTextBox, Mode=TwoWay}"
             Value="{Binding HorizontalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
-            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}" />
+            ViewportSize="{Binding ViewportWidth, ElementName=codeTextBox, Mode=TwoWay}"
+            Visibility="{Binding IsHorizontalScrollBarVisible, ElementName=codeTextBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 </UserControl>

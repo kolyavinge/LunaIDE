@@ -50,10 +50,10 @@ internal class SingleTextDiffTest
     {
         var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
         _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResult(diffResult)).Returns(_diffResult);
         _textDiffCodeProviderFactory.Setup(x => x.Make(".ext", "old text", "new text")).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(diffResult, ".ext", "old text", "new text").Wait();
+        _singleTextDiff.MakeDiff(diffResult, ".ext", "old text", "new text");
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
@@ -64,10 +64,10 @@ internal class SingleTextDiffTest
     {
         var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
         _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResult(diffResult)).Returns(_diffResult);
         _textDiffCodeProviderFactory.Setup(x => x.Make(".ext", "", "new text")).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(diffResult, ".ext", null, "new text").Wait();
+        _singleTextDiff.MakeDiff(diffResult, ".ext", null, "new text");
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());
@@ -78,12 +78,12 @@ internal class SingleTextDiffTest
     {
         var diffResult = new TextDiffResult(new("old text"), new("new text"), Array.Empty<LineDiff>());
         _textDiffEngine.Setup(x => x.GetDiffResultAsync("old text", "new text")).ReturnsAsync(diffResult);
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResult(diffResult)).Returns(_diffResult);
         _fileSystem.Setup(x => x.ReadFileText("code file path")).Returns("new text");
         var codeFile = new CodeFileProjectItem("code file path", null, _fileSystem.Object);
         _textDiffCodeProviderFactory.Setup(x => x.Make("old text", codeFile)).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(diffResult, "old text", codeFile).Wait();
+        _singleTextDiff.MakeDiff(diffResult, "old text", codeFile);
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Once());
@@ -94,12 +94,12 @@ internal class SingleTextDiffTest
     {
         var diffResult = new TextDiffResult(new(""), new("new text"), Array.Empty<LineDiff>());
         _textDiffEngine.Setup(x => x.GetDiffResultAsync("", "new text")).ReturnsAsync(diffResult);
-        _textDiffEngine.Setup(x => x.GetSingleTextResultAsync(diffResult)).ReturnsAsync(_diffResult);
+        _textDiffEngine.Setup(x => x.GetSingleTextResult(diffResult)).Returns(_diffResult);
         _fileSystem.Setup(x => x.ReadFileText("code file path")).Returns("new text");
         var codeFile = new CodeFileProjectItem("code file path", null, _fileSystem.Object);
         _textDiffCodeProviderFactory.Setup(x => x.Make("", codeFile)).Returns(_codeProvider.Object);
 
-        _singleTextDiff.MakeDiff(diffResult, null, codeFile).Wait();
+        _singleTextDiff.MakeDiff(diffResult, null, codeFile);
 
         _diffCodeTextBox.Verify(x => x.Init(_codeProvider.Object, "diff text"), Times.Once());
         _linesDecorationProcessor.Verify(x => x.SetLineColors(_linesDiff, It.IsAny<LinesDecorationCollection>()), Times.Never());

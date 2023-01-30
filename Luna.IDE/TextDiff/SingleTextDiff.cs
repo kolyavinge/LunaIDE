@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using CodeHighlighter;
+﻿using CodeHighlighter;
 using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using DiffTool.Visualization;
@@ -59,20 +58,20 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         NewLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
     }
 
-    public async Task MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText)
+    public void MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText)
     {
         InProgress = true;
-        var singleDiffResult = await _textDiffEngine.GetSingleTextResultAsync(diffResult);
+        var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
         InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(singleDiffResult);
         InProgress = false;
     }
 
-    public async Task MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
+    public void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
     {
         InProgress = true;
-        var singleDiffResult = await _textDiffEngine.GetSingleTextResultAsync(diffResult);
+        var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
         InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(singleDiffResult);

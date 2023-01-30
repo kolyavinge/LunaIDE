@@ -7,12 +7,12 @@ namespace Luna.IDE.TextDiff;
 
 public interface ISingleTextDiffGapProcessor
 {
-    void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineNumberGapCollection oldGaps, ILineNumberGapCollection newGaps);
+    void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineGapCollection oldGaps, ILineGapCollection newGaps);
 }
 
 public class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
 {
-    public void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineNumberGapCollection oldGaps, ILineNumberGapCollection newGaps)
+    public void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineGapCollection oldGaps, ILineGapCollection newGaps)
     {
         int oldLineIndex = 0, newLineIndex = 0;
         foreach (var lineDiff in linesDiff)
@@ -45,7 +45,7 @@ public class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
         }
     }
 
-    private void IncrementLineGap(ILineNumberGapCollection gaps, int lineIndex)
+    private void IncrementLineGap(ILineGapCollection gaps, int lineIndex)
     {
         var gap = gaps[lineIndex];
         if (gap != null)

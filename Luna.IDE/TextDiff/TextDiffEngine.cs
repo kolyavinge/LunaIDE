@@ -36,7 +36,7 @@ public class SingleTextDiffResult
 public interface ITextDiffEngine
 {
     Task<TextDiffResult> GetDiffResultAsync(string oldText, string newText);
-    Task<SingleTextDiffResult> GetSingleTextResultAsync(TextDiffResult diffResult);
+    SingleTextDiffResult GetSingleTextResult(TextDiffResult diffResult);
 }
 
 public class TextDiffEngine : ITextDiffEngine
@@ -44,11 +44,6 @@ public class TextDiffEngine : ITextDiffEngine
     public async Task<TextDiffResult> GetDiffResultAsync(string oldText, string newText)
     {
         return await Task.Factory.StartNew(() => GetDiffResult(oldText, newText));
-    }
-
-    public async Task<SingleTextDiffResult> GetSingleTextResultAsync(TextDiffResult diffResult)
-    {
-        return await Task.Factory.StartNew(() => GetSingleTextResult(diffResult));
     }
 
     private TextDiffResult GetDiffResult(string oldText, string newText)
@@ -61,7 +56,7 @@ public class TextDiffEngine : ITextDiffEngine
         return new TextDiffResult(oldTextObj, newTextObj, diffResult.LinesDiff);
     }
 
-    private SingleTextDiffResult GetSingleTextResult(TextDiffResult diffResult)
+    public SingleTextDiffResult GetSingleTextResult(TextDiffResult diffResult)
     {
         var visualizator = new SingleTextVisualizer();
         var visualizationResult = visualizator.GetResult(diffResult.OldText, diffResult.NewText, diffResult.LinesDiff);

@@ -107,7 +107,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         var oldText = commitedFile.BeforeContent;
         var newText = commitedFile.Content;
         var diffResult = await _textDiffEngine.GetDiffResultAsync(oldText ?? "", newText);
-        await SingleTextDiff.MakeDiff(diffResult, fileExtension, oldText, newText);
+        SingleTextDiff.MakeDiff(diffResult, fileExtension, oldText, newText);
     }
 
     private void RaiseCommitsChanged()

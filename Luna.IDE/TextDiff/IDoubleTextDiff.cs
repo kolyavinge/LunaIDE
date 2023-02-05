@@ -13,7 +13,5 @@ public interface IDoubleTextDiff
 
     ILineNumberPanelModel NewLineNumberPanel { get; }
 
-    bool InProgress { get; }
-
     void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile);
 }

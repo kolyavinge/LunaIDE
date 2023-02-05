@@ -16,7 +16,6 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
     private readonly ISingleTextDiffGapProcessor _gapProcessor;
     private int _oldTextLinesCount;
     private int _newTextLinesCount;
-    private bool _inProgress;
 
     public IDiffCodeTextBox DiffCodeTextBox { get; }
 
@@ -34,12 +33,6 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
     {
         get => _newTextLinesCount;
         private set { _newTextLinesCount = value; RaisePropertyChanged(() => NewTextLinesCount!); }
-    }
-
-    public bool InProgress
-    {
-        get => _inProgress;
-        set { _inProgress = value; RaisePropertyChanged(() => InProgress); }
     }
 
     public SingleTextDiff(
@@ -60,22 +53,18 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
 
     public void MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText)
     {
-        InProgress = true;
         var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
         InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(singleDiffResult);
-        InProgress = false;
     }
 
     public void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
     {
-        InProgress = true;
         var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
         InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
         InitNumberPanels(singleDiffResult);
-        InProgress = false;
     }
 
     private void InitDiffCodeTextBox(ICodeProvider codeProvider, SingleTextVisualizerResult diffResult, bool hasOldFileText)

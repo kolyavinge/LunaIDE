@@ -14,7 +14,6 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
     private readonly IDoubleTextDiffGapProcessor _gapProcessor;
     private int _oldTextLinesCount;
     private int _newTextLinesCount;
-    private bool _inProgress;
 
     public IDiffCodeTextBox OldDiffCodeTextBox { get; }
 
@@ -36,12 +35,6 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
         private set { _newTextLinesCount = value; RaisePropertyChanged(() => NewTextLinesCount!); }
     }
 
-    public bool InProgress
-    {
-        get => _inProgress;
-        set { _inProgress = value; RaisePropertyChanged(() => InProgress); }
-    }
-
     public DoubleTextDiff(
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox oldDiffCodeTextBox,
@@ -60,12 +53,10 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
 
     public void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
     {
-        InProgress = true;
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
         InitDiffCodeTextBox(codeProvider, diffResult, oldFileText ?? "", newFile.GetText(), oldFileText != null);
         InitGaps(diffResult);
         SynchronizeHorizontalScrollbars();
-        InProgress = false;
     }
 
     private void InitDiffCodeTextBox(ICodeProvider codeProvider, TextDiffResult diffResult, string oldFileText, string newFileText, bool hasOldFileText)

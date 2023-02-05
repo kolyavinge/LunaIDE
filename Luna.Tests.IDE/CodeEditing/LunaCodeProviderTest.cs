@@ -191,7 +191,7 @@ public class LunaCodeProviderTest
     {
         var tokens = GetTokens("(func (x y z) (funcCall 1 2))");
         Assert.That(tokens.Count, Is.EqualTo(13));
-        Assert.That(tokens[0], Is.EqualTo(new Token("(", 0, 0,  (byte)TokenKind.OpenBracket)));
+        Assert.That(tokens[0], Is.EqualTo(new Token("(", 0, 0, (byte)TokenKind.OpenBracket)));
         Assert.That(tokens[1], Is.EqualTo(new Token("func", 0, 1, (byte)TokenKind.Identificator)));
         Assert.That(tokens[2], Is.EqualTo(new Token("(", 0, 6, (byte)TokenKind.OpenBracket)));
         Assert.That(tokens[3], Is.EqualTo(new Token("x", 0, 7, (byte)TokenKind.Identificator)));

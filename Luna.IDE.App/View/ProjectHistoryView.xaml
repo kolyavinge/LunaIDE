@@ -55,11 +55,11 @@
             <Grid Grid.Column="1">
                 <local:SingleTextDiffView
                     Model="{Binding DataContext.Model.SingleTextDiff, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    Visibility="{Binding Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    Visibility="{Binding DataContext.Model.InProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                 <ProgressBar
                     Style="{StaticResource ProgressBarStyle}"
                     IsIndeterminate="True"
-                    Visibility="{Binding Model.SingleTextDiff.InProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding Model.InProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Width="100" Height="12" />
             </Grid>
         </Grid>

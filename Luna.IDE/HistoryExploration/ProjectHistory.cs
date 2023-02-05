@@ -27,6 +27,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
     private IReadOnlyCollection<ICommit> _commits;
     private ICommit? _selectedCommit;
     private CommitedDirectoryTreeItem? _detailsRoot;
+    private bool _inProgress;
 
     public string Header => "History";
 
@@ -64,6 +65,12 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
             _detailsRoot = value;
             RaisePropertyChanged(() => DetailsRoot!);
         }
+    }
+
+    public bool InProgress
+    {
+        get => _inProgress;
+        set { _inProgress = value; RaisePropertyChanged(() => InProgress); }
     }
 
     public ISingleTextDiff SingleTextDiff { get; }
@@ -106,8 +113,10 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         var fileExtension = Path.GetExtension(commitedFile.RelativePath);
         var oldText = commitedFile.BeforeContent;
         var newText = commitedFile.Content;
+        InProgress = true;
         var diffResult = await _textDiffEngine.GetDiffResultAsync(oldText ?? "", newText);
         SingleTextDiff.MakeDiff(diffResult, fileExtension, oldText, newText);
+        InProgress = false;
     }
 
     private void RaiseCommitsChanged()

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using CodeHighlighter.Model;
+﻿using CodeHighlighter.Model;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.TextDiff;
@@ -15,8 +14,6 @@ public interface ISingleTextDiff
     int OldTextLinesCount { get; }
 
     int NewTextLinesCount { get; }
-
-    bool InProgress { get; }
 
     void MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText);
 

@@ -16,6 +16,8 @@ internal class DoubleTextDiffTest
     private Mock<ITextDiffCodeProviderFactory> _textDiffCodeProviderFactory;
     private Mock<IDiffCodeTextBox> _oldDiffCodeTextBox;
     private Mock<IDiffCodeTextBox> _newDiffCodeTextBox;
+    private Mock<ILineNumberPanelModel> _oldLineNumberPanel;
+    private Mock<ILineNumberPanelModel> _newLineNumberPanel;
     private Mock<IViewport> _viewport;
     private Mock<ILinesDecorationProcessor> _linesDecorationProcessor;
     private Mock<IDoubleTextDiffGapProcessor> _gapProcessor;
@@ -28,13 +30,20 @@ internal class DoubleTextDiffTest
     public void Setup()
     {
         _textDiffCodeProviderFactory = new Mock<ITextDiffCodeProviderFactory>();
+        _viewport = new Mock<IViewport>();
+
         _oldDiffCodeTextBox = new Mock<IDiffCodeTextBox>();
         _newDiffCodeTextBox = new Mock<IDiffCodeTextBox>();
-        _viewport = new Mock<IViewport>();
         _oldDiffCodeTextBox.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
         _newDiffCodeTextBox.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
         _oldDiffCodeTextBox.SetupGet(x => x.Viewport).Returns(_viewport.Object);
         _newDiffCodeTextBox.SetupGet(x => x.Viewport).Returns(_viewport.Object);
+
+        _oldLineNumberPanel = new Mock<ILineNumberPanelModel>();
+        _newLineNumberPanel = new Mock<ILineNumberPanelModel>();
+        _oldLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
+        _newLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
+
         _linesDecorationProcessor = new Mock<ILinesDecorationProcessor>();
         _gapProcessor = new Mock<IDoubleTextDiffGapProcessor>();
         _codeProvider = new Mock<ICodeProvider>();
@@ -44,6 +53,8 @@ internal class DoubleTextDiffTest
             _textDiffCodeProviderFactory.Object,
             _oldDiffCodeTextBox.Object,
             _newDiffCodeTextBox.Object,
+            _oldLineNumberPanel.Object,
+            _newLineNumberPanel.Object,
             _linesDecorationProcessor.Object,
             _gapProcessor.Object);
     }

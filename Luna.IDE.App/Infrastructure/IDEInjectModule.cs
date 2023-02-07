@@ -1,4 +1,6 @@
-﻿using DependencyInjection;
+﻿using CodeHighlighter;
+using CodeHighlighter.Model;
+using DependencyInjection;
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;
 using Luna.IDE.App.Controls.MessageBox;
@@ -59,6 +61,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IDiffCodeTextBox, DiffCodeTextBox>();
         provider.Bind<ISingleTextDiff, SingleTextDiff>();
         provider.Bind<IDoubleTextDiff, DoubleTextDiff>();
+        provider.Bind<ILineNumberPanelModel>().ToMethod(_ => LineNumberPanelModelFactory.MakeModel());
         provider.Bind<SingleTextDiffViewModel, SingleTextDiffViewModel>();
         provider.Bind<DoubleTextDiffViewModel, DoubleTextDiffViewModel>();
         provider.Bind<IOutputArea, OutputArea>().ToSingleton();

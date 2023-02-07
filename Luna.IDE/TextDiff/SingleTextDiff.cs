@@ -1,5 +1,4 @@
-﻿using CodeHighlighter;
-using CodeHighlighter.CodeProvidering;
+﻿using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using DiffTool.Visualization;
 using Luna.IDE.Common;
@@ -39,6 +38,8 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         ITextDiffEngine textDiffEngine,
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox diffCodeTextBox,
+        ILineNumberPanelModel oldLineNumberPanel,
+        ILineNumberPanelModel newLineNumberPanel,
         ILinesDecorationProcessor linesDecorationProcessor,
         ISingleTextDiffGapProcessor gapProcessor)
     {
@@ -47,8 +48,8 @@ public class SingleTextDiff : NotificationObject, ISingleTextDiff
         _linesDecorationProcessor = linesDecorationProcessor;
         _gapProcessor = gapProcessor;
         DiffCodeTextBox = diffCodeTextBox;
-        OldLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
-        NewLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
+        OldLineNumberPanel = oldLineNumberPanel;
+        NewLineNumberPanel = newLineNumberPanel;
     }
 
     public void MakeDiff(TextDiffResult diffResult, string fileExtension, string? oldFileText, string newFileText)

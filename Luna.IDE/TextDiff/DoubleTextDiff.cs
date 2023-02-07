@@ -1,5 +1,4 @@
-﻿using CodeHighlighter;
-using CodeHighlighter.CodeProvidering;
+﻿using CodeHighlighter.CodeProvidering;
 using CodeHighlighter.Model;
 using Luna.IDE.Common;
 using Luna.ProjectModel;
@@ -39,16 +38,18 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox oldDiffCodeTextBox,
         IDiffCodeTextBox newDiffCodeTextBox,
+        ILineNumberPanelModel oldLineNumberPanel,
+        ILineNumberPanelModel newLineNumberPanel,
         ILinesDecorationProcessor linesDecorationProcessor,
         IDoubleTextDiffGapProcessor gapProcessor)
     {
         _textDiffCodeProviderFactory = textDiffCodeProviderFactory;
         OldDiffCodeTextBox = oldDiffCodeTextBox;
         NewDiffCodeTextBox = newDiffCodeTextBox;
+        OldLineNumberPanel = oldLineNumberPanel;
+        NewLineNumberPanel = newLineNumberPanel;
         _linesDecorationProcessor = linesDecorationProcessor;
         _gapProcessor = gapProcessor;
-        OldLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
-        NewLineNumberPanel = LineNumberPanelModelFactory.MakeModel();
     }
 
     public void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
@@ -88,7 +89,7 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
         var strategy = new MaximumHorizontalScrollBarMaximumValueStrategy(new[] { OldDiffCodeTextBox.CodeTextBoxModel, NewDiffCodeTextBox.CodeTextBoxModel });
         OldDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
         NewDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
-        OldDiffCodeTextBox.Viewport.UpdateScrollbarsMaximumValues();
-        NewDiffCodeTextBox.Viewport.UpdateScrollbarsMaximumValues();
+        OldDiffCodeTextBox.Viewport.UpdateScrollBarsMaximumValues();
+        NewDiffCodeTextBox.Viewport.UpdateScrollBarsMaximumValues();
     }
 }

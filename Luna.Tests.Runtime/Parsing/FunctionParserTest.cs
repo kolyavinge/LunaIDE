@@ -1212,6 +1212,36 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_TwoFunctions_BodyStartEndLines()
+    {
+        // ( f () (g 1) (h 2) )
+        Parse(new Token[]
+        {
+            new("(", 0, 1, TokenKind.OpenBracket),
+            new("f", 0, 2, TokenKind.Identificator),
+            new("(", 0, 4, TokenKind.OpenBracket),
+            new(")", 0, 5, TokenKind.CloseBracket),
+            new("(", 1, 7, TokenKind.OpenBracket),
+            new("g", 1, 8, TokenKind.Identificator),
+            new("1", 1, 10, TokenKind.IntegerNumber),
+            new(")", 1, 11, TokenKind.CloseBracket),
+            new("(", 1, 13, TokenKind.OpenBracket),
+            new("h", 1, 14, TokenKind.Identificator),
+            new("2", 1, 16, TokenKind.IntegerNumber),
+            new(")", 1, 17, TokenKind.CloseBracket),
+            new(")", 2, 19, TokenKind.CloseBracket)
+        });
+        Assert.False(_result.Errors.Any());
+        Assert.AreEqual(0, _result.Warnings.Count);
+        Assert.AreEqual(1, _codeModel.Functions.Count);
+        var func = _codeModel.Functions.First();
+        Assert.AreEqual(1, func.Body.StartLineIndex);
+        Assert.AreEqual(7, func.Body.StartColumnIndex);
+        Assert.AreEqual(2, func.Body.EndLineIndex);
+        Assert.AreEqual(19, func.Body.EndColumnIndex);
+    }
+
+    [Test]
     public void FunctionDeclaration_MathOperators()
     {
         // ( f () (+ 1 2) (- 1 2) (* 1 2) (/ 1 2) (% 1 2) )

@@ -222,18 +222,21 @@ public class FunctionParser : AbstractParser
 
     private FunctionBody? ParseFunctionBody(ref ParserMessage? error)
     {
-        var body = new FunctionBody();
+        var startToken = Token;
+        var items = new List<ValueElement>();
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var item = ParseFunctionBodyItem(ref error);
             if (item == null) return null;
-            body.Add(item);
+            items.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)
         {
             error = new(ParserMessageType.UnexpectedFunctionEnd, Prev);
             return null;
         }
+        var endToken = Token;
+        var body = new FunctionBody(startToken.LineIndex, startToken.StartColumnIndex, endToken.LineIndex, endToken.StartColumnIndex, items);
         MoveNext();
 
         return body;

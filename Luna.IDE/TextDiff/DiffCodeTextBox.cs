@@ -7,7 +7,7 @@ namespace Luna.IDE.TextDiff;
 
 public interface IDiffCodeTextBox
 {
-    ICodeTextBoxModel CodeTextBoxModel { get; }
+    ICodeTextBoxModel? CodeTextBoxModel { get; }
     ILinesDecorationCollection LinesDecoration { get; }
     ILineGapCollection Gaps { get; }
     IViewport Viewport { get; }
@@ -17,24 +17,19 @@ public interface IDiffCodeTextBox
 
 public class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
 {
-    private ICodeTextBoxModel _codeTextBoxModel;
+    private ICodeTextBoxModel? _codeTextBoxModel;
 
-    public ICodeTextBoxModel CodeTextBoxModel
+    public ICodeTextBoxModel? CodeTextBoxModel
     {
         get => _codeTextBoxModel;
-        private set { _codeTextBoxModel = value; RaisePropertyChanged(() => CodeTextBoxModel); }
+        private set { _codeTextBoxModel = value; RaisePropertyChanged(() => CodeTextBoxModel!); }
     }
 
-    public ILinesDecorationCollection LinesDecoration => _codeTextBoxModel.LinesDecoration;
+    public ILinesDecorationCollection LinesDecoration => CodeTextBoxModel!.LinesDecoration;
 
-    public ILineGapCollection Gaps => _codeTextBoxModel.Gaps;
+    public ILineGapCollection Gaps => CodeTextBoxModel!.Gaps;
 
-    public IViewport Viewport => _codeTextBoxModel.Viewport;
-
-    public DiffCodeTextBox()
-    {
-        _codeTextBoxModel = CodeTextBoxModelFactory.MakeModel(new EmptyCodeProvider());
-    }
+    public IViewport Viewport => CodeTextBoxModel!.Viewport;
 
     public void Init(ICodeProvider codeProvider, string text)
     {
@@ -46,6 +41,6 @@ public class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
 
     public void GotoLine(int lineIndex)
     {
-        CodeTextBoxModel.GotoLine(lineIndex);
+        CodeTextBoxModel!.GotoLine(lineIndex);
     }
 }

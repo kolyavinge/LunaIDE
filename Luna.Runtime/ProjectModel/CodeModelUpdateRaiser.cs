@@ -31,7 +31,7 @@ internal class CodeModelUpdateRaiser : ICodeModelUpdateRaiser
 
             var diff = IdentificatorsComparator.GetDifferent(oldScopeIdentificators, newScopeIdentificators);
 
-            codeFile.RaiseUpdateCodeModel(oldCodeModel, diff);
+            codeFile.RaiseUpdateCodeModel(oldCodeModel, codeFile.CodeModel, diff);
         }
     }
 }

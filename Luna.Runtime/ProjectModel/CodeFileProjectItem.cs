@@ -14,20 +14,22 @@ public class CodeFileProjectItem : TextFileProjectItem
         CodeModel = new CodeModel();
     }
 
-    internal void RaiseUpdateCodeModel(CodeModel oldCodeModel, CodeModelScopeIdentificatorsDifferent diff)
+    internal void RaiseUpdateCodeModel(CodeModel oldCodeModel, CodeModel newCodeModel, CodeModelScopeIdentificatorsDifferent diff)
     {
-        CodeModelUpdated?.Invoke(this, new(oldCodeModel, diff));
+        CodeModelUpdated?.Invoke(this, new(oldCodeModel, newCodeModel, diff));
     }
 }
 
 public class CodeModelUpdatedEventArgs : EventArgs
 {
     public CodeModel OldCodeModel { get; }
+    public CodeModel NewCodeModel { get; }
     public CodeModelScopeIdentificatorsDifferent Different { get; }
 
-    public CodeModelUpdatedEventArgs(CodeModel oldCodeModel, CodeModelScopeIdentificatorsDifferent different)
+    public CodeModelUpdatedEventArgs(CodeModel oldCodeModel, CodeModel newCodeModel, CodeModelScopeIdentificatorsDifferent different)
     {
         OldCodeModel = oldCodeModel;
+        NewCodeModel = newCodeModel;
         Different = different;
     }
 }

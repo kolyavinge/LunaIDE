@@ -54,11 +54,11 @@ internal class CodeModelNavigatorTest
                 new FunctionValueElement(
                     "func",
                     new ValueElement[] { new FunctionArgumentValueElement("x", 17, 8), new FloatValueElement(1.0, 17, 10) },
-                    17, 4)
+                    17, 4, 17, 4)
             },
             16, 1));
 
-        _codeModel.RunFunction = new FunctionValueElement("func_in_run", new[] { new FloatValueElement(1.0, 20, 25) }, 20, 1);
+        _codeModel.RunFunction = new FunctionValueElement("func_in_run", new[] { new FloatValueElement(1.0, 20, 25) }, 20, 1, 20, 1);
 
         _navigator = new();
     }

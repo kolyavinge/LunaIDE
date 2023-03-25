@@ -288,7 +288,7 @@ public class FunctionParser : AbstractParser
             }
             else if (_scope.IsFunctionExist(name))
             {
-                body = new FunctionValueElement(name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex);
+                body = new FunctionValueElement(name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex, Token.LineIndex, Token.StartColumnIndex);
             }
             else
             {
@@ -299,7 +299,7 @@ public class FunctionParser : AbstractParser
         else if (Token.Kind is TokenKind.Plus or TokenKind.Minus or TokenKind.Asterisk or TokenKind.Slash or TokenKind.Percent)
         {
             var name = GetTokenName();
-            body = new FunctionValueElement(name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex);
+            body = new FunctionValueElement(name, new List<ValueElement>(), Token.LineIndex, Token.StartColumnIndex, Token.LineIndex, Token.StartColumnIndex);
             MoveNext();
         }
         else if (Token.Kind == TokenKind.Variable)
@@ -354,9 +354,10 @@ public class FunctionParser : AbstractParser
             error = new(ParserMessageType.UnexpectedToken, Token);
             return null;
         }
+        var endToken = Token;
         MoveNext();
 
-        return new FunctionValueElement(funcName, argumentValues, funcToken.LineIndex, funcToken.StartColumnIndex);
+        return new FunctionValueElement(funcName, argumentValues, funcToken.LineIndex, funcToken.StartColumnIndex, endToken.LineIndex, endToken.StartColumnIndex);
     }
 
     private void ParseRunFunctionCall(ref ParserMessage? error)

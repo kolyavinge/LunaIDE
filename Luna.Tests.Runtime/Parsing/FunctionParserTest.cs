@@ -968,6 +968,33 @@ internal class FunctionParserTest
     }
 
     [Test]
+    public void FunctionDeclaration_OneFunctionCallManyLines()
+    {
+        // (f () (g 1 1.2 'str'))
+        Parse(new Token[]
+        {
+            new("(", 0, 0, TokenKind.OpenBracket),
+            new("f", 0, 1, TokenKind.Identificator),
+            new("(", 0, 3, TokenKind.OpenBracket),
+            new(")", 0, 4, TokenKind.CloseBracket),
+            new("(", 0, 6, TokenKind.OpenBracket),
+            new("g", 0, 7, TokenKind.Identificator),
+            new("1", 1, 9, TokenKind.IntegerNumber),
+            new("1.2", 1, 11, TokenKind.FloatNumber),
+            new("'str'", 2, 15, TokenKind.String),
+            new(")", 2, 20, TokenKind.CloseBracket),
+            new(")", 2, 21, TokenKind.CloseBracket)
+        });
+        var func = _codeModel.Functions.First();
+        var body = (FunctionValueElement)func.Body.First();
+        Assert.AreEqual("g", body.Name);
+        Assert.AreEqual(0, body.LineIndex);
+        Assert.AreEqual(7, body.ColumnIndex);
+        Assert.AreEqual(2, body.EndLineIndex);
+        Assert.AreEqual(20, body.EndColumnIndex);
+    }
+
+    [Test]
     public void FunctionDeclaration_InnerFunctionCall()
     {
         // (f () (g 1 (k 1 2) 'str'))

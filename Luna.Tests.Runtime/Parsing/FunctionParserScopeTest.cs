@@ -22,7 +22,7 @@ internal class FunctionParserScopeTest
         _importCodeModel = new CodeModel();
         _importCodeModel.AddConstantDeclaration(new ConstantDeclaration("importConst", new IntegerValueElement(1, 0, 0)));
         _importCodeModel.AddFunctionDeclaration(new FunctionDeclaration("importFunc", new List<FunctionArgument>(), new()));
-        _importCodeModel.RunFunction = new FunctionValueElement("", new List<ValueElement>(), 0, 0);
+        _importCodeModel.RunFunction = new FunctionValueElement("", new List<ValueElement>());
 
         _currentCodeModel = new CodeModel();
         _currentCodeModel.AddImportDirective(new ImportDirective("", new CodeFileProjectItem("", null, _fileSystem.Object) { CodeModel = _importCodeModel }, 0, 0));

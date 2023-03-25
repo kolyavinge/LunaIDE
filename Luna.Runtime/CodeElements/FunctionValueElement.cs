@@ -7,14 +7,19 @@ public class FunctionValueElement : ValueElement, IEquatable<FunctionValueElemen
 {
     public string Name { get; }
     public ReadonlyArray<ValueElement> ArgumentValues { get; }
+    public int EndLineIndex { get; }
+    public int EndColumnIndex { get; }
 
-    public FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues, int lineIndex, int columnIndex) : base(lineIndex, columnIndex)
+    public FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues, int lineIndex, int columnIndex, int endLineIndex, int endColumnIndex)
+        : base(lineIndex, columnIndex)
     {
         Name = name;
+        EndLineIndex = endLineIndex;
+        EndColumnIndex = endColumnIndex;
         ArgumentValues = new ReadonlyArray<ValueElement>(argumentValues);
     }
 
-    internal FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues) : this(name, argumentValues, 0, 0) { }
+    internal FunctionValueElement(string name, IEnumerable<ValueElement> argumentValues) : this(name, argumentValues, 0, 0, 0, 0) { }
 
     public override string ToString()
     {

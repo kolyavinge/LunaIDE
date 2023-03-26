@@ -18,6 +18,7 @@ internal class CodeFileEditorTest
     private Mock<ICodeProviderFactory> _codeProviderFactory;
     private Mock<ILunaCodeProvider> _codeProvider;
     private Mock<ICodeModelUpdater> _codeModelUpdater;
+    private Mock<IFoldableRegionsUpdater> _foldableRegionsUpdater;
     private CodeFileEditor _editor;
 
     [SetUp]
@@ -29,14 +30,15 @@ internal class CodeFileEditorTest
         _codeProviderFactory = new Mock<ICodeProviderFactory>();
         _codeProvider = new Mock<ILunaCodeProvider>();
         _codeModelUpdater = new Mock<ICodeModelUpdater>();
+        _foldableRegionsUpdater = new Mock<IFoldableRegionsUpdater>();
         _codeProviderFactory.Setup(x => x.Make(_codeFileProjectItem)).Returns(_codeProvider.Object);
-        _editor = new CodeFileEditor(_codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object);
+        _editor = new CodeFileEditor(_codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _foldableRegionsUpdater.Object);
     }
 
     [Test]
     public void OnCodeModelUpdated_NoDifferent()
     {
-        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModelScopeIdentificatorsDifferent()));
+        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModel(), new CodeModelScopeIdentificatorsDifferent()));
         _codeProvider.Verify(x => x.UpdateTokenKinds(It.IsAny<IEnumerable<UpdatedTokenKind>>()), Times.Never());
     }
 
@@ -53,7 +55,7 @@ internal class CodeFileEditorTest
             new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedImportedConst", new IntegerValueElement(1)) }),
             new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }));
 
-        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), diff));
+        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModel(), diff));
 
         _codeProvider.Verify(x => x.UpdateTokenKinds(new UpdatedTokenKind[]
         {

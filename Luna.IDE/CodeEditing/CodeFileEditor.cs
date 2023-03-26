@@ -13,11 +13,16 @@ namespace Luna.IDE.CodeEditing;
 public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveableEnvironmentWindow, ICloseableEnvironmentWindow
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
+    private readonly IFoldableRegionsUpdater _foldableRegionsUpdater;
     private readonly ILunaCodeProvider _codeProvider;
 
     public CodeFileProjectItem ProjectItem { get; }
 
     public ICodeTextBoxModel CodeTextBoxModel { get; }
+
+    public ILineNumberPanelModel LineNumberPanelModel { get; }
+
+    public ILineFoldingPanelModel LineFoldingPanelModel { get; }
 
     public string Text { get => CodeTextBoxModel.Text; set => CodeTextBoxModel.Text = value; }
 
@@ -33,20 +38,28 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public string Header => ProjectItem.Name;
 
-    public CodeFileEditor(CodeFileProjectItem projectItem, ICodeProviderFactory codeProviderFactory, ICodeModelUpdater codeModelUpdater)
+    public CodeFileEditor(
+        CodeFileProjectItem projectItem,
+        ICodeProviderFactory codeProviderFactory,
+        ICodeModelUpdater codeModelUpdater,
+        IFoldableRegionsUpdater foldableRegionsUpdater)
     {
         ProjectItem = projectItem;
         ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
+        _foldableRegionsUpdater = foldableRegionsUpdater;
         _codeProvider = (ILunaCodeProvider)codeProviderFactory.Make(projectItem);
         CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(_codeProvider, new() { HighlighteredBrackets = "()" });
         CodeTextBoxModel.TextEvents.TextChanged += OnTextChanged;
         CodeTextBoxModel.Text = ProjectItem.GetText();
+        LineNumberPanelModel = LineNumberPanelModelFactory.MakeModel(CodeTextBoxModel);
+        LineFoldingPanelModel = LineFoldingPanelModelFactory.MakeModel(CodeTextBoxModel);
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
     }
 
     internal void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
     {
+        // TODO put in class
         var diff = e.Different;
 
         var updatedTokens =
@@ -60,6 +73,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         {
             _codeProvider.UpdateTokenKinds(updatedTokens);
         }
+
+        _foldableRegionsUpdater.Update(CodeTextBoxModel.Folds, ProjectItem.CodeModel);
     }
 
     private void OnTextChanged(object? sender, EventArgs e)

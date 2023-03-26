@@ -44,8 +44,8 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result[0].StartLine, Is.EqualTo(0));
-        Assert.That(result[0].LinesCount, Is.EqualTo(2));
+        Assert.That(result[0].LineIndex, Is.EqualTo(0));
+        Assert.That(result[0].LinesCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -57,8 +57,8 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result[0].StartLine, Is.EqualTo(1));
-        Assert.That(result[0].LinesCount, Is.EqualTo(4));
+        Assert.That(result[0].LineIndex, Is.EqualTo(1));
+        Assert.That(result[0].LinesCount, Is.EqualTo(3));
     }
 
     [Test]
@@ -78,8 +78,8 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result[0].StartLine, Is.EqualTo(1));
-        Assert.That(result[0].LinesCount, Is.EqualTo(3));
+        Assert.That(result[0].LineIndex, Is.EqualTo(1));
+        Assert.That(result[0].LinesCount, Is.EqualTo(2));
     }
 
     [Test]
@@ -104,10 +104,10 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(2));
-        Assert.That(result[0].StartLine, Is.EqualTo(1));
-        Assert.That(result[0].LinesCount, Is.EqualTo(2));
-        Assert.That(result[1].StartLine, Is.EqualTo(4));
-        Assert.That(result[1].LinesCount, Is.EqualTo(2));
+        Assert.That(result[0].LineIndex, Is.EqualTo(1));
+        Assert.That(result[0].LinesCount, Is.EqualTo(1));
+        Assert.That(result[1].LineIndex, Is.EqualTo(4));
+        Assert.That(result[1].LinesCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -119,8 +119,8 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result[0].StartLine, Is.EqualTo(1));
-        Assert.That(result[0].LinesCount, Is.EqualTo(2));
+        Assert.That(result[0].LineIndex, Is.EqualTo(1));
+        Assert.That(result[0].LinesCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -148,8 +148,8 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(1));
-        Assert.That(result[0].StartLine, Is.EqualTo(0));
-        Assert.That(result[0].LinesCount, Is.EqualTo(4));
+        Assert.That(result[0].LineIndex, Is.EqualTo(0));
+        Assert.That(result[0].LinesCount, Is.EqualTo(3));
     }
 
     [Test]
@@ -160,10 +160,36 @@ internal class FoldableRegionsTest
         var result = GetRegions();
 
         Assert.That(result, Has.Count.EqualTo(2));
-        Assert.That(result[0].StartLine, Is.EqualTo(0));
-        Assert.That(result[0].LinesCount, Is.EqualTo(4));
-        Assert.That(result[1].StartLine, Is.EqualTo(10));
-        Assert.That(result[1].LinesCount, Is.EqualTo(4));
+        Assert.That(result[0].LineIndex, Is.EqualTo(0));
+        Assert.That(result[0].LinesCount, Is.EqualTo(3));
+        Assert.That(result[1].LineIndex, Is.EqualTo(10));
+        Assert.That(result[1].LinesCount, Is.EqualTo(3));
+    }
+
+    [Test]
+    public void GetRegions_OneFunctionWithInners_OneLine()
+    {
+        _codeModel.AddFunctionDeclaration(
+            new(_codeModel, "func", Enumerable.Empty<FunctionArgument>(), new(0, 0, 1, 0, new[] { new FunctionValueElement("f", Enumerable.Empty<ValueElement>(), 1, 0, 1, 0) }), 0, 0));
+        var result = GetRegions();
+
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result[0].LineIndex, Is.EqualTo(0));
+        Assert.That(result[0].LinesCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void GetRegions_OneFunctionWithInners_ThreeLines()
+    {
+        _codeModel.AddFunctionDeclaration(
+            new(_codeModel, "func", Enumerable.Empty<FunctionArgument>(), new(0, 0, 3, 0, new[] { new FunctionValueElement("f", Enumerable.Empty<ValueElement>(), 1, 0, 3, 0) }), 0, 0));
+        var result = GetRegions();
+
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].LineIndex, Is.EqualTo(0));
+        Assert.That(result[0].LinesCount, Is.EqualTo(3));
+        Assert.That(result[1].LineIndex, Is.EqualTo(1));
+        Assert.That(result[1].LinesCount, Is.EqualTo(2));
     }
 
     private List<FoldableRegion> GetRegions()

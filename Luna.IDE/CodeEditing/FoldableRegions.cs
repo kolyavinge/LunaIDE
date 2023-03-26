@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Luna.CodeElements;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
 
 public readonly struct FoldableRegion
 {
-    public readonly int StartLine;
+    public readonly int LineIndex;
     public readonly int LinesCount;
 
-    public FoldableRegion(int startLine, int linesCount)
+    public FoldableRegion(int lineIndex, int linesCount)
     {
-        StartLine = startLine;
+        LineIndex = lineIndex;
         LinesCount = linesCount;
     }
 }
@@ -36,7 +37,7 @@ public class FoldableRegions : IFoldableRegions
             var lastImport = codeModel.Imports.Last();
             if (firstImport.LineIndex < lastImport.LineIndex)
             {
-                yield return new FoldableRegion(firstImport.LineIndex, lastImport.LineIndex - firstImport.LineIndex + 1);
+                yield return new FoldableRegion(firstImport.LineIndex, lastImport.LineIndex - firstImport.LineIndex);
             }
         }
     }
@@ -69,24 +70,31 @@ public class FoldableRegions : IFoldableRegions
                     state = 1;
                     if (endLine > startLine)
                     {
-                        yield return new FoldableRegion(startLine, endLine - startLine + 1);
+                        yield return new FoldableRegion(startLine, endLine - startLine);
                     }
                 }
             }
         }
         if (state == 2 && endLine > startLine)
         {
-            yield return new FoldableRegion(startLine, endLine - startLine + 1);
+            yield return new FoldableRegion(startLine, endLine - startLine);
         }
     }
 
     private IEnumerable<FoldableRegion> GetFunctions(CodeModel codeModel)
     {
-        foreach (var f in codeModel.Functions)
+        foreach (var func in codeModel.Functions)
         {
-            if (f.LineIndex < f.Body.EndLineIndex)
+            if (func.LineIndex < func.Body.EndLineIndex)
             {
-                yield return new FoldableRegion(f.LineIndex, f.Body.EndLineIndex - f.LineIndex + 1);
+                yield return new FoldableRegion(func.LineIndex, func.Body.EndLineIndex - func.LineIndex);
+                foreach (var inner in func.Body.OfType<FunctionValueElement>())
+                {
+                    if (inner.EndLineIndex > inner.LineIndex)
+                    {
+                        yield return new FoldableRegion(inner.LineIndex, inner.EndLineIndex - inner.LineIndex);
+                    }
+                }
             }
         }
     }

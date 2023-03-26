@@ -100,6 +100,11 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
+    <Style x:Key="LineFoldingPanelStyle" TargetType="{x:Type highlighter:LineFoldingPanel}">
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource LineFoldBrush}" />
+    </Style>
+
     <Style x:Key="CodeEditorStyle" TargetType="{x:Type highlighter:CodeTextBox}">
         <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />

@@ -34,6 +34,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="22" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -46,16 +47,27 @@
             <highlighter:LineNumberPanel
                 Grid.Row="1"
                 Grid.Column="0"
+                Model="{Binding Model.LineNumberPanelModel}"
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
                 TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
                 TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
                 MinWidth="40" />
 
-            <Grid
+            <highlighter:LineFoldingPanel
                 Grid.Row="1"
                 Grid.Column="1"
-                Margin="12,0,0,0">
+                Model="{Binding Model.LineFoldingPanelModel}"
+                Style="{StaticResource LineFoldingPanelStyle}"
+                VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
+                TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
+                TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
+                Width="16" />
+
+            <Grid
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="4,0,0,0">
                 <highlighter:CodeTextBox
                     x:Name="codeTextBox"
                     Model="{Binding Model.CodeTextBoxModel}"

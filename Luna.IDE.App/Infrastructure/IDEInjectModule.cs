@@ -41,6 +41,8 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ITextDiffEngine, TextDiffEngine>().ToSingleton();
         provider.Bind<ITextDiffCodeProviderFactory, TextDiffCodeProviderFactory>().ToSingleton();
         provider.Bind<IFoldableRegions, FoldableRegions>().ToSingleton();
+        provider.Bind<ILineFoldsItemsUpdater, LineFoldsItemsUpdater>().ToSingleton();
+        provider.Bind<IFoldableRegionsUpdater, FoldableRegionsUpdater>().ToSingleton();
 
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());

@@ -40,7 +40,7 @@
 
             <view:CodeFileEditorMainPanelView
                 Grid.Row="0"
-                Grid.Column="1"
+                Grid.Column="2"
                 CodeFileEditor="{Binding DataContext.Model, ElementName=codeTextBox}"
                 Style="{StaticResource CodeFileEditorMainPanelStyle}" />
 

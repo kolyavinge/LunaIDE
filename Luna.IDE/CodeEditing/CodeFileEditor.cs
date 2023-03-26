@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using CodeHighlighter;
-using CodeHighlighter.CodeProvidering;
+﻿using CodeHighlighter;
 using CodeHighlighter.Model;
 using Luna.CodeElements;
 using Luna.IDE.WindowsManagement;
-using Luna.Parsing;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
@@ -13,6 +10,7 @@ namespace Luna.IDE.CodeEditing;
 public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveableEnvironmentWindow, ICloseableEnvironmentWindow
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
+    private readonly ITokenKindsUpdater _tokenKindsUpdater;
     private readonly IFoldableRegionsUpdater _foldableRegionsUpdater;
     private readonly ILunaCodeProvider _codeProvider;
 
@@ -42,11 +40,13 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         CodeFileProjectItem projectItem,
         ICodeProviderFactory codeProviderFactory,
         ICodeModelUpdater codeModelUpdater,
+        ITokenKindsUpdater tokenKindsUpdater,
         IFoldableRegionsUpdater foldableRegionsUpdater)
     {
         ProjectItem = projectItem;
         ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
+        _tokenKindsUpdater = tokenKindsUpdater;
         _foldableRegionsUpdater = foldableRegionsUpdater;
         _codeProvider = (ILunaCodeProvider)codeProviderFactory.Make(projectItem);
         CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(_codeProvider, new() { HighlighteredBrackets = "()" });
@@ -55,25 +55,12 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         LineNumberPanelModel = LineNumberPanelModelFactory.MakeModel(CodeTextBoxModel);
         LineFoldingPanelModel = LineFoldingPanelModelFactory.MakeModel(CodeTextBoxModel);
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
+        _foldableRegionsUpdater.Update(CodeTextBoxModel.Folds, ProjectItem.CodeModel);
     }
 
-    internal void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
+    private void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
     {
-        // TODO put in class
-        var diff = e.Different;
-
-        var updatedTokens =
-            diff.AddedDeclaredConstants.Concat(diff.AddedImportedConstants).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKindExtra.Constant)).
-            Concat(diff.AddedDeclaredFunctions.Concat(diff.AddedImportedFunctions).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKindExtra.Function))).
-            Concat(diff.RemovedDeclaredConstants.Concat(diff.RemovedImportedConstants).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKind.Identificator))).
-            Concat(diff.RemovedDeclaredFunctions.Concat(diff.RemovedImportedFunctions).Select(x => new UpdatedTokenKind(x.Name, (byte)TokenKind.Identificator))).
-            ToList();
-
-        if (updatedTokens.Any())
-        {
-            _codeProvider.UpdateTokenKinds(updatedTokens);
-        }
-
+        _tokenKindsUpdater.Update(e.Different, _codeProvider);
         _foldableRegionsUpdater.Update(CodeTextBoxModel.Folds, ProjectItem.CodeModel);
     }
 

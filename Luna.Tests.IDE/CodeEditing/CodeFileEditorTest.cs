@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CodeHighlighter.CodeProvidering;
-using Luna.CodeElements;
-using Luna.IDE.CodeEditing;
+﻿using Luna.IDE.CodeEditing;
 using Luna.Infrastructure;
-using Luna.Parsing;
 using Luna.ProjectModel;
 using Moq;
 using NUnit.Framework;
@@ -18,6 +13,7 @@ internal class CodeFileEditorTest
     private Mock<ICodeProviderFactory> _codeProviderFactory;
     private Mock<ILunaCodeProvider> _codeProvider;
     private Mock<ICodeModelUpdater> _codeModelUpdater;
+    private Mock<ITokenKindsUpdater> _tokenKindsUpdater;
     private Mock<IFoldableRegionsUpdater> _foldableRegionsUpdater;
     private CodeFileEditor _editor;
 
@@ -30,45 +26,10 @@ internal class CodeFileEditorTest
         _codeProviderFactory = new Mock<ICodeProviderFactory>();
         _codeProvider = new Mock<ILunaCodeProvider>();
         _codeModelUpdater = new Mock<ICodeModelUpdater>();
+        _tokenKindsUpdater = new Mock<ITokenKindsUpdater>();
         _foldableRegionsUpdater = new Mock<IFoldableRegionsUpdater>();
         _codeProviderFactory.Setup(x => x.Make(_codeFileProjectItem)).Returns(_codeProvider.Object);
-        _editor = new CodeFileEditor(_codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _foldableRegionsUpdater.Object);
-    }
-
-    [Test]
-    public void OnCodeModelUpdated_NoDifferent()
-    {
-        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModel(), new CodeModelScopeIdentificatorsDifferent()));
-        _codeProvider.Verify(x => x.UpdateTokenKinds(It.IsAny<IEnumerable<UpdatedTokenKind>>()), Times.Never());
-    }
-
-    [Test]
-    public void OnCodeModelUpdated()
-    {
-        var diff = new CodeModelScopeIdentificatorsDifferent(
-            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("addedDeclaredConst", new IntegerValueElement(1)) }),
-            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("addedDeclaredFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
-            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedDeclaredConst", new IntegerValueElement(1)) }),
-            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedDeclaredFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
-            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("addedImportedConst", new IntegerValueElement(1)) }),
-            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("addedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }),
-            new ConstantDeclarationDictionary(new[] { new ConstantDeclaration("removedImportedConst", new IntegerValueElement(1)) }),
-            new FunctionDeclarationDictionary(new[] { new FunctionDeclaration("removedImportedFunc", Enumerable.Empty<FunctionArgument>(), new()) }));
-
-        _editor.OnCodeModelUpdated(_editor, new(new CodeModel(), new CodeModel(), diff));
-
-        _codeProvider.Verify(x => x.UpdateTokenKinds(new UpdatedTokenKind[]
-        {
-            new("addedDeclaredConst", (byte)TokenKindExtra.Constant),
-            new("addedImportedConst", (byte)TokenKindExtra.Constant),
-            new("addedDeclaredFunc", (byte)TokenKindExtra.Function),
-            new("addedImportedFunc", (byte)TokenKindExtra.Function),
-            new("removedDeclaredConst", (byte)TokenKind.Identificator),
-            new("removedImportedConst", (byte)TokenKind.Identificator),
-            new("removedDeclaredFunc", (byte)TokenKind.Identificator),
-            new("removedImportedFunc", (byte)TokenKind.Identificator)
-        }),
-        Times.Once());
+        _editor = new CodeFileEditor(_codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _tokenKindsUpdater.Object, _foldableRegionsUpdater.Object);
     }
 
     [Test]

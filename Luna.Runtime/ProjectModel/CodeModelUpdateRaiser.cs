@@ -11,26 +11,23 @@ internal interface ICodeModelUpdateRaiser
 
 internal class CodeModelUpdateRaiser : ICodeModelUpdateRaiser
 {
-    private List<KeyValuePair<CodeFileProjectItem, CodeModel>> _oldCodeModels = new();
+    private readonly CodeModelScope _scope = new();
+    private (CodeFileProjectItem, CodeModel, CodeModelScopeIdentificators)[]? _oldCodeModels;
 
     public void StoreOldCodeModels(IEnumerable<CodeFileProjectItem> codeFiles)
     {
-        _oldCodeModels = codeFiles.Select(x => new KeyValuePair<CodeFileProjectItem, CodeModel>(x, x.CodeModel)).ToList();
+        _oldCodeModels = codeFiles.
+            Select(x => (x, x.CodeModel, _scope.GetScopeIdentificators(x.CodeModel))).
+            ToArray();
     }
 
     public void RaiseUpdateCodeModelWithDiff()
     {
-        var scope = new CodeModelScope();
-        foreach (var kv in _oldCodeModels)
+        foreach (var item in _oldCodeModels!)
         {
-            var codeFile = kv.Key;
-            var oldCodeModel = kv.Value;
-
-            var oldScopeIdentificators = scope.GetScopeIdentificators(oldCodeModel);
-            var newScopeIdentificators = scope.GetScopeIdentificators(codeFile.CodeModel);
-
+            var (codeFile, oldCodeModel, oldScopeIdentificators) = item;
+            var newScopeIdentificators = _scope.GetScopeIdentificators(codeFile.CodeModel);
             var diff = IdentificatorsComparator.GetDifferent(oldScopeIdentificators, newScopeIdentificators);
-
             codeFile.RaiseUpdateCodeModel(oldCodeModel, codeFile.CodeModel, diff);
         }
     }

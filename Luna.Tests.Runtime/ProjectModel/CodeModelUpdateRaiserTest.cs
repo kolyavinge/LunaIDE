@@ -18,8 +18,11 @@ internal class CodeModelUpdateRaiserTest
     public void Setup()
     {
         _fileSystem = new Mock<IFileSystem>();
-        _projectItems = new List<CodeFileProjectItem>();
-        _projectItems.Add(new CodeFileProjectItem("", null, _fileSystem.Object));
+        _projectItems = new List<CodeFileProjectItem>
+        {
+            new("file1", null, _fileSystem.Object),
+            new("file2", null, _fileSystem.Object)
+        };
         _raiser = new CodeModelUpdateRaiser();
     }
 
@@ -39,7 +42,7 @@ internal class CodeModelUpdateRaiserTest
     }
 
     [Test]
-    public void WithDiff()
+    public void Diff()
     {
         _raiser.StoreOldCodeModels(_projectItems);
         var oldCodeModel = _projectItems.First().CodeModel;
@@ -56,5 +59,23 @@ internal class CodeModelUpdateRaiserTest
         Assert.NotNull(callbackDiff);
         Assert.True(callbackDiff.AnyChanges);
         Assert.AreEqual(1, callbackDiff.AddedDeclaredFunctions.Count);
+    }
+
+    [Test]
+    public void DiffWithImported()
+    {
+        _raiser.StoreOldCodeModels(_projectItems);
+        _projectItems.First().CodeModel = new CodeModel();
+        _projectItems.Last().CodeModel = new CodeModel();
+        _projectItems.First().CodeModel.AddFunctionDeclaration(new("func", Enumerable.Empty<FunctionArgument>(), new()));
+        _projectItems.Last().CodeModel.AddImportDirective(new("file1", _projectItems.First()));
+        CodeModelScopeIdentificatorsDifferent callbackDiff = null;
+        _projectItems.Last().CodeModelUpdated += (s, e) => { callbackDiff = e.Different; };
+
+        _raiser.RaiseUpdateCodeModelWithDiff();
+
+        Assert.NotNull(callbackDiff);
+        Assert.True(callbackDiff.AnyChanges);
+        Assert.AreEqual(1, callbackDiff.AddedImportedFunctions.Count);
     }
 }

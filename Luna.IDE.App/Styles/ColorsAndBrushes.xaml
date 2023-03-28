@@ -22,6 +22,8 @@
 
     <SolidColorBrush x:Key="LineFoldBrush" Color="#4f4f4f" />
 
+    <SolidColorBrush x:Key="ActivatedFoldBrush" Color="#1d272e" />
+
     <SolidColorBrush x:Key="AlertBrush" Color="{StaticResource AlertColor}" />
 
     <SolidColorBrush x:Key="WindowHeaderBackgroundBrush" Color="#171717" />

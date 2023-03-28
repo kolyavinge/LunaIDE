@@ -114,6 +114,7 @@
         <Setter Property="HighlightPairBracketsBrush" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="HighlightNoPairBracketBrush" Value="{StaticResource AlertBrush}" />
         <Setter Property="CursorLineHighlightingBrush" Value="{StaticResource SecondaryBackgroundBrush}" />
+        <Setter Property="ActivatedFoldBrush" Value="{StaticResource ActivatedFoldBrush}" />
     </Style>
 
     <Style x:Key="AutoCompleteStyle" TargetType="{x:Type view:AutoCompleteView}">

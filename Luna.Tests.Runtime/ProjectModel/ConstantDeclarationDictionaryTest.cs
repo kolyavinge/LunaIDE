@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Luna.CodeElements;
 using Luna.ProjectModel;
 using NUnit.Framework;
@@ -36,17 +35,10 @@ internal class ConstantDeclarationDictionaryTest
     }
 
     [Test]
-    public void Add_Wrong()
+    public void Add_NextColumnIndexLowerThanPrev_NoError()
     {
         _constantDeclarations.Add(new("WIDTH", new IntegerValueElement(123), 10, 1));
-        try
-        {
-            _constantDeclarations.Add(new("HEIGHT", new IntegerValueElement(123), 1, 10));
-            Assert.Fail();
-        }
-        catch (ArgumentException ex)
-        {
-            Assert.AreEqual("New item position must be greater then line index 10 and column index 1", ex.Message);
-        }
+        _constantDeclarations.Add(new("HEIGHT", new IntegerValueElement(123), 1, 10));
+        Assert.AreEqual(2, _constantDeclarations.Count);
     }
 }

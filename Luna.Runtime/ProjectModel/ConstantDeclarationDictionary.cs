@@ -31,13 +31,6 @@ internal class ConstantDeclarationDictionary : IConstantDeclarationDictionary, I
 
     public void Add(ConstantDeclaration constantDeclaration)
     {
-        var last = this.LastOrDefault();
-        if (last != null &&
-            (constantDeclaration.LineIndex < last.LineIndex || constantDeclaration.LineIndex == last.LineIndex && constantDeclaration.ColumnIndex < last.ColumnIndex))
-        {
-            throw new ArgumentException($"New item position must be greater then line index {last.LineIndex} and column index {last.ColumnIndex}");
-        }
-
         _dictionary.Add(constantDeclaration.Name, constantDeclaration);
     }
 

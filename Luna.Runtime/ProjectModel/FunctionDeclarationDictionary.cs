@@ -31,13 +31,6 @@ internal class FunctionDeclarationDictionary : IFunctionDeclarationDictionary, I
 
     public void Add(FunctionDeclaration functionDeclaration)
     {
-        var last = this.LastOrDefault();
-        if (last != null &&
-            (functionDeclaration.LineIndex < last.LineIndex || functionDeclaration.LineIndex == last.LineIndex && functionDeclaration.ColumnIndex < last.ColumnIndex))
-        {
-            throw new ArgumentException($"New item position must be greater then line index {last.LineIndex} and column index {last.ColumnIndex}");
-        }
-
         _dictionary.Add(functionDeclaration.Name, functionDeclaration);
     }
 

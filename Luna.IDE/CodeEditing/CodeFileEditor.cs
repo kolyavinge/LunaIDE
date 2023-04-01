@@ -66,7 +66,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     private void OnTextChanged(object? sender, EventArgs e)
     {
-        _codeModelUpdater.UpdateRequest();
+        _codeModelUpdater.Request();
     }
 
     public void Save() => ProjectItem.SaveText(CodeTextBoxModel.Text.ToString());
@@ -95,7 +95,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         ProjectItem.ResetTextGettingStrategy();
         CodeTextBoxModel.Text = ProjectItem.GetText();
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
-        _codeModelUpdater.UpdateRequest();
+        _codeModelUpdater.Request();
     }
 
     public void DeleteSelectedLines() => CodeTextBoxModel.DeleteSelectedLines();

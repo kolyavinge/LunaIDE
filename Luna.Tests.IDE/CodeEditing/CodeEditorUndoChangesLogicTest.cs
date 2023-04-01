@@ -40,7 +40,7 @@ internal class CodeEditorUndoChangesLogicTest
         _undoChangesLogic.UndoTextChanges(files);
 
         _codeFileEditor.Verify(x => x.Close(), Times.Once());
-        _codeModelUpdater.Verify(x => x.UpdateRequest(), Times.Never());
+        _codeModelUpdater.Verify(x => x.Request(), Times.Never());
     }
 
     [Test]
@@ -53,7 +53,7 @@ internal class CodeEditorUndoChangesLogicTest
         _undoChangesLogic.UndoTextChanges(files);
 
         _codeFileEditor.Verify(x => x.Close(), Times.Once());
-        _codeModelUpdater.Verify(x => x.UpdateRequest(), Times.Never());
+        _codeModelUpdater.Verify(x => x.Request(), Times.Never());
     }
 
     [Test]
@@ -66,7 +66,7 @@ internal class CodeEditorUndoChangesLogicTest
         _undoChangesLogic.UndoTextChanges(files);
 
         _codeFileEditor.Verify(x => x.Close(), Times.Once());
-        _codeModelUpdater.Verify(x => x.UpdateRequest(), Times.Never());
+        _codeModelUpdater.Verify(x => x.Request(), Times.Never());
     }
 
     [Test]
@@ -79,6 +79,6 @@ internal class CodeEditorUndoChangesLogicTest
         _undoChangesLogic.UndoTextChanges(files);
 
         _codeFileEditor.Verify(x => x.UndoTextChanges(), Times.Once());
-        _codeModelUpdater.Verify(x => x.UpdateRequest(), Times.Once());
+        _codeModelUpdater.Verify(x => x.Request(), Times.Once());
     }
 }

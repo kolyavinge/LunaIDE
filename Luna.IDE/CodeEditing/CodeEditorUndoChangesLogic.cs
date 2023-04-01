@@ -52,7 +52,7 @@ public class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
 
         if (filesToUndoTextChanges.Any())
         {
-            _codeModelUpdater.UpdateRequest();
+            _codeModelUpdater.Request();
         }
     }
 }

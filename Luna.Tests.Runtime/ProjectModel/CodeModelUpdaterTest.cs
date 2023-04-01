@@ -41,7 +41,7 @@ internal class CodeModelUpdaterTest
         _updater.SetCodeFiles(_projectItems);
 
         _updater.UpdateNow();
-        _updater.UpdateRequest();
+        _updater.Request();
         _updater.UpdateNow();
 
         _codeModelBuilder.Verify(x => x.BuildFor(_projectItems), Times.Exactly(2));

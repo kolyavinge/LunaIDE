@@ -6,7 +6,7 @@ public interface ICodeModelUpdater
 {
     void SetCodeFiles(IEnumerable<CodeFileProjectItem> projectItems);
 
-    void UpdateRequest();
+    void Request();
 
     void UpdateNow();
 }

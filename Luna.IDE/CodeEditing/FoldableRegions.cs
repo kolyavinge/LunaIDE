@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Luna.CodeElements;
-using Luna.ProjectModel;
+using CodeHighlighter.Model;
+using Luna.Parsing;
 
 namespace Luna.IDE.CodeEditing;
 
@@ -19,83 +19,79 @@ public readonly struct FoldableRegion
 
 public interface IFoldableRegions
 {
-    IEnumerable<FoldableRegion> GetRegions(CodeModel codeModel);
+    IEnumerable<FoldableRegion> GetRegions(ITokenCollection tokens);
 }
 
 public class FoldableRegions : IFoldableRegions
 {
-    public IEnumerable<FoldableRegion> GetRegions(CodeModel codeModel)
+    private static readonly ISet<byte> _foldableTokenKinds = new HashSet<byte>
     {
-        return GetImports(codeModel).Union(GetConstants(codeModel)).Union(GetFunctions(codeModel));
-    }
+        (byte)TokenKind.ImportDirective,
+        (byte)TokenKind.ConstDeclaration,
+        (byte)TokenKind.Comment
+    };
 
-    private IEnumerable<FoldableRegion> GetImports(CodeModel codeModel)
-    {
-        if (codeModel.Imports.Any())
-        {
-            var firstImport = codeModel.Imports.First();
-            var lastImport = codeModel.Imports.Last();
-            if (firstImport.LineIndex < lastImport.LineIndex)
-            {
-                yield return new FoldableRegion(firstImport.LineIndex, lastImport.LineIndex - firstImport.LineIndex);
-            }
-        }
-    }
+    private readonly List<FoldableRegion> _regions = new();
+    private int _lineIndex;
+    private ITokenCollection? _tokens;
 
-    private IEnumerable<FoldableRegion> GetConstants(CodeModel codeModel)
+    public IEnumerable<FoldableRegion> GetRegions(ITokenCollection tokens)
     {
-        if (!codeModel.Constants.Any()) yield break;
-        var items = codeModel.Constants.Select(x => new { x.LineIndex, IsConstant = true })
-            .Union(codeModel.Functions.Select(x => new { x.LineIndex, IsConstant = false }))
-            .OrderBy(x => x.LineIndex);
-        int state = 1, startLine = 0, endLine = 0;
-        foreach (var item in items)
+        _regions.Clear();
+        _lineIndex = -1;
+        _tokens = tokens;
+        byte currentTokenKind = 0;
+        int startLineIndex = 0;
+        int endLineIndex = 0;
+        var brackets = new Stack<int>();
+        NextUnemptyLine();
+        switch (1)
         {
-            if (state == 1)
-            {
-                if (item.IsConstant)
-                {
-                    state = 2;
-                    startLine = item.LineIndex;
-                }
-            }
-            else if (state == 2)
-            {
-                if (item.IsConstant)
-                {
-                    endLine = item.LineIndex;
-                }
+            case 1:
+                if (_lineIndex >= tokens.LinesCount) break;
                 else
                 {
-                    state = 1;
-                    if (endLine > startLine)
-                    {
-                        yield return new FoldableRegion(startLine, endLine - startLine);
-                    }
+                    currentTokenKind = tokens.GetTokens(_lineIndex).First().Kind;
+                    if (_foldableTokenKinds.Contains(currentTokenKind)) { startLineIndex = _lineIndex; endLineIndex = _lineIndex; NextUnemptyLine(); goto case 2; }
+                    else if (currentTokenKind == (byte)TokenKind.OpenBracket) { goto case 3; }
+                    else { NextUnemptyLine(); goto case 1; }
                 }
-            }
+            case 2:
+                if (_lineIndex >= tokens.LinesCount) { _regions.Add(new(startLineIndex, endLineIndex - startLineIndex)); break; }
+                else
+                {
+                    if (currentTokenKind == tokens.GetTokens(_lineIndex).First().Kind) { endLineIndex = _lineIndex; NextUnemptyLine(); goto case 2; }
+                    else { _regions.Add(new(startLineIndex, endLineIndex - startLineIndex)); goto case 1; }
+                }
+            case 3:
+                bool end = false;
+                while (_lineIndex < tokens.LinesCount && !end)
+                {
+                    foreach (var token in tokens.GetTokens(_lineIndex))
+                    {
+                        if (token.Kind == (byte)TokenKind.OpenBracket) brackets.Push(_lineIndex);
+                        else if (token.Kind == (byte)TokenKind.CloseBracket)
+                        {
+                            startLineIndex = brackets.Pop();
+                            _regions.Add(new(startLineIndex, _lineIndex - startLineIndex));
+                            if (!brackets.Any()) { end = true; break; }
+                        }
+                    }
+                    NextUnemptyLine();
+                }
+                goto case 1;
         }
-        if (state == 2 && endLine > startLine)
-        {
-            yield return new FoldableRegion(startLine, endLine - startLine);
-        }
+
+        return _regions
+            .GroupBy(x => x.LineIndex)
+            .Select(g => g.OrderByDescending(x => x.LinesCount).First())
+            .Where(x => x.LinesCount > 0)
+            .ToList();
     }
 
-    private IEnumerable<FoldableRegion> GetFunctions(CodeModel codeModel)
+    private void NextUnemptyLine()
     {
-        foreach (var func in codeModel.Functions)
-        {
-            if (func.LineIndex < func.Body.EndLineIndex)
-            {
-                yield return new FoldableRegion(func.LineIndex, func.Body.EndLineIndex - func.LineIndex);
-                foreach (var inner in func.Body.OfType<FunctionValueElement>())
-                {
-                    if (inner.EndLineIndex > inner.LineIndex)
-                    {
-                        yield return new FoldableRegion(inner.LineIndex, inner.EndLineIndex - inner.LineIndex);
-                    }
-                }
-            }
-        }
+        _lineIndex++;
+        while (_lineIndex < _tokens!.LinesCount && !_tokens.GetTokens(_lineIndex).Any()) _lineIndex++;
     }
 }

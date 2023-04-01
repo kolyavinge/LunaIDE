@@ -41,13 +41,12 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         ICodeProviderFactory codeProviderFactory,
         ICodeModelUpdater codeModelUpdater,
         ITokenKindsUpdater tokenKindsUpdater,
-        IFoldableRegionsUpdater foldableRegionsUpdater)
+        IFoldableRegionsUpdaterFactory foldableRegionsUpdaterFactory)
     {
         ProjectItem = projectItem;
         ProjectItem.CodeModelUpdated += OnCodeModelUpdated;
         _codeModelUpdater = codeModelUpdater;
         _tokenKindsUpdater = tokenKindsUpdater;
-        _foldableRegionsUpdater = foldableRegionsUpdater;
         _codeProvider = (ILunaCodeProvider)codeProviderFactory.Make(projectItem);
         CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(_codeProvider, new() { HighlighteredBrackets = "()" });
         CodeTextBoxModel.TextEvents.TextChanged += OnTextChanged;
@@ -55,18 +54,19 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         LineNumberPanelModel = LineNumberPanelModelFactory.MakeModel(CodeTextBoxModel);
         LineFoldingPanelModel = LineFoldingPanelModelFactory.MakeModel(CodeTextBoxModel);
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
-        _foldableRegionsUpdater.Update(CodeTextBoxModel.Folds, ProjectItem.CodeModel);
+        _foldableRegionsUpdater = foldableRegionsUpdaterFactory.Make(CodeTextBoxModel.Folds, CodeTextBoxModel.Tokens);
+        _foldableRegionsUpdater.Request();
     }
 
     private void OnCodeModelUpdated(object? sender, CodeModelUpdatedEventArgs e)
     {
         _tokenKindsUpdater.Update(e.Different, _codeProvider);
-        _foldableRegionsUpdater.Update(CodeTextBoxModel.Folds, ProjectItem.CodeModel);
     }
 
     private void OnTextChanged(object? sender, EventArgs e)
     {
         _codeModelUpdater.Request();
+        _foldableRegionsUpdater.Request();
     }
 
     public void Save() => ProjectItem.SaveText(CodeTextBoxModel.Text.ToString());

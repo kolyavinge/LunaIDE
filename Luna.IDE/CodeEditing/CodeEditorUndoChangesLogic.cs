@@ -36,17 +36,17 @@ public class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
 
         foreach (var file in filesToClose)
         {
-            if (editors.ContainsKey(file.FullPath))
+            if (editors.TryGetValue(file.FullPath, out var value))
             {
-                editors[file.FullPath].Close();
+                value.Close();
             }
         }
 
         foreach (var file in filesToUndoTextChanges)
         {
-            if (editors.ContainsKey(file.FullPath))
+            if (editors.TryGetValue(file.FullPath, out var value))
             {
-                editors[file.FullPath].UndoTextChanges();
+                value.UndoTextChanges();
             }
         }
 

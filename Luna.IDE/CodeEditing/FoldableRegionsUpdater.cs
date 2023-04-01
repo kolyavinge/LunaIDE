@@ -1,30 +1,38 @@
 ﻿using System.Linq;
 using CodeHighlighter.Model;
-using Luna.ProjectModel;
+using Luna.Infrastructure;
 
 namespace Luna.IDE.CodeEditing;
 
 public interface IFoldableRegionsUpdater
 {
-    void Update(ILineFolds folds, CodeModel codeModel);
+    void Request();
 }
 
-public class FoldableRegionsUpdater : IFoldableRegionsUpdater
+public class FoldableRegionsUpdater : DelayedAction, IFoldableRegionsUpdater
 {
     private readonly ILineFoldsItemsUpdater _lineFoldsItemsUpdater;
     private readonly IFoldableRegions _foldableRegions;
+    private readonly ILineFolds _folds;
+    private readonly ITokenCollection _tokens;
 
     public FoldableRegionsUpdater(
         ILineFoldsItemsUpdater lineFoldsItemsUpdater,
-        IFoldableRegions foldableRegions)
+        IFoldableRegions foldableRegions,
+        ITimerManager timerManager,
+        ILineFolds folds,
+        ITokenCollection tokens)
+        : base(timerManager)
     {
         _lineFoldsItemsUpdater = lineFoldsItemsUpdater;
         _foldableRegions = foldableRegions;
+        _folds = folds;
+        _tokens = tokens;
     }
 
-    public void Update(ILineFolds folds, CodeModel codeModel)
+    protected override void InnerDo()
     {
-        var items = _foldableRegions.GetRegions(codeModel).Select(x => new LineFold(x.LineIndex, x.LinesCount)).ToList();
-        _lineFoldsItemsUpdater.Update(folds, items);
+        var items = _foldableRegions.GetRegions(_tokens).Select(x => new LineFold(x.LineIndex, x.LinesCount)).ToList();
+        _lineFoldsItemsUpdater.Update(_folds, items);
     }
 }

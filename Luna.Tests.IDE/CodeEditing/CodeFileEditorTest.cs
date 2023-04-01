@@ -1,4 +1,5 @@
-﻿using Luna.IDE.CodeEditing;
+﻿using CodeHighlighter.Model;
+using Luna.IDE.CodeEditing;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
 using Moq;
@@ -14,7 +15,7 @@ internal class CodeFileEditorTest
     private Mock<ILunaCodeProvider> _codeProvider;
     private Mock<ICodeModelUpdater> _codeModelUpdater;
     private Mock<ITokenKindsUpdater> _tokenKindsUpdater;
-    private Mock<IFoldableRegionsUpdater> _foldableRegionsUpdater;
+    private Mock<IFoldableRegionsUpdaterFactory> _foldableRegionsUpdaterFactory;
     private CodeFileEditor _editor;
 
     [SetUp]
@@ -27,9 +28,12 @@ internal class CodeFileEditorTest
         _codeProvider = new Mock<ILunaCodeProvider>();
         _codeModelUpdater = new Mock<ICodeModelUpdater>();
         _tokenKindsUpdater = new Mock<ITokenKindsUpdater>();
-        _foldableRegionsUpdater = new Mock<IFoldableRegionsUpdater>();
+        var foldableRegionsUpdater = new Mock<IFoldableRegionsUpdater>();
+        _foldableRegionsUpdaterFactory = new Mock<IFoldableRegionsUpdaterFactory>();
+        _foldableRegionsUpdaterFactory.Setup(x => x.Make(It.IsAny<ILineFolds>(), It.IsAny<ITokenCollection>())).Returns(foldableRegionsUpdater.Object);
         _codeProviderFactory.Setup(x => x.Make(_codeFileProjectItem)).Returns(_codeProvider.Object);
-        _editor = new CodeFileEditor(_codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _tokenKindsUpdater.Object, _foldableRegionsUpdater.Object);
+        _editor = new CodeFileEditor(
+            _codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _tokenKindsUpdater.Object, _foldableRegionsUpdaterFactory.Object);
     }
 
     [Test]

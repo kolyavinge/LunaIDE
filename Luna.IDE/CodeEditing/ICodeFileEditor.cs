@@ -1,4 +1,4 @@
-﻿using CodeHighlighter.Model;
+﻿using CodeHighlighter.Core;
 using Luna.CodeElements;
 using Luna.ProjectModel;
 
@@ -18,7 +18,7 @@ public interface ICodeFileEditor
 
     ITextEvents TextEvents { get; }
 
-    ITokenCollection Tokens { get; }
+    ITokens Tokens { get; }
 
     TokenCursorPosition? GetTokenCursorPosition();
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using CodeHighlighter.Ancillary;
 using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Core;
 using CodeHighlighter.Model;
 using DiffTool.Core;
 using Luna.IDE.TextDiff;

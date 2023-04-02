@@ -1,11 +1,12 @@
-﻿using CodeHighlighter.Model;
+﻿using CodeHighlighter.Ancillary;
+using CodeHighlighter.Core;
 using Luna.Infrastructure;
 
 namespace Luna.IDE.CodeEditing;
 
 public interface IFoldableRegionsUpdaterFactory
 {
-    IFoldableRegionsUpdater Make(ILineFolds folds, ITokenCollection tokens);
+    IFoldableRegionsUpdater Make(ILineFolds folds, ITokens tokens);
 }
 
 public class FoldableRegionsUpdaterFactory : IFoldableRegionsUpdaterFactory
@@ -24,7 +25,7 @@ public class FoldableRegionsUpdaterFactory : IFoldableRegionsUpdaterFactory
         _timerManager = timerManager;
     }
 
-    public IFoldableRegionsUpdater Make(ILineFolds folds, ITokenCollection tokens)
+    public IFoldableRegionsUpdater Make(ILineFolds folds, ITokens tokens)
     {
         return new FoldableRegionsUpdater(
             _lineFoldsItemsUpdater,

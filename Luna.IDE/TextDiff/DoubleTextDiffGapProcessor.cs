@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CodeHighlighter.Model;
+using CodeHighlighter.Ancillary;
 using DiffTool.Core;
 
 namespace Luna.IDE.TextDiff;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using CodeHighlighter.Ancillary;
 using CodeHighlighter.Common;
-using CodeHighlighter.Model;
 using DiffTool.Core;
 using DiffTool.Visualization;
 

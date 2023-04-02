@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodeHighlighter.Model;
+using CodeHighlighter.Core;
 using Luna.Parsing;
 
 namespace Luna.IDE.CodeEditing;
@@ -19,7 +19,7 @@ public readonly struct FoldableRegion
 
 public interface IFoldableRegions
 {
-    IEnumerable<FoldableRegion> GetRegions(ITokenCollection tokens);
+    IEnumerable<FoldableRegion> GetRegions(ITokens tokens);
 }
 
 public class FoldableRegions : IFoldableRegions
@@ -33,9 +33,9 @@ public class FoldableRegions : IFoldableRegions
 
     private readonly List<FoldableRegion> _regions = new();
     private int _lineIndex;
-    private ITokenCollection? _tokens;
+    private ITokens? _tokens;
 
-    public IEnumerable<FoldableRegion> GetRegions(ITokenCollection tokens)
+    public IEnumerable<FoldableRegion> GetRegions(ITokens tokens)
     {
         _regions.Clear();
         _lineIndex = -1;

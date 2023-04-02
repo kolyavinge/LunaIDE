@@ -4,12 +4,12 @@ namespace Luna.IDE.CodeEditing;
 
 public static class TokenExt
 {
-    public static bool IsIdentificator(this CodeHighlighter.Model.Token token)
+    public static bool IsIdentificator(this CodeHighlighter.Core.Token token)
     {
         return token.Kind is (byte)TokenKind.Identificator or (byte)TokenKindExtra.Constant or (byte)TokenKindExtra.Function;
     }
 
-    public static bool IsKeyword(this CodeHighlighter.Model.Token token)
+    public static bool IsKeyword(this CodeHighlighter.Core.Token token)
     {
         return token.Kind is
             (byte)TokenKind.BooleanFalse or
@@ -20,7 +20,7 @@ public static class TokenExt
             (byte)TokenKind.RunFunction;
     }
 
-    public static bool IsOperator(this CodeHighlighter.Model.Token token)
+    public static bool IsOperator(this CodeHighlighter.Core.Token token)
     {
         return token.Kind is
             (byte)TokenKind.Plus or

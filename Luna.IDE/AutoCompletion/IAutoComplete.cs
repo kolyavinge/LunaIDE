@@ -30,5 +30,5 @@ public interface IAutoComplete
 
     void MoveSelectionPageDown(int pageSize);
 
-    CodeHighlighter.Model.Token? GetCursorToken();
+    CodeHighlighter.Core.Token? GetCursorToken();
 }

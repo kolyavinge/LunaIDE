@@ -1,4 +1,5 @@
-﻿using CodeHighlighter.Model;
+﻿using CodeHighlighter.Ancillary;
+using CodeHighlighter.Core;
 using Luna.IDE.CodeEditing;
 using Luna.Infrastructure;
 using Luna.ProjectModel;
@@ -30,7 +31,7 @@ internal class CodeFileEditorTest
         _tokenKindsUpdater = new Mock<ITokenKindsUpdater>();
         var foldableRegionsUpdater = new Mock<IFoldableRegionsUpdater>();
         _foldableRegionsUpdaterFactory = new Mock<IFoldableRegionsUpdaterFactory>();
-        _foldableRegionsUpdaterFactory.Setup(x => x.Make(It.IsAny<ILineFolds>(), It.IsAny<ITokenCollection>())).Returns(foldableRegionsUpdater.Object);
+        _foldableRegionsUpdaterFactory.Setup(x => x.Make(It.IsAny<ILineFolds>(), It.IsAny<ITokens>())).Returns(foldableRegionsUpdater.Object);
         _codeProviderFactory.Setup(x => x.Make(_codeFileProjectItem)).Returns(_codeProvider.Object);
         _editor = new CodeFileEditor(
             _codeFileProjectItem, _codeProviderFactory.Object, _codeModelUpdater.Object, _tokenKindsUpdater.Object, _foldableRegionsUpdaterFactory.Object);

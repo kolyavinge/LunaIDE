@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using CodeHighlighter.Model;
+using CodeHighlighter.Core;
 using Luna.CodeElements;
 using Luna.IDE.AutoCompletion;
 using Luna.Parsing;
 using Luna.ProjectModel;
 using Moq;
 using NUnit.Framework;
-using Token = CodeHighlighter.Model.Token;
+using Token = CodeHighlighter.Core.Token;
 
 namespace Luna.Tests.IDE.AutoCompletion;
 

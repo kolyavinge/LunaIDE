@@ -149,7 +149,7 @@ public class AutoComplete : NotificationObject, IAutoComplete
         if (SelectedIndex > Items.Count - 1) SelectedIndex = Items.Count - 1;
     }
 
-    public CodeHighlighter.Model.Token? GetCursorToken()
+    public CodeHighlighter.Core.Token? GetCursorToken()
     {
         var token = DataContext.GetTokenOnCursorPosition();
         return token != null && (token.IsIdentificator() || token.IsKeyword() || token.IsOperator()) ? token : null;

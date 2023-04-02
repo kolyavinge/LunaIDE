@@ -1,4 +1,5 @@
 ﻿using CodeHighlighter;
+using CodeHighlighter.Ancillary;
 using CodeHighlighter.Model;
 using DependencyInjection;
 using Luna.IDE.App.Commands;

@@ -1,5 +1,7 @@
 ﻿using CodeHighlighter;
+using CodeHighlighter.Ancillary;
 using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Core;
 using CodeHighlighter.Model;
 using Luna.IDE.Common;
 

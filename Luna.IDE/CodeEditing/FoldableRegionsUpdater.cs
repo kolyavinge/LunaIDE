@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using CodeHighlighter.Model;
+using CodeHighlighter.Ancillary;
+using CodeHighlighter.Core;
 using Luna.Infrastructure;
 
 namespace Luna.IDE.CodeEditing;
@@ -14,14 +15,14 @@ public class FoldableRegionsUpdater : DelayedAction, IFoldableRegionsUpdater
     private readonly ILineFoldsItemsUpdater _lineFoldsItemsUpdater;
     private readonly IFoldableRegions _foldableRegions;
     private readonly ILineFolds _folds;
-    private readonly ITokenCollection _tokens;
+    private readonly ITokens _tokens;
 
     public FoldableRegionsUpdater(
         ILineFoldsItemsUpdater lineFoldsItemsUpdater,
         IFoldableRegions foldableRegions,
         ITimerManager timerManager,
         ILineFolds folds,
-        ITokenCollection tokens)
+        ITokens tokens)
         : base(timerManager)
     {
         _lineFoldsItemsUpdater = lineFoldsItemsUpdater;

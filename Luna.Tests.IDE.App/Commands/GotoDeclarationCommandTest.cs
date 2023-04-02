@@ -1,5 +1,5 @@
 ﻿using System;
-using CodeHighlighter.Model;
+using CodeHighlighter.Core;
 using Luna.CodeElements;
 using Luna.IDE.App.Commands;
 using Luna.IDE.App.Commands.CodeFileEditor;

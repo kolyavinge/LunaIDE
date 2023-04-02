@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodeHighlighter.Model;
+using CodeHighlighter.Core;
 using Luna.IDE.CodeEditing;
 using Moq;
 using NUnit.Framework;
@@ -10,13 +10,13 @@ namespace Luna.Tests.IDE.CodeEditing;
 
 internal class FoldableRegionsTest
 {
-    private Mock<ITokenCollection> _tokens;
+    private Mock<ITokens> _tokens;
     private FoldableRegions _foldableRegions;
 
     [SetUp]
     public void Setup()
     {
-        _tokens = new Mock<ITokenCollection>();
+        _tokens = new Mock<ITokens>();
         for (int i = 0; i < 20; i++)
         {
             _tokens.Setup(x => x.GetTokens(i)).Returns(TokenList.FromEnumerable(Enumerable.Empty<Token>()));

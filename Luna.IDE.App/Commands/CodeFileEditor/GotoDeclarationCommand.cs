@@ -27,7 +27,7 @@ public class GotoDeclarationCommand : Command<ICodeFileEditor>, IGotoDeclaration
     {
         var position = codeFileEditor.GetTokenCursorPosition();
         if (position == null) return;
-        CodeHighlighter.Model.Token token;
+        CodeHighlighter.Core.Token token;
         if (position.NeighbourToken != null)
         {
             token = position.TokenOnPosition.IsIdentificator()

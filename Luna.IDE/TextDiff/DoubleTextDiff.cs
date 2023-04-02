@@ -1,4 +1,5 @@
 ﻿using CodeHighlighter.CodeProvidering;
+using CodeHighlighter.Core;
 using CodeHighlighter.Model;
 using Luna.IDE.Common;
 using Luna.ProjectModel;
@@ -86,7 +87,7 @@ public class DoubleTextDiff : NotificationObject, IDoubleTextDiff
 
     private void SynchronizeHorizontalScrollbars()
     {
-        var strategy = new MaximumHorizontalScrollBarMaximumValueStrategy(new[] { OldDiffCodeTextBox.CodeTextBoxModel, NewDiffCodeTextBox.CodeTextBoxModel });
+        var strategy = new MaximumHorizontalScrollBarMaximumValueStrategy(new[] { OldDiffCodeTextBox.CodeTextBoxModel!, NewDiffCodeTextBox.CodeTextBoxModel! });
         OldDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
         NewDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
         OldDiffCodeTextBox.Viewport.UpdateScrollBarsMaximumValues();

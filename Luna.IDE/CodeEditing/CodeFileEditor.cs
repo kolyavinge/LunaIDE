@@ -1,5 +1,6 @@
 ﻿using CodeHighlighter;
 using CodeHighlighter.Model;
+using CodeHighlighter.Core;
 using Luna.CodeElements;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
@@ -32,7 +33,7 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public ITextEvents TextEvents => CodeTextBoxModel.TextEvents;
 
-    public ITokenCollection Tokens => CodeTextBoxModel.Tokens;
+    public ITokens Tokens => CodeTextBoxModel.Tokens;
 
     public string Header => ProjectItem.Name;
 

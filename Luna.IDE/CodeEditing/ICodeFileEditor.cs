@@ -10,6 +10,8 @@ public interface ICodeFileEditor
 
     string Text { get; set; }
 
+    string SelectedText { get; }
+
     CursorPosition CursorPosition { get; }
 
     IViewport Viewport { get; }
@@ -21,6 +23,8 @@ public interface ICodeFileEditor
     ITokens Tokens { get; }
 
     TokenCursorPosition? GetTokenCursorPosition();
+
+    bool Focus();
 
     void NavigateTo(CodeElement codeElement);
 
@@ -53,4 +57,6 @@ public interface ICodeFileEditor
     void Close();
 
     void Save();
+
+    void InitSearchPanel(string? pattern);
 }

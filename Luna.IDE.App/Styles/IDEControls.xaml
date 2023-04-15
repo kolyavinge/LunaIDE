@@ -93,6 +93,14 @@
         </Style.Resources>
     </Style>
 
+    <Style x:Key="SearchPanelStyle" TargetType="{x:Type highlighter:SearchPanel}">
+        <Style.Resources>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyle}" />
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource PanelButtonStyle}" />
+            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource PanelToggleButtonStyle}" />
+        </Style.Resources>
+    </Style>
+
     <Style x:Key="LineNumberPanelStyle" TargetType="{x:Type highlighter:LineNumberPanel}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LineNumberBrush}" />

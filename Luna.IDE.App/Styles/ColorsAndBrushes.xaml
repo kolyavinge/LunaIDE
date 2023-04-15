@@ -16,7 +16,7 @@
 
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="#252525" />
 
-    <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#505050" />
+    <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#303030" />
 
     <SolidColorBrush x:Key="LineNumberBrush" Color="#808080" />
 

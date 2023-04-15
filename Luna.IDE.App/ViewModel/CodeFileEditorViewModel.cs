@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using Luna.IDE.App.Commands.CodeFileEditor;
-using Luna.IDE.App.Controls;
 using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.AutoCompletion;
@@ -14,13 +13,9 @@ namespace Luna.IDE.App.ViewModel;
 [EditorFor(typeof(CodeFileProjectItem))]
 public class CodeFileEditorViewModel : NotificationObject
 {
-    private IControl? _codeTextBox;
-
     public ICodeFileEditor Model { get; set; }
 
     public IAutoComplete AutoComplete { get; }
-
-    public ICommand CodeTextBoxLoadedCommand { get; }
 
     public ICommand ShowAutoCompleteCommand { get; }
 
@@ -35,9 +30,8 @@ public class CodeFileEditorViewModel : NotificationObject
     {
         Model = codeFileEditor;
         AutoComplete = autoComplete;
-        AutoComplete.Completed += (s, e) => _codeTextBox?.Focus();
+        AutoComplete.Completed += (s, e) => Model.Focus();
         AutoComplete.Init(new AutoCompleteDataContext(Model));
-        CodeTextBoxLoadedCommand = new ActionCommand<IControl>(control => _codeTextBox = control);
         ShowAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = true);
         HideAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = false);
         KeyDownCommand = new ActionCommand<KeyEventArgs>(KeyDown);
@@ -89,6 +83,12 @@ public class CodeFileEditorViewModel : NotificationObject
         else if (!isAutoCompleteVisible && !controlPressed && altPressed && !shiftPressed && key == Key.Down)
         {
             Model.MoveSelectedLinesDown();
+            e.Handled = true;
+        }
+        else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.F)
+        {
+            var selectedText = Model.SelectedText;
+            Model.InitSearchPanel(!String.IsNullOrWhiteSpace(selectedText) ? selectedText : null);
             e.Handled = true;
         }
         // without any modifiers

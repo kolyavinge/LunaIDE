@@ -1,6 +1,7 @@
 ﻿using CodeHighlighter;
-using CodeHighlighter.Model;
+using CodeHighlighter.Common;
 using CodeHighlighter.Core;
+using CodeHighlighter.Model;
 using Luna.CodeElements;
 using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
@@ -23,7 +24,11 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
 
     public ILineFoldingPanelModel LineFoldingPanelModel { get; }
 
+    public ISearchPanelModel SearchPanelModel { get; }
+
     public string Text { get => CodeTextBoxModel.Text; set => CodeTextBoxModel.Text = value; }
+
+    public string SelectedText => CodeTextBoxModel.GetSelectedText();
 
     public CursorPosition CursorPosition => CodeTextBoxModel.CursorPosition;
 
@@ -54,6 +59,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
         CodeTextBoxModel.Text = ProjectItem.GetText();
         LineNumberPanelModel = LineNumberPanelModelFactory.MakeModel(CodeTextBoxModel);
         LineFoldingPanelModel = LineFoldingPanelModelFactory.MakeModel(CodeTextBoxModel);
+        SearchPanelModel = SearchPanelModelFactory.MakeModel(CodeTextBoxModel);
+        SearchPanelModel.HighlightColor = Color.FromHex("9c5500");
         ProjectItem.SetTextGettingStrategy(new EditorTextGettingStrategy(CodeTextBoxModel));
         _foldableRegionsUpdater = foldableRegionsUpdaterFactory.Make(CodeTextBoxModel.Folds, CodeTextBoxModel.Tokens);
         _foldableRegionsUpdater.Request();
@@ -79,6 +86,8 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
     }
 
     public TokenCursorPosition? GetTokenCursorPosition() => CodeTextBoxModel.Tokens.GetTokenOnPosition(CodeTextBoxModel.CursorPosition);
+
+    public bool Focus() => CodeTextBoxModel.Focus();
 
     public void NavigateTo(CodeElement codeElement) => CodeTextBoxModel.GotoLine(codeElement.LineIndex);
 
@@ -120,6 +129,13 @@ public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveabl
     public void Undo() => CodeTextBoxModel.History.Undo();
 
     public void Redo() => CodeTextBoxModel.History.Redo();
+
+    public void InitSearchPanel(string? pattern)
+    {
+        if (pattern != null) SearchPanelModel.Pattern = pattern;
+        SearchPanelModel.FocusPattern();
+        SearchPanelModel.SelectAllPattern();
+    }
 }
 
 class EditorTextGettingStrategy : TextFileProjectItem.ITextGettingStrategy

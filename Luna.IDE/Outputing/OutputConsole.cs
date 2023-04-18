@@ -5,7 +5,7 @@ public interface IOutputConsole
     IOutputArea OutputArea { get; }
 }
 
-public class OutputConsole : IOutputConsole
+internal class OutputConsole : IOutputConsole
 {
     public IOutputArea OutputArea { get; }
 

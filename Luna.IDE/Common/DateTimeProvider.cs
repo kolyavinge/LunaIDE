@@ -5,7 +5,7 @@ public interface IDateTimeProvider
     DateTime GetNowDateTime();
 }
 
-public class DateTimeProvider : IDateTimeProvider
+internal class DateTimeProvider : IDateTimeProvider
 {
     public DateTime GetNowDateTime()
     {

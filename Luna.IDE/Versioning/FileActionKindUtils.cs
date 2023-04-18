@@ -2,7 +2,7 @@
 
 namespace Luna.IDE.Versioning;
 
-public static class FileActionKindUtils
+internal static class FileActionKindUtils
 {
     public static string FileActionKindToString(FileActionKind actionKind)
     {

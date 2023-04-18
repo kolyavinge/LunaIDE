@@ -24,7 +24,7 @@ public class RecentProject
     }
 }
 
-public class RecentProjects : NotificationObject, IRecentProjects
+internal class RecentProjects : NotificationObject, IRecentProjects
 {
     public const int MaxRecentProjectsCount = 5;
 

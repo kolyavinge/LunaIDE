@@ -17,7 +17,7 @@ public interface IDiffCodeTextBox
     void GotoLine(int lineIndex);
 }
 
-public class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
+internal class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
 {
     private ICodeTextBoxModel? _codeTextBoxModel;
 

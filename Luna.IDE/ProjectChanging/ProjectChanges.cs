@@ -8,7 +8,7 @@ using Luna.Utils;
 
 namespace Luna.IDE.ProjectChanging;
 
-public class ProjectChanges : NotificationObject, IProjectChanges
+internal class ProjectChanges : NotificationObject, IProjectChanges
 {
     private readonly IProjectRepository _projectRepository;
     private readonly ICodeEditorSaver _codeEditorSaver;

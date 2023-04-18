@@ -1,6 +1,6 @@
 ﻿namespace Luna.IDE.Configuration;
 
-public class RecentProjectPoco : IEquatable<RecentProjectPoco?>, IConfigStoragePoco
+internal class RecentProjectPoco : IEquatable<RecentProjectPoco?>, IConfigStoragePoco
 {
     public int Id { get; set; }
 

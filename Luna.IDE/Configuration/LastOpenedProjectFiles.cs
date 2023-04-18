@@ -6,13 +6,13 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.Configuration;
 
-public interface ILastOpenedProjectFiles
+internal interface ILastOpenedProjectFiles
 {
     void RestoreLastOpenedFiles(IProject project);
     void SaveOpenedFiles(IProject project);
 }
 
-public class LastOpenedProjectFiles : ILastOpenedProjectFiles
+internal class LastOpenedProjectFiles : ILastOpenedProjectFiles
 {
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly IProjectItemOpenCommand _projectItemOpenCommand;

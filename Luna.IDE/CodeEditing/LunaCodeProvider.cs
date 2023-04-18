@@ -5,12 +5,12 @@ using TokenKind = Luna.Parsing.TokenKind;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ILunaCodeProvider : ICodeProvider, ITokenKindUpdatable
+internal interface ILunaCodeProvider : ICodeProvider, ITokenKindUpdatable
 {
     void UpdateTokenKinds(IEnumerable<UpdatedTokenKind> updatedTokens);
 }
 
-public class LunaCodeProvider : ILunaCodeProvider
+internal class LunaCodeProvider : ILunaCodeProvider
 {
     private readonly ICodeProviderScope _scope;
 
@@ -73,7 +73,7 @@ public class LunaCodeProvider : ILunaCodeProvider
     }
 }
 
-public enum TokenKindExtra : byte
+internal enum TokenKindExtra : byte
 {
     Constant = 254,
     Function = 255

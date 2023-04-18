@@ -39,7 +39,7 @@ public interface ITextDiffEngine
     SingleTextDiffResult GetSingleTextResult(TextDiffResult diffResult);
 }
 
-public class TextDiffEngine : ITextDiffEngine
+internal class TextDiffEngine : ITextDiffEngine
 {
     public async Task<TextDiffResult> GetDiffResultAsync(string oldText, string newText)
     {

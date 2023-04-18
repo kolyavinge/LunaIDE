@@ -4,7 +4,7 @@ using DiffTool.Core;
 
 namespace Luna.IDE.TextDiff;
 
-public interface IDoubleTextDiffGapProcessor
+internal interface IDoubleTextDiffGapProcessor
 {
     void SetLineGaps(
         IReadOnlyList<LineDiff> lineDiffs,
@@ -14,7 +14,7 @@ public interface IDoubleTextDiffGapProcessor
         ILineGapCollection newDiffCodeTextBoxGaps);
 }
 
-public class DoubleTextDiffGapProcessor : IDoubleTextDiffGapProcessor
+internal class DoubleTextDiffGapProcessor : IDoubleTextDiffGapProcessor
 {
     public void SetLineGaps(
         IReadOnlyList<LineDiff> lineDiffs,

@@ -5,12 +5,12 @@ using Luna.Infrastructure;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface IFoldableRegionsUpdater
+internal interface IFoldableRegionsUpdater
 {
     void Request();
 }
 
-public class FoldableRegionsUpdater : DelayedAction, IFoldableRegionsUpdater
+internal class FoldableRegionsUpdater : DelayedAction, IFoldableRegionsUpdater
 {
     private readonly ILineFoldsItemsUpdater _lineFoldsItemsUpdater;
     private readonly IFoldableRegions _foldableRegions;

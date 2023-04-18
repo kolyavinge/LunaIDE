@@ -4,7 +4,7 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
 
-public class CompositeCodeProviderScope : ICodeProviderScope
+internal class CompositeCodeProviderScope : ICodeProviderScope
 {
     private readonly CodeModelScope _scope;
     private readonly IReadOnlyCollection<CodeModel> _codeModels;

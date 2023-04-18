@@ -4,7 +4,7 @@ using Luna.IDE.ProjectExploration;
 
 namespace Luna.IDE.Versioning;
 
-public class ProjectRepository : IProjectRepository
+internal class ProjectRepository : IProjectRepository
 {
     private VersionControl.Core.IVersionControlRepository _versionControlRepository;
     private readonly IVersionControlRepositoryFactory _versionControlRepositoryFactory;

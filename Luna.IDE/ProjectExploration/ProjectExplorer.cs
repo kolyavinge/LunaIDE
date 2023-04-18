@@ -9,7 +9,7 @@ public interface IProjectExplorer
     DirectoryTreeItem? ProjectTreeRoot { get; }
 }
 
-public class ProjectExplorer : NotificationObject, IProjectExplorer
+internal class ProjectExplorer : NotificationObject, IProjectExplorer
 {
     private readonly IProjectLoader _projectLoader;
     private DirectoryTreeItem? _projectTreeRoot;

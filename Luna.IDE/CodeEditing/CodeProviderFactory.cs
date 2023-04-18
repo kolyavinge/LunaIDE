@@ -3,12 +3,12 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ICodeProviderFactory
+internal interface ICodeProviderFactory
 {
     ICodeProvider Make(ProjectItem projectItem);
 }
 
-public class CodeProviderFactory : ICodeProviderFactory
+internal class CodeProviderFactory : ICodeProviderFactory
 {
     public ICodeProvider Make(ProjectItem projectItem)
     {

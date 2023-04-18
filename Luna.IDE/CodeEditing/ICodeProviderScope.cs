@@ -1,5 +1,6 @@
 ﻿namespace Luna.IDE.CodeEditing;
-public interface ICodeProviderScope
+
+internal interface ICodeProviderScope
 {
     bool IsConstant(string name);
 

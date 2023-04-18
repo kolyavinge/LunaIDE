@@ -5,12 +5,12 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ITokenKindsUpdater
+internal interface ITokenKindsUpdater
 {
     void Update(CodeModelScopeIdentificatorsDifferent diff, ILunaCodeProvider codeProvider);
 }
 
-public class TokenKindsUpdater : ITokenKindsUpdater
+internal class TokenKindsUpdater : ITokenKindsUpdater
 {
     public void Update(CodeModelScopeIdentificatorsDifferent diff, ILunaCodeProvider codeProvider)
     {

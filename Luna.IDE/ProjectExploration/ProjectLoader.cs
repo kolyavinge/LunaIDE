@@ -29,7 +29,7 @@ public class ProjectOpenedEventArgs : EventArgs
     }
 }
 
-public class ProjectLoader : IProjectLoader
+internal class ProjectLoader : IProjectLoader
 {
     private readonly IEnvironmentWindowsManager _windowsManager;
     private readonly ICodeModelUpdater _codeModelUpdater;

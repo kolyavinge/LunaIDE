@@ -2,7 +2,7 @@
 
 namespace Luna.IDE.CodeEditing;
 
-public class CodeProviderScope : ICodeProviderScope
+internal class CodeProviderScope : ICodeProviderScope
 {
     private readonly CodeModelScope _scope;
     private readonly CodeFileProjectItem _codeFile;

@@ -9,7 +9,7 @@ public class CommitedDirectoryTreeItem : TreeItem
 {
     private readonly CommitedDirectory _commitedDirectory;
 
-    public CommitedDirectoryTreeItem(CommitedDirectoryTreeItem? parent, CommitedDirectory commitedDirectory)
+    internal CommitedDirectoryTreeItem(CommitedDirectoryTreeItem? parent, CommitedDirectory commitedDirectory)
         : base(parent, commitedDirectory.Name, "directory.png")
     {
         _commitedDirectory = commitedDirectory;

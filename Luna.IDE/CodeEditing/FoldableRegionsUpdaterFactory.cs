@@ -4,12 +4,12 @@ using Luna.Infrastructure;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface IFoldableRegionsUpdaterFactory
+internal interface IFoldableRegionsUpdaterFactory
 {
     IFoldableRegionsUpdater Make(ILineFolds folds, ITokens tokens);
 }
 
-public class FoldableRegionsUpdaterFactory : IFoldableRegionsUpdaterFactory
+internal class FoldableRegionsUpdaterFactory : IFoldableRegionsUpdaterFactory
 {
     private readonly ILineFoldsItemsUpdater _lineFoldsItemsUpdater;
     private readonly IFoldableRegions _foldableRegions;

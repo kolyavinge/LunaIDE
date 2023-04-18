@@ -19,7 +19,7 @@ public interface IEnvironmentWindowsManager
     void CloseAllWindows();
 }
 
-public class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindowsManager
+internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindowsManager
 {
     private readonly ObservableCollection<EnvironmentWindow> _windows = new();
     private EnvironmentWindow? _selectedWindow;

@@ -4,13 +4,13 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.TextDiff;
 
-public interface ITextDiffCodeProviderFactory
+internal interface ITextDiffCodeProviderFactory
 {
     ICodeProvider Make(string fileExtension, string oldFileText, string newFileText);
     ICodeProvider Make(string oldFileText, TextFileProjectItem newFile);
 }
 
-public class TextDiffCodeProviderFactory : ITextDiffCodeProviderFactory
+internal class TextDiffCodeProviderFactory : ITextDiffCodeProviderFactory
 {
     private readonly ISingleFileCodeModelBuilder _codeModelBuilder;
 

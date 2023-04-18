@@ -4,7 +4,7 @@ using Luna.IDE.Versioning;
 
 namespace Luna.IDE.ProjectChanging;
 
-public class VersionedFileTreeItem : TreeItem
+internal class VersionedFileTreeItem : TreeItem
 {
     public VersionedFile VersionedFile { get; }
 

@@ -6,13 +6,13 @@ using DiffTool.Visualization;
 
 namespace Luna.IDE.TextDiff;
 
-public interface ILinesDecorationProcessor
+internal interface ILinesDecorationProcessor
 {
     void SetLineColors(IReadOnlyList<LineDiff> linesDiff, ILinesDecorationCollection oldLinesDecoration, ILinesDecorationCollection newLinesDecoration);
     void SetLineColors(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILinesDecorationCollection linesDecoration);
 }
 
-public class LinesDecorationProcessor : ILinesDecorationProcessor
+internal class LinesDecorationProcessor : ILinesDecorationProcessor
 {
     public static readonly Color BrushAdd = Color.FromHex("325a28");
     public static readonly Color BrushRemove = Color.FromHex("5a2828");

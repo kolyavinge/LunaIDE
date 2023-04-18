@@ -5,7 +5,7 @@ using Luna.Parsing;
 
 namespace Luna.IDE.CodeEditing;
 
-public readonly struct FoldableRegion
+internal readonly struct FoldableRegion
 {
     public readonly int LineIndex;
     public readonly int LinesCount;
@@ -17,12 +17,12 @@ public readonly struct FoldableRegion
     }
 }
 
-public interface IFoldableRegions
+internal interface IFoldableRegions
 {
     IEnumerable<FoldableRegion> GetRegions(ITokens tokens);
 }
 
-public class FoldableRegions : IFoldableRegions
+internal class FoldableRegions : IFoldableRegions
 {
     private static readonly ISet<byte> _foldableTokenKinds = new HashSet<byte>
     {

@@ -15,7 +15,7 @@ public interface IOutputArea : IRuntimeOutput, ICodeProvider
     void Clear();
 }
 
-public class OutputArea : IOutputArea
+internal class OutputArea : IOutputArea
 {
     private int _currentLine;
     private readonly List<Token> _tokens = new();

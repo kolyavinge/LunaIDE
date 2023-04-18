@@ -1,6 +1,6 @@
 ﻿namespace Luna.IDE.Versioning;
 
-public interface IVersionControlRepositoryFactory
+internal interface IVersionControlRepositoryFactory
 {
     bool IsRepositoryExist(string projectPath);
 
@@ -9,7 +9,7 @@ public interface IVersionControlRepositoryFactory
     VersionControl.Core.IVersionControlRepository GetDummyRepository();
 }
 
-public class VersionControlRepositoryFactory : IVersionControlRepositoryFactory
+internal class VersionControlRepositoryFactory : IVersionControlRepositoryFactory
 {
     public bool IsRepositoryExist(string projectPath)
     {

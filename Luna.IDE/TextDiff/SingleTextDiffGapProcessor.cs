@@ -5,12 +5,12 @@ using DiffTool.Visualization;
 
 namespace Luna.IDE.TextDiff;
 
-public interface ISingleTextDiffGapProcessor
+internal interface ISingleTextDiffGapProcessor
 {
     void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineGapCollection oldGaps, ILineGapCollection newGaps);
 }
 
-public class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
+internal class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
 {
     public void SetLineGaps(IReadOnlyList<SingleTextVisualizerLineDiff> linesDiff, ILineGapCollection oldGaps, ILineGapCollection newGaps)
     {

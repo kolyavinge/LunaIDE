@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Luna.IDE.Configuration;
 
-public class LastOpenedProjectFilesPoco : IEquatable<LastOpenedProjectFilesPoco?>, IConfigStoragePoco
+internal class LastOpenedProjectFilesPoco : IEquatable<LastOpenedProjectFilesPoco?>, IConfigStoragePoco
 {
     public string ProjectFullPath { get; set; } = "";
 

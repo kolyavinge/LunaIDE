@@ -4,13 +4,13 @@ using SimpleDB;
 
 namespace Luna.IDE.Configuration;
 
-public interface IConfigStorage
+internal interface IConfigStorage
 {
     TConfigStoragePoco? GetById<TConfigStoragePoco>(object id) where TConfigStoragePoco : IConfigStoragePoco;
     void Save<TConfigStoragePoco>(TConfigStoragePoco poco) where TConfigStoragePoco : IConfigStoragePoco;
 }
 
-public class ConfigStorage : IConfigStorage
+internal class ConfigStorage : IConfigStorage
 {
     private readonly IDBEngine _engine;
 

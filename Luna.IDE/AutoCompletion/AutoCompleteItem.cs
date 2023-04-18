@@ -13,7 +13,7 @@ public interface IAutoCompleteItem : IComparable<IAutoCompleteItem>
     string AdditionalInfo { get; }
 }
 
-public class AutoCompleteItem : IAutoCompleteItem
+internal class AutoCompleteItem : IAutoCompleteItem
 {
     public string? ImageName { get; }
 
@@ -35,7 +35,7 @@ public class AutoCompleteItem : IAutoCompleteItem
     }
 }
 
-public class KeywordAutoCompleteItem : AutoCompleteItem
+internal class KeywordAutoCompleteItem : AutoCompleteItem
 {
     public KeywordAutoCompleteItem(string keyword)
       : base("keyword.png", keyword, "keyword")
@@ -43,7 +43,7 @@ public class KeywordAutoCompleteItem : AutoCompleteItem
     }
 }
 
-public class CodeElementAutoCompleteItem : AutoCompleteItem
+internal class CodeElementAutoCompleteItem : AutoCompleteItem
 {
     public CodeElement CodeElement { get; }
 
@@ -60,7 +60,7 @@ public class CodeElementAutoCompleteItem : AutoCompleteItem
     }
 }
 
-public class EmbeddedFunctionAutoCompleteItem : AutoCompleteItem
+internal class EmbeddedFunctionAutoCompleteItem : AutoCompleteItem
 {
     public EmbeddedFunctionAutoCompleteItem(EmbeddedFunctionDeclaration func)
       : base("func.png", func.Name, $"({string.Join(" ", func.Arguments)})")

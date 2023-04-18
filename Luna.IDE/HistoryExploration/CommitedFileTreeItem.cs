@@ -4,7 +4,7 @@ using Luna.IDE.Versioning;
 
 namespace Luna.IDE.HistoryExploration;
 
-public class CommitedFileTreeItem : TreeItem
+internal class CommitedFileTreeItem : TreeItem
 {
     public CommitedFile CommitedFile { get; }
 

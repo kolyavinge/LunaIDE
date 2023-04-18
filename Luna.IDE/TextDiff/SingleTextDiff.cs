@@ -7,7 +7,7 @@ using Luna.Utils;
 
 namespace Luna.IDE.TextDiff;
 
-public class SingleTextDiff : NotificationObject, ISingleTextDiff
+internal class SingleTextDiff : NotificationObject, ISingleTextDiff
 {
     private readonly ITextDiffEngine _textDiffEngine;
     private readonly ITextDiffCodeProviderFactory _textDiffCodeProviderFactory;

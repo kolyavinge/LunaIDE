@@ -7,12 +7,12 @@ using FileActionKind = VersionControl.Core.FileActionKind;
 
 namespace Luna.IDE.CodeEditing;
 
-public interface ICodeEditorUndoChangesLogic
+internal interface ICodeEditorUndoChangesLogic
 {
     void UndoTextChanges(IReadOnlyCollection<VersionedFile> versionedFiles);
 }
 
-public class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
+internal class CodeEditorUndoChangesLogic : ICodeEditorUndoChangesLogic
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
     private readonly IEnvironmentWindowsManager _environmentWindowsManager;

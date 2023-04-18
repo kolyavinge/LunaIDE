@@ -9,7 +9,7 @@ using Luna.ProjectModel;
 namespace Luna.IDE.CodeEditing;
 
 [EditorFor(typeof(CodeFileProjectItem))]
-public class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveableEnvironmentWindow, ICloseableEnvironmentWindow
+internal class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISaveableEnvironmentWindow, ICloseableEnvironmentWindow
 {
     private readonly ICodeModelUpdater _codeModelUpdater;
     private readonly ITokenKindsUpdater _tokenKindsUpdater;

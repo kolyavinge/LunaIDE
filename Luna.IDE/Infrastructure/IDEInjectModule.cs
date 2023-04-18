@@ -40,6 +40,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<ILastOpenedProjectFiles, LastOpenedProjectFiles>().ToSingleton();
         provider.Bind<IRecentProjects, RecentProjects>().ToSingleton();
         provider.Bind<IAutoComplete, AutoComplete>();
+        provider.Bind<IAutoCompleteDataContextFactory, AutoCompleteDataContextFactory>();
         provider.Bind<IProjectChanges, ProjectChanges>().ToSingleton();
         provider.Bind<ILinesDecorationProcessor, LinesDecorationProcessor>();
         provider.Bind<ISingleTextDiffGapProcessor, SingleTextDiffGapProcessor>();

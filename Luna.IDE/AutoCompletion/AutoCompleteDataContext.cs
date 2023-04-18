@@ -15,30 +15,30 @@ public interface IAutoCompleteDataContext
     void ReplaceText(CursorPosition start, CursorPosition end, string text);
 }
 
-public class AutoCompleteDataContext : IAutoCompleteDataContext
+internal class AutoCompleteDataContext : IAutoCompleteDataContext
 {
-    private readonly ICodeFileEditor _model;
+    private readonly ICodeFileEditor _editor;
 
     public event EventHandler? TextChanged;
-    public CodeModel CodeModel => _model.ProjectItem.CodeModel;
-    public CursorPosition CursorPosition => _model.CursorPosition;
-    public double TextLetterWidth => _model.TextMeasures.LetterWidth;
-    public double TextLineHeight => _model.TextMeasures.LineHeight;
+    public CodeModel CodeModel => _editor.ProjectItem.CodeModel;
+    public CursorPosition CursorPosition => _editor.CursorPosition;
+    public double TextLetterWidth => _editor.TextMeasures.LetterWidth;
+    public double TextLineHeight => _editor.TextMeasures.LineHeight;
 
-    public AutoCompleteDataContext(ICodeFileEditor model)
+    public AutoCompleteDataContext(ICodeFileEditor editor)
     {
-        _model = model;
-        _model.TextEvents.TextChanged += (s, e) => TextChanged?.Invoke(s, e);
+        _editor = editor;
+        _editor.TextEvents.TextChanged += (s, e) => TextChanged?.Invoke(s, e);
     }
 
     public Token? GetTokenOnCursorPosition()
     {
-        var position = _model.Tokens.GetTokenOnPosition(CursorPosition);
+        var position = _editor.Tokens.GetTokenOnPosition(CursorPosition);
         return position?.TokenOnPosition;
     }
 
     public void ReplaceText(CursorPosition start, CursorPosition end, string text)
     {
-        _model.ReplaceText(start, end, text);
+        _editor.ReplaceText(start, end, text);
     }
 }

@@ -26,12 +26,15 @@ public class CodeFileEditorViewModel : NotificationObject
     [Inject]
     public IGotoDeclarationCommand? GotoDeclarationCommand { get; set; }
 
-    public CodeFileEditorViewModel(ICodeFileEditor codeFileEditor, IAutoComplete autoComplete)
+    public CodeFileEditorViewModel(
+        ICodeFileEditor codeFileEditor,
+        IAutoComplete autoComplete,
+        IAutoCompleteDataContextFactory autoCompleteDataContextFactory)
     {
         Model = codeFileEditor;
         AutoComplete = autoComplete;
         AutoComplete.Completed += (s, e) => Model.Focus();
-        AutoComplete.Init(new AutoCompleteDataContext(Model));
+        AutoComplete.Init(autoCompleteDataContextFactory.Make(Model));
         ShowAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = true);
         HideAutoCompleteCommand = new ActionCommand(() => AutoComplete.IsVisible = false);
         KeyDownCommand = new ActionCommand<KeyEventArgs>(KeyDown);

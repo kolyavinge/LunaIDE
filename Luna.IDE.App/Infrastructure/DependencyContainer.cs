@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using Luna.IDE.Infrastructure;
 
 namespace Luna.IDE.App.Infrastructure;
 
@@ -12,6 +13,7 @@ public static class DependencyContainer
         _container = DependencyInjection.DependencyContainerFactory.MakeLiteContainer();
         _container.InitFromModules(new RuntimeInjectModule());
         _container.InitFromModules(new IDEInjectModule());
+        _container.InitFromModules(new AppInjectModule());
     }
 
     public static TDependency Resolve<TDependency>()

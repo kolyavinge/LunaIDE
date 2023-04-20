@@ -28,8 +28,6 @@ internal class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISavea
 
     public string Text { get => CodeTextBoxModel.Text; set => CodeTextBoxModel.Text = value; }
 
-    public string SelectedText => CodeTextBoxModel.GetSelectedText();
-
     public CursorPosition CursorPosition => CodeTextBoxModel.CursorPosition;
 
     public IViewport Viewport => CodeTextBoxModel.Viewport;
@@ -130,12 +128,7 @@ internal class CodeFileEditor : ICodeFileEditor, IEnvironmentWindowModel, ISavea
 
     public void Redo() => CodeTextBoxModel.History.Redo();
 
-    public void InitSearchPanel(string? pattern)
-    {
-        if (pattern != null) SearchPanelModel.Pattern = pattern;
-        SearchPanelModel.FocusPattern();
-        SearchPanelModel.SelectAllPattern();
-    }
+    public void ActivateSearchPattern() => SearchPanelModel.ActivatePattern();
 }
 
 class EditorTextGettingStrategy : TextFileProjectItem.ITextGettingStrategy

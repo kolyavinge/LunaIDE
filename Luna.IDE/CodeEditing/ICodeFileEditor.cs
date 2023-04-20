@@ -10,8 +10,6 @@ public interface ICodeFileEditor
 
     string Text { get; set; }
 
-    string SelectedText { get; }
-
     CursorPosition CursorPosition { get; }
 
     IViewport Viewport { get; }
@@ -58,5 +56,5 @@ public interface ICodeFileEditor
 
     void Save();
 
-    void InitSearchPanel(string? pattern);
+    void ActivateSearchPattern();
 }

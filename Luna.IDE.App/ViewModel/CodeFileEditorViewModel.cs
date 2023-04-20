@@ -90,8 +90,7 @@ public class CodeFileEditorViewModel : NotificationObject
         }
         else if (!isAutoCompleteVisible && controlPressed && !altPressed && !shiftPressed && key == Key.F)
         {
-            var selectedText = Model.SelectedText;
-            Model.InitSearchPanel(!String.IsNullOrWhiteSpace(selectedText) ? selectedText : null);
+            Model.ActivateSearchPattern();
             e.Handled = true;
         }
         // without any modifiers

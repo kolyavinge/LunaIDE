@@ -18,8 +18,8 @@ internal class DoubleTextDiffTest
     private Mock<ITextDiffCodeProviderFactory> _textDiffCodeProviderFactory;
     private Mock<IDiffCodeTextBox> _oldDiffCodeTextBox;
     private Mock<IDiffCodeTextBox> _newDiffCodeTextBox;
-    private Mock<ILineNumberPanelModel> _oldLineNumberPanel;
-    private Mock<ILineNumberPanelModel> _newLineNumberPanel;
+    private Mock<ILineNumberPanel> _oldLineNumberPanel;
+    private Mock<ILineNumberPanel> _newLineNumberPanel;
     private Mock<IViewport> _viewport;
     private Mock<ILinesDecorationProcessor> _linesDecorationProcessor;
     private Mock<IDoubleTextDiffGapProcessor> _gapProcessor;
@@ -41,8 +41,8 @@ internal class DoubleTextDiffTest
         _oldDiffCodeTextBox.SetupGet(x => x.Viewport).Returns(_viewport.Object);
         _newDiffCodeTextBox.SetupGet(x => x.Viewport).Returns(_viewport.Object);
 
-        _oldLineNumberPanel = new Mock<ILineNumberPanelModel>();
-        _newLineNumberPanel = new Mock<ILineNumberPanelModel>();
+        _oldLineNumberPanel = new Mock<ILineNumberPanel>();
+        _newLineNumberPanel = new Mock<ILineNumberPanel>();
         _oldLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
         _newLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
 

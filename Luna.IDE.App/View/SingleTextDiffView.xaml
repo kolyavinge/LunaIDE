@@ -31,7 +31,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <codehighlighter:LineNumberPanel
+            <codehighlighter:LineNumberPanelView
                 Grid.Column="0"
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}" 
@@ -41,7 +41,7 @@
                 Visibility="{Binding Model.OldTextLinesCount, Converter={StaticResource ZeroToVisibilityConverter}}"
                 MinWidth="40" />
 
-            <codehighlighter:LineNumberPanel
+            <codehighlighter:LineNumberPanelView
                 Grid.Column="1"
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}" 
@@ -50,11 +50,11 @@
                 TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
                 MinWidth="40" />
 
-            <codehighlighter:CodeTextBox
+            <codehighlighter:CodeTextBoxView
                 Grid.Column="2"
                 x:Name="codeTextBox"
                 Margin="12,0,0,0"
-                Model="{Binding Model.DiffCodeTextBox.CodeTextBoxModel}"
+                Model="{Binding Model.DiffCodeTextBox.CodeTextBox}"
                 Style="{StaticResource CodeEditorStyle}" />
         </Grid>
 

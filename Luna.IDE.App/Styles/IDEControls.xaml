@@ -77,7 +77,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="OutputAreaStyle" TargetType="{x:Type highlighter:CodeTextBox}">
+    <Style x:Key="OutputAreaStyle" TargetType="{x:Type highlighter:CodeTextBoxView}">
         <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
@@ -93,7 +93,7 @@
         </Style.Resources>
     </Style>
 
-    <Style x:Key="SearchPanelStyle" TargetType="{x:Type highlighter:SearchPanel}">
+    <Style x:Key="SearchPanelStyle" TargetType="{x:Type highlighter:SearchPanelView}">
         <Style.Resources>
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyle}" />
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource PanelButtonStyle}" />
@@ -101,19 +101,19 @@
         </Style.Resources>
     </Style>
 
-    <Style x:Key="LineNumberPanelStyle" TargetType="{x:Type highlighter:LineNumberPanel}">
+    <Style x:Key="LineNumberPanelStyle" TargetType="{x:Type highlighter:LineNumberPanelView}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LineNumberBrush}" />
         <Setter Property="FontFamily" Value="Consolas" />
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style x:Key="LineFoldingPanelStyle" TargetType="{x:Type highlighter:LineFoldingPanel}">
+    <Style x:Key="LineFoldingPanelStyle" TargetType="{x:Type highlighter:LineFoldingPanelView}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LineFoldBrush}" />
     </Style>
 
-    <Style x:Key="CodeEditorStyle" TargetType="{x:Type highlighter:CodeTextBox}">
+    <Style x:Key="CodeEditorStyle" TargetType="{x:Type highlighter:CodeTextBoxView}">
         <Setter Property="SelectionBrush" Value="{StaticResource MainSelectionBrush}" />
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />

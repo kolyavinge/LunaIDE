@@ -9,7 +9,7 @@ namespace Luna.IDE.TextDiff;
 
 public interface IDiffCodeTextBox
 {
-    ICodeTextBoxModel? CodeTextBoxModel { get; }
+    ICodeTextBox? CodeTextBox { get; }
     ILinesDecorationCollection LinesDecoration { get; }
     ILineGapCollection Gaps { get; }
     IViewport Viewport { get; }
@@ -19,30 +19,30 @@ public interface IDiffCodeTextBox
 
 internal class DiffCodeTextBox : NotificationObject, IDiffCodeTextBox
 {
-    private ICodeTextBoxModel? _codeTextBoxModel;
+    private ICodeTextBox? _codeTextBox;
 
-    public ICodeTextBoxModel? CodeTextBoxModel
+    public ICodeTextBox? CodeTextBox
     {
-        get => _codeTextBoxModel;
-        private set { _codeTextBoxModel = value; RaisePropertyChanged(() => CodeTextBoxModel!); }
+        get => _codeTextBox;
+        private set { _codeTextBox = value; RaisePropertyChanged(() => CodeTextBox!); }
     }
 
-    public ILinesDecorationCollection LinesDecoration => CodeTextBoxModel!.LinesDecoration;
+    public ILinesDecorationCollection LinesDecoration => CodeTextBox!.LinesDecoration;
 
-    public ILineGapCollection Gaps => CodeTextBoxModel!.Gaps;
+    public ILineGapCollection Gaps => CodeTextBox!.Gaps;
 
-    public IViewport Viewport => CodeTextBoxModel!.Viewport;
+    public IViewport Viewport => CodeTextBox!.Viewport;
 
     public void Init(ICodeProvider codeProvider, string text)
     {
-        CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(codeProvider, new() { HighlighteredBrackets = "()" });
-        CodeTextBoxModel.IsReadOnly = false;
-        CodeTextBoxModel.Text = text;
-        CodeTextBoxModel.IsReadOnly = true;
+        CodeTextBox = CodeTextBoxFactory.MakeModel(codeProvider, new() { HighlighteredBrackets = "()" });
+        CodeTextBox.IsReadOnly = false;
+        CodeTextBox.Text = text;
+        CodeTextBox.IsReadOnly = true;
     }
 
     public void GotoLine(int lineIndex)
     {
-        CodeTextBoxModel!.GotoLine(lineIndex);
+        CodeTextBox!.GotoLine(lineIndex);
     }
 }

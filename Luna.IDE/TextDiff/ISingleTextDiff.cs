@@ -7,9 +7,9 @@ public interface ISingleTextDiff
 {
     IDiffCodeTextBox DiffCodeTextBox { get; }
 
-    ILineNumberPanelModel OldLineNumberPanel { get; }
+    ILineNumberPanel OldLineNumberPanel { get; }
 
-    ILineNumberPanelModel NewLineNumberPanel { get; }
+    ILineNumberPanel NewLineNumberPanel { get; }
 
     int OldTextLinesCount { get; }
 

@@ -41,18 +41,18 @@
                 <ColumnDefinition Width="22" />
             </Grid.ColumnDefinitions>
 
-            <highlighter:LineNumberPanel
+            <highlighter:LineNumberPanelView
                 Grid.Column="0"
-                Model="{Binding Model.LineNumberPanelModel}"
+                Model="{Binding Model.LineNumberPanel}"
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
                 TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
                 TextLineHeight="{Binding TextLineHeight, ElementName=codeTextBox}"
                 MinWidth="40" />
 
-            <highlighter:LineFoldingPanel
+            <highlighter:LineFoldingPanelView
                 Grid.Column="1"
-                Model="{Binding Model.LineFoldingPanelModel}"
+                Model="{Binding Model.LineFoldingPanel}"
                 Style="{StaticResource LineFoldingPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=codeTextBox, Mode=TwoWay}"
                 TextLinesCount="{Binding TextLinesCount, ElementName=codeTextBox}"
@@ -62,9 +62,9 @@
             <Grid
                 Grid.Column="2"
                 Margin="4,0,0,0">
-                <highlighter:CodeTextBox
+                <highlighter:CodeTextBoxView
                     x:Name="codeTextBox"
-                    Model="{Binding Model.CodeTextBoxModel}"
+                    Model="{Binding Model.CodeTextBox}"
                     Style="{StaticResource CodeEditorStyle}"
                     Tag="{Binding Model}">
                     <i:Interaction.Triggers>
@@ -72,10 +72,10 @@
                             <i:InvokeCommandAction Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <highlighter:CodeTextBox.ContextMenu>
+                    <highlighter:CodeTextBoxView.ContextMenu>
                         <view:CodeFileEditorContextMenuView CodeFileEditor="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" />
-                    </highlighter:CodeTextBox.ContextMenu>
-                </highlighter:CodeTextBox>
+                    </highlighter:CodeTextBoxView.ContextMenu>
+                </highlighter:CodeTextBoxView>
 
                 <view:AutoCompleteView
                     x:Name="autoComplete"

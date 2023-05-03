@@ -20,31 +20,31 @@ internal class OutputArea : IOutputArea
     private int _currentLine;
     private readonly List<Token> _tokens = new();
 
-    public ICodeTextBoxModel CodeTextBoxModel { get; }
+    public ICodeTextBox CodeTextBox { get; }
 
     public OutputArea()
     {
-        CodeTextBoxModel = CodeTextBoxModelFactory.MakeModel(this, new() { IsReadOnly = true });
+        CodeTextBox = CodeTextBoxFactory.MakeModel(this, new() { IsReadOnly = true });
         RuntimeEnvironment.StandartOutput = this;
     }
 
     public void Clear()
     {
-        CodeTextBoxModel.IsReadOnly = false;
+        CodeTextBox.IsReadOnly = false;
         _currentLine = 0;
-        CodeTextBoxModel.Text = "";
+        CodeTextBox.Text = "";
         _tokens.Clear();
-        CodeTextBoxModel.IsReadOnly = true;
+        CodeTextBox.IsReadOnly = true;
     }
 
     public void SendMessage(OutputMessage message)
     {
-        CodeTextBoxModel.IsReadOnly = false;
+        CodeTextBox.IsReadOnly = false;
         _tokens.AddRange(message.Items.Select(item => new Token(item.Text, _currentLine, item.ColumnIndex, (byte)item.Kind)).ToList());
         _currentLine++;
-        CodeTextBoxModel.MoveCursorTextEnd();
-        CodeTextBoxModel.InsertText(message.Text + Environment.NewLine);
-        CodeTextBoxModel.IsReadOnly = true;
+        CodeTextBox.MoveCursorTextEnd();
+        CodeTextBox.InsertText(message.Text + Environment.NewLine);
+        CodeTextBox.IsReadOnly = true;
     }
 
     public IEnumerable<Token> GetTokens(ITextIterator textIterator)

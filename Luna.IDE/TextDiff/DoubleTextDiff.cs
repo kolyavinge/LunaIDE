@@ -19,9 +19,9 @@ internal class DoubleTextDiff : NotificationObject, IDoubleTextDiff
 
     public IDiffCodeTextBox NewDiffCodeTextBox { get; }
 
-    public ILineNumberPanelModel OldLineNumberPanel { get; }
+    public ILineNumberPanel OldLineNumberPanel { get; }
 
-    public ILineNumberPanelModel NewLineNumberPanel { get; }
+    public ILineNumberPanel NewLineNumberPanel { get; }
 
     public int OldTextLinesCount
     {
@@ -39,8 +39,8 @@ internal class DoubleTextDiff : NotificationObject, IDoubleTextDiff
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox oldDiffCodeTextBox,
         IDiffCodeTextBox newDiffCodeTextBox,
-        ILineNumberPanelModel oldLineNumberPanel,
-        ILineNumberPanelModel newLineNumberPanel,
+        ILineNumberPanel oldLineNumberPanel,
+        ILineNumberPanel newLineNumberPanel,
         ILinesDecorationProcessor linesDecorationProcessor,
         IDoubleTextDiffGapProcessor gapProcessor)
     {
@@ -87,7 +87,7 @@ internal class DoubleTextDiff : NotificationObject, IDoubleTextDiff
 
     private void SynchronizeHorizontalScrollbars()
     {
-        var strategy = new MaximumHorizontalScrollBarMaximumValueStrategy(new[] { OldDiffCodeTextBox.CodeTextBoxModel!, NewDiffCodeTextBox.CodeTextBoxModel! });
+        var strategy = new MaximumHorizontalScrollBarMaximumValueStrategy(new[] { OldDiffCodeTextBox.CodeTextBox!, NewDiffCodeTextBox.CodeTextBox! });
         OldDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
         NewDiffCodeTextBox.Viewport.SetHorizontalScrollBarMaximumValueStrategy(strategy);
         OldDiffCodeTextBox.Viewport.UpdateScrollBarsMaximumValues();

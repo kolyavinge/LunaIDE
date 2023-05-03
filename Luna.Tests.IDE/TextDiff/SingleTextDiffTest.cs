@@ -21,8 +21,8 @@ internal class SingleTextDiffTest
     private Mock<ISingleTextDiffGapProcessor> _lineNumberProcessor;
     private Mock<ICodeProvider> _codeProvider;
     private Mock<IDiffCodeTextBox> _diffCodeTextBox;
-    private Mock<ILineNumberPanelModel> _oldLineNumberPanel;
-    private Mock<ILineNumberPanelModel> _newLineNumberPanel;
+    private Mock<ILineNumberPanel> _oldLineNumberPanel;
+    private Mock<ILineNumberPanel> _newLineNumberPanel;
     private Mock<IFileSystem> _fileSystem;
     private List<SingleTextVisualizerLineDiff> _linesDiff;
     private SingleTextDiffResult _diffResult;
@@ -37,8 +37,8 @@ internal class SingleTextDiffTest
         _lineNumberProcessor = new Mock<ISingleTextDiffGapProcessor>();
         _codeProvider = new Mock<ICodeProvider>();
         _diffCodeTextBox = new Mock<IDiffCodeTextBox>();
-        _oldLineNumberPanel = new Mock<ILineNumberPanelModel>();
-        _newLineNumberPanel = new Mock<ILineNumberPanelModel>();
+        _oldLineNumberPanel = new Mock<ILineNumberPanel>();
+        _newLineNumberPanel = new Mock<ILineNumberPanel>();
         _oldLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
         _newLineNumberPanel.SetupGet(x => x.Gaps).Returns(new Mock<ILineGapCollection>().Object);
         _fileSystem = new Mock<IFileSystem>();

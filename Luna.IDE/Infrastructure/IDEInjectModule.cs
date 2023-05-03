@@ -32,7 +32,7 @@ public class IDEInjectModule : InjectModule
         provider.Bind<IFoldableRegions, FoldableRegions>().ToSingleton();
         provider.Bind<ITokenKindsUpdater, TokenKindsUpdater>().ToSingleton();
         provider.Bind<IFoldableRegionsUpdaterFactory, FoldableRegionsUpdaterFactory>().ToSingleton();
-        provider.Bind<ILineNumberPanelModel>().ToMethod(_ => LineNumberPanelModelFactory.MakeModel());
+        provider.Bind<ILineNumberPanel>().ToMethod(_ => LineNumberPanelFactory.MakeModel());
         provider.Bind<IProjectLoader, ProjectLoader>().ToSingleton();
         provider.Bind<ISelectedProject>().ToMethod(provider => provider.Resolve<IProjectLoader>());
         provider.Bind<IProjectExplorer, ProjectExplorer>().ToSingleton();

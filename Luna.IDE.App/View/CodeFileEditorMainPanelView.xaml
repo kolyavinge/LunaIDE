@@ -54,8 +54,8 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <codehighlighter:SearchPanel
-                Model="{Binding CodeFileEditor.SearchPanelModel, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+            <codehighlighter:SearchPanelView
+                Model="{Binding CodeFileEditor.SearchPanel, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                 Style="{StaticResource SearchPanelStyle}"
                 Width="320" />
         </StackPanel>

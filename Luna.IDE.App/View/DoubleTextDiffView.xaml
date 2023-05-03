@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <codehighlighter:LineNumberPanel
+            <codehighlighter:LineNumberPanelView
                 Grid.Row="0"
                 Grid.Column="0"
                 Style="{StaticResource LineNumberPanelStyle}"
@@ -38,12 +38,12 @@
                 TextLineHeight="{Binding TextLineHeight, ElementName=oldCodeTextBox}"
                 MinWidth="40" />
 
-            <codehighlighter:CodeTextBox
+            <codehighlighter:CodeTextBoxView
                 Grid.Row="0"
                 Grid.Column="1"
                 x:Name="oldCodeTextBox"
                 Margin="12,0,0,0"
-                Model="{Binding Model.OldDiffCodeTextBox.CodeTextBoxModel}"
+                Model="{Binding Model.OldDiffCodeTextBox.CodeTextBox}"
                 Style="{StaticResource CodeEditorStyle}" />
 
             <controls:ScrollBarExt
@@ -71,7 +71,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <codehighlighter:LineNumberPanel
+            <codehighlighter:LineNumberPanelView
                 Grid.Column="0"
                 Style="{StaticResource LineNumberPanelStyle}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=newCodeTextBox, Mode=TwoWay}"
@@ -80,11 +80,11 @@
                 TextLineHeight="{Binding TextLineHeight, ElementName=newCodeTextBox}"
                 MinWidth="40" />
 
-            <codehighlighter:CodeTextBox
+            <codehighlighter:CodeTextBoxView
                 Grid.Column="1"
                 x:Name="newCodeTextBox"
                 Margin="12,0,0,0"
-                Model="{Binding Model.NewDiffCodeTextBox.CodeTextBoxModel}"
+                Model="{Binding Model.NewDiffCodeTextBox.CodeTextBox}"
                 VerticalScrollBarValue="{Binding VerticalScrollBarValue, ElementName=oldCodeTextBox, Mode=TwoWay}"
                 HorizontalScrollBarValue="{Binding HorizontalScrollBarValue, ElementName=oldCodeTextBox, Mode=TwoWay}"
                 Style="{StaticResource CodeEditorStyle}" />

@@ -9,9 +9,9 @@ public interface IDoubleTextDiff
 
     IDiffCodeTextBox NewDiffCodeTextBox { get; }
 
-    ILineNumberPanelModel OldLineNumberPanel { get; }
+    ILineNumberPanel OldLineNumberPanel { get; }
 
-    ILineNumberPanelModel NewLineNumberPanel { get; }
+    ILineNumberPanel NewLineNumberPanel { get; }
 
     void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile);
 }

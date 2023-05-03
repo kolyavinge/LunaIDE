@@ -18,9 +18,9 @@ internal class SingleTextDiff : NotificationObject, ISingleTextDiff
 
     public IDiffCodeTextBox DiffCodeTextBox { get; }
 
-    public ILineNumberPanelModel OldLineNumberPanel { get; }
+    public ILineNumberPanel OldLineNumberPanel { get; }
 
-    public ILineNumberPanelModel NewLineNumberPanel { get; }
+    public ILineNumberPanel NewLineNumberPanel { get; }
 
     public int OldTextLinesCount
     {
@@ -38,8 +38,8 @@ internal class SingleTextDiff : NotificationObject, ISingleTextDiff
         ITextDiffEngine textDiffEngine,
         ITextDiffCodeProviderFactory textDiffCodeProviderFactory,
         IDiffCodeTextBox diffCodeTextBox,
-        ILineNumberPanelModel oldLineNumberPanel,
-        ILineNumberPanelModel newLineNumberPanel,
+        ILineNumberPanel oldLineNumberPanel,
+        ILineNumberPanel newLineNumberPanel,
         ILinesDecorationProcessor linesDecorationProcessor,
         ISingleTextDiffGapProcessor gapProcessor)
     {

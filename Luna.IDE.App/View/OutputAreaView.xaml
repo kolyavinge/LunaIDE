@@ -16,13 +16,13 @@
             <RowDefinition Height="8" />
         </Grid.RowDefinitions>
 
-        <highlighter:CodeTextBox
+        <highlighter:CodeTextBoxView
             Grid.Row="0"
             x:Name="codeTextBox"
-            Model="{Binding OutputArea.CodeTextBoxModel}"
+            Model="{Binding OutputArea.CodeTextBox}"
             Style="{StaticResource OutputAreaStyle}"
             Margin="0,0,8,0">
-        </highlighter:CodeTextBox>
+        </highlighter:CodeTextBoxView>
 
         <controls:ScrollBarExt
             Grid.Row="0"

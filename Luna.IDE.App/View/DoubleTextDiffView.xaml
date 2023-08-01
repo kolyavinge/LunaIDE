@@ -58,7 +58,7 @@
                 Visibility="{Binding IsHorizontalScrollBarVisible, ElementName=oldCodeTextBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
 
-        <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
+        <GridSplitter Grid.Column="0" Style="{StaticResource VerticalGridSplitterStyle}" />
 
         <!-- new text -->
         <Grid Grid.Column="1">

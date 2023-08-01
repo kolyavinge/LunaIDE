@@ -4,12 +4,12 @@ using Luna.Utils;
 
 namespace Luna.IDE.CodeEditing;
 
-internal interface ICodeEditorSaver
+public interface ICodeEditorSaver
 {
     void SaveOpenedEditors();
 }
 
-internal class CodeEditorSaver : ICodeEditorSaver
+public class CodeEditorSaver : ICodeEditorSaver
 {
     private readonly IEnvironmentWindowsManager _windowsManager;
 

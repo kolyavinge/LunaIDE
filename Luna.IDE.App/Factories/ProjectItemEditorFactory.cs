@@ -6,11 +6,6 @@ using Luna.ProjectModel;
 
 namespace Luna.IDE.App.Factories;
 
-public interface IProjectItemEditorFactory
-{
-    EnvironmentWindowComponents MakeEditorFor(ProjectItem projectItem);
-}
-
 public class ProjectItemEditorFactory : WindowsFactory, IProjectItemEditorFactory
 {
     public EnvironmentWindowComponents MakeEditorFor(ProjectItem projectItem)

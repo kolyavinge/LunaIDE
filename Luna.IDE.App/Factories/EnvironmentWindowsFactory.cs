@@ -5,11 +5,6 @@ using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.Factories;
 
-public interface IEnvironmentWindowsFactory
-{
-    EnvironmentWindowComponents MakeWindowFor(Type modelType);
-}
-
 public class EnvironmentWindowsFactory : WindowsFactory, IEnvironmentWindowsFactory
 {
     public EnvironmentWindowComponents MakeWindowFor(Type modelType)

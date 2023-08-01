@@ -7,6 +7,7 @@ using Luna.IDE.App.Media;
 using Luna.IDE.App.ViewModel;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectExploration;
+using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.Infrastructure;
 

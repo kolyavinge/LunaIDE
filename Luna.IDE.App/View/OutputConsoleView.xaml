@@ -9,12 +9,8 @@
              Background="{StaticResource MainBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
-            <TextBlock Text="⮞ Output" Style="{StaticResource WindowHeaderTextStyle}" />
-        </Grid>
-        <local:OutputAreaView Grid.Row="1" />
+        <local:OutputAreaView Grid.Row="0" />
     </Grid>
 </UserControl>

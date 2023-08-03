@@ -27,19 +27,15 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
-            <TextBlock Text="⮞ Project Changes" Style="{StaticResource WindowHeaderTextStyle}" Margin="4,0" />
-        </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding Visibility, ElementName=mainGrid, Converter={StaticResource InverseVisibilityConverter}}">
+        <Grid Grid.Row="0" Visibility="{Binding Visibility, ElementName=mainGrid, Converter={StaticResource InverseVisibilityConverter}}">
             <Grid Margin="0,16,0,0">
                 <TextBlock Text="no repository in the project" TextAlignment="Center" Foreground="{StaticResource MainForegroundBrush}" />
                 <Button Style="{StaticResource HyperlinkButtonStyle}" Command="{Binding CreateRepositoryCommand}" Content="create a new one" Margin="0,16,0,0" Width="90" />
             </Grid>
         </Grid>
-        <Grid Grid.Row="2" x:Name="mainGrid" Visibility="{Binding Model.IsRepositoryExist, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Grid.Row="1" x:Name="mainGrid" Visibility="{Binding Model.IsRepositoryExist, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition MinHeight="100" />

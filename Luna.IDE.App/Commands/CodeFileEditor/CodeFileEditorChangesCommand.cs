@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows.Input;
-using Luna.IDE.App.Factories;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Outputing;

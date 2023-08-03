@@ -12,7 +12,7 @@ public interface IProjectItemChanges
     Task MakeDiff(string? oldFileText, TextFileProjectItem newFile);
 }
 
-public class ProjectItemChanges : NotificationObject, IProjectItemChanges, IEnvironmentWindowModel
+public class ProjectItemChanges : NotificationObject, IProjectItemChanges, IEnvironmentWindowModel, ICloseableEnvironmentWindow
 {
     private readonly ITextDiffEngine _textDiffEngine;
     private bool _inProgress;
@@ -48,4 +48,6 @@ public class ProjectItemChanges : NotificationObject, IProjectItemChanges, IEnvi
         DoubleTextDiff.MakeDiff(diffResult, oldFileText, newFile);
         InProgress = false;
     }
+
+    public void Close() { }
 }

@@ -1,4 +1,5 @@
 ﻿using Luna.IDE.Common;
+using Luna.IDE.WindowsManagement;
 using Luna.ProjectModel;
 
 namespace Luna.IDE.ProjectExploration;
@@ -9,10 +10,12 @@ public interface IProjectExplorer
     DirectoryTreeItem? ProjectTreeRoot { get; }
 }
 
-internal class ProjectExplorer : NotificationObject, IProjectExplorer
+public class ProjectExplorer : NotificationObject, IProjectExplorer, IEnvironmentWindowModel
 {
     private readonly IProjectLoader _projectLoader;
     private DirectoryTreeItem? _projectTreeRoot;
+
+    public string Header => "Project Explorer";
 
     public IProject? Project => _projectLoader.Project;
 

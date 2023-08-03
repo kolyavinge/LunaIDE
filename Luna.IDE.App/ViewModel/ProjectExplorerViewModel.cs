@@ -4,9 +4,11 @@ using Luna.IDE.App.Infrastructure;
 using Luna.IDE.App.Media;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectExploration;
+using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.ViewModel;
 
+[EnvironmentWindowFor(typeof(ProjectExplorer))]
 public class ProjectExplorerViewModel : NotificationObject
 {
     public IProjectExplorer Model { get; }

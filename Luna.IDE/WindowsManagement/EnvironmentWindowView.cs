@@ -8,7 +8,7 @@ public interface IEnvironmentWindowView
 
     event EventHandler? Unloaded;
 
-    FrameworkElement Content { get; }
+    object Content { get; }
 
     void Focus();
 }
@@ -21,7 +21,7 @@ public class EnvironmentWindowView : IEnvironmentWindowView
 
     public event EventHandler? Unloaded;
 
-    public FrameworkElement Content => _frameworkElement;
+    public object Content => _frameworkElement;
 
     public EnvironmentWindowView(FrameworkElement frameworkElement)
     {

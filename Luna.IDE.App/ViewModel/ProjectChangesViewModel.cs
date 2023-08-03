@@ -6,9 +6,11 @@ using Luna.IDE.App.Media;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.Common;
 using Luna.IDE.ProjectChanging;
+using Luna.IDE.WindowsManagement;
 
 namespace Luna.IDE.App.ViewModel;
 
+[EnvironmentWindowFor(typeof(ProjectChanges))]
 public class ProjectChangesViewModel : NotificationObject
 {
     private bool _isAnyFilesIncluded;

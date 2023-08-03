@@ -12,6 +12,8 @@ using Luna.IDE.ProjectExploration;
 using Luna.IDE.TextDiff;
 using Luna.IDE.Versioning;
 using Luna.IDE.WindowsManagement;
+using WindowsEnvironment;
+using WindowsEnvironment.Model;
 
 namespace Luna.IDE.Infrastructure;
 
@@ -21,6 +23,8 @@ public class IDEInjectModule : InjectModule
     {
         provider.Bind<IDateTimeProvider, DateTimeProvider>();
         provider.Bind<ICodeProviderFactory, CodeProviderFactory>().ToSingleton();
+        provider.Bind<IFlexWindowsEnvironment>().ToMethod(_ => FlexWindowsEnvironmentFactory.Make()).ToSingleton();
+        provider.Bind<IEnvironmentWindowsInitializer, EnvironmentWindowsInitializer>().ToSingleton();
         provider.Bind<IEnvironmentWindowsManager, EnvironmentWindowsManager>().ToSingleton();
         provider.Bind<ILineFoldsItemsUpdater, LineFoldsItemsUpdater>().ToSingleton();
         provider.Bind<ICodeEditorSaver, CodeEditorSaver>().ToSingleton();

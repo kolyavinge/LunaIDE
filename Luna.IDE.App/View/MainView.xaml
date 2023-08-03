@@ -10,6 +10,9 @@
         Style="{StaticResource MainWindowStyle}"
         Title="Luna IDE">
     <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding ClosedCommand}" />
         </i:EventTrigger>
@@ -52,44 +55,8 @@
                 <Button Content="🗙" Style="{StaticResource CloseButtonStyle}" Width="40" Click="OnCloseButtonClick" />
             </StackPanel>
         </Grid>
-        <!-- main -->
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="200" Width="200" />
-                <ColumnDefinition MinWidth="200" Width="*" />
-            </Grid.ColumnDefinitions>
-            <!-- navigation -->
-            <Grid Grid.Column="0">
-                <TabControl
-                    TabStripPlacement="Bottom"
-                    Style="{StaticResource TabControlStyle}"
-                    Margin="-2">
-                    <TabItem Header="Project Explorer" Height="24" Width="100">
-                        <view:ProjectExplorerView Background="{StaticResource SecondaryBackgroundBrush}" />
-                    </TabItem>
-                    <TabItem Header="Project Changes" Height="24" Width="100">
-                        <view:ProjectChangesView Background="{StaticResource SecondaryBackgroundBrush}" />
-                    </TabItem>
-                </TabControl>
-            </Grid>
-            <GridSplitter Grid.Column="0" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="4" />
-            <!-- development -->
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="200" Height="*" />
-                    <RowDefinition MinHeight="100" Height="200" />
-                </Grid.RowDefinitions>
-                <!-- code editors and other windows -->
-                <Grid Grid.Row="0">
-                    <view:EnvironmentWindowsView />
-                    <view:RecentProjectsView VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Grid>
-                <!-- output -->
-                <Grid Grid.Row="1">
-                    <view:OutputConsoleView />
-                </Grid>
-                <GridSplitter Grid.Row="1" Style="{StaticResource GridSplitterStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="4" />
-            </Grid>
+            <view:EnvironmentWindowsView />
         </Grid>
     </Grid>
 </Window>

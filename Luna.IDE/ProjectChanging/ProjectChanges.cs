@@ -3,12 +3,13 @@ using System.Linq;
 using Luna.IDE.CodeEditing;
 using Luna.IDE.Common;
 using Luna.IDE.Versioning;
+using Luna.IDE.WindowsManagement;
 using Luna.Infrastructure;
 using Luna.Utils;
 
 namespace Luna.IDE.ProjectChanging;
 
-internal class ProjectChanges : NotificationObject, IProjectChanges
+public class ProjectChanges : NotificationObject, IProjectChanges, IEnvironmentWindowModel
 {
     private readonly IProjectRepository _projectRepository;
     private readonly ICodeEditorSaver _codeEditorSaver;
@@ -24,6 +25,8 @@ internal class ProjectChanges : NotificationObject, IProjectChanges
     private VersionedDirectoryTreeItem _included;
 
     public event EventHandler? RepositoryOpened;
+
+    public string Header => "Project Changes";
 
     public bool IsRepositoryExist
     {

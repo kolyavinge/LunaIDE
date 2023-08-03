@@ -51,6 +51,7 @@ public class AppInjectModule : InjectModule
         provider.Bind<IToLowerCaseCommand, ToLowerCaseCommand>().ToSingleton();
         provider.Bind<IFormatCodeCommand, FormatCodeCommand>().ToSingleton();
         provider.Bind<ICodeFileEditorChangesCommand, CodeFileEditorChangesCommand>().ToSingleton();
+        provider.Bind<IMainWindowLoadedCommand, MainWindowLoadedCommand>().ToSingleton();
         provider.Bind<IMainWindowClosedCommand, MainWindowClosedCommand>().ToSingleton();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Luna.IDE.App.Factories;
 using Luna.IDE.App.Mvvm;
 using Luna.IDE.ProjectExploration;
 using Luna.IDE.WindowsManagement;

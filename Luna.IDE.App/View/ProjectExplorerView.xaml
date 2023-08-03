@@ -9,14 +9,10 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
-            <TextBlock Text="⮞ Project Explorer" Style="{StaticResource WindowHeaderTextStyle}" Margin="4,0" />
-        </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
             <!-- Open Project History -->
             <Button Style="{StaticResource ButtonStyle}" Command="{Binding OpenProjectHistoryCommand}">
                 <StackPanel Orientation="Horizontal">
@@ -27,7 +23,7 @@
             </Button>
         </StackPanel>
         <controls:TreeView
-            Grid.Row="2"
+            Grid.Row="1"
             Style="{StaticResource TreeViewStyle}"
             Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
             TreeRoot="{Binding DataContext.Model.ProjectTreeRoot, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"

@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Luna.IDE.App.Commands;
-using Luna.IDE.App.Factories;
 using Luna.IDE.ProjectExploration;
 using Luna.IDE.TextDiff;
 using Luna.IDE.Versioning;

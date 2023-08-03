@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\CodeHighlighter\CodeHighlighter.Model\CodeHighlighter.Model.csproj" />
     <ProjectReference Include="..\..\DiffTool\DiffTool\DiffTool.csproj" />
     <ProjectReference Include="..\..\VersionControl\VersionControl\VersionControl.csproj" />
+    <ProjectReference Include="..\..\WindowsEnvironment\WindowsEnvironment\WindowsEnvironment.csproj" />
     <ProjectReference Include="..\Luna.Runtime\Luna.Runtime.csproj" />
   </ItemGroup>
 

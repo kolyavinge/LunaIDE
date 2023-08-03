@@ -13,5 +13,8 @@ public class MainViewModel : NotificationObject
     public IRunProgramCommand? RunProgramCommand { get; set; }
 
     [Inject]
+    public IMainWindowLoadedCommand? LoadedCommand { get; set; }
+
+    [Inject]
     public IMainWindowClosedCommand? ClosedCommand { get; set; }
 }

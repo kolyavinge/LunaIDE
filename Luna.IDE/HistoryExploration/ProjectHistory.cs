@@ -20,7 +20,7 @@ public interface IProjectHistory : INotifyPropertyChanged
     ISingleTextDiff SingleTextDiff { get; }
 }
 
-public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentWindowModel
+public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentWindowModel, ICloseableEnvironmentWindow
 {
     private readonly IProjectRepository _projectRepository;
     private readonly ITextDiffEngine _textDiffEngine;
@@ -124,4 +124,6 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         RaisePropertyChanged(() => Commits);
         RaisePropertyChanged(() => AnyCommits);
     }
+
+    public void Close() { }
 }

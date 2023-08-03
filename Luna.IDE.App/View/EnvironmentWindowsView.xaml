@@ -3,42 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:flex="clr-namespace:WindowsEnvironment.View;assembly=WindowsEnvironment"
+             xmlns:view="clr-namespace:Luna.IDE.App.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TabControl
-            ItemsSource="{Binding WindowsManager.Windows}"
-            SelectedItem="{Binding WindowsManager.SelectedWindow, Mode=TwoWay}"
-            Style="{StaticResource TabControlStyle}"
-            Background="Transparent"
-            Margin="-2">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Name="sp" Orientation="Horizontal" Height="32" Background="Transparent">
-                        <StackPanel.InputBindings>
-                            <MouseBinding
-                                MouseAction="MiddleClick"
-                                Command="{Binding DataContext.CloseWindowCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                                CommandParameter="{Binding}" />
-                        </StackPanel.InputBindings>
-                        <StackPanel Orientation="Horizontal" Margin="10,2">
-                            <TextBlock Text="{Binding Model.Header}" VerticalAlignment="Center" />
-                            <Button
-                                Style="{StaticResource MiniCloseButtonStyle}"
-                                Command="{Binding DataContext.CloseWindowCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                                CommandParameter="{Binding}"
-                                Margin="8,0,0,0">
-                                <TextBlock Text="🗙" VerticalAlignment="Center" />
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <ContentControl Content="{Binding View.Content}" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
+        <flex:FlexWindowsEnvironmentView
+            Model="{Binding FlexEnvironment}"
+            MainPanelTabControlStyle="{StaticResource EditorsTabControlStyle}"
+            PanelTabControlStyle="{StaticResource ToolWindowTabControlStyle}"
+            HorizontalSplitterStyle="{StaticResource HorizontalGridSplitterStyle}"
+            VerticalSplitterStyle="{StaticResource VerticalGridSplitterStyle}"
+            FlexWindowHeaderBackground="{StaticResource MainSelectionBrush}"
+            FlexWindowHeaderForeground="{StaticResource MainForegroundBrush}"
+            PositionMarksBackground="{StaticResource MainSelectionBrush}"
+            HighlightedMarkPositionBackground="{StaticResource MainSelectionBrush}">
+            <flex:FlexWindowsEnvironmentView.BackgroundView>
+                <view:RecentProjectsView VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </flex:FlexWindowsEnvironmentView.BackgroundView>
+        </flex:FlexWindowsEnvironmentView>
     </Grid>
 </UserControl>

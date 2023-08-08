@@ -14,7 +14,7 @@
             PanelTabControlStyle="{StaticResource ToolWindowTabControlStyle}"
             HorizontalSplitterStyle="{StaticResource HorizontalGridSplitterStyle}"
             VerticalSplitterStyle="{StaticResource VerticalGridSplitterStyle}"
-            FlexWindowHeaderBackground="{StaticResource MainSelectionBrush}"
+            FlexWindowHeaderBackground="{StaticResource WindowHeaderBackgroundBrush}"
             FlexWindowHeaderForeground="{StaticResource MainForegroundBrush}"
             PositionMarksBackground="{StaticResource MainSelectionBrush}"
             HighlightedMarkPositionBackground="{StaticResource MainSelectionBrush}">

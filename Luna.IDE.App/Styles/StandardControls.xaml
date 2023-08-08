@@ -344,18 +344,6 @@
         </Style.Resources>
     </Style>
 
-    <Style x:Key="ToolWindowTabControlStyle" BasedOn="{StaticResource TabControlStyle}" TargetType="{x:Type TabControl}">
-        <Setter Property="TabStripPlacement" Value="Bottom" />
-    </Style>
-
-    <Style x:Key="EditorsTabControlStyle" BasedOn="{StaticResource TabControlStyle}" TargetType="{x:Type TabControl}">
-        <Style.Resources>
-            <Style BasedOn="{StaticResource TabItemStyle}" TargetType="{x:Type TabItem}">
-                <Setter Property="Height" Value="36" />
-            </Style>
-        </Style.Resources>
-    </Style>
-
     <Style x:Key="TreeViewStyle" TargetType="{x:Type controls:TreeView}">
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
     </Style>

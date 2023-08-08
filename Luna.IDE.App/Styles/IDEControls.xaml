@@ -2,7 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:highlighter="clr-namespace:CodeHighlighter;assembly=CodeHighlighter"
-    xmlns:view="clr-namespace:Luna.IDE.App.View">
+    xmlns:view="clr-namespace:Luna.IDE.App.View"
+    xmlns:converters="clr-namespace:Luna.IDE.App.Converters">
 
     <Style x:Key="MainTitleTextStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
@@ -31,6 +32,27 @@
                 <Setter Property="Background" Value="{StaticResource AlertBrush}"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ToolWindowTabControlStyle" BasedOn="{StaticResource TabControlStyle}" TargetType="{x:Type TabControl}">
+        <Setter Property="TabStripPlacement" Value="Bottom" />
+        <Style.Resources>
+            <Style BasedOn="{StaticResource TabItemStyle}" TargetType="{x:Type TabItem}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Parent.Items.Count, RelativeSource={RelativeSource Self}}" Value="1">
+                        <Setter Property="Height" Value="0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="EditorsTabControlStyle" BasedOn="{StaticResource TabControlStyle}" TargetType="{x:Type TabControl}">
+        <Style.Resources>
+            <Style BasedOn="{StaticResource TabItemStyle}" TargetType="{x:Type TabItem}">
+                <Setter Property="Height" Value="36" />
+            </Style>
+        </Style.Resources>
     </Style>
 
     <Style x:Key="AutoCompleteListBoxItemStyle" TargetType="{x:Type ListBoxItem}">

@@ -33,12 +33,19 @@ public class EnvironmentWindowsManagerTest
         _saveableEnvironmentWindow = _environmentWindowModel.As<ISaveableEnvironmentWindow>();
         _closeableEnvironmentWindow = _environmentWindowModel.As<ICloseableEnvironmentWindow>();
         _manager = new EnvironmentWindowsManager(_flexWindowsEnvironment.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("id")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("active")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("notActive")).Returns((_panel.Object, _tab.Object));
     }
 
     [Test]
     public void OpenWindow()
     {
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         Assert.That(_manager.FindWindowById("id"), Is.Not.Null);
         Assert.That(window.Id, Is.EqualTo("id"));
         Assert.That(window.Model, Is.EqualTo(_environmentWindowModel.Object));
@@ -66,25 +73,31 @@ public class EnvironmentWindowsManagerTest
     public void ActivateWindow()
     {
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         _manager.ActivateWindow(window);
+
         Assert.That(_manager.SelectedWindow, Is.EqualTo(window));
-        _flexWindowsEnvironment.Verify(x => x.SelectTab("panel_1", "tab_1"), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.SelectTab("tab_1"), Times.Once());
     }
 
     [Test]
     public void ActivateWindow_WrongWindow()
     {
         _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         _manager.ActivateWindow(new EnvironmentWindow("", _environmentWindowModel.Object, _environmentWindowView.Object));
+
         Assert.That(_manager.SelectedWindow, Is.Null);
-        _flexWindowsEnvironment.Verify(x => x.SelectTab(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+        _flexWindowsEnvironment.Verify(x => x.SelectTab(It.IsAny<string>()), Times.Never());
     }
 
     [Test]
     public void CloseWindow()
     {
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         _manager.CloseWindow(window);
+
         Assert.That(_manager.FindWindowById("id"), Is.EqualTo(null));
         _closeableEnvironmentWindow.Verify(x => x.Close(), Times.Once());
     }
@@ -94,8 +107,10 @@ public class EnvironmentWindowsManagerTest
     {
         var notActive = _manager.OpenWindow("notActive", _environmentWindowModel.Object, _environmentWindowView.Object);
         var active = _manager.OpenWindow("active", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         _manager.ActivateWindow(active);
         Assert.That(_manager.SelectedWindow, Is.EqualTo(active));
+
         _manager.CloseWindow(notActive);
         Assert.That(_manager.SelectedWindow, Is.EqualTo(active));
     }
@@ -104,8 +119,10 @@ public class EnvironmentWindowsManagerTest
     public void CloseLast()
     {
         var window = _manager.OpenWindow("notActive", _environmentWindowModel.Object, _environmentWindowView.Object);
+
         _manager.ActivateWindow(window);
         Assert.That(_manager.SelectedWindow, Is.EqualTo(window));
+
         _manager.CloseWindow(window);
         Assert.That(_manager.SelectedWindow, Is.EqualTo(null));
     }
@@ -115,31 +132,37 @@ public class EnvironmentWindowsManagerTest
     {
         var left = _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
         var middle = _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
-        var right = _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
+        _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
         _manager.ActivateWindow(left);
+
         _manager.CloseWindow(left);
+
         Assert.That(_manager.SelectedWindow, Is.EqualTo(middle));
     }
 
     [Test]
     public void CloseAndActivate_Middle()
     {
-        var left = _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
+        _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
         var middle = _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
         var right = _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
         _manager.ActivateWindow(middle);
+
         _manager.CloseWindow(middle);
+
         Assert.That(_manager.SelectedWindow, Is.EqualTo(right));
     }
 
     [Test]
     public void CloseAndActivate_Right()
     {
-        var left = _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
+        _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
         var middle = _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
         var right = _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
         _manager.ActivateWindow(right);
+
         _manager.CloseWindow(right);
+
         Assert.That(_manager.SelectedWindow, Is.EqualTo(middle));
     }
 
@@ -149,8 +172,8 @@ public class EnvironmentWindowsManagerTest
         var left = _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
         var middle = _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
         var right = _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
-
         _manager.ActivateWindow(right);
+
         _manager.CloseWindow(right);
         Assert.That(_manager.SelectedWindow, Is.EqualTo(middle));
 
@@ -179,6 +202,32 @@ public class EnvironmentWindowsManagerTest
     }
 
     [Test]
+    public void CloseAllWindows_RemoveTabs()
+    {
+        var tab1 = new Mock<IContentTab>();
+        var tab2 = new Mock<IContentTab>();
+        var tab3 = new Mock<IContentTab>();
+        tab1.SetupGet(x => x.Name).Returns("tab_1");
+        tab2.SetupGet(x => x.Name).Returns("tab_2");
+        tab3.SetupGet(x => x.Name).Returns("tab_3");
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns((_panel.Object, tab1.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns((_panel.Object, tab2.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns((_panel.Object, tab3.Object));
+        _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
+        _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
+        _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);
+
+        _manager.CloseAllWindows();
+
+        _flexWindowsEnvironment.Verify(x => x.GetTabById("left"), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.GetTabById("right"), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.GetTabById("middle"), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.RemoveTab("tab_1", RemoveTabMode.Close), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.RemoveTab("tab_2", RemoveTabMode.Close), Times.Once());
+        _flexWindowsEnvironment.Verify(x => x.RemoveTab("tab_3", RemoveTabMode.Close), Times.Once());
+    }
+
+    [Test]
     public void CloseAllWindows_ClosePanels()
     {
         var nonClosableEnvironmentWindowModel = new Mock<IEnvironmentWindowModel>();
@@ -186,6 +235,6 @@ public class EnvironmentWindowsManagerTest
 
         _manager.CloseAllWindows();
 
-        _flexWindowsEnvironment.Verify(x => x.RemoveTab("panel_1", "tab_1", RemoveTabMode.Close), Times.Never());
+        _flexWindowsEnvironment.Verify(x => x.RemoveTab("tab_1", RemoveTabMode.Close), Times.Never());
     }
 }

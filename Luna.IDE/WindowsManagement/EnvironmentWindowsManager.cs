@@ -11,7 +11,6 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
     record EnvironmentWindowAdditional(string PanelName, string TabName);
 
     private readonly List<EnvironmentWindow> _windows = new();
-    private readonly Dictionary<EnvironmentWindow, EnvironmentWindowAdditional> _additional = new();
     private readonly IFlexWindowsEnvironment _flexEnvironment;
     private EnvironmentWindow? _selectedWindow;
 
@@ -43,14 +42,13 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
     public EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, IEnvironmentWindowView view)
     {
         var window = new EnvironmentWindow(id, model, view);
-        var (panel, tab) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, new()
+        var (panel, tab) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, new(window.Id)
         {
             Header = new() { SourceObject = model, PropertyName = "Header" },
             View = view.Content,
             CloseCallback = () => CloseWindow(window)
         });
         _windows.Add(window);
-        _additional.Add(window, new(panel.Name, tab.Name));
         WindowOpened?.Invoke(this, EventArgs.Empty);
 
         return window;
@@ -58,10 +56,11 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
 
     public void ActivateWindow(EnvironmentWindow window)
     {
-        if (_additional.TryGetValue(window, out var additional))
+        if (_windows.Contains(window))
         {
             SelectedWindow = window;
-            _flexEnvironment.SelectTab(additional.PanelName, additional.TabName);
+            var (_, tab) = _flexEnvironment.GetTabById(window.Id);
+            _flexEnvironment.SelectTab(tab.Name);
         }
         else
         {
@@ -82,7 +81,6 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
         }
         var component = _windows.First(x => x == window);
         _windows.Remove(component);
-        _additional.Remove(component);
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -92,12 +90,11 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
         _windows.Where(x => x.Model is ICloseableEnvironmentWindow).Each(x => ((ICloseableEnvironmentWindow)x.Model).Close());
         foreach (var window in _windows.Where(x => x.Model is ICloseableEnvironmentWindow).ToList())
         {
-            var additional = _additional[window];
-            _flexEnvironment.RemoveTab(additional.PanelName, additional.TabName, RemoveTabMode.Close);
+            var (_, tab) = _flexEnvironment.GetTabById(window.Id);
+            _flexEnvironment.RemoveTab(tab.Name, RemoveTabMode.Close);
         }
         SelectedWindow = null;
         _windows.Clear();
-        _additional.Clear();
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -29,20 +29,20 @@ internal class EnvironmentWindowsInitializer : IEnvironmentWindowsInitializer
         var projectChanges = _environmentWindowsFactory.MakeWindowFor(typeof(ProjectChanges));
         var outputConsole = _environmentWindowsFactory.MakeWindowFor(typeof(OutputConsole));
 
-        var (projectExplorerPanel, _) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Left, new()
+        var (projectExplorerPanel, _) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Left, new(projectExplorer)
         {
             Header = new() { SourceObject = projectExplorer.Model, PropertyName = "Header" },
             View = projectExplorer.View.Content,
         });
         projectExplorerPanel.Size = 200;
 
-        _flexEnvironment.SetPanelPosition(projectExplorerPanel.Name, PanelPosition.Middle, new()
+        _flexEnvironment.SetPanelPosition(projectExplorerPanel.Name, PanelPosition.Middle, new(projectChanges)
         {
             Header = new() { SourceObject = projectChanges.Model, PropertyName = "Header" },
             View = projectChanges.View.Content,
         });
 
-        var (outputConsolePanel, _) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Bottom, new()
+        var (outputConsolePanel, _) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Bottom, new(outputConsole)
         {
             Header = new() { SourceObject = outputConsole.Model, PropertyName = "Header" },
             View = outputConsole.View.Content,

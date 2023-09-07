@@ -25,7 +25,7 @@ public class EnvironmentWindowsManagerTest
         _tab = new Mock<IContentTab>();
         _tab.SetupGet(x => x.Name).Returns("tab_1");
         _flexWindowsEnvironment = new Mock<IFlexWindowsEnvironment>();
-        _flexWindowsEnvironment.Setup(x => x.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, It.IsAny<Content>())).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, It.IsAny<Content>())).Returns(_tab.Object);
         _environmentWindowModel = new Mock<IEnvironmentWindowModel>();
         _viewContent = new object();
         _environmentWindowView = new Mock<IEnvironmentWindowView>();
@@ -33,12 +33,12 @@ public class EnvironmentWindowsManagerTest
         _saveableEnvironmentWindow = _environmentWindowModel.As<ISaveableEnvironmentWindow>();
         _closeableEnvironmentWindow = _environmentWindowModel.As<ICloseableEnvironmentWindow>();
         _manager = new EnvironmentWindowsManager(_flexWindowsEnvironment.Object);
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("id")).Returns((_panel.Object, _tab.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns((_panel.Object, _tab.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns((_panel.Object, _tab.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns((_panel.Object, _tab.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("active")).Returns((_panel.Object, _tab.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("notActive")).Returns((_panel.Object, _tab.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("id")).Returns(_tab.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns(_tab.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns(_tab.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns(_tab.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("active")).Returns(_tab.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("notActive")).Returns(_tab.Object);
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class EnvironmentWindowsManagerTest
         Content content = null;
         _flexWindowsEnvironment.Setup(x => x.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, It.IsAny<Content>()))
             .Callback<string, PanelPosition, Content>((_, _, c) => content = c)
-            .Returns((_panel.Object, _tab.Object));
+            .Returns(_tab.Object);
 
         var window = _manager.OpenWindow("id", _environmentWindowModel.Object, _environmentWindowView.Object);
 
@@ -210,9 +210,9 @@ public class EnvironmentWindowsManagerTest
         tab1.SetupGet(x => x.Name).Returns("tab_1");
         tab2.SetupGet(x => x.Name).Returns("tab_2");
         tab3.SetupGet(x => x.Name).Returns("tab_3");
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns((_panel.Object, tab1.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns((_panel.Object, tab2.Object));
-        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns((_panel.Object, tab3.Object));
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("left")).Returns(tab1.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("right")).Returns(tab2.Object);
+        _flexWindowsEnvironment.Setup(x => x.GetTabById("middle")).Returns(tab3.Object);
         _manager.OpenWindow("left", _environmentWindowModel.Object, _environmentWindowView.Object);
         _manager.OpenWindow("middle", _environmentWindowModel.Object, _environmentWindowView.Object);
         _manager.OpenWindow("right", _environmentWindowModel.Object, _environmentWindowView.Object);

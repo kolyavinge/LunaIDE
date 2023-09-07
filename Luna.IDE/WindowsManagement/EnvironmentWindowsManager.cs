@@ -42,7 +42,7 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
     public EnvironmentWindow OpenWindow(object id, IEnvironmentWindowModel model, IEnvironmentWindowView view)
     {
         var window = new EnvironmentWindow(id, model, view);
-        var (panel, tab) = _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, new(window.Id)
+        _flexEnvironment.SetPanelPosition(MainPanel.Name, PanelPosition.Middle, new(window.Id)
         {
             Header = new() { SourceObject = model, PropertyName = "Header" },
             View = view.Content,
@@ -59,7 +59,7 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
         if (_windows.Contains(window))
         {
             SelectedWindow = window;
-            var (_, tab) = _flexEnvironment.GetTabById(window.Id);
+            var tab = _flexEnvironment.GetTabById(window.Id);
             _flexEnvironment.SelectTab(tab.Name);
         }
         else
@@ -90,7 +90,7 @@ internal class EnvironmentWindowsManager : NotificationObject, IEnvironmentWindo
         _windows.Where(x => x.Model is ICloseableEnvironmentWindow).Each(x => ((ICloseableEnvironmentWindow)x.Model).Close());
         foreach (var window in _windows.Where(x => x.Model is ICloseableEnvironmentWindow).ToList())
         {
-            var (_, tab) = _flexEnvironment.GetTabById(window.Id);
+            var tab = _flexEnvironment.GetTabById(window.Id);
             _flexEnvironment.RemoveTab(tab.Name, RemoveTabMode.Close);
         }
         SelectedWindow = null;

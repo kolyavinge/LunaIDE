@@ -57,7 +57,7 @@ internal class RecentProjects : NotificationObject, IRecentProjects
     private void OnProjectOpened(object? sender, ProjectOpenedEventArgs e)
     {
         var recentProject = _recentProjects.FirstOrDefault(x => x.ProjectFullPath == e.Project.Root.FullPath);
-        if (recentProject != null)
+        if (recentProject is not null)
         {
             recentProject.LastAccess = _dateTimeProvider.GetNowDateTime();
         }
@@ -87,7 +87,7 @@ internal class RecentProjects : NotificationObject, IRecentProjects
         for (int i = 0; i < MaxRecentProjectsCount; i++)
         {
             var rp = _configStorage.GetById<RecentProjectPoco>(i);
-            if (rp != null) _recentProjects.Add(rp);
+            if (rp is not null) _recentProjects.Add(rp);
             else break;
         }
     }

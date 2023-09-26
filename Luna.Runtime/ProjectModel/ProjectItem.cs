@@ -23,7 +23,7 @@ public abstract class ProjectItem
         {
             ProjectItem? item = this;
             var path = new Stack<string>();
-            while (item != null)
+            while (item is not null)
             {
                 path.Push(item.Name);
                 item = item.Parent;
@@ -40,7 +40,7 @@ public abstract class ProjectItem
         {
             var parents = new Stack<ProjectItem>();
             var parent = Parent;
-            while (parent != null)
+            while (parent is not null)
             {
                 parents.Push(parent);
                 parent = parent.Parent;

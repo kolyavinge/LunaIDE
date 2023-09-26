@@ -14,7 +14,7 @@ public class EmbeddedFunctionDeclarationsCollection : IEnumerable<EmbeddedFuncti
         var functions = Assembly.GetExecutingAssembly()
             .GetTypes()
             .Select(t => t.GetCustomAttribute<EmbeddedFunctionDeclaration>())
-            .Where(x => x != null)
+            .Where(x => x is not null)
             .Select(x => x!)
             .ToList();
 

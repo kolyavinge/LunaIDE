@@ -63,7 +63,7 @@ public static class TextboxExtensions
         tb.LostFocus -= OnLostFocus;
         tb.GotFocus -= OnGotFocus;
 
-        if (e.NewValue != null)
+        if (e.NewValue is not null)
         {
             tb.GotFocus += OnGotFocus;
             tb.LostFocus += OnLostFocus;

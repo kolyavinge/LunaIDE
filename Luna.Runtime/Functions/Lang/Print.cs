@@ -8,7 +8,7 @@ internal class Print : EmbeddedFunction
 {
     protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        if (RuntimeEnvironment.StandartOutput != null)
+        if (RuntimeEnvironment.StandartOutput is not null)
         {
             var value = arguments.GetValueOrError<IRuntimeValue>(0);
             var text = value.ToString();

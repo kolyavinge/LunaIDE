@@ -26,7 +26,7 @@ public class DirectoryTreeItem : TreeItem
 
     private static string GetImageFileName(ProjectItem projecItem)
     {
-        if (projecItem.Parent == null) return "project.png";
+        if (projecItem.Parent is null) return "project.png";
         else return "directory.png";
     }
 }

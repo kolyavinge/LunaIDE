@@ -9,7 +9,7 @@ public class ImageConverter : IMultiValueConverter
     public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
         var ic = values[0] as IImageCollection;
-        if (ic == null) return null;
+        if (ic is null) return null;
 
         if (values[1] is not string) return null;
 

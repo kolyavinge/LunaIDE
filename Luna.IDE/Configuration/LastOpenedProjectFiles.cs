@@ -31,7 +31,7 @@ internal class LastOpenedProjectFiles : ILastOpenedProjectFiles
     public void RestoreLastOpenedFiles(IProject project)
     {
         var projectFiles = _configStorage.GetById<LastOpenedProjectFilesPoco>(project.Root.FullPath);
-        if (projectFiles == null) return;
+        if (projectFiles is null) return;
         var projectItems = projectFiles.FilesRelativePathes.Select(project.FindItemByPath).ToList();
         _projectItemOpenCommand.Execute(projectItems);
     }

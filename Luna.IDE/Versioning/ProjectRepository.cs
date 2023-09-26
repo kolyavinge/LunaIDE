@@ -16,7 +16,7 @@ internal class ProjectRepository : IProjectRepository
 
     public event EventHandler<ChangesUndoneEventArgs>? ChangesUndone;
 
-    public bool IsRepositoryExist => _projectLoader.Project != null && _versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
+    public bool IsRepositoryExist => _projectLoader.Project is not null && _versionControlRepositoryFactory.IsRepositoryExist(_projectLoader.Project.Root.FullPath);
 
     public VersionControl.Core.VersionedStatus Status { get; private set; }
 
@@ -53,7 +53,7 @@ internal class ProjectRepository : IProjectRepository
 
     public void OpenOrCreateRepository()
     {
-        if (_projectLoader.Project == null) return;
+        if (_projectLoader.Project is null) return;
         _versionControlRepository = _versionControlRepositoryFactory.OpenRepository(_projectLoader.Project.Root.FullPath);
         Status = VersionControl.Core.VersionedStatus.Empty;
         Included = new VersionedDirectory(_projectLoader.Project.Root.Name);

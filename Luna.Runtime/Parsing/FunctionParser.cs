@@ -23,7 +23,7 @@ public class FunctionParser : AbstractParser
             {
                 ParserMessage? error = null;
                 ParseConstDeclaration(ref error);
-                if (error != null) _result.AddError(error);
+                if (error is not null) _result.AddError(error);
             }
             else if (Token.Kind == TokenKind.ImportDirective)
             {
@@ -34,7 +34,7 @@ public class FunctionParser : AbstractParser
             {
                 ParserMessage? error = null;
                 ParseRunFunctionOrFunctionDeclaration(ref error);
-                if (error != null)
+                if (error is not null)
                 {
                     _result.AddError(error);
                     SkipFunctionDeclaration();
@@ -89,7 +89,7 @@ public class FunctionParser : AbstractParser
         {
             error = new(ParserMessageType.UnexpectedToken, unexpectedTokens);
         }
-        else if (constValue != null)
+        else if (constValue is not null)
         {
             _codeModel.AddConstantDeclaration(new(constName, constValue, constNameToken.LineIndex, constNameToken.StartColumnIndex));
         }
@@ -169,11 +169,11 @@ public class FunctionParser : AbstractParser
         }
         MoveNext();
         var (arguments, body) = ParseFunctionArgumentsAndBody(ref error);
-        if (arguments != null && body != null)
+        if (arguments is not null && body is not null)
         {
             _codeModel.AddFunctionDeclaration(new(_codeModel, funcName, arguments, body, funcToken.LineIndex, funcToken.StartColumnIndex));
         }
-        else if (arguments != null)
+        else if (arguments is not null)
         {
             _codeModel.AddFunctionDeclaration(new(_codeModel, funcName, arguments, new(), funcToken.LineIndex, funcToken.StartColumnIndex));
         }
@@ -182,10 +182,10 @@ public class FunctionParser : AbstractParser
     private (List<FunctionArgument>?, FunctionBody?) ParseFunctionArgumentsAndBody(ref ParserMessage? error)
     {
         var arguments = ParseFunctionArguments(ref error);
-        if (arguments == null) return (null, null);
+        if (arguments is null) return (null, null);
 
         var body = ParseFunctionBody(ref error);
-        if (body == null) return (arguments, null);
+        if (body is null) return (arguments, null);
 
         return (arguments, body);
     }
@@ -227,7 +227,7 @@ public class FunctionParser : AbstractParser
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var item = ParseFunctionBodyItem(ref error);
-            if (item == null) return null;
+            if (item is null) return null;
             items.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)
@@ -346,7 +346,7 @@ public class FunctionParser : AbstractParser
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var value = ParseFunctionBodyItem(ref error);
-            if (value == null) return null;
+            if (value is null) return null;
             argumentValues.Add(value);
         }
         if (Token.Kind != TokenKind.CloseBracket)
@@ -387,7 +387,7 @@ public class FunctionParser : AbstractParser
         var lambdaToken = Token;
         MoveNext();
         var (lambdaArguments, lambdaBody) = ParseFunctionArgumentsAndBody(ref error);
-        if (lambdaArguments != null && lambdaBody != null)
+        if (lambdaArguments is not null && lambdaBody is not null)
         {
             return new(lambdaArguments, lambdaBody, lambdaToken.LineIndex, lambdaToken.StartColumnIndex);
         }
@@ -404,7 +404,7 @@ public class FunctionParser : AbstractParser
         while (!Eof && Token.Kind != TokenKind.CloseBracket)
         {
             var item = ParseFunctionBodyItem(ref error);
-            if (item == null) return null;
+            if (item is null) return null;
             items.Add(item);
         }
         if (Token.Kind != TokenKind.CloseBracket)

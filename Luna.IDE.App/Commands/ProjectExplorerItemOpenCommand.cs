@@ -24,8 +24,8 @@ public class ProjectExplorerItemOpenCommand : Command, IProjectExplorerItemOpenC
 
     public override void Execute(object? parameter)
     {
-        if (parameter == null) throw new ArgumentNullException();
-        var treeItems = ((IEnumerable)parameter).Cast<TreeItem>().Where(x => x.Parent != null).ToList();
+        if (parameter is null) throw new ArgumentNullException();
+        var treeItems = ((IEnumerable)parameter).Cast<TreeItem>().Where(x => x.Parent is not null).ToList();
         if (!treeItems.Any()) return;
         if (treeItems.Count == 1 && treeItems.First() is DirectoryTreeItem)
         {

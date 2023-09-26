@@ -30,7 +30,7 @@ internal class AutoCompleteItem : IAutoCompleteItem
 
     public int CompareTo(IAutoCompleteItem? x)
     {
-        if (x == null) return 1;
+        if (x is null) return 1;
         return Name.CompareTo(x.Name);
     }
 }

@@ -30,7 +30,7 @@ public partial class MainView : Window
 
     private void OnWindowMouseMove(object sender, MouseEventArgs e)
     {
-        if (_lastMousePosition != null)
+        if (_lastMousePosition is not null)
         {
             var pos = e.GetPosition(this);
             var deltaX = pos.X - _lastMousePosition.Value.X;

@@ -26,10 +26,10 @@ public class CodeModelNavigator : ICodeModelNavigator
     public CodeModelNavigatorResult? GetCodeElementByPosition(CodeModel codeModel, int lineIndex, int columnIndex)
     {
         var parent = GetParentElement(codeModel, lineIndex, columnIndex);
-        if (parent == null) return null;
+        if (parent is null) return null;
         var searchLogic = new DepthSearchLogic();
         var result = searchLogic.Seach(parent, e => e.LineIndex == lineIndex && e.ColumnIndex == columnIndex);
-        if (result == null) return null;
+        if (result is null) return null;
 
         return new(result.CodeElement, result.Chain);
     }
@@ -39,7 +39,7 @@ public class CodeModelNavigator : ICodeModelNavigator
         var allElements = new List<CodeElement>();
         allElements.AddRange(codeModel.Constants);
         allElements.AddRange(codeModel.Functions);
-        if (codeModel.RunFunction != null) allElements.Add(codeModel.RunFunction);
+        if (codeModel.RunFunction is not null) allElements.Add(codeModel.RunFunction);
         allElements.Sort(new ReverseCodeElementComparer(new CodeElementComparer()));
 
         return allElements.FirstOrDefault(e => IsParent(e, lineIndex, columnIndex));

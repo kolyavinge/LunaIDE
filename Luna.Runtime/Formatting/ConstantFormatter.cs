@@ -20,7 +20,7 @@ internal class ConstantFormatter : IConstantFormatter
 
     public void Format(TokenIterator iter, TokenAppender appender, ref int skippedLinesCount)
     {
-        if (_maxConstantLength == null) throw new InvalidOperationException();
+        if (_maxConstantLength is null) throw new InvalidOperationException();
         var constToken = iter.Token;
         iter.MoveNext();
         if (iter.Token.Kind != TokenKind.Identificator)

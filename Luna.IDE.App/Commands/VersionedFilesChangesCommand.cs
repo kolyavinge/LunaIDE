@@ -35,14 +35,14 @@ public class VersionedFilesChangesCommand : Command<IEnumerable<VersionedFile>>,
             var fileProjectItem = (TextFileProjectItem)_selectedProject.Project!.FindItemByPath(versionedFile.RelativePath)!;
             var windowId = $"Changes_{versionedFile.RelativePath}";
             window = _windowsManager.FindWindowById(windowId);
-            if (window == null)
+            if (window is null)
             {
                 var components = _environmentWindowsFactory.MakeWindowFor(typeof(ProjectItemChanges));
                 ((IProjectItemChanges)components.Model).MakeDiff(versionedFile.LastCommitContent, fileProjectItem);
                 window = _windowsManager.OpenWindow(windowId, components.Model, components.View);
             }
         }
-        if (window != null)
+        if (window is not null)
         {
             _windowsManager.ActivateWindow(window);
         }

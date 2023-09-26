@@ -68,10 +68,10 @@ internal class AutoComplete : NotificationObject, IAutoComplete
     public void Complete()
     {
         IsVisible = false;
-        if (SelectedItem == null) return;
+        if (SelectedItem is null) return;
         var cursor = DataContext.CursorPosition;
         var cursorToken = GetCursorToken();
-        if (cursorToken != null)
+        if (cursorToken is not null)
         {
             DataContext.ReplaceText(new(cursor.LineIndex, cursorToken.StartColumnIndex), cursor, SelectedItem.Name);
         }
@@ -101,7 +101,7 @@ internal class AutoComplete : NotificationObject, IAutoComplete
     private void ProcessFilterText()
     {
         var cursorToken = GetCursorToken();
-        if (cursorToken != null)
+        if (cursorToken is not null)
         {
             var cursor = DataContext.CursorPosition;
             var filterText = cursorToken.Name.Substring(0, cursor.ColumnIndex - cursorToken.StartColumnIndex);
@@ -152,6 +152,6 @@ internal class AutoComplete : NotificationObject, IAutoComplete
     public CodeHighlighter.Core.Token? GetCursorToken()
     {
         var token = DataContext.GetTokenOnCursorPosition();
-        return token != null && (token.IsIdentificator() || token.IsKeyword() || token.IsOperator()) ? token : null;
+        return token is not null && (token.IsIdentificator() || token.IsKeyword() || token.IsOperator()) ? token : null;
     }
 }

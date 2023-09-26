@@ -70,7 +70,7 @@ public abstract class TreeItem : NotificationObject
         Name = name;
         ImageName = imageName;
         Depth = GetDepth();
-        _isExpanded = Parent == null;
+        _isExpanded = Parent is null;
     }
 
     protected virtual IEnumerable<TreeItem> GetChildren()
@@ -90,9 +90,9 @@ public abstract class TreeItem : NotificationObject
     private int GetDepth()
     {
         var parent = Parent;
-        if (parent == null) return 0;
+        if (parent is null) return 0;
         int depth = -1;
-        while (parent != null) { parent = parent.Parent; depth++; }
+        while (parent is not null) { parent = parent.Parent; depth++; }
 
         return depth;
     }

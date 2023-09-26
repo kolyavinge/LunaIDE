@@ -20,7 +20,7 @@ public class ImportDirectiveParser : AbstractParser
         {
             ParserMessage? error = null;
             ParseImportDirective(ref error);
-            if (error != null)
+            if (error is not null)
             {
                 _result.AddError(error);
             }
@@ -67,7 +67,7 @@ public class ImportDirectiveParser : AbstractParser
             return;
         }
         var codeFile = _scope.GetCodeFileByPath(filePath);
-        if (codeFile == null)
+        if (codeFile is null)
         {
             error = new(ParserMessageType.ImportFileNotFound, importToken);
             return;

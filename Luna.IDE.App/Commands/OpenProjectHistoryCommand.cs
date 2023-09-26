@@ -23,7 +23,7 @@ public class OpenProjectHistoryCommand : Command, IOpenProjectHistoryCommand
     public override void Execute(object? parameter)
     {
         var window = _windowsManager.FindWindowById(WindowId);
-        if (window == null)
+        if (window is null)
         {
             var components = _environmentWindowsFactory.MakeWindowFor(typeof(ProjectHistory));
             window = _windowsManager.OpenWindow(WindowId, components.Model, components.View);

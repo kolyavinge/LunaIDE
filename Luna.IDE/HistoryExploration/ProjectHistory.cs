@@ -48,7 +48,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
         set
         {
             _selectedCommit = value;
-            if (_selectedCommit != null)
+            if (_selectedCommit is not null)
             {
                 DetailsRoot = new CommitedDirectoryTreeItem(null, _selectedCommit.Details);
                 DetailsRoot.AllChildren.OfType<CommitedFileTreeItem>().Each(x => x.Selected += OnDetailsSelected);
@@ -99,7 +99,7 @@ public class ProjectHistory : NotificationObject, IProjectHistory, IEnvironmentW
     {
         var selectedCommit = SelectedCommit;
         RaiseCommitsChanged();
-        if (selectedCommit != null)
+        if (selectedCommit is not null)
         {
             SelectedCommit = _commits.First(x => x.Id == selectedCommit.Id);
         }

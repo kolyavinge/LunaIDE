@@ -7,9 +7,9 @@ internal class CodeElementComparer : IComparer<CodeElement>
 {
     public int Compare(CodeElement? x, CodeElement? y)
     {
-        if (x == null && y == null) return 0;
-        if (x == null) return -1;
-        if (y == null) return 1;
+        if (x is null && y is null) return 0;
+        if (x is null) return -1;
+        if (y is null) return 1;
         var result = x.LineIndex.CompareTo(y.LineIndex);
         if (result == 0)
         {

@@ -46,7 +46,7 @@ public abstract class AbstractDirectory<TDirectory, TFile> where TDirectory : Ab
             foreach (var directory in directories)
             {
                 var child = parent.InnerDirectories.FirstOrDefault(x => x.Name == directory);
-                if (child == null)
+                if (child is null)
                 {
                     child = _makeDirectoryFunc(directory);
                     parent._innerDirectories.Add(child);
@@ -69,7 +69,7 @@ public abstract class AbstractDirectory<TDirectory, TFile> where TDirectory : Ab
             foreach (var directiory in directories)
             {
                 var child = parent.InnerDirectories.FirstOrDefault(x => x.Name == directiory);
-                if (child == null)
+                if (child is null)
                 {
                     fileFinded = false;
                     break;

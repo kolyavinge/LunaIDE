@@ -23,7 +23,7 @@ public class VersionedFile : IEquatable<VersionedFile?>
         get
         {
             var bytes = _versionControlRepository.GetActualFileContent(InnerVersionedFile);
-            return bytes != null ? Encoding.UTF8.GetString(bytes) : null;
+            return bytes is not null ? Encoding.UTF8.GetString(bytes) : null;
         }
     }
 

@@ -28,7 +28,7 @@ public static class DependencyContainer
 
     public static void ResolveInjectedProperties(object obj)
     {
-        var properties = obj.GetType().GetProperties().Where(prop => prop.GetCustomAttribute<InjectAttribute>() != null).ToList();
+        var properties = obj.GetType().GetProperties().Where(prop => prop.GetCustomAttribute<InjectAttribute>() is not null).ToList();
         foreach (var prop in properties)
         {
             prop.SetValue(obj, _container.Resolve(prop.PropertyType));

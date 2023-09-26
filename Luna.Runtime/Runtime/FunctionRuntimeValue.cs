@@ -40,7 +40,7 @@ internal class FunctionRuntimeValue : RuntimeValue, IFunctionRuntimeValue
     {
         _scope.PushCallStack(this);
         argumentValues ??= new ReadonlyArray<IRuntimeValue>();
-        if (AlreadyPassedArguments != null)
+        if (AlreadyPassedArguments is not null)
         {
             argumentValues = AlreadyPassedArguments.Concat(argumentValues).ToReadonlyArray();
         }

@@ -9,7 +9,7 @@ internal class PrintF : EmbeddedFunction
 {
     protected override IRuntimeValue InnerGetValue(EmbeddedFunctionArguments arguments)
     {
-        if (RuntimeEnvironment.StandartOutput != null)
+        if (RuntimeEnvironment.StandartOutput is not null)
         {
             var format = arguments.GetValueOrError<StringRuntimeValue>(0).ToString();
             var param = arguments.GetValueOrError<ListRuntimeValue>(1).Select(x => x.ToString()).ToArray();

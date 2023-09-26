@@ -36,7 +36,7 @@ public class ProjectItemOpenCommand : Command<IEnumerable<ProjectItem>>, IProjec
     private EnvironmentWindow OpenWindowFor(ProjectItem projectItem)
     {
         var window = _windowsManager.FindWindowById(projectItem);
-        if (window == null)
+        if (window is null)
         {
             var components = _editorFactory.MakeEditorFor(projectItem);
             window = _windowsManager.OpenWindow(projectItem, components.Model, components.View);

@@ -59,7 +59,7 @@ public class Project : IProject
         ProjectItem? result = Root;
         foreach (var itemName in splittedPath)
         {
-            if (result == null) continue;
+            if (result is null) continue;
             if (result.Name == itemName) break;
             if (result is DirectoryProjectItem directory)
             {

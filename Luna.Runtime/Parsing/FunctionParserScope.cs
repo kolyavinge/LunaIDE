@@ -36,6 +36,6 @@ public class FunctionParserScope : IFunctionParserScope
 
     public bool IsRunFunctionExist()
     {
-        return _allCodeModels.Any(x => x.RunFunction != null);
+        return _allCodeModels.Any(x => x.RunFunction is not null);
     }
 }

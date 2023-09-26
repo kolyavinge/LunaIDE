@@ -56,7 +56,7 @@ internal class DoubleTextDiff : NotificationObject, IDoubleTextDiff
     public void MakeDiff(TextDiffResult diffResult, string? oldFileText, TextFileProjectItem newFile)
     {
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
-        InitDiffCodeTextBox(codeProvider, diffResult, oldFileText ?? "", newFile.GetText(), oldFileText != null);
+        InitDiffCodeTextBox(codeProvider, diffResult, oldFileText ?? "", newFile.GetText(), oldFileText is not null);
         InitGaps(diffResult);
         SynchronizeHorizontalScrollbars();
     }

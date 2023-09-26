@@ -45,7 +45,7 @@ internal class Interpreter : IInterpreter
         var scopes = RuntimeScopesCollection.BuildForCodeModels(codeModels, _evaluator, _callStack);
         _evaluator.Scopes = scopes;
         RuntimeEnvironment.ExceptionHandler = _runtimeExceptionHandler;
-        var mainCodeModel = codeModels.First(x => x.RunFunction != null);
+        var mainCodeModel = codeModels.First(x => x.RunFunction is not null);
         var mainScope = scopes.GetForCodeModel(mainCodeModel);
         mainScope.PushCallStack(new RunFunctionStub());
         Result = _evaluator.Eval(mainScope, mainCodeModel.RunFunction!).GetValue();

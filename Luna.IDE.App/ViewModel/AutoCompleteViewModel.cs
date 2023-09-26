@@ -55,13 +55,13 @@ public class AutoCompleteViewModel : NotificationObject
 
     public void Show(double verticalScrollBarValue, double horizontalScrollBarValue, double parentWidth, double parentHeight)
     {
-        if (Model == null) return;
+        if (Model is null) return;
         _parentWidth = parentWidth;
         _parentHeight = parentHeight;
         var cursor = Model.DataContext.CursorPosition;
         var cursorToken = Model.GetCursorToken();
         var y = cursor.LineIndex * Model.DataContext.TextLineHeight;
-        var x = cursorToken != null
+        var x = cursorToken is not null
             ? cursorToken.StartColumnIndex * Model.DataContext.TextLetterWidth
             : cursor.ColumnIndex * Model.DataContext.TextLetterWidth;
         _absolutePosition = new(x, y);
@@ -84,7 +84,7 @@ public class AutoCompleteViewModel : NotificationObject
 
     public void CorrectByVerticalScrollBarValue(double verticalScrollBarValue)
     {
-        if (Model == null) return;
+        if (Model is null) return;
         if (!Model.IsVisible) return;
         var screenY = _absolutePosition.Y - verticalScrollBarValue;
         if (VerticalAlignment == VerticalAlignment.Top)
@@ -105,7 +105,7 @@ public class AutoCompleteViewModel : NotificationObject
 
     public void CorrectByHorizontalScrollBarValue(double horizontalScrollBarValue)
     {
-        if (Model == null) return;
+        if (Model is null) return;
         if (!Model.IsVisible) return;
         var x = _absolutePosition.X - horizontalScrollBarValue;
         if (x < 0) x = 0;

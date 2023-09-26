@@ -56,7 +56,7 @@ internal class SingleTextDiff : NotificationObject, ISingleTextDiff
     {
         var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(fileExtension, oldFileText ?? "", newFileText);
-        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
+        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText is not null);
         InitNumberPanels(singleDiffResult);
     }
 
@@ -64,7 +64,7 @@ internal class SingleTextDiff : NotificationObject, ISingleTextDiff
     {
         var singleDiffResult = _textDiffEngine.GetSingleTextResult(diffResult);
         var codeProvider = _textDiffCodeProviderFactory.Make(oldFileText ?? "", newFile);
-        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText != null);
+        InitDiffCodeTextBox(codeProvider, singleDiffResult.VisualizerResult, oldFileText is not null);
         InitNumberPanels(singleDiffResult);
     }
 

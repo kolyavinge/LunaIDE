@@ -67,7 +67,7 @@ internal class ProjectLoader : IProjectLoader
 
     public void CloseCurrentProject()
     {
-        if (Project != null)
+        if (Project is not null)
         {
             _lastOpenedProjectFiles.SaveOpenedFiles(Project);
             _windowsManager.CloseAllWindows();

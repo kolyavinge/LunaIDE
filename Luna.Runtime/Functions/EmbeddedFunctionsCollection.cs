@@ -18,7 +18,7 @@ internal class EmbeddedFunctionsCollection : IEmbeddedFunctionsCollection
     {
         var functions = Assembly.GetExecutingAssembly()
             .GetTypes()
-            .Where(t => t.GetCustomAttribute<EmbeddedFunctionDeclaration>() != null)
+            .Where(t => t.GetCustomAttribute<EmbeddedFunctionDeclaration>() is not null)
             .Select(Activator.CreateInstance)
             .Cast<EmbeddedFunction>()
             .ToList();

@@ -48,7 +48,7 @@ internal class SingleTextDiffGapProcessor : ISingleTextDiffGapProcessor
     private void IncrementLineGap(ILineGapCollection gaps, int lineIndex)
     {
         var gap = gaps[lineIndex];
-        if (gap != null)
+        if (gap is not null)
         {
             gap.CountBefore++;
         }

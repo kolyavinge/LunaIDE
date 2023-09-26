@@ -14,9 +14,9 @@ internal class ListRuntimeValueComparer : IComparer<IRuntimeValue>
 
     public int Compare(IRuntimeValue? x, IRuntimeValue? y)
     {
-        if (x == null && y == null) return 0;
-        if (y == null) return -1;
-        if (x == null) return 1;
+        if (x is null && y is null) return 0;
+        if (y is null) return -1;
+        if (x is null) return 1;
 
         var result = _compareFunc.GetValue(new[] { x, y }.ToReadonlyArray());
         if (result is not NumericRuntimeValue numeric)

@@ -23,7 +23,7 @@ public class EnvironmentWindowsFactory : WindowsFactory, IEnvironmentWindowsFact
 
         var viewType = types.FirstOrDefault(type =>
             type.GetCustomAttribute<EnvironmentWindowForAttribute>()?.ModelType == modelType &&
-            type.GetConstructor(new[] { viewModel.GetType() }) != null) ?? throw new WindowsFactoryException();
+            type.GetConstructor(new[] { viewModel.GetType() }) is not null) ?? throw new WindowsFactoryException();
 
         var view = MakeView(viewType, viewModel);
 

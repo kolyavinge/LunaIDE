@@ -37,11 +37,11 @@ public class CodeFileEditorChangesCommand : Command<ICodeFileEditor>, ICodeFileE
             _projectRepository.Included.AllFiles.FirstOrDefault(x => x.FullPath == editor.ProjectItem.FullPath) ??
             _projectRepository.Excluded.AllFiles.FirstOrDefault(x => x.FullPath == editor.ProjectItem.FullPath);
 
-        if (versionedFile != null)
+        if (versionedFile is not null)
         {
             var windowId = $"Changes_{versionedFile.RelativePath}";
             var window = _windowsManager.FindWindowById(windowId);
-            if (window == null)
+            if (window is null)
             {
                 var components = _environmentWindowsFactory.MakeWindowFor(typeof(ProjectItemChanges));
                 ((IProjectItemChanges)components.Model).MakeDiff(versionedFile.LastCommitContent, editor.ProjectItem);

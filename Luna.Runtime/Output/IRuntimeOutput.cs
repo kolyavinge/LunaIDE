@@ -37,7 +37,7 @@ public class OutputMessage : IEquatable<OutputMessage?>
     {
         return other is not null &&
                _items.SequenceEqual(other._items) &&
-               (ProjectItem == null && other.ProjectItem == null
+               (ProjectItem is null && other.ProjectItem is null
                 || (ProjectItem?.Equals(other.ProjectItem) ?? false));
     }
 

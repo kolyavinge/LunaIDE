@@ -29,7 +29,7 @@ public class RunProgramCommand : Command, IRunProgramCommand
 
     public override void Execute(object? parameter)
     {
-        if (_selectedProject.Project == null) return;
+        if (_selectedProject.Project is null) return;
         _windowsManager.Windows.Where(x => x.Model is ISaveableEnvironmentWindow).Each(x => ((ISaveableEnvironmentWindow)x.Model).Save());
         _outputArea.Clear();
         var interpreter = _interpreterFactory.Make(_selectedProject.Project, _outputArea);

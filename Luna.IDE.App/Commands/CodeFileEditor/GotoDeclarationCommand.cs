@@ -26,9 +26,9 @@ public class GotoDeclarationCommand : Command<ICodeFileEditor>, IGotoDeclaration
     protected override void Execute(ICodeFileEditor codeFileEditor)
     {
         var position = codeFileEditor.GetTokenCursorPosition();
-        if (position == null) return;
+        if (position is null) return;
         CodeHighlighter.Core.Token token;
-        if (position.NeighbourToken != null)
+        if (position.NeighbourToken is not null)
         {
             token = position.TokenOnPosition.IsIdentificator()
                 ? position.TokenOnPosition
@@ -39,9 +39,9 @@ public class GotoDeclarationCommand : Command<ICodeFileEditor>, IGotoDeclaration
             token = position.TokenOnPosition;
         }
         var navigationResult = _codeModelNavigator.GetCodeElementByPosition(codeFileEditor.ProjectItem.CodeModel, codeFileEditor.CursorPosition.LineIndex, token.StartColumnIndex);
-        if (navigationResult == null) return;
+        if (navigationResult is null) return;
         var declarationResult = _declarationNavigator.GetDeclarationFor(codeFileEditor.ProjectItem, navigationResult.CodeElement);
-        if (declarationResult == null) return;
+        if (declarationResult is null) return;
         _codeElementNavigateCommand.Execute(new CodeElementNavigateCommandParameter(declarationResult.CodeFile, declarationResult.Declaration));
     }
 }
